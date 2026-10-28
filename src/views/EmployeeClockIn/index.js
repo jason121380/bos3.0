@@ -18,6 +18,7 @@ import Results from './Results'
 import { Autocomplete } from 'ui/combobox'
 import { ListFilter } from 'lucide-react'
 import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 const clockInFilter = [
   { label: '未知', value: 'NULL' },
@@ -173,13 +174,17 @@ const EmployeeClockIn = () => {
           </Button>
         </Card>
       )}
-      <Results
-        handleSearch={handleSearch}
-        clockInRecord={clockInRecord}
-        handleClockIn={handleClockIn}
-        isToday={isToday}
-        btnStatus={btnStatus}
-      />
+      {dailyClockInRecordLazyData.error ? (
+        <QueryFailed onRetry={() => dailyClockInRecordLazyData.refetch()} />
+      ) : (
+        <Results
+          handleSearch={handleSearch}
+          clockInRecord={clockInRecord}
+          handleClockIn={handleClockIn}
+          isToday={isToday}
+          btnStatus={btnStatus}
+        />
+      )}
     </Page>
   )
 }

@@ -21,6 +21,7 @@ import AboutDeduction from './AboutDeduction'
 import AboutService from './AboutService'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 function ServiceCategoryEdit({ match }) {
   // eslint-disable-next-line no-restricted-globals -- 既有寫法（window.location），改版不動邏輯
@@ -50,7 +51,8 @@ function ServiceCategoryEdit({ match }) {
   }, [match.params.id])
   // 服務設定初始化useEffect
   useEffect(() => {
-    if (!serviceDetail.loading && !customerCategory.loading && !merchantCommissions.loading) {
+    // 服務讀不到（查詢失敗或已刪除）時不帶入，畫面改顯示 QueryFailed（原本把 undefined 帶進表單整頁錯誤；2026/10/28）
+    if (!serviceDetail.loading && !customerCategory.loading && !merchantCommissions.loading && idx(serviceDetail.data, _ => _.service)) {
       setService(
         produce(draft => {
           draft.itemId = idx(serviceDetail.data, _ => _.service.id)
@@ -533,6 +535,16 @@ function ServiceCategoryEdit({ match }) {
   }, [service, merchantJobTitlePoint.loading])
 
   // 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-4xl（與舊版 Container md 相近）
+  // 主要資料讀取失敗：顯示可重試的錯誤狀態，不顯示空白表單（避免把空值存回去）
+  if (serviceDetail.error) {
+    return (
+      <Page className="ui-root" title={isDuplicate ? "新增服務項目" : "編輯服務項目"}>
+        <PageHeader title={isDuplicate ? "新增服務項目" : "編輯服務項目"} />
+        <QueryFailed onRetry={() => serviceDetail.refetch()} />
+      </Page>
+    )
+  }
+
   return (
     <Page className="ui-root" title={isDuplicate ? "新增服務項目" : "編輯服務項目"}>
       <div className="mx-auto flex max-w-4xl flex-col gap-6">

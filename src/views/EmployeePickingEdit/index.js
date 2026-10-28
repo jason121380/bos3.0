@@ -13,6 +13,7 @@ import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
 import General from './General'
+import QueryFailed from 'components/QueryFailed'
 
 export default function EmployeePickingCreate() {
   const history = useHistory()
@@ -140,15 +141,19 @@ export default function EmployeePickingCreate() {
               handleDelete()
             }}
           />
-          <General
-            formState={formState}
-            changeHandler={changeHandler}
-            productHandler={productHandler}
-            dateHandler={dateHandler}
-            purpose={purpose}
-          />
+          {getPicking.error ? (
+            <QueryFailed onRetry={() => getPicking.refetch()} />
+          ) : (
+            <General
+              formState={formState}
+              changeHandler={changeHandler}
+              productHandler={productHandler}
+              dateHandler={dateHandler}
+              purpose={purpose}
+            />
+          )}
         </Provider>
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex justify-end" hidden={Boolean(getPicking.error)}>
           <Button
             variant="primary"
             onClick={submitHandler}

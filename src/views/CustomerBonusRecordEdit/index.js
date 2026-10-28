@@ -9,6 +9,7 @@ import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
 import AboutMerchantVendorCreate from './AboutCustomerBonusRecordEdit'
+import QueryFailed from 'components/QueryFailed'
 
 function CustomerBonusRecordCreate() {
   const { id } = useParams()
@@ -89,19 +90,25 @@ function CustomerBonusRecordCreate() {
     <Page className="ui-root" title="編輯紅利點數紀錄">
       <div className="mx-auto max-w-3xl">
         <PageHeader title="編輯紅利點數紀錄" className="pb-0" />
-        <AboutMerchantVendorCreate
-          submitData={submitData}
-          setSubmitData={setSubmitData}
-        />
-        <div className="mt-6 flex justify-end">
-          <Button
-            disabled={isClick || bonusDepositRecord.loading}
-            onClick={handleSubmitData}
-            variant="primary"
-          >
-            儲存
-          </Button>
-        </div>
+        {bonusDepositRecord.error ? (
+          <QueryFailed onRetry={() => bonusDepositRecord.refetch()} />
+        ) : (
+          <>
+          <AboutMerchantVendorCreate
+            submitData={submitData}
+            setSubmitData={setSubmitData}
+          />
+          <div className="mt-6 flex justify-end">
+            <Button
+              disabled={isClick || bonusDepositRecord.loading}
+              onClick={handleSubmitData}
+              variant="primary"
+            >
+              儲存
+            </Button>
+          </div>
+          </>
+        )}
       </div>
     </Page>
   )

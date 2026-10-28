@@ -294,11 +294,12 @@ describe('複製商品', () => {
 })
 
 describe('查詢失敗', () => {
-  it('所有查詢失敗：頁面仍顯示，不進錯誤畫面', async () => {
+  // 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／空列表，避免誤以為沒有資料或把空值存回去
+  it('所有查詢失敗：顯示無法載入資料與重新查詢，不進錯誤畫面', async () => {
     const { settle } = renderPage(<ProductEdit match={{ params: { id: 'p-1' } }} />, { fallback: 'error' })
     await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-    expect(screen.getAllByText('編輯商品')[0]).toBeInTheDocument()
-    expect(within(document.body).getAllByRole('button', { name: '儲存' })[0]).toBeDisabled()
+    expect(screen.getAllByText('無法載入資料')[0]).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
   })
 })

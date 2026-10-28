@@ -11,6 +11,7 @@ import { Button } from 'ui/button'
 import { Card, CardContent } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import EventTicketsRecord from './EventTicketsRecord'
+import QueryFailed from 'components/QueryFailed'
 
 const CustomerEventTicketSearch = () => {
   const [getCustomerTicket, customerTicketData] = useFetchGetCustomerCheckTicket()
@@ -111,6 +112,10 @@ const CustomerEventTicketSearch = () => {
         disabled={!submitData.recaptchaToken || customerTicketData.loading}
         onClick={handleSearchData}
       >{customerTicketData.loading ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : '提交'}</Button>
+      {/* 查詢用的 reCAPTCHA token 只能用一次，失敗時請使用者重新提交，不提供直接重查 */}
+      {!customerTicketData.loading && customerTicketData.error && (
+        <QueryFailed description="請稍後再按一次「提交」。" />
+      )}
       {!customerTicketData.loading && customerTicketData.data && (
         <EventTicketsRecord data={data} />
       )}

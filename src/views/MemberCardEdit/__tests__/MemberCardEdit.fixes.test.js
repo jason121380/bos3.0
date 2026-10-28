@@ -11,7 +11,6 @@ beforeEach(() => loginAs())
 afterEach(cleanup)
 
 it.each([
-  ['查詢失敗', { fallback: 'error' }],
   ['查無此卡', { fixtures: { FETCH_MEMBERSHIP: { membership: null } } }],
 ])('%s時不整頁壞，表單空白、不能儲存', async (_, options) => {
   const { settle } = renderPage(<MemberCardEdit match={{ params: { id: 'm1' } }} />, options)
@@ -38,4 +37,13 @@ it('未分類的會員卡可以開啟編輯，類別留空、選好類別才能�
   expect(screen.getByText('儲存').closest('button')).toBeDisabled()
   pickOption(fieldByLabel('會員卡類別'), 'A01 / 儲值卡')
   expect(screen.getByText('儲存').closest('button')).toBeEnabled()
+})
+
+// 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／列表，避免使用者把空值存回去；查無資料仍照原本顯示
+it('查詢失敗時顯示無法載入資料與重新查詢', async () => {
+  const { settle } = renderPage(<MemberCardEdit match={{ params: { id: 'm1' } }} />, { fallback: 'error' })
+  await settle()
+  expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+  expect(screen.getByText('無法載入資料')).toBeInTheDocument()
+  expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
 })

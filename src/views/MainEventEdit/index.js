@@ -11,6 +11,7 @@ import idx from 'idx'
 import { startOfDay, endOfDay, isBefore } from 'date-fns'
 import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 
 function MainEventEdit({ match }) {
   const history = useHistory()
@@ -118,7 +119,9 @@ function MainEventEdit({ match }) {
     <Page className="ui-root" title="編輯活動">
       <div className="mx-auto max-w-3xl">
         <PageHeader title="編輯活動" />
-        {!getMainEvent.loading ? (
+        {getMainEvent.error ? (
+          <QueryFailed onRetry={() => getMainEvent.refetch()} />
+        ) : !getMainEvent.loading ? (
           <General
             dateChange={handleDateChange}
             valueChange={handleValueChange}

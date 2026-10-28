@@ -15,6 +15,7 @@ import { Skeleton } from 'ui/skeleton'
 import { cn } from 'ui/utils'
 import { ListFilter } from 'lucide-react'
 import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 function MemberCardRecord() {
   // ... state definitions
@@ -31,7 +32,8 @@ function MemberCardRecord() {
   })
 
   // 拿到會員卡
-  const memberships = idx(useFetchGetMemberships(setting), _ => _.data.memberships)
+  const membershipsData = useFetchGetMemberships(setting)
+  const memberships = idx(membershipsData, _ => _.data.memberships)
 
   // 拿到會員卡全部類別
   const categories = idx(
@@ -128,7 +130,9 @@ function MemberCardRecord() {
             </div>
           </Card>
         )}
-        {memberships !== undefined ? (
+        {membershipsData.error ? (
+          <QueryFailed onRetry={() => membershipsData.refetch()} />
+        ) : memberships !== undefined ? (
           <Results
             memberships={memberships}
             categories={categories}

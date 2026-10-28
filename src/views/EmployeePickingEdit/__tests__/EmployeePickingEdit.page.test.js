@@ -178,7 +178,8 @@ describe('編輯材料自購', () => {
     fireEvent.wheel(field('數量'))
   })
 
-  it('查詢失敗：不進錯誤畫面；沒有用途設定時用途停用', async () => {
+  // 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／空列表，避免誤以為沒有資料或把空值存回去
+  it('查詢失敗：顯示無法載入資料與重新查詢，不顯示空白表單', async () => {
     const { settle } = renderPage(<EmployeePickingEdit />, {
       fallback: 'error',
       path: '/employee/picking/edit/:id',
@@ -186,7 +187,7 @@ describe('編輯材料自購', () => {
     })
     await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-    expect(screen.getAllByText('編輯材料自購')[0]).toBeInTheDocument()
-    expect(field('用途')).toBeDisabled()
+    expect(screen.getAllByText('無法載入資料')[0]).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
   })
 })

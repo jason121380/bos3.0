@@ -12,6 +12,7 @@ import useFetchGetAttribution from 'hooks/useFetchGetAttribution'
 import idx from 'idx'
 
 import AboutServiceCategory from './AboutServiceCategory'
+import QueryFailed from 'components/QueryFailed'
 
 function ServiceCategoryEdit({ match }) {
   const hookForm = useForm()
@@ -58,18 +59,24 @@ function ServiceCategoryEdit({ match }) {
     <Page className="ui-root" title="編輯服務分類">
       <div className="mx-auto w-full max-w-3xl">
         <PageHeader title="編輯服務分類" />
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Provider value={value}>
-            {!serviceCategoryDetail.loading && !getAttribution.loading && (
-              <AboutServiceCategory attributions={attributions} />
-            )}
-          </Provider>
-          <div className="mt-6 flex justify-end">
-            <Button variant="primary" type="submit" data-testid="save">
-              儲存
-            </Button>
-          </div>
-        </form>
+        {serviceCategoryDetail.error ? (
+          <QueryFailed onRetry={() => serviceCategoryDetail.refetch()} />
+        ) : (
+          <>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Provider value={value}>
+                {!serviceCategoryDetail.loading && !getAttribution.loading && (
+                  <AboutServiceCategory attributions={attributions} />
+                )}
+              </Provider>
+              <div className="mt-6 flex justify-end">
+                <Button variant="primary" type="submit" data-testid="save">
+                  儲存
+                </Button>
+              </div>
+            </form>
+          </>
+        )}
       </div>
     </Page>
   )

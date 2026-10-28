@@ -37,6 +37,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import idx from 'idx'
 import isPasswordRequired from 'helper/passwordRequired'
 import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 function Calendar() {
   const reservationData = useSelector(state => state.reservation.reservationData)
@@ -433,7 +434,8 @@ function Calendar() {
   }, [reservationData])
 
   useEffect(() => {
-    if (calendarRowData.nonDesignate && !merchant.loading) {
+    // 店家查詢失敗時沒有營業時間可排時間軸，畫面改顯示 QueryFailed（2026/10/28）
+    if (calendarRowData.nonDesignate && !merchant.loading && idx(merchant, _ => _.data.merchant)) {
       const timeRange = handleSetTimeRange(calendarRowData.designate, calendarRowData.nonDesignate.calendar)
       const designate = handleTidyOrder(calendarRowData.designate, timeRange[0])
       const nonDesignate = handleTidyOrder([calendarRowData.nonDesignate], timeRange[0], true)
@@ -677,7 +679,14 @@ function Calendar() {
             </PopoverContent>
           </Popover>
         </div>
-        {(!merchant.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length)) ?
+        {(DesignerCalendar.error || merchant.error) ? (
+          <QueryFailed
+            onRetry={() => {
+              if (DesignerCalendar.error) DesignerCalendar.refetch()
+              if (merchant.error) merchant.refetch()
+            }}
+          />
+        ) : (!merchant.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length)) ?
           <OrderTable
             orderRange={orderRange}
             calendarData={calendarData}

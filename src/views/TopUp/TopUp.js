@@ -18,6 +18,7 @@ import { Card } from 'ui/card'
 import { ListFilter } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 function CustomerManagementList() {
 
@@ -110,6 +111,14 @@ function CustomerManagementList() {
           </Card>
         </div>
         <div className="flex flex-col gap-6">
+        {(walletDepositRecord.error || walletUseRecord.error) && (
+          <QueryFailed
+            onRetry={() => {
+              if (walletDepositRecord.error) walletDepositRecord.refetch()
+              if (walletUseRecord.error) walletUseRecord.refetch()
+            }}
+          />
+        )}
         <RecordResults
           pagenationLabel={pagenationLabel}
           date={{ start: resultSetting.record.start, end: resultSetting.record.end }}

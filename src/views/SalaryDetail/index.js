@@ -11,6 +11,7 @@ import DateSelector from 'components/DateSelector'
 import DecreaseResult from './DecreaseResult'
 import IncreaseResult from './IncreaseResult'
 import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 function CustomerManagementList() {
   const [setting, setSetting] = React.useState({
@@ -86,6 +87,14 @@ function CustomerManagementList() {
             </>
           }
         />
+        {(userIncrease.error || userDecrease.error) && (
+          <QueryFailed
+            onRetry={() => {
+              if (userIncrease.error) userIncrease.refetch()
+              if (userDecrease.error) userDecrease.refetch()
+            }}
+          />
+        )}
         {idx(
           userIncrease,
           _ =>

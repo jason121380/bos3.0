@@ -11,6 +11,7 @@ import useFetchUpdateAuthority from 'hooks/useFetchUpdateAuthority'
 import useFetchMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'
 
 import AboutAuthority from './AboutAuthority'
+import QueryFailed from 'components/QueryFailed'
 
 function AuthorityCreate({ match }) {
   const { updateAuthority } = useFetchUpdateAuthority()
@@ -54,7 +55,9 @@ function AuthorityCreate({ match }) {
     <Page className="ui-root" title="編輯角色">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
         <PageHeader className="pb-0" title="編輯角色" />
-        {notFound ? (
+        {merchantAuthData.error ? (
+          <QueryFailed onRetry={() => merchantAuthData.refetch()} />
+        ) : notFound ? (
           <Card>
             <EmptyState
               title="找不到這個角色"

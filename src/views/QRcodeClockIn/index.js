@@ -8,6 +8,7 @@ import { storedMerchantId } from 'lib/stored-merchant'
 import { PageHeader } from 'ui/page-header'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 function QRcodeClockIn() {
   const getQrcodeCheckinCode = useFetchGetQrcodeCheckinCode()
@@ -65,14 +66,18 @@ function QRcodeClockIn() {
     <>
       <Page className="ui-root" title="掃碼打卡">
         <PageHeader title="掃碼打卡" />
-        <Results
-          clockInType={clockInType}
-          setClockInType={setClockInType}
-          url={url}
-          setUrl={setUrl}
-          countDownTime={countDownTime}
-          isLoading={getQrcodeCheckinCode.loading}
-        />
+        {getQrcodeCheckinCode.error ? (
+          <QueryFailed onRetry={() => getQrcodeCheckinCode.refetch()} />
+        ) : (
+          <Results
+            clockInType={clockInType}
+            setClockInType={setClockInType}
+            url={url}
+            setUrl={setUrl}
+            countDownTime={countDownTime}
+            isLoading={getQrcodeCheckinCode.loading}
+          />
+        )}
       </Page>
     </>
   )

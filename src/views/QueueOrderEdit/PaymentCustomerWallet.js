@@ -15,6 +15,8 @@ import produce from 'immer'
 export function useClearWalletPayOnCustomerChange({ bill, order, setBill }) {
   useEffect(() => {
     if (order.loading) return
+    // 佇列帳單讀不到時不比對（原本 JSON.parse(undefined) 整頁錯誤；2026/10/28）
+    if (!idx(order, _ => _.data.getOrderInputByQueueId)) return
     const queued = JSON.parse(idx(order, _ => _.data.getOrderInputByQueueId))
     setBill(
       produce(draft => {

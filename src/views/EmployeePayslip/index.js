@@ -24,6 +24,7 @@ import Results from './Results'
 import { ListFilter } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 export default function Payroll() {
   const [date, setDate] = useState({
@@ -107,7 +108,9 @@ export default function Payroll() {
           </Card>
         )}
 
-        {(!usersDalaryData.loading && !isDisplayFakePerformance.loading && !getIsPrintDetailDisplayOnSalaryReport.loading && !EPWDDisplay.loading) ?
+        {usersDalaryData.error ? (
+          <QueryFailed onRetry={() => usersDalaryData.refetch()} />
+        ) : (!usersDalaryData.loading && !isDisplayFakePerformance.loading && !getIsPrintDetailDisplayOnSalaryReport.loading && !EPWDDisplay.loading) ?
           idx(
             usersDalaryData,
             _ =>

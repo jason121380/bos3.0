@@ -109,8 +109,19 @@ describe('顧客詳細：切換分頁與返回', () => {
 
   // 顧客查詢失敗（或查無此顧客回 null）時顯示「找不到這位顧客」並可返回列表，不整頁錯誤
   // （錯誤提示由 init-apollo 的 errorLink 統一顯示；原本直接讀 customer.data.customer.name 拋錯；Jason 2026/10/22 fix all）
+  // 2026/10/28：顧客查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不說「找不到這位顧客」；返回鈕照常可用
+  it('顧客查詢失敗：顯示無法載入資料與重新查詢，返回鈕回客戶列表', async () => {
+    const utils = renderDetails({ fixtures: { FETCH_CUSTOMER_DETAIL: new Error('查無顧客') } })
+    await utils.settle()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
+    expect(screen.queryByText('找不到這位顧客')).toBeNull()
+    expect(screen.getByText('無法載入資料')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '重新查詢' })).toBeEnabled()
+    fireEvent.click(screen.getByLabelText('返回客戶列表'))
+    await wait(() => expect(currentLocation()).toBe('/management/customers'))
+  })
+
   it.each([
-    ['查詢失敗', new Error('查無顧客')],
     ['查無此顧客', { customer: null }],
   ])('顧客%s：顯示找不到這位顧客，返回鈕回客戶列表', async (_, fixture) => {
     const utils = renderDetails({ fixtures: { FETCH_CUSTOMER_DETAIL: fixture } })

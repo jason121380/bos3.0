@@ -15,6 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input, Textarea } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 // 色票浮層：沿用舊版置中固定定位（CirclePicker 接受 className）
 const colorPickerClass = 'fixed left-1/2 top-1/2 z-[1400] box-content -translate-x-1/2 -translate-y-1/2 rounded-md border border-solid border-border-strong bg-background pb-3 pl-5 pr-3 pt-5 shadow-float'
@@ -245,242 +246,248 @@ export default function MemberCardEdit({ match }) {
     <Page className="ui-root" title="編輯會員卡">
       <div className="mx-auto flex max-w-3xl flex-col gap-6">
         <PageHeader title="編輯會員卡" className="pb-0" />
-        <Card>
-          <CardHeader>
-            <CardTitle>一般資訊</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <Field label="代號">
-              <Input
-                value={submitValue.no}
-                onChange={event => handleOnChange({ event, key: 'no' })}
-              />
-            </Field>
-            <Field label="名稱">
-              <Input
-                value={submitValue.name}
-                onChange={event => handleOnChange({ event, key: 'name' })}
-              />
-            </Field>
-            <Field label="會員卡類別">
-              <NativeSelect
-                value={submitValue.MembershipCategoryUUID}
-                onChange={event => handleOnChange({ event, key: 'MembershipCategoryUUID' })}
-              >
-                {categories != null &&
-                  categories.map((data, idx) => (
-                    <NativeSelectOption key={`${data.uuid}-${idx}`} value={data.uuid}>
-                      {data.no} / {data.name}
-                    </NativeSelectOption>
-                  ))}
-              </NativeSelect>
-            </Field>
-            <Field label="有效天數">
-              <Input
-                type="number"
-                name="effecitveDay"
-                value={submitValue.effecitveDay}
-                onChange={event => handleOnChange({ event, key: 'effecitveDay' })}
-                onWheel={() => document.activeElement.blur()}
-              />
-            </Field>
-            <div className="flex items-center gap-2">
-              <span className="text-label text-text">是否可販售</span>
-              <Switch
-                checked={submitValue.isAvailableForSale}
-                onChange={event => handleOnChange({ event, key: 'isAvailableForSale' })}
-                color="primary"
-                name="isAvailableForSale"
-              />
-            </div>
-            {submitValue.isAvailableForSale && (
-              <Field label="會員卡售價">
-                <Input
-                  type="number"
-                  value={submitValue.sellPrice}
-                  onChange={event => handleOnChange({ event, key: 'sellPrice' })}
-                  onWheel={() => document.activeElement.blur()}
-                />
-              </Field>
+        {membership.error ? (
+          <QueryFailed onRetry={() => membership.refetch()} />
+        ) : (
+          <>
+            <Card>
+              <CardHeader>
+                <CardTitle>一般資訊</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
+                <Field label="代號">
+                  <Input
+                    value={submitValue.no}
+                    onChange={event => handleOnChange({ event, key: 'no' })}
+                  />
+                </Field>
+                <Field label="名稱">
+                  <Input
+                    value={submitValue.name}
+                    onChange={event => handleOnChange({ event, key: 'name' })}
+                  />
+                </Field>
+                <Field label="會員卡類別">
+                  <NativeSelect
+                    value={submitValue.MembershipCategoryUUID}
+                    onChange={event => handleOnChange({ event, key: 'MembershipCategoryUUID' })}
+                  >
+                    {categories != null &&
+                      categories.map((data, idx) => (
+                        <NativeSelectOption key={`${data.uuid}-${idx}`} value={data.uuid}>
+                          {data.no} / {data.name}
+                        </NativeSelectOption>
+                      ))}
+                  </NativeSelect>
+                </Field>
+                <Field label="有效天數">
+                  <Input
+                    type="number"
+                    name="effecitveDay"
+                    value={submitValue.effecitveDay}
+                    onChange={event => handleOnChange({ event, key: 'effecitveDay' })}
+                    onWheel={() => document.activeElement.blur()}
+                  />
+                </Field>
+                <div className="flex items-center gap-2">
+                  <span className="text-label text-text">是否可販售</span>
+                  <Switch
+                    checked={submitValue.isAvailableForSale}
+                    onChange={event => handleOnChange({ event, key: 'isAvailableForSale' })}
+                    color="primary"
+                    name="isAvailableForSale"
+                  />
+                </div>
+                {submitValue.isAvailableForSale && (
+                  <Field label="會員卡售價">
+                    <Input
+                      type="number"
+                      value={submitValue.sellPrice}
+                      onChange={event => handleOnChange({ event, key: 'sellPrice' })}
+                      onWheel={() => document.activeElement.blur()}
+                    />
+                  </Field>
+                )}
+                <Field label="成本價格">
+                  <Input
+                    type="number"
+                    value={submitValue.cost}
+                    onChange={event => handleOnChange({ event, key: 'cost' })}
+                    onWheel={() => document.activeElement.blur()}
+                  />
+                </Field>
+                <Field label="員工自購價格">
+                  <Input
+                    type="number"
+                    value={submitValue.employeePrice}
+                    onChange={event => handleOnChange({ event, key: 'employeePrice' })}
+                    onWheel={() => document.activeElement.blur()}
+                  />
+                </Field>
+                <Field label="會員卡的顏色">
+                  <div className="flex items-center gap-2.5">
+                    <Input
+                      className="w-60"
+                      name="color"
+                      value={submitValue.color}
+                      onChange={event => {
+                        setSubmitValue({...submitValue, color: event.target.value  })
+                      }}
+                    />
+                    <Button
+                      aria-label="選擇會員卡的顏色"
+                      className={swatchClass}
+                      style={{
+                        background: `${submitValue.color}`,
+                      }}
+                      onClick={() => {
+                        setShowColorPicker(true)
+                        setColorData(submitValue.color)
+                      }}
+                    />
+                    {showColorPicker && (
+                      <Fragment>
+                        <CirclePicker
+                          className={colorPickerClass}
+                          disableAlpha
+                          color={colorData}
+                          onChange={event => {
+                            setColorData(event.hex)
+                            setSubmitValue({...submitValue, color: event.hex  })
+                            setShowColorPicker(false)
+                          }}
+                        />
+                      </Fragment>
+                    )}
+                  </div>
+                </Field>
+                <Field label="會員卡文字的顏色">
+                  <div className="flex items-center gap-2.5">
+                    <Input
+                      className="w-60"
+                      name="textColor"
+                      value={submitValue.textColor}
+                      onChange={event => {
+                        setSubmitValue({...submitValue, textColor: event.target.value  })
+                      }}
+                    />
+                    <Button
+                      aria-label="選擇會員卡文字的顏色"
+                      className={swatchClass}
+                      style={{
+                        background: `${submitValue.textColor}`,
+                      }}
+                      onClick={() => {
+                        setShowTextColorPicker(true)
+                        setColorTextData(submitValue.textColor)
+                      }}
+                    />
+                    {showTextColorPicker && (
+                      <Fragment>
+                        <CirclePicker
+                          className={colorPickerClass}
+                          disableAlpha
+                          color={colorTextData}
+                          onChange={event => {
+                            setColorTextData(event.hex)
+                            setSubmitValue({...submitValue, textColor: event.hex  })
+                            setShowTextColorPicker(false)
+                          }}
+                        />
+                      </Fragment>
+                    )}
+                  </div>
+                </Field>
+                <Field label="圖片">
+                  <Input
+                    name="image"
+                    value={submitValue.image}
+                    onChange={event => {
+                      handleOnChange({ event, key: 'image' })
+                    }}
+                  />
+                </Field>
+                <Field label="會籍說明">
+                  <Textarea
+                    name="comment"
+                    rows={4}
+                    value={submitValue.comment}
+                    onChange={event => {
+                      handleOnChange({ event, key: 'comment' })
+                    }}
+                  />
+                </Field>
+                <Field label="打帳單是否能更改預設價格">
+                  <NativeSelect
+                    name="isLocked"
+                    value={submitValue.isLocked}
+                    onChange={event => handleOnChange({ event, key: 'isLocked' })}
+                  >
+                    {lockStatus.map((data, idx) => (
+                      <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                        {data.label}
+                      </NativeSelectOption>
+                    ))}
+                  </NativeSelect>
+                </Field>
+              </CardContent>
+            </Card>
+            {submitValue.isAvailableForSale && !membership.loading && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>抽成</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-4">
+                  <Field label="抽成方式">
+                    <NativeSelect
+                      value={submitValue.commissionWay !== undefined && submitValue.commissionWay}
+                      onChange={event => handleOnChange({ event, key: 'commissionWay' })}
+                    >
+                      {commissionWay.map((data, idx) => (
+                        <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                          {data.label}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                  </Field>
+                  <Field
+                    label={
+                      submitValue.commissionWay === 'byCost' || submitValue.commissionWay === 'byPrice'
+                        ? '抽成數字%'
+                        : '抽成數字'
+                    }
+                  >
+                    <Input
+                      type="number"
+                      value={submitValue.commission}
+                      onChange={event => handleOnChange({ event, key: 'commission' })}
+                      onWheel={() => document.activeElement.blur()}
+                    />
+                  </Field>
+                </CardContent>
+              </Card>
             )}
-            <Field label="成本價格">
-              <Input
-                type="number"
-                value={submitValue.cost}
-                onChange={event => handleOnChange({ event, key: 'cost' })}
-                onWheel={() => document.activeElement.blur()}
-              />
-            </Field>
-            <Field label="員工自購價格">
-              <Input
-                type="number"
-                value={submitValue.employeePrice}
-                onChange={event => handleOnChange({ event, key: 'employeePrice' })}
-                onWheel={() => document.activeElement.blur()}
-              />
-            </Field>
-            <Field label="會員卡的顏色">
-              <div className="flex items-center gap-2.5">
-                <Input
-                  className="w-60"
-                  name="color"
-                  value={submitValue.color}
-                  onChange={event => {
-                    setSubmitValue({...submitValue, color: event.target.value  })
-                  }}
-                />
-                <Button
-                  aria-label="選擇會員卡的顏色"
-                  className={swatchClass}
-                  style={{
-                    background: `${submitValue.color}`,
-                  }}
-                  onClick={() => {
-                    setShowColorPicker(true)
-                    setColorData(submitValue.color)
-                  }}
-                />
-                {showColorPicker && (
-                  <Fragment>
-                    <CirclePicker
-                      className={colorPickerClass}
-                      disableAlpha
-                      color={colorData}
-                      onChange={event => {
-                        setColorData(event.hex)
-                        setSubmitValue({...submitValue, color: event.hex  })
-                        setShowColorPicker(false)
-                      }}
-                    />
-                  </Fragment>
-                )}
-              </div>
-            </Field>
-            <Field label="會員卡文字的顏色">
-              <div className="flex items-center gap-2.5">
-                <Input
-                  className="w-60"
-                  name="textColor"
-                  value={submitValue.textColor}
-                  onChange={event => {
-                    setSubmitValue({...submitValue, textColor: event.target.value  })
-                  }}
-                />
-                <Button
-                  aria-label="選擇會員卡文字的顏色"
-                  className={swatchClass}
-                  style={{
-                    background: `${submitValue.textColor}`,
-                  }}
-                  onClick={() => {
-                    setShowTextColorPicker(true)
-                    setColorTextData(submitValue.textColor)
-                  }}
-                />
-                {showTextColorPicker && (
-                  <Fragment>
-                    <CirclePicker
-                      className={colorPickerClass}
-                      disableAlpha
-                      color={colorTextData}
-                      onChange={event => {
-                        setColorTextData(event.hex)
-                        setSubmitValue({...submitValue, textColor: event.hex  })
-                        setShowTextColorPicker(false)
-                      }}
-                    />
-                  </Fragment>
-                )}
-              </div>
-            </Field>
-            <Field label="圖片">
-              <Input
-                name="image"
-                value={submitValue.image}
-                onChange={event => {
-                  handleOnChange({ event, key: 'image' })
-                }}
-              />
-            </Field>
-            <Field label="會籍說明">
-              <Textarea
-                name="comment"
-                rows={4}
-                value={submitValue.comment}
-                onChange={event => {
-                  handleOnChange({ event, key: 'comment' })
-                }}
-              />
-            </Field>
-            <Field label="打帳單是否能更改預設價格">
-              <NativeSelect
-                name="isLocked"
-                value={submitValue.isLocked}
-                onChange={event => handleOnChange({ event, key: 'isLocked' })}
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              <Button
+                variant="secondary"
+                disabled={membershipIndex === 0 || valid}
+                onClick={handleToLastItem}
               >
-                {lockStatus.map((data, idx) => (
-                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
-                    {data.label}
-                  </NativeSelectOption>
-                ))}
-              </NativeSelect>
-            </Field>
-          </CardContent>
-        </Card>
-        {submitValue.isAvailableForSale && !membership.loading && (
-          <Card>
-            <CardHeader>
-              <CardTitle>抽成</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-              <Field label="抽成方式">
-                <NativeSelect
-                  value={submitValue.commissionWay !== undefined && submitValue.commissionWay}
-                  onChange={event => handleOnChange({ event, key: 'commissionWay' })}
-                >
-                  {commissionWay.map((data, idx) => (
-                    <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
-                      {data.label}
-                    </NativeSelectOption>
-                  ))}
-                </NativeSelect>
-              </Field>
-              <Field
-                label={
-                  submitValue.commissionWay === 'byCost' || submitValue.commissionWay === 'byPrice'
-                    ? '抽成數字%'
-                    : '抽成數字'
-                }
+                儲存並上一筆
+              </Button>
+              <Button
+                variant="secondary"
+                disabled={membershipIndex === membershipIndexArray.length - 1 || valid}
+                onClick={handleToNextItem}
               >
-                <Input
-                  type="number"
-                  value={submitValue.commission}
-                  onChange={event => handleOnChange({ event, key: 'commission' })}
-                  onWheel={() => document.activeElement.blur()}
-                />
-              </Field>
-            </CardContent>
-          </Card>
+                儲存並下一筆
+              </Button>
+              <Button variant="primary" disabled={valid} onClick={handleSubmit}>
+                儲存
+              </Button>
+            </div>
+          </>
         )}
-        <div className="flex flex-wrap items-center justify-end gap-2">
-          <Button
-            variant="secondary"
-            disabled={membershipIndex === 0 || valid}
-            onClick={handleToLastItem}
-          >
-            儲存並上一筆
-          </Button>
-          <Button
-            variant="secondary"
-            disabled={membershipIndex === membershipIndexArray.length - 1 || valid}
-            onClick={handleToNextItem}
-          >
-            儲存並下一筆
-          </Button>
-          <Button variant="primary" disabled={valid} onClick={handleSubmit}>
-            儲存
-          </Button>
-        </div>
       </div>
     </Page>
   )

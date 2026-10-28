@@ -4,7 +4,7 @@
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
-import { renderPage, loginAs, callsOf } from '../../../__tests__/testkit.test'
+import { renderPage, loginAs, callsOf, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import ServiceCategories from '..'
 
 jest.setTimeout(20000)
@@ -97,9 +97,13 @@ describe('服務分類設定', () => {
     expect(screen.getByLabelText('選取 剪髮')).toBeChecked()
   })
 
-  it('分類查詢失敗時顯示 0 筆、不整頁壞', async () => {
+  // 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／空列表，避免誤以為沒有資料或把空值存回去
+  it('分類查詢失敗時顯示無法載入資料與重新查詢，不整頁壞', async () => {
     const { settle } = setup({ ServiceCategories: new Error('壞了') })
     await settle()
-    expect(screen.getByText('共 0 筆')).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getAllByText('無法載入資料')[0]).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
+    expect(screen.queryByText('共 0 筆')).toBeNull()
   })
 })

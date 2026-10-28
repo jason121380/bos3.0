@@ -156,8 +156,18 @@ describe('編輯紅利點數紀錄', () => {
 
   // 讀取原紀錄失敗（或查無紀錄回 null）時保留表單預設值，不再以 undefined 取代表單資料讓整頁進入錯誤畫面
   // （錯誤提示由 init-apollo 的 errorLink 統一顯示；Jason 2026/10/22 fix all）
+  // 2026/10/28：讀取失敗（網路或後端錯誤）改顯示可重試的錯誤狀態、不顯示表單，避免把空值存回去
+  it('讀取失敗時顯示無法載入資料與重新查詢，不顯示表單', async () => {
+    const utils = setup({ GET_CUSTOMER_BONUS_DEPOSIT_RECORD: new Error('查詢失敗') })
+    await utils.settle()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
+    expect(screen.getByText('無法載入資料')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '重新查詢' })).toBeEnabled()
+    expect(screen.queryByRole('button', { name: '儲存' })).toBeNull()
+    expect(callsOf(utils.calls, 'UPDATE_BONUS_DEPOSIT')).toHaveLength(0)
+  })
+
   it.each([
-    ['讀取失敗', new Error('查詢失敗')],
     ['查無紀錄', { customerBonusDepositRecord: null }],
   ])('%s時保留預設值、不整頁錯誤，儲存被必填檢查擋下', async (_, fixture) => {
     const utils = setup({ GET_CUSTOMER_BONUS_DEPOSIT_RECORD: fixture })

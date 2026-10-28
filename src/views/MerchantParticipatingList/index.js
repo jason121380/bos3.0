@@ -7,6 +7,7 @@ import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 function MerchantParticipatingList() {
   const merchantParticipatingList = useFetchGetMerchantParticipatingList()
@@ -47,7 +48,9 @@ function MerchantParticipatingList() {
           <PageHeader
             title="活動店家參與列表"
           />
-          {merchantParticipatingList.loading ?
+          {merchantParticipatingList.error ? (
+            <QueryFailed onRetry={() => merchantParticipatingList.refetch()} />
+          ) : merchantParticipatingList.loading ?
             <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
             : <Results
               events={events}

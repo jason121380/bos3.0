@@ -11,6 +11,7 @@ import { Button } from 'ui/button'
 import { Toolbar, PageHeader } from 'ui/page-header'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const DesignersSalaryDetailReport = () => {
   const [date, setDate] = useState({
@@ -74,7 +75,9 @@ const DesignersSalaryDetailReport = () => {
             }}
           />
         </Toolbar>
-        {!designersSalaryDetailReportData.loading ? (
+        {designersSalaryDetailReportData.error ? (
+          <QueryFailed onRetry={() => designersSalaryDetailReportData.refetch()} />
+        ) : !designersSalaryDetailReportData.loading ? (
           idx(designersSalaryDetailReportData, _ => (
             <Results
               salaryDetailReport={_.data.getUserSalaryDetail}

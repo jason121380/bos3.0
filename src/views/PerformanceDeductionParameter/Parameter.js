@@ -12,6 +12,7 @@ import AboutDesignerSalary from './AboutDesignerSalary'
 import Service from '../PerformanceDeductionParameter/Service'
 import Deduction from '../PerformanceDeductionParameter/Deduction'
 import HelperPoint from './HelperPoint'
+import QueryFailed from 'components/QueryFailed'
 
 function Parameter() {
   const deduction = useFetchDeductionSettings()
@@ -35,6 +36,13 @@ function Parameter() {
     <Page className="ui-root" title="業績抽成參數設定">
       <div className="mx-auto w-full max-w-6xl">
         <PageHeader title="業績抽成參數設定" />
+        {[deduction, merchantCommissionWay, merchantPointValueSettingsForSelect].some(query => query.error) && (
+          <QueryFailed
+            onRetry={() => [deduction, merchantCommissionWay, merchantPointValueSettingsForSelect]
+              .filter(query => query.error)
+              .forEach(query => query.refetch())}
+          />
+        )}
         <Tabs
           className="md:flex md:items-stretch"
           value={selectTab}

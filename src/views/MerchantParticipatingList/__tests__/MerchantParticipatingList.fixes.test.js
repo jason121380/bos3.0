@@ -8,9 +8,11 @@ jest.setTimeout(20000)
 beforeEach(() => loginAs())
 afterEach(cleanup)
 
-it('查詢失敗時顯示空狀態，不整頁壞', async () => {
+// 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／列表，避免使用者把空值存回去；查無資料仍照原本顯示
+it('查詢失敗時顯示無法載入資料與重新查詢，不整頁壞', async () => {
   const { settle } = renderPage(<MerchantParticipatingList />, { fallback: 'error' })
   await settle()
   expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-  expect(screen.getByText('目前無活動參與資料')).toBeInTheDocument()
+  expect(screen.getByText('無法載入資料')).toBeInTheDocument()
+  expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
 })

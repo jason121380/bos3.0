@@ -32,6 +32,7 @@ import { Switch } from 'ui/switch'
 import { buildWeekCalendar } from 'components/ReservationCalendar/weekCalendar'
 import OrderTable from './OrderTable'
 import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 function Calendar() {
   const merchantId = storedMerchantId()
@@ -110,7 +111,8 @@ function Calendar() {
 
 
   useEffect(() => {
-    if (!merchant.loading && !DesignerCalendar.loading) {
+    // 任一查詢失敗（data 為 undefined）時不整理資料，畫面改顯示 QueryFailed（2026/10/28）
+    if (!merchant.loading && !DesignerCalendar.loading && idx(merchant, _ => _.data.merchant) && DesignerCalendar.data) {
       // 資料整理與個人檔案、員工資料的預約表共用（components/ReservationCalendar/weekCalendar）
       const { openTime, orderRange, calendarData } = buildWeekCalendar({
         DesignerCalendar, merchant, date,
@@ -312,7 +314,14 @@ function Calendar() {
             </PopoverContent>
           </Popover>
         </div>
-        {!merchant.loading && orderRange.length ?
+        {(DesignerCalendar.error || merchant.error) ? (
+          <QueryFailed
+            onRetry={() => {
+              if (DesignerCalendar.error) DesignerCalendar.refetch()
+              if (merchant.error) merchant.refetch()
+            }}
+          />
+        ) : !merchant.loading && orderRange.length ?
           <OrderTable
             orderRange={orderRange}
             calendarData={calendarData}

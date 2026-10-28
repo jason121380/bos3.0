@@ -15,6 +15,7 @@ import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
 import General from './General'
+import QueryFailed from 'components/QueryFailed'
 
 export default function ProductRestockEdit() {
   const history = useHistory()
@@ -214,33 +215,39 @@ export default function ProductRestockEdit() {
           handleDelete()
         }}
       />
-      {!getPurchaseRecord.loading && purchaseRecord.uuid && (
-        <General
-          disabled={disabled}
-          purchaseRecord={purchaseRecord}
-          setPurchaseRecord={setPurchaseRecord}
-        />
+      {getPurchaseRecord.error ? (
+        <QueryFailed onRetry={() => getPurchaseRecord.refetch()} />
+      ) : (
+        <>
+          {!getPurchaseRecord.loading && purchaseRecord.uuid && (
+            <General
+              disabled={disabled}
+              purchaseRecord={purchaseRecord}
+              setPurchaseRecord={setPurchaseRecord}
+            />
+          )}
+          <div className="flex items-center justify-end gap-2 pt-6">
+            {!disabled ? (
+              <Button
+                variant="primary"
+                disabled={checkPurchaseRecords}
+                onClick={handleUpdate}
+              >
+                儲存
+              </Button>
+            ) : <div />}
+            {(!getPurchaseRecord.loading && !getStockInIsUsing.loading) && (
+              <Button
+                variant={disabled ? 'danger' : 'secondary'}
+                disabled={checkPurchaseRecords}
+                onClick={handleCheck}
+              >
+                {disabled ? '取消入庫' : '入庫'}
+              </Button>
+            )}
+          </div>
+        </>
       )}
-      <div className="flex items-center justify-end gap-2 pt-6">
-        {!disabled ? (
-          <Button
-            variant="primary"
-            disabled={checkPurchaseRecords}
-            onClick={handleUpdate}
-          >
-            儲存
-          </Button>
-        ) : <div />}
-        {(!getPurchaseRecord.loading && !getStockInIsUsing.loading) && (
-          <Button
-            variant={disabled ? 'danger' : 'secondary'}
-            disabled={checkPurchaseRecords}
-            onClick={handleCheck}
-          >
-            {disabled ? '取消入庫' : '入庫'}
-          </Button>
-        )}
-      </div>
       <PasswordDialog
         open={dialogOpen}
         title={disabled ? '進貨單取消入庫' : '進貨單入庫'}

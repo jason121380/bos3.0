@@ -12,6 +12,7 @@ import General from './General'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 
 export default function TopUpCreate({ match }) {
   const history = useHistory()
@@ -121,7 +122,9 @@ export default function TopUpCreate({ match }) {
         />
         <FormProvider {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            {walletDepositDetail.loading ? (
+            {walletDepositDetail.error ? (
+              <QueryFailed onRetry={() => walletDepositDetail.refetch()} />
+            ) : walletDepositDetail.loading ? (
               <div className="flex flex-col gap-4"><Skeleton className="h-9 w-full" /><Skeleton className="h-9 w-full" /><Skeleton className="h-9 w-full" /></div>
             ) : (
               <>

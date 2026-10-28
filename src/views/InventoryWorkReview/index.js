@@ -8,6 +8,7 @@ import idx from 'idx'
 import { Skeleton } from 'ui/skeleton'
 
 import General from './General'
+import QueryFailed from 'components/QueryFailed'
 
 function InventoryWorkEdit({ match }) {
   const getInventory = useFetchGetInventory({ inventoryId: match.params.id })
@@ -70,7 +71,9 @@ function InventoryWorkEdit({ match }) {
       <div className="mx-auto box-border block w-full px-4 min-[600px]:px-6 min-[900px]:max-w-[900px] print:m-0 print:max-w-none print:p-0">
         {/* 原 PageTitle：英文 subTitle 依 STYLE 不顯示；標題下方沒有外距（下方骨架自帶 mt-6），故 pb-0 */}
         <PageHeader title='盤點紀錄' className="pb-0" />
-        {(getInventory.loading) ?
+        {getInventory.error ? (
+          <QueryFailed onRetry={() => getInventory.refetch()} />
+        ) : (getInventory.loading) ?
           <div className="ui-root noprint mt-6 flex flex-col gap-3" aria-busy="true" aria-label="載入中">
             <Skeleton className="h-[320px] w-full rounded-lg" />
           </div> :

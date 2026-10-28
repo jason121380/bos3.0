@@ -17,6 +17,7 @@ import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
 import { ListFilter } from 'lucide-react'
 import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 
 function EventCouponIssuanceDetails() {
@@ -167,7 +168,9 @@ function EventCouponIssuanceDetails() {
             </Card>
           )}
 
-          {voucherIssuanceRecordData.loading ?
+          {voucherIssuanceRecordData.error ? (
+            <QueryFailed onRetry={() => voucherIssuanceRecordData.refetch()} />
+          ) : voucherIssuanceRecordData.loading ?
             <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
             :
             <Results

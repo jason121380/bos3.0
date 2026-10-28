@@ -91,6 +91,7 @@ import produce from 'immer'
 import idx from 'idx'
 import { memo, useState, useEffect, Fragment } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
+import QueryFailed from 'components/QueryFailed'
 
 // 初始值（parameterDefaults）與各分頁區塊（ParameterTabContent）已拆到同資料夾；查詢、effect、儲存仍在此檔，內容不變
 
@@ -445,7 +446,7 @@ function Parameter() {
   }, [getIsCBRDStylist.loading])
 
   // 任一設定查詢失敗（查詢結果沒有資料）時不可編輯與存檔：存檔會把所有設定一起送出，讀不到的部分會以空白預設值蓋掉後端設定
-  const queryFailed = [
+  const settingQueries = [
     merchantDeductionItems, merchantSalaryIncreaseItems, merchantSalaryDecreaseItems, merchantPassword,
     merchantFakePerformanceReferData, merchantBankSettingsData, merchantIsLockDateSettingData, merchantClockInSettingData,
     isDisplayNonBankAccountInBankTransferReport, merchantBookingNotificationSetting, bookingLineNotifySettings,
@@ -455,7 +456,8 @@ function Parameter() {
     getMerchantRakeReference, getParameterAboutBookingSetting, getParameterAboutCustomerSetting,
     getSpecificBookingNotificationDayCount, getDisableBookingDayLimit, getMerchantCheckinSettings,
     getIsBookingCusCheckUsing, getBookingTypeForSocket, getUESUsingSetting, getIsCBRDStylist,
-  ].some(query => Boolean(query.error))
+  ]
+  const queryFailed = settingQueries.some(query => Boolean(query.error))
 
     //  判斷頁面資料是否都讀取完成的
   useEffect(() => {
@@ -653,6 +655,12 @@ function Parameter() {
     <Page className="ui-root" title="系統參數設定">
       <div className="mx-auto w-full max-w-6xl">
         <PageHeader title="系統參數設定" />
+        {queryFailed && (
+          <QueryFailed
+            description="部分設定讀取失敗，暫時不能儲存，以免空白值蓋掉原本的設定。"
+            onRetry={() => settingQueries.filter(query => query.error).forEach(query => query.refetch())}
+          />
+        )}
         <Tabs
           className="md:flex md:items-stretch"
           value={selectTab}

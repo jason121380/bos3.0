@@ -233,14 +233,13 @@ describe('編輯入金', () => {
 
   // 讀取原入金失敗時以空白表單顯示、不整頁錯誤（錯誤提示由 init-apollo 的 errorLink 統一顯示）；必填檢查擋下儲存
   // （原本 effect 直接讀 data.walletDepositDetail 拋錯；Jason 2026/10/22 fix all）
-  it('讀取原入金失敗：顯示空白表單、不整頁錯誤，儲存被必填檢查擋下', async () => {
+  // 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／空列表，避免誤以為沒有資料或把空值存回去
+  it('讀取原入金失敗：顯示無法載入資料與重新查詢，不顯示空白表單', async () => {
     const utils = setup({ walletDepositDetail: new Error('查無入金') })
     await utils.settle()
-    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
-    expect(screen.getByTestId('designer')).toHaveAttribute('data-value', '')
-    save()
-    expect(await screen.findByText('設計師為必填')).toBeInTheDocument()
-    expect(callsOf(utils.calls, 'SET_WALLET_DEPOSIT')).toHaveLength(0)
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getAllByText('無法載入資料')[0]).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
   })
 
   it('支付方式查詢失敗：付款方式只有現金、不整頁錯誤', async () => {

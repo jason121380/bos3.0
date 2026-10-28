@@ -111,17 +111,18 @@ describe('編輯角色', () => {
 
   // 角色清單查詢失敗時（errorLink 已提示）不顯示「找不到」，也不整頁錯誤；角色沒讀到不能儲存，
   // 否則會送出空名稱與空權限（Codex review PR #270 P2）
-  it('角色清單查詢失敗時不整頁錯誤、不顯示找不到角色、儲存停用', async () => {
+  // 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／空列表，避免誤以為沒有資料或把空值存回去
+  it('角色清單查詢失敗時顯示無法載入資料與重新查詢、不顯示找不到角色、沒有儲存鈕', async () => {
     const { settle, calls } = renderPage(<AuthorityEdit match={{ params: { id: 'r-mgr' } }} />, {
       route: '/role/edit/r-mgr',
       fixtures: { GET_MERCHANT_AUTHORITIES: new Error('網路錯誤') },
     })
     await settle()
-    expect(screen.getByText('編輯角色')).toBeInTheDocument()
-    expect(screen.queryByText('找不到這個角色')).toBeNull()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-    expect(screen.getByRole('button', { name: '儲存' })).toBeDisabled()
-    save()
+    expect(screen.getAllByText('無法載入資料')[0]).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
+    expect(screen.queryByText('找不到這個角色')).toBeNull()
+    expect(screen.queryByRole('button', { name: '儲存' })).toBeNull()
     expect(callsOf(calls, 'UPDATE_AUTHORITY')).toHaveLength(0)
   })
 })

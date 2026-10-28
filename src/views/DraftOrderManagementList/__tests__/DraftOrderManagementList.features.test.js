@@ -234,11 +234,14 @@ describe('掛單列表：查詢', () => {
     expect(currentLocation()).toBe('/order/create')
   })
 
-  it('掛單查詢失敗時以空列表顯示，不整頁錯誤（Jason 2026/10/22）', async () => {
+  // 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／空列表，避免誤以為沒有資料或把空值存回去
+  it('掛單查詢失敗時顯示無法載入資料與重新查詢，不顯示「此區間沒有掛單」', async () => {
     const { settle } = setup({ FETCH_PENDING_ORDERS: new Error('查詢失敗') })
     await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-    expect(screen.getByText('此區間沒有掛單')).toBeInTheDocument()
+    expect(screen.getAllByText('無法載入資料')[0]).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
+    expect(screen.queryByText('此區間沒有掛單')).toBeNull()
   })
 })
 

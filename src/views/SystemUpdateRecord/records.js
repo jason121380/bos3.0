@@ -10,6 +10,15 @@ export function calendarUpdateTime(isoDate) {
 
 const shippedRecords = [
   {
+    title: '2026/10/28 載入畫面',
+    versionNo: 'v3.10282233',
+    updateTime: '2026-10-28',
+    content: [
+      '- 頁面載入較久時，內容區中央顯示轉圈與「載入中…」，不再只有頂端一條細線、看起來像白頁',
+      '- 其餘列表、報表與顧客端頁面在查詢失敗時也顯示「無法載入資料」與「重新查詢」',
+    ].join('\n'),
+  },
+  {
     title: '2026/10/28 頁首與報表篩選統一',
     versionNo: 'v3.10282101',
     updateTime: '2026-10-28',

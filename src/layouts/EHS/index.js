@@ -2,6 +2,7 @@ import React, { Suspense, Fragment } from 'react'
 import { renderRoutes } from 'react-router-config'
 import PropTypes from 'prop-types'
 import Snackbar from 'elements/snackbars'
+import PageLoadingFallback from 'components/PageLoadingFallback'
 
 function Line({ route }) {
   return (
@@ -9,7 +10,7 @@ function Line({ route }) {
       <Snackbar />
       <div>
         <div>
-          <Suspense fallback={<div className="ui-root h-0.5 w-full animate-pulse bg-accent" />}>{renderRoutes(route.routes)}</Suspense>
+          <Suspense fallback={<PageLoadingFallback />}>{renderRoutes(route.routes)}</Suspense>
         </div>
       </div>
     </Fragment>

@@ -7,6 +7,7 @@ import produce from 'immer'
 import React from 'react'
 import { PageHeader, Toolbar } from 'ui/page-header'
 
+import QueryFailed from 'components/QueryFailed'
 import Results from './Results'
 
 export default function AccountingSubject({ history, location }) {
@@ -52,7 +53,9 @@ export default function AccountingSubject({ history, location }) {
           visible={['datePicker', 'payment']}
         />
       </Toolbar>
-      {idx(
+      {moneyAccountDetail.error ? (
+        <QueryFailed onRetry={() => moneyAccountDetail.refetch()} />
+      ) : idx(
         moneyAccountDetail,
         _ =>
           _.data.moneyAccountDetail && (

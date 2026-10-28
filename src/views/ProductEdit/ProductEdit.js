@@ -16,6 +16,7 @@ import { PageHeader } from 'ui/page-header'
 
 import AboutProduct from './AboutProduct'
 import AboutSalesProduct from './AboutSalesProduct'
+import QueryFailed from 'components/QueryFailed'
 
 export default function ProductCreate({ match }) {
   const isDuplicate = window.location.href.includes('duplicate')
@@ -178,47 +179,53 @@ export default function ProductCreate({ match }) {
     <Page className="ui-root" title={isDuplicate ? "新增商品" : "編輯商品"} >
       <div className="mx-auto flex max-w-5xl flex-col gap-6">
         <PageHeader title={isDuplicate ? "新增商品" : "編輯商品"} className="pb-0" />
-        <AboutProduct
-          product={product}
-          onChange={handleOnChange}
-          setProduct={setProduct}
-          merchantVendor={merchantVendor}
-        />
-        {product.isAvailableForSale && !productDetail.loading && (
-          <AboutSalesProduct
-            product={product}
-            onChange={handleOnChange}
-          />
+        {productDetail.error ? (
+          <QueryFailed onRetry={() => productDetail.refetch()} />
+        ) : (
+          <>
+            <AboutProduct
+              product={product}
+              onChange={handleOnChange}
+              setProduct={setProduct}
+              merchantVendor={merchantVendor}
+            />
+            {product.isAvailableForSale && !productDetail.loading && (
+              <AboutSalesProduct
+                product={product}
+                onChange={handleOnChange}
+              />
+            )}
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              {isDuplicate ? (
+                <Button variant="primary" disabled={saveBtn || vaild} onClick={handleCreate}>
+                  新增
+                </Button>
+              ) : (
+                <>
+                  <Button variant="primary" disabled={saveBtn || vaild} onClick={() => handleSubmit('toList')}>
+                    儲存
+                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="secondary"
+                      disabled={productIndex === 0 || saveBtn || vaild}
+                      onClick={() => handleSubmit('toLast')}
+                    >
+                      儲存並上一筆
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      disabled={productIndex === productsArr.length - 1 || saveBtn || vaild}
+                      onClick={() => handleSubmit('toNext')}
+                    >
+                      儲存並下一筆
+                    </Button>
+                  </div>
+                </>
+              )}
+            </div>
+          </>
         )}
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          {isDuplicate ? (
-            <Button variant="primary" disabled={saveBtn || vaild} onClick={handleCreate}>
-              新增
-            </Button>
-          ) : (
-            <>
-              <Button variant="primary" disabled={saveBtn || vaild} onClick={() => handleSubmit('toList')}>
-                儲存
-              </Button>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="secondary"
-                  disabled={productIndex === 0 || saveBtn || vaild}
-                  onClick={() => handleSubmit('toLast')}
-                >
-                  儲存並上一筆
-                </Button>
-                <Button
-                  variant="secondary"
-                  disabled={productIndex === productsArr.length - 1 || saveBtn || vaild}
-                  onClick={() => handleSubmit('toNext')}
-                >
-                  儲存並下一筆
-                </Button>
-              </div>
-            </>
-          )}
-        </div>
       </div>
     </Page>
   )

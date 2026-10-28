@@ -16,6 +16,7 @@ import idx from 'idx'
 
 import Page from 'components/Page'
 import General from './General'
+import QueryFailed from 'components/QueryFailed'
 
 function ShortcutEdit({ match }) {
   const history = useHistory()
@@ -205,7 +206,9 @@ function ShortcutEdit({ match }) {
               <Button onClick={() => setOpenDialog(true)} disabled={isClick} variant="danger">刪除</Button>
             }
           />
-          {isLoading ? (
+          {shortcut.error ? (
+            <QueryFailed onRetry={() => shortcut.refetch()} />
+          ) : isLoading ? (
             <div className="flex flex-col gap-4" aria-busy="true" aria-label="載入中">
               <Skeleton className="h-[480px] w-full rounded-lg" />
             </div>

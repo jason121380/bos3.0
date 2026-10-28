@@ -14,6 +14,7 @@ import { Toolbar, PageHeader } from 'ui/page-header'
 // 本頁以 window.print() 列印整頁：TransferDetail（.TransferDetailpPrint）與 Results（.MerchantBankTransferReportTable）為列印內容，依列印範本規則保留
 import TransferDetail from './TransferDetail'
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 export default function MerchantBankTransferReport() {
   const [date, setDate] = useState({
@@ -39,7 +40,7 @@ export default function MerchantBankTransferReport() {
         getUserSalaryTransferReport,
         _ => _.data.userSalaryTransferReport
       )
-      setSalaryData(data)
+      setSalaryData(data || [])
     }
   }, [getUserSalaryTransferReport.loading])
 
@@ -49,7 +50,8 @@ export default function MerchantBankTransferReport() {
         merchantBankSettingsData,
         _ => _.data.getMerchantBankSettings
       )
-      setMerchantBankSettings(merchantBankSettings)
+      // 查詢失敗時保留空白預設值（原本設成 undefined，明細讀 .remitterBankAccount 整頁錯誤；2026/10/28）
+      if (merchantBankSettings) setMerchantBankSettings(merchantBankSettings)
     }
   }, [merchantBankSettingsData.loading])
 
@@ -88,7 +90,9 @@ export default function MerchantBankTransferReport() {
           <TransferDetail merchantBankSettings={merchantBankSettings} />
         </div>
 
-        {getUserSalaryTransferReport.loading ? (
+        {getUserSalaryTransferReport.error ? (
+          <QueryFailed onRetry={() => getUserSalaryTransferReport.refetch()} />
+        ) : getUserSalaryTransferReport.loading ? (
           <Skeleton className="h-64 w-full" />
         ) : <Results salaryData={salaryData} />}
       </div>

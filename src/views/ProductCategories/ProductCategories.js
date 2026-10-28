@@ -4,6 +4,7 @@ import idx from 'idx'
 import { Link as RouterLink } from 'react-router-dom'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 import { Skeleton } from 'ui/skeleton'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
@@ -23,7 +24,9 @@ function ComodityCategories() {
           </>
         }
       />
-      {!productCategories.loading ?
+      {productCategories.error ? (
+        <QueryFailed onRetry={() => productCategories.refetch()} />
+      ) : !productCategories.loading ?
         <Results
           refetchCategories={productCategories.refetch}
           categories={categories}

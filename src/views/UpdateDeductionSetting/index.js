@@ -12,6 +12,7 @@ import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 // 沒用到的code 大部分是之前用在AboutProfitSharing 留著怕之後改回來
 function ProfitSharing({ match }) {
@@ -123,6 +124,16 @@ function ProfitSharing({ match }) {
       })
     )
   }
+  // 主要資料讀取失敗：顯示可重試的錯誤狀態，不顯示空白表單（避免把空值存回去）
+  if (getDeductionSetting.error) {
+    return (
+      <Page className="ui-root" title="抽成方式設定">
+        <PageHeader title="編輯抽成方式設定" />
+        <QueryFailed onRetry={() => getDeductionSetting.refetch()} />
+      </Page>
+    )
+  }
+
   return (
     <Page className="ui-root" title="抽成方式設定">
       <div>
