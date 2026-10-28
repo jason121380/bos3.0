@@ -9,7 +9,6 @@ beforeEach(() => loginAs())
 afterEach(cleanup)
 
 it.each([
-  ['查詢失敗', { fallback: 'error' }],
   ['查無設定', { fixtures: { GET_MERCHANT_POINT_VALUE_SETTING_FOR_EDIT: { getMerchantPointValueSetting: null } } }],
 ])('%s時不整頁壞，表單為預設值', async (_, options) => {
   const { settle } = renderPage(<HelperPointSettingEdit match={{ params: { id: 'hp1' } }} />, options)
@@ -17,4 +16,13 @@ it.each([
   expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   expect(screen.getByLabelText('互助點數設定名稱')).toHaveValue('')
   expect(screen.getByText('固定金額')).toHaveAttribute('aria-pressed', 'true')
+})
+
+// 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／列表，避免使用者把空值存回去；查無資料仍照原本顯示
+it('查詢失敗時顯示無法載入資料與重新查詢', async () => {
+  const { settle } = renderPage(<HelperPointSettingEdit match={{ params: { id: 'hp1' } }} />, { fallback: 'error' })
+  await settle()
+  expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+  expect(screen.getByText('無法載入資料')).toBeInTheDocument()
+  expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
 })

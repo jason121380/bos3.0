@@ -1,12 +1,14 @@
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import { PageHeader } from 'ui/page-header'
 import { useFetchGetInventory } from 'hooks/useFetchGetInventorys'
 import { useState, useEffect, Fragment } from 'react'
+import { storedMerchantName } from 'lib/stored-merchant'
 import format from 'date-fns/format'
 import idx from 'idx'
 import { Skeleton } from 'ui/skeleton'
 
 import General from './General'
+import QueryFailed from 'components/QueryFailed'
 
 function InventoryWorkEdit({ match }) {
   const getInventory = useFetchGetInventory({ inventoryId: match.params.id })
@@ -53,7 +55,7 @@ function InventoryWorkEdit({ match }) {
         <Fragment>
           <div className="merchantNamePrint" style={{ marginBottom: '4px', display: "none", justifyContent: "space-between" }}>
             <div className="merchantNamePrint">
-              {JSON.parse(localStorage.getItem('userMerchant')).name + '   ' + '盤點紀錄'}
+              {storedMerchantName() + '   ' + '盤點紀錄'}
             </div>
             <div className="merchantNamePrint">
               {'列印時間： ' +
@@ -67,8 +69,11 @@ function InventoryWorkEdit({ match }) {
       )}
       {/* 原 Container maxWidth="md"：置中、最大寬 900px、左右內距 16／24px；列印時依原 .InventoryWorkReview .MuiContainer-root 規則去掉外距、內距與寬度上限 */}
       <div className="mx-auto box-border block w-full px-4 min-[600px]:px-6 min-[900px]:max-w-[900px] print:m-0 print:max-w-none print:p-0">
-        <PageTitle title='盤點紀錄' subTitle='Inventory Work review' />
-        {(getInventory.loading) ?
+        {/* 原 PageTitle：英文 subTitle 依 STYLE 不顯示；標題下方沒有外距（下方骨架自帶 mt-6），故 pb-0 */}
+        <PageHeader title='盤點紀錄' className="pb-0" />
+        {getInventory.error ? (
+          <QueryFailed onRetry={() => getInventory.refetch()} />
+        ) : (getInventory.loading) ?
           <div className="ui-root noprint mt-6 flex flex-col gap-3" aria-busy="true" aria-label="載入中">
             <Skeleton className="h-[320px] w-full rounded-lg" />
           </div> :

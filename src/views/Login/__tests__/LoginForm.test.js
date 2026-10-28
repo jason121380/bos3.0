@@ -1,4 +1,4 @@
-import CustomMockedProvider from 'components/CustomMockedProvider'
+import CustomMockedProvider from '__tests__/CustomMockedProvider.test'
 import { render, fireEvent, wait } from '@testing-library/react'
 import React from 'react'
 import { LOGINV2, mockedSuccessResp } from 'hooks/useFetchLoginV2'

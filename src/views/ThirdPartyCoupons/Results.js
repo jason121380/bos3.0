@@ -111,7 +111,7 @@ function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetc
           </Table>
         </div>
       </Card>
-      <TableEditBar selected={selectedPayment} onDelete={handleSeletedDelete} />
+      <TableEditBar selected={selectedPayment} onDelete={handleSeletedDelete} confirmDelete />
     </div>
   )
 }

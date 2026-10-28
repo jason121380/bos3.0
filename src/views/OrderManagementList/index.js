@@ -229,9 +229,12 @@ function OrderManagementList() {
         qrcode: qrcode,
         message: message
       })
-      QRCode.toDataURL(qrcode.url, (err, string) => {
-        !err && setQrcodeUrl(string)
-      })
+      // 收據設定查詢失敗時沒有 QR 設定，不產生 QR（2026/10/28）
+      if (qrcode) {
+        QRCode.toDataURL(qrcode.url, (err, string) => {
+          !err && setQrcodeUrl(string)
+        })
+      }
       // 沒啟用或沒有 logo 網址時 imageUrl 是 null；不要 fetch(null)（會打到 /null）
       if (logo && logo.imageUrl) {
         const getDataUrl = async () => {

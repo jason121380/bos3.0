@@ -19,6 +19,7 @@ import { useSelector } from 'react-redux'
 import AboutAssistantSetting from './AboutAssistantSetting'
 import AboutCoupon from './AboutCoupon'
 import AboutDeduction from './AboutDeduction'
+import QueryFailed from 'components/QueryFailed'
 
 function ServiceCategoryEdit({ match }) {
   const isDuplicate = window.location.href.includes('duplicate')
@@ -49,7 +50,8 @@ function ServiceCategoryEdit({ match }) {
 
   useEffect(() => {
     setSaveBtn(false)
-    if (!ticket.loading && !customerCategory.loading && !merchantCommissions.loading) {
+    // 卡券讀不到（查詢失敗或已刪除）時不帶入，畫面改顯示 QueryFailed（原本把 undefined 帶進表單整頁錯誤；2026/10/28）
+    if (!ticket.loading && !customerCategory.loading && !merchantCommissions.loading && idx(ticket.data, _ => _.service)) {
       setCoupon(
         produce(draft => {
           draft.itemId = idx(ticket.data, _ => _.service.id)
@@ -163,14 +165,14 @@ function ServiceCategoryEdit({ match }) {
                     return {
                       ...data,
                       // eslint-disable-next-line eqeqeq -- 刻意保留寬鬆比較：值可能是輸入框字串或 null，改成 !== 會改變結果
-                      isDesignate: !(data.point != 0),
+                      isDesignate: Number(data.point || 0) === 0,
                       deductionWay: '點數',
                     }
                   } else if (data.cash || data.designateCash || data.nonDesignateCash > 0) {
                     return {
                       ...data,
                       // eslint-disable-next-line eqeqeq -- 刻意保留寬鬆比較：值可能是輸入框字串或 null，改成 !== 會改變結果
-                      isDesignate: !(data.cash != 0),
+                      isDesignate: Number(data.cash || 0) === 0,
                       deductionWay: '固定金額',
                     }
                   } else {
@@ -407,6 +409,16 @@ function ServiceCategoryEdit({ match }) {
     const vaild = !(coupon.name && coupon.ServiceCategoryId && coupon.ticketAvailableCount)
     setVaild(vaild)
   }, [coupon])
+
+  // 主要資料讀取失敗：顯示可重試的錯誤狀態，不顯示空白表單（避免把空值存回去）
+  if (ticket.error) {
+    return (
+      <Page className="ui-root" title={isDuplicate ? "新增卡券項目" : "編輯卡券項目"}>
+        <PageHeader title={isDuplicate ? "新增卡券項目" : "編輯卡券項目"} />
+        <QueryFailed onRetry={() => ticket.refetch()} />
+      </Page>
+    )
+  }
 
   return (
     <Page className="ui-root" title={isDuplicate ? "新增卡券項目" : "編輯卡券項目"} >

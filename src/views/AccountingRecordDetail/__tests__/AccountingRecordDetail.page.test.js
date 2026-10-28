@@ -433,15 +433,14 @@ describe('收支紀錄詳細（高階）', () => {
     expect(field('金額')).toHaveValue(1200)
   })
 
-  it('紀錄查詢失敗（或已被刪除）時以空表單顯示，不整頁錯誤（Jason 2026/10/22）', async () => {
+  // 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／空列表，避免誤以為沒有資料或把空值存回去
+  it('紀錄查詢失敗時顯示無法載入資料與重新查詢，不顯示空表單', async () => {
     const { calls, settle } = setup({ GET_MONEY_FLOW: new Error('查無資料') })
     await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getAllByText('無法載入資料')[0]).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
     expect(screen.getByText('收支紀錄詳細', { selector: 'h1' })).toBeInTheDocument()
-    // 沒帶入科目：儲存提示選科目、不送出
-    fireEvent.click(toggle('收入'))
-    fireEvent.click(saveButton())
-    expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '請選擇科目', variant: 'warning' }))
     expect(callsOf(calls, 'USE_FETCH_UPDATE_MONEY_FLOW')).toHaveLength(0)
   })
 })

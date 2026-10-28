@@ -16,7 +16,7 @@ import useFetchCreateMoneyFlow from 'hooks/useFetchCreateMoneyFlow'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
-import AccountingSubjectModal from './AccountingSubjectModal'
+import AccountingSubjectModal from 'views/AccountingShared/AccountingSubjectModal'
 import { Autocomplete } from 'ui/combobox'
 
 function Summary({ stayInCreateAccount, ...rest }) {

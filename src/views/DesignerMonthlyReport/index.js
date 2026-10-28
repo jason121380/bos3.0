@@ -1,7 +1,6 @@
 import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
-import AdminPageHeader from 'components/AdminPageHeader'
 import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
 import useFetchDesignerMonthlyReport from 'hooks/useFetchDesignerMonthlyReport'
@@ -13,9 +12,10 @@ import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
-import { ReportToolbar } from 'ui/page-header'
+import { ReportToolbar, PageHeader } from 'ui/page-header'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const sortEnum = [
   { label: '業績', value: 'performance' },
@@ -88,29 +88,34 @@ export default function Employees() {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <AdminPageHeader title='設計師業績月報表'>
-          <CSVLink
-            className="noprint"
-            data={excelData}
-            filename="設計師業績月報表.csv"
-          >
-            <Button
-              disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading}
-              variant="secondary"
-            >
-              <Download strokeWidth={1.75} />
-              報表匯出
-            </Button>
-          </CSVLink>
-          <Button
-            disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading}
-            onClick={() => window.print()}
-            variant="secondary"
-          >
-            <Printer strokeWidth={1.75} />
-            列印
-          </Button>
-        </AdminPageHeader>
+        <PageHeader
+          title='設計師業績月報表'
+          actions={
+            <>
+              <CSVLink
+                className="noprint"
+                data={excelData}
+                filename="設計師業績月報表.csv"
+              >
+                <Button
+                  disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading}
+                  variant="secondary"
+                >
+                  <Download strokeWidth={1.75} />
+                  報表匯出
+                </Button>
+              </CSVLink>
+              <Button
+                disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading}
+                onClick={() => window.print()}
+                variant="secondary"
+              >
+                <Printer strokeWidth={1.75} />
+                列印
+              </Button>
+            </>
+          }
+        />
         <ReportToolbar
           date={
             <DateSelector
@@ -150,7 +155,9 @@ export default function Employees() {
             </>
           }
         />
-        {(!designerMontlyListData.loading && !isMemberShipCardActiveData.loading) ?
+        {designerMontlyListData.error ? (
+          <QueryFailed onRetry={() => designerMontlyListData.refetch()} />
+        ) : (!designerMontlyListData.loading && !isMemberShipCardActiveData.loading) ?
           idx(designerMontlyListData, _ => (
             <Results
               setExcelData={setExcelData}

@@ -10,14 +10,15 @@ import useFetchSetPurchaseStockIn from 'hooks/useFetchSetPurchaseStockIn'
 import useFetchSetPurchaseStockInUndo from 'hooks/useFetchSetPurchaseStockInUndo'
 import Autocomplete from 'ui/combobox'
 import { Link as RouterLink } from 'react-router-dom'
-import AdminPageHeader from 'components/AdminPageHeader'
-import { Search } from 'lucide-react'
+import { Search, ListFilter } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import { openSnackbar } from 'elements/snackbars'
+import QueryFailed from 'components/QueryFailed'
+import { PageHeader } from 'ui/page-header'
 
 function ProductRestock() {
   const [purchaseRecords, setPurchaseRecords] = useState([])
@@ -181,14 +182,24 @@ function ProductRestock() {
 
   return (
     <Page className="ui-root" title="商品進貨作業">
-      <AdminPageHeader
+      <PageHeader
         title="商品進貨作業"
-        showFilter={showFilter}
-        onFilterClick={() => setShowFilter(!showFilter)}
-        primaryAction={{
-          label: '新增進貨',
-          to: '/product/restock/create'
-        }}
+        actions={
+          <>
+            <Button
+              variant="secondary"
+              aria-pressed={!!showFilter}
+              onClick={() => setShowFilter(!showFilter)}
+              className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+            >
+              <ListFilter strokeWidth={1.75} />
+              篩選
+            </Button>
+            <Button asChild variant="primary">
+              <RouterLink to={'/product/restock/create'}>{'新增進貨'}</RouterLink>
+            </Button>
+          </>
+        }
       />
 
       {/* 以 hidden 收合（取代 MUI Collapse）：廠商 Autocomplete 為非受控，需保持掛載，收合後選取內容與舊版一樣保留 */}
@@ -234,7 +245,9 @@ function ProductRestock() {
           </div>
         </Card>
       </div>
-      {!getPurchaseRecordsLazyData.loading && purchaseRecords !== undefined ? (
+      {getPurchaseRecordsLazyData.error ? (
+          <QueryFailed onRetry={handleSearch} />
+        ) : !getPurchaseRecordsLazyData.loading && purchaseRecords !== undefined ? (
         <Results
           handleSearch={handleSearch}
           purchaseRecords={purchaseRecords}

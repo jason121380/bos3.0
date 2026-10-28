@@ -1,5 +1,5 @@
 import React from 'react'
-import CustomMockedProvider from 'components/CustomMockedProvider'
+import CustomMockedProvider from '__tests__/CustomMockedProvider.test'
 import { render, fireEvent, cleanup } from '@testing-library/react'
 import { GET_PRODUCT_CATEGORY, mockedProductCategoryResp } from 'hooks/useFetchProductCategory'
 import { GET_PRODUCT_CATEGORIES, mockedProductCateResp } from 'hooks/useFetchProductCategories'

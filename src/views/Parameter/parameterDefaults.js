@@ -191,7 +191,6 @@ export const createDefaultAboutSettingFunction = () => ({
   isBookingTimeNoLimit: false,
   designerNameForCustomerSide: "BOTH",
   actionsBannedAfterDailyCheckout: [],
-  isBookingTimeNoLimit: false,
   isBonusConversion: false,
   bonusConversionRate: 0,
   isWalletFinNonNeg: false,

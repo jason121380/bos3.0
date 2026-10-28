@@ -16,6 +16,7 @@ import OrderRecords from './OrderRecords'
 import Performance from './Performance'
 import Service from './Service'
 import SupportRecord from './SupportRecord'
+import QueryFailed from 'components/QueryFailed'
 
 function DesignerPerformDetail({ history, location }) {
   const [pageSetting, setPageSetting] = React.useState({
@@ -90,6 +91,15 @@ function DesignerPerformDetail({ history, location }) {
           outside
           visible={['datePicker', 'employee', 'payment']}
         />
+        {[designerSalesDetail, serviceCategoriesAnalytics, merchantSalesAnalytics, designerOrderRecords, serviceOrderHelpers].some(q => q && q.error) && (
+          <QueryFailed
+            onRetry={() => {
+              [designerSalesDetail, serviceCategoriesAnalytics, merchantSalesAnalytics, designerOrderRecords, serviceOrderHelpers]
+                .filter(q => q && q.error && q.refetch)
+                .forEach(q => q.refetch())
+            }}
+          />
+        )}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {idx(
             designerSalesDetail,

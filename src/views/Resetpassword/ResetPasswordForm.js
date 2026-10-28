@@ -4,6 +4,8 @@ import useToggle from 'hooks/useToggle'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
+// validate.js 的自訂驗證器（regex／checked）只有這一頁用：改在此頁登記，不再於 App.js 全域載入（入口 chunk 少 14 KB）
+import 'mixins/validate'
 import validate from 'validate.js'
 import { Button } from 'ui/button'
 import { Field, Input } from 'ui/input'

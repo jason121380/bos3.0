@@ -18,6 +18,7 @@ import { Button } from 'ui/button'
 import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 import { Autocomplete } from 'ui/combobox'
+import QueryFailed from 'components/QueryFailed'
 
 const orderBy = [
   {
@@ -67,7 +68,8 @@ export default function Employees() {
   // excelData
   useEffect(() => {
     const excelData = []
-    if (!nonCashDetailStatement.loading && !customerBonusActive.loading) {
+    // 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
+    if (!nonCashDetailStatement.loading && !customerBonusActive.loading && idx(nonCashDetailStatement, _ => _.data.nonCashDetailStatement)) {
       let otherPaySummary = []
       let thirdPartySummary = []
       const objOrderPay = {}
@@ -75,7 +77,7 @@ export default function Employees() {
       let total = {}
       const summaryBonus = nonCashDetailStatement.data.nonCashDetailStatement.summary.bonusDecount
       const report = idx(nonCashDetailStatement, _ => _.data.nonCashDetailStatement)
-      const bonusActive = summaryBonus !== 0 || customerBonusActive.data.getIsCustomerBonusActive
+      const bonusActive = summaryBonus !== 0 || idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive)
       setBonusDisplay(bonusActive)
       report.nonCashDetailStatement.forEach(d => {
         const obj = {}
@@ -259,7 +261,9 @@ export default function Employees() {
 
       {!userOrderableList.loading ? (
         <Fragment>
-          {!nonCashDetailStatement.loading ? (
+          {nonCashDetailStatement.error ? (
+          <QueryFailed onRetry={() => nonCashDetailStatement.refetch()} />
+        ) : !nonCashDetailStatement.loading ? (
             nonCashDetailStatement !== undefined && (
               <Results
                 data={idx(nonCashDetailStatement, _ => _.data)}

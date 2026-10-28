@@ -111,9 +111,11 @@ describe('會員卡分類設定', () => {
     expect(window.location.reload).not.toHaveBeenCalled()
   })
 
-  it('查詢失敗時顯示 0 筆，不整頁壞', async () => {
+  // 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示「共 0 筆」讓人誤以為沒有分類
+  it('查詢失敗時顯示無法載入資料與重新查詢，不整頁壞', async () => {
     renderPage(<MemberCardCategories />, { fallback: 'error', route: '/member-card-categories' })
-    expect(await screen.findByText('共 0 筆')).toBeInTheDocument()
+    expect(await screen.findByText('無法載入資料')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '重新查詢' })).toBeEnabled()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 })

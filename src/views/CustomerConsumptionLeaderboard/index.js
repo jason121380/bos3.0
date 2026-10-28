@@ -4,7 +4,7 @@ import Page from 'components/Page'
 import { endOfMonth, startOfMonth, differenceInDays } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import { useEffect, useState } from 'react'
-import AdminPageHeader from 'components/AdminPageHeader'
+import { PageHeader } from 'ui/page-header'
 import produce from 'immer'
 import useFetchGetCustomerConsumptionLeaderboard from 'hooks/useFetchGetCustomerConsumptionLeaderboard'
 import useFetchGetCustomerConsumptionLeaderboardExcel from 'hooks/useFetchGetCustomerConsumptionLeaderboardExcel'
@@ -99,13 +99,13 @@ function CustomerConsumptionLeaderboard() {
   return (
     <Page className="ui-root" title="顧客消費排行榜">
       <div>
-        <AdminPageHeader title='顧客消費排行榜'>
+        <PageHeader title='顧客消費排行榜'>
           <Button
             variant='secondary'
             disabled={customerConsumptionDataExcel.loading || exportMaskOff}
             onClick={handleGetExcelData}
           ><Download strokeWidth={1.75} />報表匯出</Button>
-        </AdminPageHeader>
+        </PageHeader>
         <BackendExportNotice settingOff={exportMaskOff} />
         <Filter
           rangeLimit={rangeLimit}

@@ -15,7 +15,7 @@ import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { PageHeader } from 'ui/page-header'
 
 // 色票浮層：沿用舊版置中固定定位（CirclePicker 接受 className）
-const colorPickerClass = 'fixed left-1/2 top-1/2 z-[999] box-content -translate-x-1/2 -translate-y-1/2 rounded-md border border-solid border-border-strong bg-background pb-3 pl-5 pr-3 pt-5 shadow-float'
+const colorPickerClass = 'fixed left-1/2 top-1/2 z-[1400] box-content -translate-x-1/2 -translate-y-1/2 rounded-md border border-solid border-border-strong bg-background pb-3 pl-5 pr-3 pt-5 shadow-float'
 // 顏色預覽按鈕：背景色由 style 帶入目前色碼
 const swatchClass = 'h-9 w-16 shrink-0 rounded-md border border-solid border-border-strong p-0'
 
@@ -128,6 +128,12 @@ export default function MemberCardCreate() {
   }
   //disable 新增
   const valid = !(submitValue.no && submitValue.name && submitValue.MembershipCategoryUUID)
+  // 停用原因（STYLE.md §6）：依上方 valid 的三個必填欄位
+  const missingFields = [
+    !submitValue.no && '代號',
+    !submitValue.name && '名稱',
+    !submitValue.MembershipCategoryUUID && '會員卡類別',
+  ].filter(Boolean)
 
   return (
     <Page className="ui-root" title="新增會員卡">
@@ -373,13 +379,19 @@ export default function MemberCardCreate() {
             </CardContent>
           </Card>
         )}
-        <div className="flex justify-end">
+        <div className="flex flex-wrap items-center justify-end gap-3">
+          {valid && (
+            <p id="member-card-create-missing" role="status" className="text-caption text-text-secondary">
+              {`尚缺：${missingFields.join('、')}`}
+            </p>
+          )}
           <Button
             variant="primary"
             type="submit"
             data-testid="submit"
             onClick={() => handleSubmit()}
             disabled={valid}
+            aria-describedby={valid ? 'member-card-create-missing' : undefined}
           >
             新增
           </Button>

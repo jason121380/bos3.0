@@ -105,7 +105,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, onCus
           onClose()
         })
         .catch(error => {
-          openSnackbar({ message: error.message, variant: 'error' })
+          // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
         })
     } else {
       const newValues = cloneDeep(values)
@@ -139,7 +139,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, onCus
             onClose()
           })
           .catch(error => {
-            openSnackbar({ message: error.message, variant: 'error' })
+            // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
           })
       }
     }
@@ -394,7 +394,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, onCus
                     renderValue={() => <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />}
                   >
                     <MenuItem value="loading">
-                      <em>Loading...</em>
+                      <em>載入中…</em>
                     </MenuItem>
                   </Select>
                 </FormControl>

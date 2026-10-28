@@ -17,6 +17,7 @@ import { Skeleton } from 'ui/skeleton'
 import ScheduleCard from './ScheduleCard'
 import Header from './Header'
 import AddDesignersModal from './AddDesignersModal'
+import QueryFailed from 'components/QueryFailed'
 
 const EmployeeSchedule = () => {
   const socketSchedule = useSelector(state => state.socket.schedule)
@@ -230,7 +231,9 @@ const EmployeeSchedule = () => {
         undoActive={undoActive}
       />
       <div className="flex flex-wrap items-start gap-6">
-        {!usersData.loading ? (
+        {usersData.error ? (
+          <QueryFailed onRetry={() => usersData.refetch()} />
+        ) : !usersData.loading ? (
           <ScheduleCard
             users={users}
             scheduleCard={scheduleCard}

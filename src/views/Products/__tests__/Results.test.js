@@ -1,7 +1,7 @@
 import React from 'react'
 import { gql } from '@apollo/client'
 import { GET_PRODUCT_CATEGORIES } from 'hooks/useFetchProductCategories'
-import CustomMockedProvider from 'components/CustomMockedProvider'
+import CustomMockedProvider from '__tests__/CustomMockedProvider.test'
 import { render, fireEvent } from '@testing-library/react'
 import { mockedProducts, GET_PRODUCT } from 'hooks/useFetchProducts'
 import { mockedDeleteProduct, DEL_PRODUCTS } from 'hooks/useFetchDeleteProducts'

@@ -76,7 +76,7 @@ export default function Footer({ enable }) {
         .catch((error) => {
           setSubmitting(false)
           openSnackbar({
-            message: `重結失敗: ${error}`,
+            message: `重結失敗：${error}`,
             variant: 'error',
           })
           window.location.reload()

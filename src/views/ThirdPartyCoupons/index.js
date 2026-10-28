@@ -3,22 +3,30 @@ import idx from 'idx'
 import useFetchThirdPartyCoupons from 'hooks/useFetchThirdPartTicket'
 import { Skeleton } from 'ui/skeleton'
 
-import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
+import { Link as RouterLink } from 'react-router-dom'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 function ThirdPartyCoupons() {
   const thirdPartyCoupons = useFetchThirdPartyCoupons()
 
   return (
     <Page className="ui-root" title="第三方卡券設定">
-      <AdminPageHeader
+      <PageHeader
         title="第三方卡券設定"
-        primaryAction={{
-          label: '新增第三方卡券',
-          to: '/thirdPartyCoupon/create'
-        }}
+        actions={
+          <>
+            <Button asChild variant="primary">
+              <RouterLink to={'/thirdPartyCoupon/create'}>{'新增第三方卡券'}</RouterLink>
+            </Button>
+          </>
+        }
       />
-      {!thirdPartyCoupons.loading ?
+      {thirdPartyCoupons.error ? (
+          <QueryFailed onRetry={() => thirdPartyCoupons.refetch()} />
+        ) : !thirdPartyCoupons.loading ?
         <Results
           thirdPartyCouponList={idx(thirdPartyCoupons, _ => _.data.getThirdPartTicket)}
           thirdPartyCouponsRefetch={thirdPartyCoupons.refetch}

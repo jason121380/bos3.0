@@ -19,7 +19,7 @@ const styles = {
   field: '!min-w-[150px] flex mr-[12px]',
   productField: 'w-[250px] flex mr-[12px]',
   priceField: 'w-[65px] flex !mr-[12px]',
-  heading2: 'text-[0.8125rem] font-bold',
+  heading2: 'text-label font-bold',
 }
 
 function MerchantSells({

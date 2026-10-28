@@ -1,5 +1,6 @@
 import ChangePassword from 'components/ChangePassword'
 import PageErrorBoundary from 'components/PageErrorBoundary'
+import PageLoadingFallback from 'components/PageLoadingFallback'
 import { getDeviceTimeZone, isBusinessTimeZoneInstalled } from 'lib/business-timezone'
 import { applyStoredTheme } from 'lib/theme-mode'
 import Snackbar, { openSnackbar } from 'elements/snackbars'
@@ -23,7 +24,7 @@ import TopBar from './TopBar'
 // 頁面程式（lazy chunk）下載中的佔位：存在期間不放行首屏延後的查詢（lib/after-first-load）
 function PageLoading() {
   useHoldFirstLoad()
-  return <div className="ui-root h-0.5 w-full animate-pulse bg-accent" />
+  return <PageLoadingFallback />
 }
 
 function Dashboard({ route, location }) {

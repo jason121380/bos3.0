@@ -1,7 +1,7 @@
 import { FormControl, InputLabel, Select } from 'ui/form-control'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { DatePicker } from 'ui/date-picker'
-import useReservationContext from 'context/useReservationContext'
+import ReservationContext from 'context/ReservationContext'
 import { format } from 'date-fns'
 import { useLazyFetchDesignerBookingTimes } from 'hooks/useFetchDesignerBookingTimes'
 import { useLazyFetchUnspecifiedBookingTimes } from 'hooks/useFetchUnspecifiedBookingTimes'
@@ -13,7 +13,7 @@ import { Card, CardContent } from 'ui/card'
 import reference from './reference'
 
 export default function ({ asignDesigner, onChange, onAssignChange, onDesignerChange }) {
-  const { merchantId, values } = React.useContext(useReservationContext)
+  const { merchantId, values } = React.useContext(ReservationContext)
   const selectRef = React.useRef()
   const serviceTimeRef = React.useRef()
   const referenceRef = React.useRef()

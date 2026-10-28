@@ -50,7 +50,6 @@ export default function ProductRestockCreate() {
         setCheckPurchaseRecords(false)
       }
     }).catch(error => {
-      openSnackbar({ message: error.message, variant: 'error' })
       setCheckPurchaseRecords(false)
     })
   }

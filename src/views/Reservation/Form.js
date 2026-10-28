@@ -1,4 +1,4 @@
-import useReservationContext from 'context/useReservationContext'
+import ReservationContext from 'context/ReservationContext'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import getQueryString from 'helper/getQueryString'
@@ -15,7 +15,7 @@ import Customer from './Customer'
 
 export default function () {
   const history = useHistory()
-  const { merchantId, values, setValues, location } = React.useContext(useReservationContext)
+  const { merchantId, values, setValues, location } = React.useContext(ReservationContext)
   const [selectedDesigner, setSelectedDesigner] = React.useState('')
   const [bookingCategoryNames, setBookingCategoryNames] = React.useState([])
   const [isAssign, setIsAssign] = React.useState(false)
@@ -111,7 +111,7 @@ export default function () {
               ? values.customers.main.designerService.map(data => data.name).toString()
               : []
             : bookingCategoryNames.length !== 0
-            ? bookingCategoryNames.find(data => data.type === 'main').name
+            ? (bookingCategoryNames.find(data => data.type === 'main')?.name ?? '')
             : []
 
           const messaes = []
@@ -197,7 +197,7 @@ export default function () {
               ? values.customers.main.designerService.map(data => data.name).toString()
               : []
             : bookingCategoryNames.length !== 0
-            ? bookingCategoryNames.find(data => data.type === 'main').name
+            ? (bookingCategoryNames.find(data => data.type === 'main')?.name ?? '')
             : []
 
           const messaes = []

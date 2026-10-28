@@ -1,5 +1,4 @@
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchGetEmployeeResignationList from 'hooks/useFetchGetEmployeeResignationList'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
@@ -8,6 +7,8 @@ import useFetchSetCreateResignedUser from 'hooks/useFetchSetCreateResignedUser'
 
 import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
+import { PageHeader } from 'ui/page-header'
 
 
 export default function Employees() {
@@ -30,8 +31,12 @@ export default function Employees() {
     !designerDetail.loading && (
       <Page className="ui-root" title="員工離職列表">
         <div>
-          <AdminPageHeader title='員工離職列表' />
-          {!resignationList.loading ? idx(resignationList, _ => (
+          <PageHeader
+            title='員工離職列表'
+          />
+          {resignationList.error ? (
+          <QueryFailed onRetry={() => resignationList.refetch()} />
+        ) : !resignationList.loading ? idx(resignationList, _ => (
             <Results
               className="mt-4"
               employees={_.data.getEmployeeResignationList}

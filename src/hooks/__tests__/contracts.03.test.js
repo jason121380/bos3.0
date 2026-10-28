@@ -518,7 +518,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'GET_MERCHANT_FAKE_PERFORMANCE_REFER', variables: {} }],
       shape: { loading: false, called: true, data: ['getMerchantFakePerformanceReference'] },
-      policies: { GET_MERCHANT_FAKE_PERFORMANCE_REFER: 'cache-and-network' },
+      policies: { GET_MERCHANT_FAKE_PERFORMANCE_REFER: 'cache-first' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },
@@ -1217,7 +1217,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'GET_PRODUCT_PURPOSE', variables: {} }],
       shape: { loading: false, called: true, data: ['getProductPurpose'] },
-      policies: { GET_PRODUCT_PURPOSE: 'cache-and-network' },
+      policies: { GET_PRODUCT_PURPOSE: 'cache-first' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },

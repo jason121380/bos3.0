@@ -347,8 +347,10 @@ describe('點公休色塊（編輯公休）', () => {
     expect(confirm).not.toBeDisabled()
     mockApi.setTimes = jest.fn(() => Promise.reject(new Error('連線中斷')))
     fireEvent.click(confirm)
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '連線中斷', variant: 'error' }))
-    expect(mockApi.setTimes).toHaveBeenCalledWith({ input: { designerId: 'd1', datetimes: [], appointable: true } })
+    // 拋錯（GraphQL／網路錯誤）的提示由 init-apollo 的 errorLink 跳，彈窗只負責恢復按鈕；這裡 hook 是假的所以看不到那張提示
+    await wait(() => expect(mockApi.setTimes).toHaveBeenCalledWith({ input: { designerId: 'd1', datetimes: [], appointable: true } }))
+    await wait(() => expect(confirm).not.toBeDisabled())
+    expect(openSnackbar).not.toHaveBeenCalledWith({ message: '連線中斷', variant: 'error' })
     fireEvent.click(within(dialogBody()).getByRole('button', { name: '取消' }))
     await wait(() => expect(screen.queryByRole('dialog')).toBeNull())
   })

@@ -80,6 +80,8 @@ const AboutEmployeeSchedule = ({
       case 'bufferTime':
         newSchedule[index].isClockOutBufferMinutesUsing = !using
         break
+      default:
+        break
     }
     setIsMerchantClockInSetting(newSchedule)
   }
@@ -107,6 +109,8 @@ const AboutEmployeeSchedule = ({
       case 'breakEnd':
         newIsMerchantClockInSetting[index].breakTimeSetting[0].endHour = hour
         newIsMerchantClockInSetting[index].breakTimeSetting[0].endMinute = minute
+        break
+      default:
         break
     }
     setIsMerchantClockInSetting(newIsMerchantClockInSetting)
@@ -412,7 +416,7 @@ const AboutEmployeeSchedule = ({
                   {showColorPicker && (
                     <Fragment key={index}>
                       <CirclePicker
-                        className="box-content pt-[20px] pr-[12px] pb-[12px] pl-[20px] border border-solid border-border-strong z-[999] fixed top-[50%] left-[50%] [transform:translate(-50%,-50%)] rounded-[8px] [box-shadow:0_1px_3px_0_rgb(63_63_68_/_15%)]"
+                        className="box-content pt-[20px] pr-[12px] pb-[12px] pl-[20px] border border-solid border-border-strong z-[1400] fixed top-[50%] left-[50%] [transform:translate(-50%,-50%)] rounded-[8px] [box-shadow:0_1px_3px_0_rgb(63_63_68_/_15%)]"
                         disableAlpha
                         color={colorData}
                         onChange={event => {
@@ -423,7 +427,7 @@ const AboutEmployeeSchedule = ({
                         onClick={() => {
                           setShowColorPicker(false)
                         }}
-                        className="w-[100vw] h-[100vh] top-0 left-0 fixed z-[998]"
+                        className="w-[100vw] h-[100vh] top-0 left-0 fixed z-[1300]"
                       />
                     </Fragment>
                   )}

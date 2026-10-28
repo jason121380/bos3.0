@@ -1,4 +1,5 @@
 import Page from 'components/Page'
+import QueryFailed from 'components/QueryFailed'
 import { Provider } from 'context/keyInContext'
 import useFetchOrder from 'hooks/useFetchOrder'
 import produce from 'immer'
@@ -87,7 +88,10 @@ export default function KeyIn({ match }) {
   const [bonusRewardWithLINE, setBonusRewardWithLINE] = useState(false)
   const [isLineBinded, setIsLineBinded] = useState(false)
   const getDisablePendingOrder = useFetchGetDisablePendingOrder()
-  const disablePendingOrder = getDisablePendingOrder.loading ? true : getDisablePendingOrder.data.getParameterAboutSettingFunction.disablePendingOrder
+  // 查詢失敗（data 為 undefined）時維持「停用掛單」的保守預設，不在 render 階段拋錯
+  const disablePendingOrder = getDisablePendingOrder.loading
+    ? true
+    : idx(getDisablePendingOrder, _ => _.data.getParameterAboutSettingFunction.disablePendingOrder) ?? true
   const getIsComboSetting = useFetchGetIsComboSetting()
   const [shortcut, setShortcut] = useState({
     services: [],
@@ -145,7 +149,8 @@ export default function KeyIn({ match }) {
   }, [thirdPartyCouponsData.loading])
   useEffect(() => {
     // 同一張帳單只帶入一次：之後重新查詢（loading 再變回 false）不再把原帳單蓋回櫃檯改過的內容（見 useOncePerOrder）
-    if (!order.loading && isFirstLoad(match.params.id)) {
+    // 帳單查詢失敗或查無此帳單（order 為 null）時不帶入，由下方 QueryFailed 顯示並可重新查詢
+    if (!order.loading && idx(order, _ => _.data.order) && isFirstLoad(match.params.id)) {
       setOrderSetting(
         produce(draft => {
           draft.orderId = order.data.order.id
@@ -244,7 +249,6 @@ export default function KeyIn({ match }) {
     const productArr = []
     const couponArr = []
     const memberArr = []
-    
     for (let i = 0; i < shortcut.services.length; i++) {
       const id = shortcut.services[i];
       const value = sData.find(d => d.id === id)
@@ -331,7 +335,6 @@ export default function KeyIn({ match }) {
         serviceOrderHelpers: d.serviceOrderHelpers.filter(i => i.helperId),
         isNoCash: d.isNoCash,
       }))
-    
     const productOrders = newSells
       .filter(d => d.count > 0)
       .map(data => ({
@@ -426,6 +429,19 @@ export default function KeyIn({ match }) {
       bill.amountByOtherPay === 0
       ? true
       : paymentAlready
+
+  // 查無帳單／查詢失敗：顯示可重試的空狀態而不是整頁錯誤（選 QueryFailed 而非 Redirect：網路錯誤時可原地重試，不丟掉從列表帶來的網址）
+  if (!order.loading && !idx(order, _ => _.data.order)) {
+    return (
+      <Page title="帳單詳細" className="ui-root">
+        <QueryFailed
+          title="無法載入帳單"
+          description="這張帳單不存在、已被刪除，或查詢失敗。"
+          onRetry={() => order.refetch()}
+        />
+      </Page>
+    )
+  }
 
   return (
     <Page title={`帳單詳細 ${orderNo ? `(${orderNo})` : ''}`} className="ui-root">

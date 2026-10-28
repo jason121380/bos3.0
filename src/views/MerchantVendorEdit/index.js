@@ -10,6 +10,7 @@ import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
 import AboutMerchantVendorEdit from './AboutMerchantVendorEdit'
+import QueryFailed from 'components/QueryFailed'
 
 function MerchantVendorEdit({ match }) {
   const history = useHistory()
@@ -83,10 +84,6 @@ function MerchantVendorEdit({ match }) {
           setIsClick(false)
         }
       }).catch(error => {
-        openSnackbar({
-          message: error.message,
-          variant: 'error'
-        })
         setIsClick(false)
       })
     }
@@ -96,17 +93,23 @@ function MerchantVendorEdit({ match }) {
     <Page className="ui-root" title="編輯廠商">
       <div className="max-w-3xl">
         <PageHeader title="編輯廠商" />
-        <AboutMerchantVendorEdit
-          vendorOption={vendorOption}
-          isLodaing={vendorList.loading}
-          submitData={submitData}
-          setSubmitData={setSubmitData}
-        />
-        <div className="mt-6 flex justify-end">
-          <Button disabled={vendorList.loading || isClick} onClick={handleUpdateData} variant="primary">
-            儲存
-          </Button>
-        </div>
+        {(merchantVendor.error || vendorList.error) ? (
+          <QueryFailed onRetry={() => { if (merchantVendor.error) merchantVendor.refetch(); if (vendorList.error) vendorList.refetch() }} />
+        ) : (
+          <>
+          <AboutMerchantVendorEdit
+            vendorOption={vendorOption}
+            isLodaing={vendorList.loading}
+            submitData={submitData}
+            setSubmitData={setSubmitData}
+          />
+          <div className="mt-6 flex justify-end">
+            <Button disabled={vendorList.loading || isClick} onClick={handleUpdateData} variant="primary">
+              儲存
+            </Button>
+          </div>
+          </>
+        )}
       </div>
     </Page>
   )

@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ChevronDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -207,9 +207,16 @@ function renderFlyoutItems(children) {
 // 桌機 hover／圖示欄點選時，把子項畫到側欄外面（側欄自己的 overflow 會裁掉絕對定位）。
 // 左緣貼側欄（aside）右緣，不跟被 hover 那一列的 right／top 走；視窗滿高，內容由上往下，超出在浮層內捲動。
 // 圓角用既有 rounded-2xl（卡片 16px）、項目沿用 SidebarLink 的 rounded-md 與 text-body。
-function SidebarFlyout({ anchorRef, label, onMouseEnter, onMouseLeave, onKeyDown, children }) {
+function SidebarFlyout({ id, anchorRef, label, autoFocus, onMouseEnter, onMouseLeave, onKeyDown, children }) {
   const [box, setBox] = useState(null)
+  const panelRef = useRef(null)
   const columnCount = sidebarFlyoutColumnCount(flyoutEntries(children).length)
+  // 以鍵盤打開時把焦點移到第一個細項（浮層掛在 body 末端，Tab 順序到不了）
+  useEffect(() => {
+    if (!autoFocus || !box || !panelRef.current) return
+    const first = panelRef.current.querySelector('a, button')
+    if (first) first.focus()
+  }, [autoFocus, box])
   useLayoutEffect(() => {
     const update = () => {
       const el = anchorRef.current
@@ -249,6 +256,8 @@ function SidebarFlyout({ anchorRef, label, onMouseEnter, onMouseLeave, onKeyDown
   if (!box) return null
   return createPortal(
     <div
+      id={id}
+      ref={panelRef}
       role="region"
       aria-label={label}
       onMouseEnter={onMouseEnter}

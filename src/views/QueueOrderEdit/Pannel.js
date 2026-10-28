@@ -37,7 +37,7 @@ export default function SimpleAccordion({ children }) {
 
   useEffect(() => {
     if (!customerBonusActive.loading && onceRef.current) {
-      const active = customerBonusActive.data.getIsCustomerBonusActive || bill.bonusDecount > 0 || bill.bonusDeposit > 0 || bill.bonusUsed > 0
+      const active = idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) || bill.bonusDecount > 0 || bill.bonusDeposit > 0 || bill.bonusUsed > 0
       setBonusActive(active)
     }
   }, [customerBonusActive.loading, bill, onceRef])

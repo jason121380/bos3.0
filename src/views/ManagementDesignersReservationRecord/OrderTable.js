@@ -11,7 +11,7 @@ import HolidayEdit from 'components/ReservationCalendar/HolidayEdit'
 // title 與 ndsTitle／timeTitle 合併時 title 的 borderRight 在後、覆蓋 ndsTitle，故 ndsTitle 不另輸出。
 const styles = {
   TableContainer: 'min-h-[60vh] h-[calc(100vh-260px)] overflow-scroll relative !rounded-[16px] ![box-shadow:none] ![border:1px_solid_rgb(var(--border))] [&>div]:flex',
-  title: 'p-[12px_16px] break-all font-[800] bg-[rgb(var(--surface))] text-[rgb(var(--text))] min-h-[56px] flex items-center justify-center shrink-0 [border-right:1px_solid_rgb(var(--border))] text-[14px] tracking-[0.5px] uppercase',
+  title: 'p-[12px_16px] break-all font-[800] bg-[rgb(var(--surface))] text-[rgb(var(--text))] min-h-[56px] flex items-center justify-center shrink-0 [border-right:1px_solid_rgb(var(--border))] text-[14px] tracking-[0.5px]',
   timeTitle: 'w-[60px] shrink-0 !px-1', // 60px 欄寬扣掉左右 16px 內距放不下「時間」兩字會斷行
   ndsItem: '[border-top:1px_solid_rgb(var(--border))] [border-right:1px_solid_rgb(var(--border))] [border-left:1px_solid_rgb(var(--border))] flex justify-end bg-[rgb(var(--surface))]',
   ndsWrap: 'w-[100px] shrink-0 flex flex-col items-end',
@@ -19,7 +19,7 @@ const styles = {
   timeWrap: 'w-[60px] shrink-0',
   desWrap: 'relative [flex:1_1_auto]',
   orderItem: '[border-top:1px_solid_rgb(var(--border))] [border-right:1px_solid_rgb(var(--border))] flex justify-end',
-  limitItem: 'w-full text-[rgb(var(--text-tertiary))] flex items-center justify-center text-[12px] overflow-hidden flex-col cursor-pointer [transition:background-color_0.2s] hover:!bg-accent/10 [&_.capacity-label]:text-[10px] [&_.capacity-label]:text-[#bbb] [&_.capacity-label]:mb-[2px] [&_.capacity-value]:text-[14px] [&_.capacity-value]:font-bold [&_.capacity-value]:text-[rgb(var(--accent))]',
+  limitItem: 'w-full text-[rgb(var(--text-tertiary))] flex items-center justify-center text-[12px] overflow-hidden flex-col cursor-pointer [transition:background-color_0.2s] hover:!bg-accent/10 [&_.capacity-label]:text-caption [&_.capacity-label]:text-text-tertiary [&_.capacity-label]:mb-[2px] [&_.capacity-value]:text-[14px] [&_.capacity-value]:font-bold [&_.capacity-value]:text-[rgb(var(--accent))]',
   calendarWrap: 'absolute h-full top-0 left-0 overflow-hidden [border-right:1px_solid_rgb(var(--border))]',
   clickWrap: 'flex gap-0 absolute w-full',
   clickItem: 'rounded-[12px] cursor-pointer flex items-center justify-center flex-col text-[13px] font-bold text-[#fff] [border:2px_solid_white] [box-shadow:0px_4px_10px_rgba(0,0,0,0.1)] overflow-hidden [transition:transform_0.1s_ease] hover:z-10 hover:[transform:scale(1.02)] [&_span]:p-[0px_8px] [&_span]:break-all [&_span]:text-center',

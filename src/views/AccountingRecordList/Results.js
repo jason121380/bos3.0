@@ -39,7 +39,7 @@ function Results({
   }, [moneyFlows])
 
   if (!moneyFlows) {
-    return 'Loading...'
+    return '載入中…'
   }
 
   return (

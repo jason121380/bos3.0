@@ -34,6 +34,7 @@ import SMSRecord from './SMSRecord'
 import EventTicketsRecord from './EventTicketsRecord'
 import MembershipRecord from './MembershipRecord'
 import cloneDeep from 'lodash/cloneDeep'
+import QueryFailed from 'components/QueryFailed'
 
 function CustomerManagementDetails({ match, history }) {
   const { id, tab: currentTab } = match.params
@@ -106,7 +107,8 @@ function CustomerManagementDetails({ match, history }) {
   }, [getIsBookingCusCheckUsing.loading])
 
   useEffect(() => {
-    if (!getCustomerOrders.loading) {
+    // 帳單查詢失敗時不帶入（原本解構 undefined 整頁錯誤；消費記錄分頁改顯示 QueryFailed，2026/10/28）
+    if (!getCustomerOrders.loading && idx(getCustomerOrders, _ => _.data.getCustomerOrders)) {
       const { orderList, totalCount, pageLimit, pageOffset } = idx(getCustomerOrders, _ => _.data.getCustomerOrders)
       const ids = orderList.map(d => d.id)
       setPageSetting({
@@ -143,7 +145,7 @@ function CustomerManagementDetails({ match, history }) {
         isMemberShipCardActiveData,
         _ => _.data.getIsMemberShipCardActive
       )
-      const orders = idx(getCustomerOrders,_ => _.data.getCustomerOrders.orderList)
+      const orders = idx(getCustomerOrders,_ => _.data.getCustomerOrders.orderList) || []
       const membership = orders.reduce((a, b) => a + b.membership , 0)
       setMembershipDisplay(isMemberShipCardActive || membership !== 0)
     }
@@ -173,7 +175,7 @@ function CustomerManagementDetails({ match, history }) {
   }
   useEffect(() => {
     if (!customerBonusRecords.loading && !getIsCustomerBonusActive.loading && membershipDisplay !== null && !loading) {
-      const bonusActive = customerBonusRecords.data.customerBonusRecord.length > 0 || getIsCustomerBonusActive.data.getIsCustomerBonusActive
+      const bonusActive = (idx(customerBonusRecords, _ => _.data.customerBonusRecord) || []).length > 0 || idx(getIsCustomerBonusActive, _ => _.data.getIsCustomerBonusActive)
       const newTabs = [
         { value: 'general', label: '基本資料' },
         { value: 'invoices', label: '消費記錄' },
@@ -198,8 +200,8 @@ function CustomerManagementDetails({ match, history }) {
   useEffect(() => {
     if (!customerBonusActive.loading && !getCustomerOrders.loading) {
       const orders = idx(getCustomerOrders,_ => _.data.getCustomerOrders.orderList)
-      const bonusDecount = orders.reduce((a, b) => a + b.bonusDecountForReport , 0)
-      setBonusDisplay(customerBonusActive.data.getIsCustomerBonusActive || bonusDecount !== 0)
+      const bonusDecount = (orders || []).reduce((a, b) => a + b.bonusDecountForReport , 0)
+      setBonusDisplay(idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) || bonusDecount !== 0)
     }
   }, [customerBonusActive.loading, getCustomerOrders.loading])
 
@@ -262,7 +264,11 @@ function CustomerManagementDetails({ match, history }) {
             breadcrumb={<Breadcrumb items={[parentCrumb]} />}
             back={{ label: `返回${parentCrumb.label}`, onClick: handleBack }}
           />
-          <EmptyState title="找不到這位顧客" description="資料可能已刪除或暫時無法讀取，請返回列表後再試一次" />
+          {customer.error ? (
+            <QueryFailed onRetry={() => customer.refetch()} />
+          ) : (
+            <EmptyState title="找不到這位顧客" description="資料可能已刪除或暫時無法讀取，請返回列表後再試一次" />
+          )}
         </div>
       </Page>
     )
@@ -302,7 +308,10 @@ function CustomerManagementDetails({ match, history }) {
               isLoading={customer.loading}
             />
           )}
-          {currentTab === 'invoices' &&
+          {currentTab === 'invoices' && getCustomerOrders.error && (
+            <QueryFailed onRetry={() => getCustomerOrders.refetch()} />
+          )}
+          {currentTab === 'invoices' && !getCustomerOrders.error &&
             <Invoices
               orders={orderList}
               isLoading={getCustomerOrders.loading}
@@ -329,8 +338,16 @@ function CustomerManagementDetails({ match, history }) {
               }
             />
           }
-          {currentTab === 'SMS' && <SMSRecord records={!getCustomerSMSRecord.loading ? getCustomerSMSRecord.data.customerSMSRecord : []} />}
-          {currentTab === 'EventTicketsRecord' && <EventTicketsRecord data={eventTickets} isLoading={getCustomerEventTicketsForMerchant.loading} />}
+          {currentTab === 'SMS' && (getCustomerSMSRecord.error ? (
+            <QueryFailed onRetry={() => getCustomerSMSRecord.refetch()} />
+          ) : (
+            <SMSRecord records={!getCustomerSMSRecord.loading ? idx(getCustomerSMSRecord, _ => _.data.customerSMSRecord) || [] : []} />
+          ))}
+          {currentTab === 'EventTicketsRecord' && (getCustomerEventTicketsForMerchant.error ? (
+            <QueryFailed onRetry={() => getCustomerEventTicketsForMerchant.refetch()} />
+          ) : (
+            <EventTicketsRecord data={eventTickets} isLoading={getCustomerEventTicketsForMerchant.loading} />
+          ))}
           {currentTab === 'membership' && <MembershipRecord records={customer.data.customer.membershipPurchaseRecord} />}
         </div>
           </div>

@@ -19,8 +19,8 @@ import { focusRing } from 'ui/utils'
 
 // 打卡項目樣式（原 emotion styles 等值轉 Tailwind）
 const clockInItemClass = 'flex items-center gap-[4px] py-[2px] px-[4px] rounded-[4px] hover:!bg-transparent'
-const colorRedClass = '!text-[color:red] font-bold flex items-center hover:!bg-transparent'
-const colorRedLinkLateClass = '!text-[color:red] font-bold no-underline'
+const colorRedClass = '!text-danger font-bold flex items-center hover:!bg-transparent'
+const colorRedLinkLateClass = '!text-danger font-bold no-underline'
 
 export default function Results({
   attendanceRecords,
@@ -51,6 +51,12 @@ export default function Results({
     clockInType: ''
   })
 
+  // 顏色之外再給文字標記（WCAG 1.4.1：不以顏色為唯一狀態指示）
+  const distanceMark = value => {
+    if (value === 'MORETHAN50') return <span className="text-caption">（距門市 50m+）</span>
+    if (value === 'BETWEEN25AND50') return <span className="text-caption">（距門市 25–50m）</span>
+    return null
+  }
   const color = value => {
     switch (value) {
       case 'BETWEEN25AND50':
@@ -83,7 +89,6 @@ export default function Results({
         handleSearch()
       }
     }).catch(error => {
-      openSnackbar({ message: error.message, variant: 'error' })
       setEditBtn(false)
     })
   }
@@ -163,7 +168,6 @@ export default function Results({
         handleSearch()
       }
     }).catch(error => {
-      openSnackbar({ message: error.message, variant: 'error' })
       setDelBtn(false)
     })
   }
@@ -175,9 +179,11 @@ export default function Results({
         <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', (late && firstItem) ? colorRedClass : clockInItemClass)}>
           <span></span>
           <span>上</span>
-          <a style={{ color: color(time.distanceValue) }} className={(late && firstItem) ? colorRedLinkLateClass : 'no-underline'}>
+          <span style={{ color: color(time.distanceValue) }} className={(late && firstItem) ? colorRedLinkLateClass : 'no-underline'}>
             {format(time.time, 'HH:mm')}
-          </a>
+            {distanceMark(time.distanceValue)}
+            {late && firstItem && <span className="text-caption">遲到</span>}
+          </span>
         </div>
       )
     } else if (time.checkinType === 'CELLPHONE' || (time.checkinType === null && time.latitude !== null && time.longitude !== null)) {
@@ -186,9 +192,11 @@ export default function Results({
           <PhoneIphoneIcon className="!text-[14px] shrink-0" />
           <span>上</span>
           {time.latitude !== null && time.longitude !== null ? (
-            <a style={{ color: color(time.distanceValue) }} className={(late && firstItem) ? colorRedLinkLateClass : 'no-underline'}>
+            <span style={{ color: color(time.distanceValue) }} className={(late && firstItem) ? colorRedLinkLateClass : 'no-underline'}>
               {format(time.time, 'HH:mm')}
-            </a>
+              {distanceMark(time.distanceValue)}
+              {late && firstItem && <span className="text-caption">遲到</span>}
+            </span>
           ) : (
             <span style={{ color: 'rgb(var(--text-tertiary))' }}>{format(time.time, 'HH:mm')}</span>
           )}
@@ -226,9 +234,11 @@ export default function Results({
           <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', (late && lastItem) ? colorRedClass : clockInItemClass)}>
             <span className="lineicon"></span>
             <span>下</span>
-            <a style={{ color: color(time.distanceValue) }} className={(late && lastItem) ? colorRedLinkLateClass : 'no-underline'}>
+            <span style={{ color: color(time.distanceValue) }} className={(late && lastItem) ? colorRedLinkLateClass : 'no-underline'}>
               {format(time.time, 'HH:mm')}
-            </a>
+              {distanceMark(time.distanceValue)}
+              {late && lastItem && <span className="text-caption">早退</span>}
+            </span>
           </div>
         )
       } else if (time.checkinType === 'CELLPHONE' || (time.checkinType === null && time.latitude !== null && time.longitude !== null)) {
@@ -237,9 +247,11 @@ export default function Results({
             <PhoneIphoneIcon className="!text-[14px] shrink-0" />
             <span>下</span>
             {time.latitude !== null && time.longitude !== null ? (
-              <a style={{ color: color(time.distanceValue) }} className={(late && lastItem) ? colorRedLinkLateClass : 'no-underline'}>
+              <span style={{ color: color(time.distanceValue) }} className={(late && lastItem) ? colorRedLinkLateClass : 'no-underline'}>
                 {format(time.time, 'HH:mm')}
-              </a>
+                {distanceMark(time.distanceValue)}
+                {late && lastItem && <span className="text-caption">早退</span>}
+              </span>
             ) : (
               <span style={{ color: 'rgb(var(--text-tertiary))' }}>{format(time.time, 'HH:mm')}</span>
             )}
@@ -278,9 +290,10 @@ export default function Results({
           <span key={`breakOut-${start.uuid}`} {...recordProps(start, 'breakStart', clockInItemClass)}>
             <span className="lineicon"></span>
             <span>外</span>
-            <a style={{ color: color(start.distanceValue) }} className="no-underline">
+            <span style={{ color: color(start.distanceValue) }} className="no-underline">
               {format(start.time, 'HH:mm')}
-            </a>
+              {distanceMark(start.distanceValue)}
+            </span>
           </span>
         )
       } else if (start.checkinType === 'CELLPHONE' || (start.checkinType === null && start.latitude !== null && start.longitude !== null)) {
@@ -289,9 +302,10 @@ export default function Results({
             <PhoneIphoneIcon className="!text-[14px] shrink-0" />
             <span>外</span>
             {start.latitude !== null && start.longitude !== null ? (
-              <a style={{ color: color(start.distanceValue) }} className="no-underline">
+              <span style={{ color: color(start.distanceValue) }} className="no-underline">
                 {format(start.time, 'HH:mm')}
-              </a>
+                {distanceMark(start.distanceValue)}
+              </span>
             ) : (
               <span style={{ color: 'rgb(var(--text-tertiary))' }}>{format(start.time, 'HH:mm')}</span>
             )}
@@ -329,9 +343,10 @@ export default function Results({
             <span {...recordProps(end, 'breakEnd', clockInItemClass)} key={`breakBack-${end.uuid}`}>
               <span className="lineicon"></span>
               <span>回</span>
-              <a style={{ color: color(end.distanceValue) }} className="no-underline">
+              <span style={{ color: color(end.distanceValue) }} className="no-underline">
                 {format(end.time, 'HH:mm')}
-              </a>
+                {distanceMark(end.distanceValue)}
+              </span>
             </span>
           )
         } else if (end.checkinType === 'CELLPHONE' || (end.checkinType === null && end.latitude !== null && end.longitude !== null)) {
@@ -340,9 +355,10 @@ export default function Results({
               <PhoneIphoneIcon className="!text-[14px] shrink-0" />
               <span>回</span>
               {end.latitude !== null && end.longitude !== null ? (
-                <a style={{ color: color(end.distanceValue) }} className="no-underline">
+                <span style={{ color: color(end.distanceValue) }} className="no-underline">
                   {format(end.time, 'HH:mm')}
-                </a>
+                  {distanceMark(end.distanceValue)}
+                </span>
               ) : (
                 <span style={{ color: 'rgb(var(--text-tertiary))' }}>{format(end.time, 'HH:mm')}</span>
               )}
@@ -510,7 +526,7 @@ export default function Results({
           <DialogBody className="empty:hidden">
             {googleMapUrl !== '' && (
               <Button asChild variant="secondary" size="sm">
-                <a href={googleMapUrl} target="_blank">
+                <a href={googleMapUrl} target="_blank" rel="noopener noreferrer">
                   <LocationOnIcon />查看位置
                 </a>
               </Button>

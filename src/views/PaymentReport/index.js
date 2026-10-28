@@ -4,10 +4,11 @@ import idx from 'idx'
 import { startOfMonth } from 'date-fns'
 import useFetchMerchantOtherPayWayDetailReport from 'hooks/useFetchMerchantOtherPayWayDetailReport'
 import DateSelector from 'components/DateSelector'
-import { HeaderActionsSlot, PageHeader, Toolbar } from 'ui/page-header'
+import { HeaderActionsSlot, PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const PaymentReport = () => {
   const [reportForDisplay, setReportForDisplay] = useState(null)
@@ -38,14 +39,18 @@ const PaymentReport = () => {
   return (
     <Page className="ui-root" title="每日非現金明細">
       <PageHeader title="每日非現金明細" actions={<HeaderActionsSlot />} />
-      <Toolbar>
-        <DateSelector
-          date={date}
-          attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-          dateChange={value => setDate(value)}
-        />
-      </Toolbar>
-      {!merchantOtherPayWayDetailReportData.loading &&
+      <ReportToolbar
+        date={
+          <DateSelector
+            date={date}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            dateChange={value => setDate(value)}
+          />
+        }
+      />
+      {merchantOtherPayWayDetailReportData.error ? (
+          <QueryFailed onRetry={() => merchantOtherPayWayDetailReportData.refetch()} />
+        ) : !merchantOtherPayWayDetailReportData.loading &&
         reportForDisplay !== null ? (
         <Results report={reportForDisplay} paymentsName={paymentsName} />
       ) : (

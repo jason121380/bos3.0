@@ -1,5 +1,6 @@
 import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
+import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
 import { useFetchGetPurchaseRecordForEdit } from 'hooks/useFetchGetPurchaseRecords'
 import PasswordDialog from 'components/PasswordDialog'
 import useFetchDeletePurchase from 'hooks/useFetchDeletePurchase'
@@ -14,12 +15,14 @@ import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
 import General from './General'
+import QueryFailed from 'components/QueryFailed'
 
 export default function ProductRestockEdit() {
   const history = useHistory()
   const params = useParams()
   const [purchaseRecord, setPurchaseRecord] = useState({})
   const [disabled, setDisabled] = useState(true)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [checkPurchaseRecords, setCheckPurchaseRecords] = useState(false)
   const [password, setPassword] = useState('')
@@ -47,7 +50,7 @@ export default function ProductRestockEdit() {
         }
       })
       .catch(error => {
-        openSnackbar({ message: error.message, variant: 'error' })
+        // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
       })
   }
 
@@ -79,7 +82,6 @@ export default function ProductRestockEdit() {
       }
     })
       .catch(error => {
-        openSnackbar({ message: error.message, variant: 'error' })
         setCheckPurchaseRecords(false)
       })
   }
@@ -195,42 +197,57 @@ export default function ProductRestockEdit() {
           !disabled && (
             <Button
               variant="danger"
-              onClick={() => {
-                handleDelete()
-              }}
+              onClick={() => setConfirmingDelete(true)}
             >
               刪除
             </Button>
           )
         }
       />
-      {!getPurchaseRecord.loading && purchaseRecord.uuid && (
-        <General
-          disabled={disabled}
-          purchaseRecord={purchaseRecord}
-          setPurchaseRecord={setPurchaseRecord}
-        />
+      <ConfirmDeleteDialog
+        open={confirmingDelete}
+        onClose={() => setConfirmingDelete(false)}
+        title="刪除進貨單"
+        message="刪除這張進貨單？"
+        consequence="刪除後無法復原，已入庫的數量不會自動退回。"
+        onConfirm={() => {
+          setConfirmingDelete(false)
+          handleDelete()
+        }}
+      />
+      {getPurchaseRecord.error ? (
+        <QueryFailed onRetry={() => getPurchaseRecord.refetch()} />
+      ) : (
+        <>
+          {!getPurchaseRecord.loading && purchaseRecord.uuid && (
+            <General
+              disabled={disabled}
+              purchaseRecord={purchaseRecord}
+              setPurchaseRecord={setPurchaseRecord}
+            />
+          )}
+          <div className="flex items-center justify-end gap-2 pt-6">
+            {!disabled ? (
+              <Button
+                variant="primary"
+                disabled={checkPurchaseRecords}
+                onClick={handleUpdate}
+              >
+                儲存
+              </Button>
+            ) : <div />}
+            {(!getPurchaseRecord.loading && !getStockInIsUsing.loading) && (
+              <Button
+                variant={disabled ? 'danger' : 'secondary'}
+                disabled={checkPurchaseRecords}
+                onClick={handleCheck}
+              >
+                {disabled ? '取消入庫' : '入庫'}
+              </Button>
+            )}
+          </div>
+        </>
       )}
-      <div className="flex items-center justify-end gap-2 pt-6">
-        {!disabled ? (
-          <Button
-            variant="primary"
-            disabled={checkPurchaseRecords}
-            onClick={handleUpdate}
-          >
-            儲存
-          </Button>
-        ) : <div />}
-        {(!getPurchaseRecord.loading && !getStockInIsUsing.loading) && (
-          <Button
-            variant={disabled ? 'danger' : 'secondary'}
-            disabled={checkPurchaseRecords}
-            onClick={handleCheck}
-          >
-            {disabled ? '取消入庫' : '入庫'}
-          </Button>
-        )}
-      </div>
       <PasswordDialog
         open={dialogOpen}
         title={disabled ? '進貨單取消入庫' : '進貨單入庫'}

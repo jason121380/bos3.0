@@ -1,4 +1,5 @@
 import { CalendarDays, ChartColumn, Contact, CreditCard, Gift, LogOut, Megaphone, Package, Pin, Receipt, Search, Settings, Store, Users, Wrench, X } from 'lucide-react'
+import { storedMerchantName } from 'lib/stored-merchant'
 import SlotPortal from 'components/SlotPortal'
 import { SIDEBAR_SEARCH_SLOT_ID } from './TopBar'
 import NavItem, { isWithinHref } from 'components/NavItem'
@@ -422,7 +423,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   // 判斷localStorage是否有資料
   if (localStorage.getItem('userMerchant') !== null) {
     checkCookie()
-    config.forEach(list => (list.subheader = JSON.parse(localStorage.getItem('userMerchant')).name))
+    config.forEach(list => (list.subheader = storedMerchantName()))
   } else {
     clearEngineeringUnlock()
     localStorage.clear()
@@ -528,7 +529,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
               aria-label="關閉搜尋"
               title="關閉搜尋"
               onClick={closeSearch}
-              className={cn('absolute right-1 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border-0 bg-transparent p-0 text-text-tertiary hover:bg-surface-hover hover:text-text', focusRing)}
+              className={cn('absolute right-1 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border-0 bg-transparent p-0 text-text-tertiary hover:bg-surface-hover hover:text-text', 'before:absolute before:-inset-2 before:content-[""]', focusRing)}
             >
               <X className="h-4 w-4" strokeWidth={1.75} />
             </button>

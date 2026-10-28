@@ -3,13 +3,12 @@
 // 載入遮罩改原生 div（#Backdrop 有全域樣式，關閉時同原 Backdrop 以 visibility hidden 保留在畫面上）；Page 根元素不加 ui-root（box-sizing 會改變行事曆格子寬度）
 import { Slider } from 'ui/slider'
 import { Popover, PopoverAnchor, PopoverContent } from 'ui/popover'
-import { LoaderCircle, SlidersHorizontal } from 'lucide-react'
+import { LoaderCircle, SlidersHorizontal, ListFilter } from 'lucide-react'
 import Page from 'components/Page'
 import useFetchMerchant from 'hooks/useFetchMerchant'
 import { useState, useEffect, useRef } from 'react'
 import CalendarColorClip, { RESERVATION_COLORS } from 'components/CalendarColorClip'
 import DateSelector from 'components/DateSelector'
-import AdminPageHeader from 'components/AdminPageHeader'
 import {
   getYear, getMonth, getDate, startOfDay, endOfDay,
   addMinutes, differenceInMinutes, subMinutes, isSameDay
@@ -37,6 +36,8 @@ import OrderTable from './OrderTable'
 import cloneDeep from 'lodash/cloneDeep'
 import idx from 'idx'
 import isPasswordRequired from 'helper/passwordRequired'
+import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 function Calendar() {
   const reservationData = useSelector(state => state.reservation.reservationData)
@@ -433,7 +434,8 @@ function Calendar() {
   }, [reservationData])
 
   useEffect(() => {
-    if (calendarRowData.nonDesignate && !merchant.loading) {
+    // 店家查詢失敗時沒有營業時間可排時間軸，畫面改顯示 QueryFailed（2026/10/28）
+    if (calendarRowData.nonDesignate && !merchant.loading && idx(merchant, _ => _.data.merchant)) {
       const timeRange = handleSetTimeRange(calendarRowData.designate, calendarRowData.nonDesignate.calendar)
       const designate = handleTidyOrder(calendarRowData.designate, timeRange[0])
       const nonDesignate = handleTidyOrder([calendarRowData.nonDesignate], timeRange[0], true)
@@ -541,27 +543,38 @@ function Calendar() {
         id='Backdrop'
         role="status"
         aria-live="polite"
-        className="fixed inset-0 flex items-center justify-center !opacity-100 z-[999] ![background:rgba(0,0,0,0)]"
+        className="fixed inset-0 flex items-center justify-center !opacity-100 z-[1300] ![background:rgba(0,0,0,0)]"
         style={{ visibility: (!(!merchant.loading && !DesignerCalendar.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length))) ? undefined : 'hidden' }}
       >
         <LoaderCircle aria-hidden="true" className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
         <span className="sr-only">預約紀錄載入中…</span>
       </div>
-      <AdminPageHeader
+      <PageHeader
         title="單日預約紀錄"
-        // 篩選面板的項目（報到模式、報到狀態）都只在店家開啟報到功能時出現；未開啟時不顯示篩選鈕，避免按了只有空白卡片
-        onFilterClick={checkinSettings.isBookingCheckinEnabled ? handleFilterClick : undefined}
-        showFilter={showFilter}
-      >
-        <div className="flex items-center gap-4">
-          <DateSelector
-            date={date}
-            attributes={['today', 'tomorrow', 'datomorrow', 'startDate']}
-            dateChange={value => setDate(value)}
-            onlyStart
-          />
-        </div>
-      </AdminPageHeader>
+        actions={
+          <>
+            <div className="flex items-center gap-4">
+              <DateSelector
+                date={date}
+                attributes={['today', 'tomorrow', 'datomorrow', 'startDate']}
+                dateChange={value => setDate(value)}
+                onlyStart
+              />
+            </div>
+            {checkinSettings.isBookingCheckinEnabled && (
+              <Button
+                variant="secondary"
+                aria-pressed={!!showFilter}
+                onClick={handleFilterClick}
+                className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+              >
+                <ListFilter strokeWidth={1.75} />
+                篩選
+              </Button>
+            )}
+          </>
+        }
+      />
 
       {showFilter && checkinSettings.isBookingCheckinEnabled && (
         <Card className="ui-root mb-4 flex flex-row flex-wrap items-center gap-6 p-5">
@@ -666,7 +679,14 @@ function Calendar() {
             </PopoverContent>
           </Popover>
         </div>
-        {(!merchant.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length)) ?
+        {(DesignerCalendar.error || merchant.error) ? (
+          <QueryFailed
+            onRetry={() => {
+              if (DesignerCalendar.error) DesignerCalendar.refetch()
+              if (merchant.error) merchant.refetch()
+            }}
+          />
+        ) : (!merchant.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length)) ?
           <OrderTable
             orderRange={orderRange}
             calendarData={calendarData}

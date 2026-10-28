@@ -1,7 +1,6 @@
 
 import 'react-perfect-scrollbar/dist/css/styles.css'
 
-import './mixins/validate'
 import './assets/scss/main.scss'
 import './styles/tokens.css'
 // import './initialize.scss'

@@ -4,6 +4,7 @@ import { useState, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
+import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
 import cloneDeep from 'lodash/cloneDeep'
 import useFetchDeletePurchase from 'hooks/useFetchDeletePurchase'
 import { Button } from 'ui/button'
@@ -26,6 +27,7 @@ function Results({
 }) {
   const { deletePurchase } = useFetchDeletePurchase()
   const [selectId, setSelectId] = useState([])
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
 
   const selectAllData = event => {
     const newSelectedId = event.target.checked ? selectAllRecords : []
@@ -60,7 +62,7 @@ function Results({
         }
       })
       .catch(error => {
-        openSnackbar({ message: error.message, variant: 'error' })
+        // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
       })
   }
 
@@ -170,12 +172,23 @@ function Results({
             已選取 {selectId.length} 筆項目
           </span>
           <span aria-hidden="true" className="mr-1 hidden h-5 w-px bg-border sm:inline-block" />
-          <Button size="sm" variant="ghost" className="text-danger hover:bg-danger/8" onClick={() => handleDelete()}>
+          <Button size="sm" variant="ghost" className="text-danger hover:bg-danger/8" onClick={() => setConfirmingDelete(true)}>
             <Trash2 strokeWidth={1.75} />
             刪除
           </Button>
         </div>
       </div>
+      <ConfirmDeleteDialog
+        open={confirmingDelete}
+        onClose={() => setConfirmingDelete(false)}
+        title="刪除進貨單"
+        message={`刪除已選的 ${selectId.length} 筆進貨單？`}
+        consequence="刪除後無法復原，已入庫的數量不會自動退回。"
+        onConfirm={() => {
+          setConfirmingDelete(false)
+          handleDelete()
+        }}
+      />
     </Fragment>
   )
 }

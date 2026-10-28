@@ -109,10 +109,12 @@ describe('紅利點數紀錄列表', () => {
 
   // 列表查詢失敗時以空陣列顯示、不整頁錯誤（錯誤提示由 init-apollo 的 errorLink 統一顯示；
   // 原本傳入 undefined 讓 Results 讀 recordData.length 拋錯；Jason 2026/10/22 fix all）
-  it('列表查詢失敗：顯示共 0 筆、不整頁錯誤', async () => {
+  it('列表查詢失敗：顯示無法載入資料與重新查詢、不整頁錯誤', async () => {
+    // 2026/10/28 稽核 C-1：查詢失敗改顯示 QueryFailed（「無法載入資料」＋「重新查詢」），不再顯示成空表／0 筆，避免誤以為真的沒有資料
     const utils = setup({ GET_CUSTOMER_BONUS_DEPOSIT_RECORDS: new Error('查詢失敗') })
     await utils.settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
-    expect(screen.getByText('共 0 筆')).toBeInTheDocument()
+    expect(screen.getByText('無法載入資料')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '重新查詢' })).toBeEnabled()
   })
 })

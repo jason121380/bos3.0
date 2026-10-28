@@ -2,7 +2,6 @@ import { Switch } from 'ui/switch'
 import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
-import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { startOfMonth, addDays, format, endOfMonth } from 'date-fns'
 import { useFetchGetMerchantClockInSchedule } from 'hooks/useFetchGetMerchantClockInSetting'
@@ -17,6 +16,9 @@ import { openSnackbar } from 'elements/snackbars'
 import { Skeleton } from 'ui/skeleton'
 import ScheduleTags from './ScheduleTags'
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 export default function Employees() {
   const [date, setDate] = useState({
@@ -189,38 +191,38 @@ export default function Employees() {
   return (
     <Page className="ui-root" title="考勤排班總表">
       <div>
-        <AdminPageHeader
+        <PageHeader
           title="考勤排班總表"
-          subtitle="ATTENDANCE EMPLOYEE SCHEDULE"
-          primaryAction={{
-            label: isEditing ? '儲存' : '編輯班表',
-            onClick: isEditing ? saveData : () => setIsEditing(true),
-            disabled: isEditing ? (employeeClockInSchedule.loading || isClick) : false
-          }}
-        >
-          <div className="flex items-center gap-4">
-            {UESUsing && (
-              <div className="flex items-center gap-1 text-body text-text-secondary">
-                <span>編輯過往班別</span>
-                <Switch
-                  size="small"
-                  checked={editBefore}
-                  onChange={e => setEditBefore(e.target.checked)}
+          actions={
+            <>
+              <div className="flex items-center gap-4">
+                {UESUsing && (
+                  <div className="flex items-center gap-1 text-body text-text-secondary">
+                    <span>編輯過往班別</span>
+                    <Switch
+                      size="small"
+                      checked={editBefore}
+                      onChange={e => setEditBefore(e.target.checked)}
+                    />
+                  </div>
+                )}
+                <DateSelector
+                  date={date}
+                  attributes={['lastmonth', 'thismonth', 'startDate']}
+                  dateChange={value => setDate(value)}
+                  onlyStart
+                  inputFormat='yyyy/MM'
+                  pickerOption={{
+                    views: ['month', 'year']
+                  }}
                 />
               </div>
-            )}
-            <DateSelector
-              date={date}
-              attributes={['lastmonth', 'thismonth', 'startDate']}
-              dateChange={value => setDate(value)}
-              onlyStart
-              inputFormat='yyyy/MM'
-              pickerOption={{
-                views: ['month', 'year']
-              }}
-            />
-          </div>
-        </AdminPageHeader>
+              <Button variant="primary" onClick={isEditing ? saveData : () => setIsEditing(true)} disabled={isEditing ? (employeeClockInSchedule.loading || isClick) : false}>
+                {isEditing ? '儲存' : '編輯班表'}
+              </Button>
+            </>
+          }
+        />
         <div className="mb-3">
           {!merchantClockInSchedule.loading && (
             <ScheduleTags
@@ -239,7 +241,9 @@ export default function Employees() {
             />
           )}
         </div>
-        {((!employeeClockInSchedule.loading && !merchantClockInSchedule.loading)) ? (
+        {employeeClockInSchedule.error ? (
+          <QueryFailed onRetry={() => employeeClockInSchedule.refetch()} />
+        ) : ((!employeeClockInSchedule.loading && !merchantClockInSchedule.loading)) ? (
           <Results
             displayDate={displayDate}
             rawTime={rawTime}

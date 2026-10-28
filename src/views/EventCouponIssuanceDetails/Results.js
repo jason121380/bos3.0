@@ -72,7 +72,7 @@ function Results({ recordData, pageSetting, onPageChange, onRowsPerPageChange })
                   count={pageSetting.totalCount}
                   page={pageSetting.pageOffset}
                   rowsPerPage={pageSetting.pageLimit}
-                  rowsPerPageOptions={[5, 10, 25, 50, 100]}
+                  rowsPerPageOptions={[5, 10, 25, 50, 1000]}
                 />
               </div>
             </Fragment>

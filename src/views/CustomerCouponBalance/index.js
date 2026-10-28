@@ -15,6 +15,7 @@ import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefau
 import isExportCustomerMasked, { maskCustomerName, maskCellphone } from 'helper/exportCustomerMask'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const CustomerWalletBalance = () => {
   const [reportForDisplay, setReportForDisplay] = useState(null)
@@ -180,7 +181,9 @@ const CustomerWalletBalance = () => {
           </div>
         </div>
       </Toolbar>
-      {!customerCouponBalanceData.loading ? (
+      {customerCouponBalanceData.error ? (
+          <QueryFailed onRetry={() => customerCouponBalanceData.refetch()} />
+        ) : !customerCouponBalanceData.loading ? (
         <Results
           report={reportForDisplay}
           total={reportTotal}

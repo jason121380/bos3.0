@@ -1,5 +1,7 @@
 import { FileDown, Pencil, Trash2, UserCheck, X } from 'lucide-react'
 import PropTypes from 'prop-types'
+import { useState } from 'react'
+import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
 import { Button } from 'ui/button'
 import { cn } from 'ui/utils'
 
@@ -18,9 +20,13 @@ function TableEditBar({
   onEditMembershipCategory,
   onReinstatement,
   onEditPersonnelProfile,
+  confirmDelete = false,
   ...rest
 }) {
   const open = selected.length > 0
+  // confirmDelete：「刪除」先開二次確認、按「刪除」才呼叫 onDelete。預設關閉，呼叫端若已在 onDelete 內自開確認窗（如商品、顧客）維持原樣。
+  const [confirming, setConfirming] = useState(false)
+  const handleDeleteClick = confirmDelete ? () => setConfirming(true) : onDelete
   // 批次操作列（STYLE.md §5 浮層）：勾選資料後浮在畫面底部中央；各按鈕的顯示條件與 handler 與舊版相同
   const item = (show, onClick, testId, Icon, label, { danger, disabled } = {}) =>
     show && (
@@ -49,7 +55,7 @@ function TableEditBar({
         <span className="mr-2 text-label tabular-nums text-text">已選 {selected.length} 筆</span>
         <span aria-hidden="true" className="mr-1 h-5 w-px bg-border" />
         {item(onReinstatement, onReinstatement, 'delete', UserCheck, '員工復職')}
-        {item(onDelete, onDelete, 'delete', Trash2, '刪除', { danger: true })}
+        {item(onDelete, handleDeleteClick, 'delete', Trash2, '刪除', { danger: true })}
         {item(onEditSaleStatus, onEditSaleStatus, 'edit', Pencil, '編輯上架狀態')}
         {item(onEditDeduction, onEditDeduction, 'edit', Pencil, '編輯項目扣項')}
         {item(onEdit, onEdit, 'edit', Pencil, '編輯互助點數')}
@@ -60,12 +66,24 @@ function TableEditBar({
         {item(onDeleteCustomer, onDeleteCustomer, 'editProductsCategory', Trash2, '刪除客人', { danger: true })}
         {item(onEditMembershipCategory, onEditMembershipCategory, 'onEditMembershipCategory', Pencil, '編輯會員卡類別')}
       </div>
+      {confirmDelete && (
+        <ConfirmDeleteDialog
+          open={confirming}
+          onClose={() => setConfirming(false)}
+          message={`刪除已選的 ${selected.length} 筆？`}
+          onConfirm={() => {
+            setConfirming(false)
+            onDelete()
+          }}
+        />
+      )}
     </div>
   )
 }
 
 TableEditBar.propTypes = {
   className: PropTypes.string,
+  confirmDelete: PropTypes.bool,
   onDelete: PropTypes.func,
   onMarkPaid: PropTypes.func,
   onMarkUnpaid: PropTypes.func,

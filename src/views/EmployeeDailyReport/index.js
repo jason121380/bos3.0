@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 // 報表外框保留 EmployeeDailyReport 掛點，使用 flex 排列螢幕卡片。
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchDesignerReport from 'hooks/useFetchDesignerDailyReport'
 import { format } from 'date-fns'
 import idx from 'idx'
@@ -14,10 +13,11 @@ import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar, PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const EmployeeDailyReport = () => {
   const [date, setDate] = useState({
@@ -52,7 +52,8 @@ const EmployeeDailyReport = () => {
       const data = idx(designerReportData, _ => _.data.designerDailyReport)
       let group = []
       const report = []
-      data.forEach((d, index) => {
+      const dailyReport = data || []
+      dailyReport.forEach((d, index) => {
         group.push((d))
         if (group.length === 4) {
           report.push(group)
@@ -105,28 +106,35 @@ const EmployeeDailyReport = () => {
             format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
         </div>
       </div>
-      <AdminPageHeader title='設計師日報表'>
-        <Button
-          className="noprint shrink-0"
-          variant="secondary"
-          onClick={() => window.print()}
-        >
-          <Printer strokeWidth={1.75} />
-          列印
-        </Button>
-      </AdminPageHeader>
-      <Toolbar className="min-w-0 flex-wrap">
-        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+      <PageHeader
+        title='設計師日報表'
+        actions={
+          <>
+            <Button
+              className="noprint shrink-0"
+              variant="secondary"
+              onClick={() => window.print()}
+            >
+              <Printer strokeWidth={1.75} />
+              列印
+            </Button>
+          </>
+        }
+      />
+      <ReportToolbar
+        date={
           <DateSelector
             date={date}
             attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
             onlyStart
             dateChange={value => setDate(value)}
           />
-        </div>
-      </Toolbar>
+        }
+      />
 
-      {!designerReportData.loading && !isPriceDisplayOnDailyReportData.loading ? (
+      {designerReportData.error ? (
+          <QueryFailed onRetry={() => designerReportData.refetch()} />
+        ) : !designerReportData.loading && !isPriceDisplayOnDailyReportData.loading ? (
         idx(designerReportData, _ =>
           _.data.designerDailyReport.length > 0 ? (
             <div className="box-border flex flex-wrap -mt-6 -ml-6 w-[calc(100%+24px)] EmployeeDailyReport">

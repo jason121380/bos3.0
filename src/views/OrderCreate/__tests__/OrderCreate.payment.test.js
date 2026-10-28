@@ -119,7 +119,7 @@ describe('扣入金', () => {
   it('整筆扣入金後再取消：扣入金歸 0；扣入金後明細顯示扣入金與入金剩餘', async () => {
     const { calls } = await prepare()
     await pickService()
-    expect(await screen.findByText(/入金剩餘/)).toHaveTextContent('入金剩餘：1500元')
+    expect(await screen.findByText(/入金剩餘/)).toHaveTextContent('入金剩餘：1,500 元')
     fireEvent.click(screen.getByLabelText('整筆扣入金'))
     await wait(() => expect(walletInput()).toHaveValue('800'))
     fireEvent.click(screen.getByLabelText('整筆扣入金'))
@@ -149,7 +149,7 @@ describe('扣入金', () => {
 
   it('店家關閉打帳單扣入金：只顯示入金餘額，不能扣', async () => {
     await prepare({ GET_IS_CUS_WALLET_USAGE_FOR_ORDER: { getParameterOrderCreateSetting: { isCusWalletUsageForOrder: false } } })
-    expect(await screen.findByText(/入金剩餘/)).toHaveTextContent('入金剩餘：1500元')
+    expect(await screen.findByText(/入金剩餘/)).toHaveTextContent('入金剩餘：1,500 元')
     expect(walletInput()).toBeNull()
     expect(button('異動入金')).toBeInTheDocument()
   })

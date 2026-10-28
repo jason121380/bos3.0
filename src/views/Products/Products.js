@@ -6,11 +6,13 @@ import { useState, useEffect } from 'react'
 import produce from 'immer'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import { Link as RouterLink } from 'react-router-dom'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
+import { ListFilter } from 'lucide-react'
+import { PageHeader } from 'ui/page-header'
 
 function CustomerManagementList() {
   const [setting, setSetting] = useState({
@@ -73,14 +75,24 @@ function CustomerManagementList() {
 
   return (
     <Page className="ui-root" title="商品列表">
-      <AdminPageHeader
+      <PageHeader
         title="商品列表"
-        showFilter={showFilter}
-        onFilterClick={() => setShowFilter(!showFilter)}
-        primaryAction={{
-          label: '新增商品',
-          to: '/product/create'
-        }}
+        actions={
+          <>
+            <Button
+              variant="secondary"
+              aria-pressed={!!showFilter}
+              onClick={() => setShowFilter(!showFilter)}
+              className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+            >
+              <ListFilter strokeWidth={1.75} />
+              篩選
+            </Button>
+            <Button asChild variant="primary">
+              <RouterLink to={'/product/create'}>{'新增商品'}</RouterLink>
+            </Button>
+          </>
+        }
       />
 
       {/* 以 hidden 收合（取代 MUI Collapse），SearchBar 保持掛載，輸入內容與舊版一樣不會因收合而清空 */}
@@ -124,7 +136,9 @@ function CustomerManagementList() {
           </div>
         </Card>
       </div>
-      {productList.length !== 0 ? (
+      {products.error ? (
+          <QueryFailed onRetry={() => products.refetch()} />
+        ) : productList.length !== 0 ? (
         <Results
           products={productList}
           refetchProducts={products.refetch}

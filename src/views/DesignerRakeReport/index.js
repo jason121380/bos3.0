@@ -6,10 +6,11 @@ import idx from 'idx'
 import useFetchDesignerRakeReport from 'hooks/useFetchDesignersRakeReport'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import { EmptyState } from 'ui/empty-state'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const DesignerRakeReport = () => {
   const [date, setDate] = useState({
@@ -33,16 +34,18 @@ const DesignerRakeReport = () => {
   return (
     <Page className="ui-root" title="設計師抽成報表">
       <PageHeader title="設計師抽成報表" />
-      <Toolbar>
-        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+      <ReportToolbar
+        date={
           <DateSelector
             date={date}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
           />
-        </div>
-      </Toolbar>
-      {!designerRakeReportData.loading ? (
+        }
+      />
+      {designerRakeReportData.error ? (
+          <QueryFailed onRetry={() => designerRakeReportData.refetch()} />
+        ) : !designerRakeReportData.loading ? (
         idx(designerRakeReportData, _ =>
           _.data.userRakeReport.length > 0 ? (
             // userRakeGrid：@media print 以 div.userRakeGrid 排成三欄，className 保留

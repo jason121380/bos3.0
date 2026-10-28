@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
 import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
@@ -18,6 +18,7 @@ import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const isIncludeProductPerformanceValue = [
   { label: '含店販', value: true },
@@ -68,7 +69,7 @@ const DesignerPerformBasic = () => {
 
   useEffect(() => {
     if (!getDRRDataDisplay.loading) {
-      const { isDRROCDisplay, isDRRPEVDisplay } = idx(getDRRDataDisplay, _ => _.data.getParameterReportSetting)
+      const { isDRROCDisplay, isDRRPEVDisplay } = idx(getDRRDataDisplay, _ => _.data.getParameterReportSetting) || {}
       setDataDisplay({
         isDRROCDisplay,
         isDRRPEVDisplay
@@ -107,6 +108,8 @@ const DesignerPerformBasic = () => {
   useEffect(() => {
     if (!designersLeaboardData.loading && !monthlyAverageDisplayForDesignerLeaderBoardData.loading && !isMemberShipCardActiveData.loading) {
       const report = idx(designersLeaboardData, _ => _.data.designerLeaderboard.designerLeaderBoard)
+      // 查詢失敗時沒有資料，不整理報表（畫面另有 QueryFailed）
+      if (!report) return
       const excelData = []
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const monthlyAveragePerformanceTotal = idx(
@@ -117,7 +120,7 @@ const DesignerPerformBasic = () => {
         monthlyAverageDisplayForDesignerLeaderBoardData,
         _ => _.data.getMonthlyAverageDisplayForDesignerLeaderBoard
       )
-      const membershipTotal = report.reduce((acc, curVal) => acc + curVal.membershipTotal, 0)
+      const membershipTotal = (report || []).reduce((acc, curVal) => acc + curVal.membershipTotal, 0)
       const membershipDisplay = (isMemberShipCardActive || membershipTotal !== 0)
       
       // 是否顯示會員卡欄位
@@ -309,67 +312,80 @@ const DesignerPerformBasic = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <AdminPageHeader title='設計師排行榜' />
-        {/* 篩選區：分列分組、標籤在切換鈕上方（STYLE.md §6）、間距統一；桌機排不下整齊換行不擠壓 */}
-        <div className="flex flex-col gap-3 pb-4">
-          <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
-            <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
-              <DateSelector
-                date={date}
-                attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-                dateChange={value => setDate(value)}
-              />
-            </div>
-            <div className="noprint flex min-w-0 flex-col gap-1.5">
-              <div className="text-label text-text-secondary">服務業績指定/不指定：</div>
-              <ToggleGroup
-                size="small"
-                exclusive
-                value={performanceDisplay}
-                onChange={(e, v) => v && setPerformanceDisplay(v)}
+        {/* 頁首只放「報表匯出」「列印」（STYLE §14）；有資料才顯示，與原本相同 */}
+        <PageHeader
+          title='設計師排行榜'
+          actions={excelData.length !== 0 ? (
+            <>
+              <CSVLink
+                data={excelData}
+                filename="設計師排行榜.csv"
+                style={{ display: 'inline' }}
               >
-                <ToggleGroupItem value='VISIBLE'>顯示</ToggleGroupItem>
-                <ToggleGroupItem value='HIDDEN'>不顯示</ToggleGroupItem>
-              </ToggleGroup>
-            </div>
-            {!isDisplayTogglePerformanceButton && <div className="noprint flex min-w-0 flex-col gap-1.5">
-              <div className="text-label text-text-secondary">業績依據：</div>
-              <ReferToggleButton
-                value={performReference}
-                onChange={handleToggleButtonChange}
-              />
-            </div>}
-            <div className="noprint flex min-w-0 flex-col gap-1.5">
-              <div className="text-label text-text-secondary">
-                總業績依據：
-              </div>
-              <div className="flex flex-wrap items-center gap-2">
+                <Button variant="secondary" disabled={designersLeaboardData.loading}>
+                  <Download strokeWidth={1.75} />
+                  報表匯出
+                </Button>
+              </CSVLink>
+              <Button
+                variant="secondary"
+                disabled={designersLeaboardData.loading}
+                onClick={() => window.print()}
+              >
+                <Printer strokeWidth={1.75} />
+                列印
+              </Button>
+            </>
+          ) : null}
+        />
+        {/* 日期留在篩選列、搜尋在右側；其餘條件收進「篩選」，標籤在上（STYLE §14） */}
+        <ReportToolbar
+          date={
+            <DateSelector
+              date={date}
+              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              dateChange={value => setDate(value)}
+            />
+          }
+          filters={
+            <>
+              <div className="noprint flex min-w-0 flex-col gap-1.5">
+                <div className="text-label text-text-secondary">服務業績指定/不指定：</div>
                 <ToggleGroup
                   size="small"
-                  value={isIncludeProductPerformance}
-                  onChange={handleProductPerformanceToggleButtonChange}
                   exclusive
+                  value={performanceDisplay}
+                  onChange={(e, v) => v && setPerformanceDisplay(v)}
                 >
-                  {isIncludeProductPerformanceValue.map((data, idx) => (
-                    <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                      {data.label}
-                    </ToggleGroupItem>
-                  ))}
+                  <ToggleGroupItem value='VISIBLE'>顯示</ToggleGroupItem>
+                  <ToggleGroupItem value='HIDDEN'>不顯示</ToggleGroupItem>
                 </ToggleGroup>
-                {isMemberShipCardActive ?
+              </div>
+              {!isDisplayTogglePerformanceButton && <div className="noprint flex min-w-0 flex-col gap-1.5">
+                <div className="text-label text-text-secondary">業績依據：</div>
+                <ReferToggleButton
+                  value={performReference}
+                  onChange={handleToggleButtonChange}
+                />
+              </div>}
+              <div className="noprint flex min-w-0 flex-col gap-1.5">
+                <div className="text-label text-text-secondary">
+                  總業績依據：
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
                   <ToggleGroup
                     size="small"
-                    value={isIncludeMemberPerformance}
-                    onChange={handleMemberPerformanceToggleButtonChange}
+                    value={isIncludeProductPerformance}
+                    onChange={handleProductPerformanceToggleButtonChange}
                     exclusive
                   >
-                    {isIncludeMemberPerformanceValue.map((data, idx) => (
+                    {isIncludeProductPerformanceValue.map((data, idx) => (
                       <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                         {data.label}
                       </ToggleGroupItem>
                     ))}
-                  </ToggleGroup> :
-                  membershipDisplay ?
+                  </ToggleGroup>
+                  {isMemberShipCardActive ?
                     <ToggleGroup
                       size="small"
                       value={isIncludeMemberPerformance}
@@ -381,53 +397,46 @@ const DesignerPerformBasic = () => {
                           {data.label}
                         </ToggleGroupItem>
                       ))}
-                    </ToggleGroup> : ''
-                }
+                    </ToggleGroup> :
+                    membershipDisplay ?
+                      <ToggleGroup
+                        size="small"
+                        value={isIncludeMemberPerformance}
+                        onChange={handleMemberPerformanceToggleButtonChange}
+                        exclusive
+                      >
+                        {isIncludeMemberPerformanceValue.map((data, idx) => (
+                          <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                            {data.label}
+                          </ToggleGroupItem>
+                        ))}
+                      </ToggleGroup> : ''
+                  }
 
+                </div>
               </div>
-            </div>
-            {excelData.length !== 0 && (
-              <div className="noprint flex flex-wrap items-center gap-2 sm:ml-auto">
-                <CSVLink
-                  data={excelData}
-                  filename="設計師排行榜.csv"
-                  style={{ display: 'inline' }}
-                >
-                  <Button variant="secondary" disabled={designersLeaboardData.loading}>
-                    <Download strokeWidth={1.75} />
-                    報表匯出
-                  </Button>
-                </CSVLink>
-                <Button
-                  variant="secondary"
-                  disabled={designersLeaboardData.loading}
-                  onClick={() => window.print()}
-                >
-                  <Printer strokeWidth={1.75} />
-                  列印
-                </Button>
+              <div className="noprint min-w-0">
+                <MerchantListAutocpmplete
+                  onValueChange={value => {
+                    handleChecked(value)
+                  }}
+                />
               </div>
-            )}
-          </div>
-          <div className="noprint flex flex-wrap items-center gap-2.5">
-            <div className="w-full min-w-0 sm:flex-1">
-              <MerchantListAutocpmplete
-                onValueChange={value => {
-                  handleChecked(value)
-                }}
-              />
-            </div>
+            </>
+          }
+          actions={
             <Button
               variant="primary"
-              size="lg"
               onClick={handleSearchReport}
-              className="shrink-0 max-sm:w-full"
+              className="shrink-0"
             >
               搜尋
             </Button>
-          </div>
-        </div>
-        {!designersLeaboardData.loading && !monthlyAverageDisplayForDesignerLeaderBoard.loading ? (
+          }
+        />
+        {designersLeaboardData.error ? (
+          <QueryFailed onRetry={() => designersLeaboardData.refetch()} />
+        ) : !designersLeaboardData.loading && !monthlyAverageDisplayForDesignerLeaderBoard.loading ? (
           <Results
             report={idx(designersLeaboardData, _ => _.data.designerLeaderboard.designerLeaderBoard)}
             performReference={performReference}

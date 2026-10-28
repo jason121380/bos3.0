@@ -199,7 +199,7 @@ function EventRuleCreate({ match }) {
                 attributions: [],
               })
             } else {
-              if (!item.data.belong.length) throw { message: item.errorMessage }
+              if (!item.data.belong.length) throw new Error(item.errorMessage)
               submitData.consumptionTypeRules.push({
                 consumptionType: item.enum,
                 attributionRange: 'SPECIFIC',

@@ -274,10 +274,6 @@ function Results({
         setEditBarOnClick(false)
         setSelectedOrders([])
         setPassword('')
-        openSnackbar({
-          message: err.message,
-          variant: 'error',
-        })
       })
   }
   const handleCloseDialog = () => {

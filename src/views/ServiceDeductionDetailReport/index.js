@@ -5,8 +5,7 @@ import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import ServicesIncludesTicketsAutoComplete from 'components/ServicesIncludesTicketsAutoComplete'
 import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
-import { ReportToolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { endOfMonth } from 'date-fns'
 import idx from 'idx'
 import { CSVLink } from "react-csv";
@@ -18,6 +17,7 @@ import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 // MerchantSearchBar 已使用 flex 排版；下方舊 MuiGrid 後代選擇器目前不命中，保留既有 class 字串
 const topDiv = 'flex flex-row flex-wrap items-center gap-2.5 [&_.MuiGrid-container]:!w-[unset]'
@@ -55,14 +55,14 @@ const ServiceDeductionDetailReport = () => {
   useEffect(() => {
     if (!getAttributionForRake.loading) {
       const data = idx(getAttributionForRake, _ => _.data.getAttributionForRake)
-      setAttributions(data)
+      setAttributions(data || [])
     }
   }, [getAttributionForRake.loading])
 
   return (
     <Page className="ui-root" title="服務扣項明細表">
       <div>
-        <AdminPageHeader title='服務扣項明細表'>
+        <PageHeader title='服務扣項明細表'>
           <Button asChild variant="secondary">
             <CSVLink
               data={excelData}
@@ -72,7 +72,7 @@ const ServiceDeductionDetailReport = () => {
               報表匯出
             </CSVLink>
           </Button>
-        </AdminPageHeader>
+        </PageHeader>
         {/* 日期留在篩選列；其餘條件收進「篩選」（STYLE §14）。MerchantSearchBar 拆兩個實例共用同一份 values（同帳單列表），收合區的那個不讀網址日期 */}
         <ReportToolbar
           date={
@@ -117,7 +117,9 @@ const ServiceDeductionDetailReport = () => {
             </div>
           }
         />
-        {!serviceDedcutionDetailData.loading ? (
+        {serviceDedcutionDetailData.error ? (
+          <QueryFailed onRetry={() => serviceDedcutionDetailData.refetch()} />
+        ) : !serviceDedcutionDetailData.loading ? (
           idx(serviceDedcutionDetailData, _ =>
             _.data.getUserServiceDeductionDetialMultiple !== null ? (
               _.data.getUserServiceDeductionDetialMultiple.length > 0 ? (

@@ -205,6 +205,7 @@ describe('商品進貨作業列表', () => {
     fireEvent.click(within(rowOf('R003')).getByRole('checkbox'))
     const before = callsOf(calls, 'GET_PURCHASE_RECORDS').length
     fireEvent.click(within(screen.getByRole('toolbar', { name: '批次操作' })).getByRole('button', { name: /刪除/ }))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '刪除成功', variant: 'success' }))
     expect(callsOf(calls, 'DELETE_PURCHASE')[0].variables).toEqual({ purchaseUUIds: ['pr-1', 'pr-3'] })
     await settle()
@@ -224,6 +225,7 @@ describe('商品進貨作業列表', () => {
     fireEvent.click(within(rowOf('R001')).getByRole('checkbox'))
     const before = callsOf(calls, 'GET_PURCHASE_RECORDS').length
     fireEvent.click(within(screen.getByRole('toolbar', { name: '批次操作' })).getByRole('button', { name: /刪除/ }))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '單據已入庫', variant: 'error' }))
     expect(callsOf(calls, 'GET_PURCHASE_RECORDS')).toHaveLength(before)
     cleanup()
@@ -233,6 +235,7 @@ describe('商品進貨作業列表', () => {
     await second.settle()
     fireEvent.click(within(rowOf('R001')).getByRole('checkbox'))
     fireEvent.click(within(screen.getByRole('toolbar', { name: '批次操作' })).getByRole('button', { name: /刪除/ }))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(callsOf(second.calls, 'DELETE_PURCHASE')).toHaveLength(1))
     await second.settle()
     expect(openSnackbar).not.toHaveBeenCalled()

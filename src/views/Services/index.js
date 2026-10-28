@@ -1,5 +1,4 @@
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchServices from 'hooks/useFetchServices'
 import idx from 'idx'
 import produce from 'immer'
@@ -8,6 +7,10 @@ import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
+import { Link as RouterLink } from 'react-router-dom'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 function Services() {
   const [pageSetting, setPageSetting] = useState({
@@ -48,15 +51,20 @@ function Services() {
   return (
     <Page className="ui-root" title="服務項目設定">
       {/* Jason 2026/10/24：服務項目設定不顯示篩選鈕。舊版篩選區（關鍵字、服務類別）開關從未接上，2026/10/22 已刪除；服務類別查詢仍保留在載入條件中 */}
-      <AdminPageHeader
+      <PageHeader
         title="服務項目設定"
-        primaryAction={{
-          label: '新增',
-          to: '/service/create'
-        }}
+        actions={
+          <>
+            <Button asChild variant="primary">
+              <RouterLink to={'/service/create'}>{'新增'}</RouterLink>
+            </Button>
+          </>
+        }
       />
 
-      {!servicesData.loading ?
+      {servicesData.error ? (
+          <QueryFailed onRetry={() => servicesData.refetch()} />
+        ) : !servicesData.loading ?
         services !== undefined && (
           <Results
             services={services}

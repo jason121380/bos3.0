@@ -1,8 +1,6 @@
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
-import PageTitle from 'components/PageTitle'
 import TicketsAutocpmplete from 'components/TicketsAutocpmplete'
 import { endOfDay, startOfMonth } from 'date-fns'
 import { useFetchTicketSellOverviewLazy } from 'hooks/useFetchTicketSellOverview'
@@ -14,7 +12,7 @@ import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefau
 import isExportCustomerMasked from 'helper/exportCustomerMask'
 import useQueryString from 'hooks/useQueryString'
 import roundDecimal from './../../helper/roundDecimal.js'
-import { Search } from 'lucide-react'
+import { Search, ListFilter } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
@@ -22,6 +20,7 @@ import QueryFailed from 'components/QueryFailed'
 
 import BoughtResults from './BoughtResults'
 import UsagedResults from './UsagedResults'
+import { PageHeader } from 'ui/page-header'
 
 export default function ManagementCoupons() {
   const [ticketSellOverviewLazy, ticketSellOverviewData] = useFetchTicketSellOverviewLazy()
@@ -114,21 +113,31 @@ export default function ManagementCoupons() {
 
   return (
     <Page title="卡券管理" className="ui-root">
-        <AdminPageHeader
+        <PageHeader
           title='卡券管理'
-          showFilter={showFilter}
-          onFilterClick={() => setShowFilter(!showFilter)}
-        >
-          <DateSelector
-            attributes={['lastmonth', 'thismonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            date={{
-              startDate: pageSetting.startDate,
-              endDate: pageSetting.endDate
-            }}
-            dateChange={value => setPageSetting(prev => ({ ...prev, ...value }))}
-            margin={false}
-          />
-        </AdminPageHeader>
+          actions={
+            <>
+              <DateSelector
+                attributes={['lastmonth', 'thismonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+                date={{
+                  startDate: pageSetting.startDate,
+                  endDate: pageSetting.endDate
+                }}
+                dateChange={value => setPageSetting(prev => ({ ...prev, ...value }))}
+                margin={false}
+              />
+              <Button
+                variant="secondary"
+                aria-pressed={!!showFilter}
+                onClick={() => setShowFilter(!showFilter)}
+                className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+              >
+                <ListFilter strokeWidth={1.75} />
+                篩選
+              </Button>
+            </>
+          }
+        />
         {/* 以 hidden 收合（取代 MUI Collapse）：篩選元件保持掛載，收合後內容與舊版一樣保留 */}
         <div hidden={!showFilter}>
           <Card className="mb-6 flex flex-col gap-2.5 p-4">

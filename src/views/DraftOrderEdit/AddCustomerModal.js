@@ -441,7 +441,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                     renderValue={() => <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />}
                   >
                     <MenuItem value="loading">
-                      <em>Loading...</em>
+                      <em>載入中…</em>
                     </MenuItem>
                   </Select>
                 </FormControl>

@@ -54,7 +54,7 @@ describe('個人頁：分頁', () => {
 
   it('登入者資料載入中顯示 Loading', async () => {
     renderProfile('security', { delays: { PROFILE: 300 } })
-    expect(screen.getByText('Loading...')).toBeInTheDocument()
+    expect(screen.getByText('載入中…')).toBeInTheDocument()
     expect(await screen.findByText('更改密碼')).toBeInTheDocument()
   })
 

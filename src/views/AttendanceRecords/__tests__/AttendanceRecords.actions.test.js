@@ -187,8 +187,9 @@ describe('查詢與顯示', () => {
     expect(cellOf('OTHER').textContent).toBe('')
     expect(cellOf('LINE').textContent).toBe('上09:00外12:00回13:00下18:00')
     expect(cellOf('LINE').querySelectorAll('.lineicon')).toHaveLength(3)
-    expect(within(cellOf('CELLPHONE')).getByText('09:00').tagName).toBe('A')
-    expect(within(cellOf('NULL_GPS')).getByText('18:00').tagName).toBe('A')
+    // 2026/10/28：時間不再用無 href 的 <a> 當彩色文字（讀屏會唸成連結），改為 <span>；遲到／早退改用 text-danger token
+    expect(within(cellOf('CELLPHONE')).getByText('09:00').tagName).toBe('SPAN')
+    expect(within(cellOf('NULL_GPS')).getByText('18:00').tagName).toBe('SPAN')
     expect(within(cellOf('CELLPHONE_NOGPS')).getByText('09:00')).toHaveStyle('color: rgb(var(--text-tertiary))')
     expect(within(cellOf('CELLPHONE_NOGPS')).getByText('12:00')).toHaveStyle('color: rgb(var(--text-tertiary))')
     expect(within(cellOf('CELLPHONE_NOGPS')).getByText('13:00')).toHaveStyle('color: rgb(var(--text-tertiary))')
@@ -200,11 +201,11 @@ describe('查詢與顯示', () => {
     const utils = setup()
     await ready(utils)
     const day10 = dayCell(10)
-    expect(within(day10).getByText('上09:15').parentElement.className).toMatch(/color:red/)
-    expect(within(day10).getByText('下12:00').parentElement.className).not.toMatch(/color:red/)
+    expect(within(day10).getByText('上09:15').parentElement.className).toMatch(/text-danger/)
+    expect(within(day10).getByText('下12:00').parentElement.className).not.toMatch(/text-danger/)
     expect(within(day10).getByText('13:00')).toHaveStyle('color: rgb(var(--warning))')
     expect(within(day10).getByText('17:30')).toHaveStyle('color: rgb(var(--danger))')
-    expect(within(day10).getByText('17:30').className).toMatch(/color:red/)
+    expect(within(day10).getByText('17:30').className).toMatch(/text-danger/)
     expect(within(day10).getByText('13:00').className).toMatch(/no-underline/)
     expect(within(day10).getAllByRole('separator')).toHaveLength(1)
     // 第二段只有休息紀錄也畫分隔線；全空的不畫
@@ -216,7 +217,7 @@ describe('查詢與顯示', () => {
     // 遲到又早退：各種打卡方式的上班與下班都標紅
     Object.keys(KINDS).filter(k => k !== 'OTHER').forEach((kind, i) => {
       const cellEl = dayCell(14 + Object.keys(KINDS).indexOf(kind))
-      const red = [...cellEl.querySelectorAll('[class*="color:red"]')]
+      const red = [...cellEl.querySelectorAll('[class*="text-danger"]')]
       expect(red.length).toBeGreaterThanOrEqual(2)
     })
   })

@@ -197,7 +197,7 @@ function NonDesignationBookingLimitSetting({
               </li>
             )}
             renderInput={params => (
-              <TextField {...params} variant="outlined" placeholder="選擇設計師" />
+              <TextField {...params} variant="outlined" label="設計師" placeholder="選擇設計師" />
             )}
           />
         </Field>

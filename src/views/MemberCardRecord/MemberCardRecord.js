@@ -1,6 +1,5 @@
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
-import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
 // ... rest of imports
 import { useState } from 'react'
@@ -14,6 +13,9 @@ import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 import { cn } from 'ui/utils'
+import { ListFilter } from 'lucide-react'
+import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 function MemberCardRecord() {
   // ... state definitions
@@ -30,7 +32,8 @@ function MemberCardRecord() {
   })
 
   // 拿到會員卡
-  const memberships = idx(useFetchGetMemberships(setting), _ => _.data.memberships)
+  const membershipsData = useFetchGetMemberships(setting)
+  const memberships = idx(membershipsData, _ => _.data.memberships)
 
   // 拿到會員卡全部類別
   const categories = idx(
@@ -71,15 +74,24 @@ function MemberCardRecord() {
   return (
     <Page className="ui-root" title="會員卡列表">
       <div>
-        <AdminPageHeader
+        <PageHeader
           title="會員卡列表"
-          sx={{ backgroundColor: 'transparent', mb: 0 }}
-          onFilterClick={() => setShowFilter(!showFilter)}
-          showFilter={showFilter}
-          primaryAction={{
-            label: '新增',
-            to: '/member-card/create'
-          }}
+          actions={
+            <>
+              <Button
+                variant="secondary"
+                aria-pressed={!!showFilter}
+                onClick={() => setShowFilter(!showFilter)}
+                className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+              >
+                <ListFilter strokeWidth={1.75} />
+                篩選
+              </Button>
+              <Button asChild variant="primary">
+                <RouterLink to={'/member-card/create'}>{'新增'}</RouterLink>
+              </Button>
+            </>
+          }
         />
 
         {showFilter && (
@@ -118,7 +130,9 @@ function MemberCardRecord() {
             </div>
           </Card>
         )}
-        {memberships !== undefined ? (
+        {membershipsData.error ? (
+          <QueryFailed onRetry={() => membershipsData.refetch()} />
+        ) : memberships !== undefined ? (
           <Results
             memberships={memberships}
             categories={categories}

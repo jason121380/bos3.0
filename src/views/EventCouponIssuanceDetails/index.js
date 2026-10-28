@@ -10,12 +10,14 @@ import isExportCustomerMasked, { maskCustomerName, maskCellphone } from 'helper/
 import produce from 'immer'
 import format from 'date-fns/format'
 import { CSVLink } from "react-csv";
-import AdminPageHeader from 'components/AdminPageHeader'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import { ListFilter } from 'lucide-react'
+import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 
 function EventCouponIssuanceDetails() {
@@ -103,31 +105,41 @@ function EventCouponIssuanceDetails() {
     <Fragment>
       <Page className="ui-root" title="活動發券明細">
         <div>
-          <AdminPageHeader
+          <PageHeader
             title="活動發券明細"
-            showFilter={showFilter}
-            onFilterClick={() => setShowFilter(!showFilter)}
-          >
-            <DateSelector
-              date={inputData}
-              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-              dateChange={({ startDate, endDate }) => {
-                setInputData(
-                  produce(draft => {
-                    draft.startDate = startDate
-                    draft.endDate = endDate
-                  })
-                )
-                // 換日期區間時回到第一頁（Jason 2026/10/22 授權修正：原本沿用目前頁碼查新區間）
-                setPageSetting(
-                  produce(draft => {
-                    draft.pageOffset = 0
-                  })
-                )
-              }}
-              margin={false}
-            />
-          </AdminPageHeader>
+            actions={
+              <>
+                <DateSelector
+                  date={inputData}
+                  attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+                  dateChange={({ startDate, endDate }) => {
+                    setInputData(
+                      produce(draft => {
+                        draft.startDate = startDate
+                        draft.endDate = endDate
+                      })
+                    )
+                    // 換日期區間時回到第一頁（Jason 2026/10/22 授權修正：原本沿用目前頁碼查新區間）
+                    setPageSetting(
+                      produce(draft => {
+                        draft.pageOffset = 0
+                      })
+                    )
+                  }}
+                  margin={false}
+                />
+                <Button
+                  variant="secondary"
+                  aria-pressed={!!showFilter}
+                  onClick={() => setShowFilter(!showFilter)}
+                  className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+                >
+                  <ListFilter strokeWidth={1.75} />
+                  篩選
+                </Button>
+              </>
+            }
+          />
 
           {showFilter && (
             <Card className="mb-4 p-4">
@@ -156,7 +168,9 @@ function EventCouponIssuanceDetails() {
             </Card>
           )}
 
-          {voucherIssuanceRecordData.loading ?
+          {voucherIssuanceRecordData.error ? (
+            <QueryFailed onRetry={() => voucherIssuanceRecordData.refetch()} />
+          ) : voucherIssuanceRecordData.loading ?
             <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
             :
             <Results

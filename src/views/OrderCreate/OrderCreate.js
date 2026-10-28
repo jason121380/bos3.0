@@ -121,11 +121,14 @@ function OrderCreate() {
   const [memberCardSells, setMemberCardSells] = useState([])
   const [memberShipCardActive, setMemberShipCardActive] = useState(false)
   const getDisablePendingOrder = useFetchGetDisablePendingOrder()
-  const disablePendingOrder = getDisablePendingOrder.loading ? true : getDisablePendingOrder.data.getParameterAboutSettingFunction.disablePendingOrder
+  // 查詢失敗（data 為 undefined）時維持「停用掛單」的保守預設，不在 render 階段拋錯
+  const disablePendingOrder = getDisablePendingOrder.loading
+    ? true
+    : idx(getDisablePendingOrder, _ => _.data.getParameterAboutSettingFunction.disablePendingOrder) ?? true
 
   useEffect(() => {
     if (!memberShipActive.loading) {
-      setMemberShipCardActive(memberShipActive.data.getIsMemberShipCardActive)
+      setMemberShipCardActive(idx(memberShipActive, _ => _.data.getIsMemberShipCardActive) ?? false)
     }
   }, [memberShipActive.loading])
 
@@ -166,7 +169,7 @@ function OrderCreate() {
 
   useEffect(() => {
     if (!customerBonusActive.loading) {
-      setBonusActive(customerBonusActive.data.getIsCustomerBonusActive)
+      setBonusActive(idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) ?? false)
     }
   }, [customerBonusActive.loading])
 

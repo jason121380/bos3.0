@@ -122,6 +122,8 @@ describe('互助點數明細', () => {
   it('篩選被互助的設計師：列表、合計與匯出只算該設計師；清除後回到全部', async () => {
     const { settle } = renderReport()
     await settle()
+    // 人員、服務、被協助設計師收在「篩選」卡片（STYLE §14，預設收合），先展開
+    fireEvent.click(screen.getByRole('button', { name: '篩選' }))
     pickOption('設計師編號/姓名', 'Amy-01')
     expect(orderNos()).toEqual(['#A001', '#A002'])
     expect(totalRow()[5]).toBe('300')

@@ -218,7 +218,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
         ])
       })
       .catch(err => {
-        openSnackbar({ variant: 'error', message: err.message })
+        // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
       })
   }
 
@@ -291,7 +291,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
         setSelectedService([])
       })
       .catch(err => {
-        openSnackbar({ variant: 'error', message: err.message })
+        // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
       })
   }
 

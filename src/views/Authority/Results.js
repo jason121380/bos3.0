@@ -179,7 +179,7 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
           </Table>
         </div>
       </Card>
-      <TableEditBar selected={selected} onDelete={handleSeletedDelete} />
+      <TableEditBar selected={selected} onDelete={handleSeletedDelete} confirmDelete />
     </div>
   )
 }

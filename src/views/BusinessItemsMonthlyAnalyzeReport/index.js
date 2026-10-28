@@ -7,10 +7,11 @@ import useFetchGetBusinessItemsMonthlyReport from 'hooks/useFetchGetBusinessItem
 import useFetchGetBusinessItemsMonthlyReportExcel from 'hooks/useFetchGetBusinessItemsMonthlyReportExcel'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 export default function Employees() {
   const [reportData, setReportData] = useState({
@@ -98,14 +99,18 @@ export default function Employees() {
           </>
         }
       />
-      <Toolbar>
-        <DateSelector
-          date={date}
-          attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
-          dateChange={value => setDate(value)}
-        />
-      </Toolbar>
-      {!businessItemsMonthlyReport.loading ?
+      <ReportToolbar
+        date={
+          <DateSelector
+            date={date}
+            attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
+            dateChange={value => setDate(value)}
+          />
+        }
+      />
+      {businessItemsMonthlyReport.error ? (
+          <QueryFailed onRetry={() => businessItemsMonthlyReport.refetch()} />
+        ) : !businessItemsMonthlyReport.loading ?
         <Results
           reportData={reportData}
           className="mt-2"

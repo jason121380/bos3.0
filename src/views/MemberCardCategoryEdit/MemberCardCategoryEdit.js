@@ -8,6 +8,7 @@ import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 function MemberCardCategoryEdit({ match }) {
   // 拿到此會員卡的資料
@@ -59,47 +60,50 @@ function MemberCardCategoryEdit({ match }) {
         window.location.href = '/member-card-categories'
       })
       .catch(err => {
-        openSnackbar({
-          message: err.message,
-          variant: 'error',
-        })
+        // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
       })
   }
   return (
     <Page className="ui-root" title="編輯會員卡分類">
       <div className="mx-auto max-w-3xl">
         <PageHeader title="編輯會員卡分類" />
-        <Card>
-          <CardHeader>
-            <CardTitle>一般資訊</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <Field label="代號">
-              <Input
-                name="no"
-                value={submitValue.no}
-                onChange={event => setSubmitValue({ ...submitValue, no: event.target.value })}
-              />
-            </Field>
-            <Field label="名稱">
-              <Input
-                name="name"
-                value={submitValue.name}
-                onChange={event => setSubmitValue({ ...submitValue, name: event.target.value })}
-              />
-            </Field>
-          </CardContent>
-          <CardFooter>
-            <Button
-              variant="primary"
-              type="submit"
-              data-testid="save"
-              onClick={() => onSubmit()}
-            >
-              儲存
-            </Button>
-          </CardFooter>
-        </Card>
+        {membershipCategory.error ? (
+          <QueryFailed onRetry={() => membershipCategory.refetch()} />
+        ) : (
+          <>
+            <Card>
+              <CardHeader>
+                <CardTitle>一般資訊</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
+                <Field label="代號">
+                  <Input
+                    name="no"
+                    value={submitValue.no}
+                    onChange={event => setSubmitValue({ ...submitValue, no: event.target.value })}
+                  />
+                </Field>
+                <Field label="名稱">
+                  <Input
+                    name="name"
+                    value={submitValue.name}
+                    onChange={event => setSubmitValue({ ...submitValue, name: event.target.value })}
+                  />
+                </Field>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  data-testid="save"
+                  onClick={() => onSubmit()}
+                >
+                  儲存
+                </Button>
+              </CardFooter>
+            </Card>
+          </>
+        )}
       </div>
     </Page>
   )

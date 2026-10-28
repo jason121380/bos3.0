@@ -1,5 +1,4 @@
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { useFetchUsersInEmployeeList } from 'hooks/useFetchUsers'
 import idx from 'idx'
 import produce from 'immer'
@@ -11,6 +10,11 @@ import { Field, Input } from 'ui/input'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
+import { Link as RouterLink } from 'react-router-dom'
+import { ListFilter } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 export default function Employees() {
   const designerId = JSON.parse(localStorage.getItem('user')).id
@@ -72,14 +76,24 @@ export default function Employees() {
   return (
     !designerDetail.loading && (
       <Page className="ui-root" title="員工列表">
-        <AdminPageHeader
+        <PageHeader
           title='員工列表'
-          showFilter={showFilter}
-          onFilterClick={() => setShowFilter(!showFilter)}
-          primaryAction={{
-            label: '新增',
-            to: '/employee/create'
-          }}
+          actions={
+            <>
+              <Button
+                variant="secondary"
+                aria-pressed={!!showFilter}
+                onClick={() => setShowFilter(!showFilter)}
+                className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+              >
+                <ListFilter strokeWidth={1.75} />
+                篩選
+              </Button>
+              <Button asChild variant="primary">
+                <RouterLink to={'/employee/create'}>{'新增'}</RouterLink>
+              </Button>
+            </>
+          }
         />
 
         {showFilter && (
@@ -93,7 +107,9 @@ export default function Employees() {
             </Field>
           </Card>
         )}
-        {!users.loading ? idx(users, _ => (
+        {users.error ? (
+          <QueryFailed onRetry={() => users.refetch()} />
+        ) : !users.loading ? idx(users, _ => (
           <Results
             employees={_.data.users.users}
             handleOnChangePage={handleOnChangePage}

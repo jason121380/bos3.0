@@ -52,6 +52,10 @@ function NavItem({
   const closeTimer = useRef(null)
   const pinnedRef = useRef(false)
   const closeFlyoutRef = useRef(() => {})
+  // 以鍵盤（Enter／空白鍵）打開浮層時，開啟後把焦點移進第一個細項；失焦到側欄與浮層之外就關閉
+  const keyboardOpenRef = useRef(false)
+  // Esc 關閉後把焦點送回群組鈕時，不要因為 focus 事件又把浮層打開
+  const skipFocusOpenRef = useRef(false)
   const tokenRef = useRef(null)
   if (!tokenRef.current) tokenRef.current = () => closeFlyoutRef.current()
   const collapsed = useContext(SidebarRailContext)
@@ -74,6 +78,7 @@ function NavItem({
   const forceClose = () => {
     clearCloseTimer()
     pinnedRef.current = false
+    keyboardOpenRef.current = false
     setHovering(false)
     setPinned(false)
     releaseSidebarFlyout(tokenRef.current)
@@ -144,23 +149,82 @@ function NavItem({
 
   const renderSubmenu = () => (renderItems ? renderItems() : children)
 
+  // 浮層掛在 document.body（portal），用 id 判斷焦點是否還在群組鈕或浮層內
+  const flyoutId = `sidebar-flyout-${title}`
+  const usesFlyout = !hideChevron && (iconRail || (useHoverMenu && !showInline))
+  const focusWithinMenu = target => {
+    if (!target || target.nodeType !== 1) return false
+    if (anchorRef.current && anchorRef.current.contains(target)) return true
+    const flyout = document.getElementById(flyoutId)
+    return Boolean(flyout && flyout.contains(target))
+  }
+
+  // 鍵盤：Tab 停在群組鈕就先浮出細項（與滑鼠滑過相同）；焦點離開群組鈕與浮層才關閉
+  const handleFocus = event => {
+    if (skipFocusOpenRef.current) {
+      skipFocusOpenRef.current = false
+      return
+    }
+    if (!usesFlyout || event.target !== anchorRef.current?.querySelector('button')) return
+    if (!canHoverSidebarFlyout() && !iconRail) return
+    clearCloseTimer()
+    claimSidebarFlyout(tokenRef.current)
+    setHovering(true)
+  }
+  const handleBlur = event => {
+    if (!usesFlyout) return
+    if (focusWithinMenu(event.relatedTarget)) return
+    // 滑鼠釘住（圖示欄點選）的維持原本行為：點到別處不關；鍵盤打開的失焦即關
+    if (pinnedRef.current && !keyboardOpenRef.current) {
+      setHovering(false)
+      return
+    }
+    forceClose()
+  }
+  const handleKeyDown = event => {
+    if (event.key !== 'Escape' || !(hovering || pinned)) return
+    event.stopPropagation()
+    forceClose()
+    skipFocusOpenRef.current = true
+    anchorRef.current?.querySelector('button')?.focus()
+    skipFocusOpenRef.current = false
+  }
+
   if (hasSubmenu) {
     return (
-      <div {...rest} key={title} ref={anchorRef} className="relative" onMouseEnter={openHover} onMouseLeave={scheduleClose}>
+      <div
+        {...rest}
+        key={title}
+        ref={anchorRef}
+        className="relative"
+        onMouseEnter={openHover}
+        onMouseLeave={scheduleClose}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+      >
         <SidebarGroupButton
           icon={Icon}
           open={open}
           hideChevron={hideChevron || (useHoverMenu && !showInline)}
-          {...(useHoverMenu && !showInline ? { 'aria-expanded': showFlyout, 'aria-haspopup': 'true' } : {})}
-          onClick={() => {
+          {...(useHoverMenu && !showInline ? { 'aria-expanded': showFlyout, 'aria-haspopup': 'true', 'aria-controls': showFlyout ? flyoutId : undefined } : {})}
+          onClick={event => {
             if (!useHoverMenu) handleToggle()
             goReportList()
-            if (iconRail && !hideChevron) {
+            // 圖示欄：點選釘住浮層，再點一次關閉（#312 現況）。
+            // 桌機 hover 模式維持 #310–#314 的滑鼠行為（滑過浮出、移開關閉、點主項不開合）；
+            // 只有鍵盤觸發的 click（Enter／空白鍵，event.detail 為 0）才釘住浮層並把焦點移進細項。
+            const keyboard = !event || event.detail === 0
+            if (usesFlyout && (iconRail || keyboard)) {
               const next = !pinnedRef.current
               pinnedRef.current = next
+              keyboardOpenRef.current = next && keyboard
               setPinned(next)
               if (next) claimSidebarFlyout(tokenRef.current)
-              else releaseSidebarFlyout(tokenRef.current)
+              else {
+                setHovering(false)
+                releaseSidebarFlyout(tokenRef.current)
+              }
             }
           }}
         >
@@ -171,14 +235,19 @@ function NavItem({
         )}
         {showFlyout && (
           <SidebarFlyout
+            id={flyoutId}
             anchorRef={anchorRef}
             label={`${title}的細項`}
+            autoFocus={keyboardOpenRef.current}
             onMouseEnter={openHover}
             onMouseLeave={scheduleClose}
             onKeyDown={event => {
               if (event.key !== 'Escape') return
+              event.stopPropagation()
               forceClose()
+              skipFocusOpenRef.current = true
               anchorRef.current?.querySelector('button')?.focus()
+              skipFocusOpenRef.current = false
             }}
           >
             {renderSubmenu()}

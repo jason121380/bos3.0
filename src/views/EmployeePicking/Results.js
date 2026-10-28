@@ -7,6 +7,7 @@ import { format } from 'date-fns'
 import { CSVLink } from "react-csv";
 import useFetchDeletePicking from 'hooks/useFetchDeletePicking'
 import { openSnackbar } from 'elements/snackbars'
+import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
@@ -22,6 +23,7 @@ function Results({
   pageSetting,
   className,
   pickingRecords,
+  refetch,
   actionsBanned,
   ...rest
 }) {
@@ -104,13 +106,17 @@ function Results({
     setSelectedOrders(newSelect)
   }
 
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
   const handleDelete = () => {
     deletePicking(selectedOrders).then(() => {
       openSnackbar({
         message: '刪除 員工領料/自購 成功',
         variant: 'success',
       })
-      window.location.reload()
+      // 原本整頁 reload：改為重抓清單並清空勾選，保留篩選與捲動位置
+      setSelectedOrders([])
+      if (typeof refetch === 'function') refetch()
+      else window.location.reload()
     })
   }
   return (
@@ -236,12 +242,22 @@ function Results({
             {selectedOrders.length} selected
           </span>
           <span aria-hidden="true" className="mr-1 h-5 w-px bg-border" />
-          <Button size="sm" variant="ghost" className="text-danger hover:bg-danger/8" onClick={() => handleDelete()}>
+          <Button size="sm" variant="ghost" className="text-danger hover:bg-danger/8" onClick={() => setConfirmingDelete(true)}>
             <Trash2 strokeWidth={1.75} />
             刪除
           </Button>
         </div>
       </div>
+      <ConfirmDeleteDialog
+        open={confirmingDelete}
+        onClose={() => setConfirmingDelete(false)}
+        title="刪除領料／自購紀錄"
+        message={`刪除已選的 ${selectedOrders.length} 筆紀錄？`}
+        onConfirm={() => {
+          setConfirmingDelete(false)
+          handleDelete()
+        }}
+      />
     </Fragment>
   )
 }

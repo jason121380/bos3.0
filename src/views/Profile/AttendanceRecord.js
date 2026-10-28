@@ -58,6 +58,7 @@ const AttendanceRecord = ({
                           <a
                             href={`https://www.google.com/maps?q=${data.latitude},${data.longitude}`}
                             target="_blank"
+                        rel="noopener noreferrer"
                           >
                             地點
                           </a>

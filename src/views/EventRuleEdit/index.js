@@ -13,6 +13,7 @@ import { Skeleton } from 'ui/skeleton'
 import General from './General'
 import { openSnackbar } from 'elements/snackbars'
 import { startOfDay, endOfDay } from 'date-fns'
+import QueryFailed from 'components/QueryFailed'
 
 function EventRuleEdit({ match }) {
   const history = useHistory()
@@ -256,7 +257,7 @@ function EventRuleEdit({ match }) {
                 attributions: [],
               })
             } else {
-              if (!item.data.belong.length) throw { message: item.errorMessage }
+              if (!item.data.belong.length) throw new Error(item.errorMessage)
               submitData.consumptionTypeRules.push({
                 consumptionType: item.enum,
                 attributionRange: 'SPECIFIC',
@@ -312,7 +313,9 @@ function EventRuleEdit({ match }) {
       <div className="mx-auto max-w-3xl">
         <PageHeader title="編輯規則" />
 
-        {getEventRule.loading ? (
+        {getEventRule.error ? (
+          <QueryFailed onRetry={() => getEventRule.refetch()} />
+        ) : getEventRule.loading ? (
           <div className="flex flex-col gap-4">
             <Skeleton className="h-14 w-full" />
             <Skeleton className="h-64 w-full" />

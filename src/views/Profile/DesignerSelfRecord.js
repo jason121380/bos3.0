@@ -11,7 +11,7 @@ import { Skeleton } from 'ui/skeleton'
 import { formatNumber } from 'ui/format'
 
 const reportCellClass = 'h-auto px-4 py-2 text-left align-middle whitespace-pre-line text-[14px] leading-5'
-const reportHeadClass = 'h-auto px-4 py-3 align-middle whitespace-pre text-[14px] leading-6 font-semibold text-black'
+const reportHeadClass = 'h-auto px-4 py-3 align-middle whitespace-pre text-[14px] leading-6 font-semibold text-text'
 
 // 明確保留舊表格內距與列印框線，避免依賴相容層 class。
 const reportTableClass = 'print:[&_td.categoryPrint2]:px-4 print:[&_td.categoryPrint2]:py-2 print:[&_th.categoryPrint]:px-4 print:[&_th.categoryPrint]:py-3 print:[&_td]:text-text text-[14px] leading-5 [&_tr]:border-0 [&_tr]:hover:bg-transparent [&_td]:border-0 [&_td]:[border-bottom:1px_solid_rgba(0,0,0,0.03)] [&_th]:border-0 [&_th]:[border-bottom:2px_solid_rgba(0,0,0,0.05)] print:[&_td]:!border-0 print:[&_td]:![border-bottom:1px_solid_rgba(0,0,0,0.03)] print:[&_th]:!border-0 print:[&_th]:![border-bottom:2px_solid_rgba(0,0,0,0.05)] print:[&_th]:bg-white'
@@ -70,7 +70,7 @@ function OrderRecord({
                 designer.user.nickName !== null && designer.user.nickName !== ''
                   ? designer.user.nickName
                   : ''
-              } ${designer.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 日報表 ${
+              } ${designer.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 日報表 ${
                 Number(designer.totalPageCount) !== 1
                   ? `- ${designer.currentPageOrder}/${designer.totalPageCount}`
                   : ``
@@ -103,8 +103,9 @@ function OrderRecord({
                               <TableCell className={clsx(reportCellClass, 'categoryPrint2')}>
                                 <a
                                   target="_blank"
+                                 rel="noopener noreferrer"
                                   href={`/order/${orderRecord.orderId}`}
-                                  className="text-black underline"
+                                  className="text-text underline"
                                 >
                                   {orderRecord.orderNo}
                                   {orderRecord.designation ? `*` : ``}

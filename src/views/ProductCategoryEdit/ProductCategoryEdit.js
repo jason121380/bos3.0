@@ -1,3 +1,4 @@
+import idx from 'idx'
 import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
@@ -11,6 +12,7 @@ import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
 import AboutProductCategory from './AboutProductCategory'
+import QueryFailed from 'components/QueryFailed'
 
 function ServiceCategoryCreate({ match }) {
   const productCategoryDetail = useFetchProductCategory({ categoryId: match.params.id })
@@ -23,7 +25,8 @@ function ServiceCategoryCreate({ match }) {
   const { register, handleSubmit, errors, setValue } = useForm()
 
   useEffect(() => {
-    if (!productCategoryDetail.loading) {
+    // 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
+    if (!productCategoryDetail.loading && idx(productCategoryDetail, _ => _.data.productCategory)) {
       setValue('no', productCategoryDetail.data.productCategory.no)
       setValue('name', productCategoryDetail.data.productCategory.name)
 
@@ -51,18 +54,24 @@ function ServiceCategoryCreate({ match }) {
     <Page className="ui-root" title="編輯商品分類">
       <div className="mx-auto max-w-3xl">
         <PageHeader title="編輯商品分類" />
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-          <Provider value={value}>
-            {!productCategoryDetail.loading && (
-              <AboutProductCategory />
-            )}
-          </Provider>
-          <div className="flex justify-end">
-            <Button variant="primary" type="submit" data-testid="save">
-              儲存
-            </Button>
-          </div>
-        </form>
+        {productCategoryDetail.error ? (
+          <QueryFailed onRetry={() => productCategoryDetail.refetch()} />
+        ) : (
+          <>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+              <Provider value={value}>
+                {!productCategoryDetail.loading && (
+                  <AboutProductCategory />
+                )}
+              </Provider>
+              <div className="flex justify-end">
+                <Button variant="primary" type="submit" data-testid="save">
+                  儲存
+                </Button>
+              </div>
+            </form>
+          </>
+        )}
       </div>
     </Page>
   )

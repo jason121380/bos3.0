@@ -129,10 +129,12 @@ describe('活動發券明細', () => {
     expect(screen.getByText('共 0 筆資料')).toBeInTheDocument()
   })
 
-  it('查詢失敗時顯示空狀態，不整頁壞', async () => {
+  // 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／空列表，避免誤以為沒有資料或把空值存回去
+  it('查詢失敗時顯示無法載入資料與重新查詢，不整頁壞', async () => {
     const { settle } = renderPage(<EventCouponIssuanceDetails />, { fallback: 'error', route: '/event-coupon-issuance-details' })
     await settle()
-    expect(await screen.findByText('無發券明細資料')).toBeInTheDocument()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getAllByText('無法載入資料')[0]).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
   })
 })

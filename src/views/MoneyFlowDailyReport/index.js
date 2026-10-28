@@ -1,7 +1,6 @@
 import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { startOfMonth, addDays, format, differenceInDays } from 'date-fns'
 import useFetchMoneyFlowDailyReport from 'hooks/useFetchMoneyFlowDailyReport'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
@@ -11,7 +10,8 @@ import DateSelector from 'components/DateSelector'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar, PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 export default function Employees() {
   const [displayDate, setDisplayDate] = useState([])
@@ -76,22 +76,31 @@ export default function Employees() {
   return (
     <Page className="ui-root" title="每日收支明細">
       <div>
-        <AdminPageHeader title='每日收支明細(已日結)'>
-          <Button asChild variant="secondary" className="shrink-0">
-            <CSVLink data={excelData} filename="高階收支登錄.csv" >
-              <Download strokeWidth={1.75} />
-              報表匯出
-            </CSVLink>
-          </Button>
-        </AdminPageHeader>
-        <Toolbar>
-          <DateSelector
-            date={date}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-          />
-        </Toolbar>
-        {!moneyFlowDailyReportData.loading && !isMemberShipCardActiveData.loading ?
+        <PageHeader
+          title='每日收支明細(已日結)'
+          actions={
+            <>
+              <Button asChild variant="secondary" className="shrink-0">
+                <CSVLink data={excelData} filename="高階收支登錄.csv" >
+                  <Download strokeWidth={1.75} />
+                  報表匯出
+                </CSVLink>
+              </Button>
+            </>
+          }
+        />
+        <ReportToolbar
+          date={
+            <DateSelector
+              date={date}
+              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              dateChange={value => setDate(value)}
+            />
+          }
+        />
+        {moneyFlowDailyReportData.error ? (
+          <QueryFailed onRetry={() => moneyFlowDailyReportData.refetch()} />
+        ) : !moneyFlowDailyReportData.loading && !isMemberShipCardActiveData.loading ?
           (idx(moneyFlowDailyReportData, _ => (
             <Results
               moneyFlowDailyReport={_.data.moneyFlowDailyReport}

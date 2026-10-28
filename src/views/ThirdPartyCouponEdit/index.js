@@ -10,6 +10,7 @@ import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
 import AboutThirdPartyCoupon from './AboutThirdPartyCoupon'
+import QueryFailed from 'components/QueryFailed'
 
 function ServiceCategoryEdit(props) {
   const { updateThirdPartyCoupon } = useFetchUpdateThirdPartyCoupon()
@@ -81,15 +82,21 @@ function ServiceCategoryEdit(props) {
       {/* 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-3xl */}
       <div className="mx-auto flex max-w-3xl flex-col gap-6">
         <PageHeader className="pb-0" title='編輯第三方卡券' />
-        <AboutThirdPartyCoupon
-          thirdPartyCoupon={thirdPartyCoupon}
-          onChange={handleOnchange}
-        />
-        <div>
-          <Button variant="primary" disabled={vaild} onClick={handleSubmit}>
-            儲存
-          </Button>
-        </div>
+        {thirdPartyCouponsData.error ? (
+          <QueryFailed onRetry={() => thirdPartyCouponsData.refetch()} />
+        ) : (
+          <>
+            <AboutThirdPartyCoupon
+              thirdPartyCoupon={thirdPartyCoupon}
+              onChange={handleOnchange}
+            />
+            <div>
+              <Button variant="primary" disabled={vaild} onClick={handleSubmit}>
+                儲存
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </Page>
   )

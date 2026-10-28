@@ -4,8 +4,7 @@ import Page from 'components/Page'
 import idx from 'idx'
 import { useEffect, useState } from 'react'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
-import AdminPageHeader from 'components/AdminPageHeader'
-import { ReportToolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { startOfMonth, format } from 'date-fns'
 import useFetchProductConsumeList from 'hooks/useFetchProductConsumeList'
 import useFetchGetProductPurpose from 'hooks/useFetchGetProductPurpose'
@@ -15,6 +14,7 @@ import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 export default function Employees() {
   const [excelData, setExcelData] = useState([])
@@ -44,7 +44,7 @@ export default function Employees() {
   useEffect(() => {
     if (!getProductPurpose.loading) {
       const data = idx(getProductPurpose, _ => _.data.getProductPurpose)
-      setPurpose(data)
+      setPurpose(data || [])
     }
   }, [getProductPurpose.loading])
 
@@ -131,14 +131,14 @@ export default function Employees() {
   return (
     <Page className="ui-root" title="商品消耗明細">
       <div>
-        <AdminPageHeader title='商品消耗明細'>
+        <PageHeader title='商品消耗明細'>
           <Button asChild variant="secondary">
             <CSVLink data={excelData} filename="商品消耗明細.csv">
               <Download strokeWidth={1.75} />
               報表匯出
             </CSVLink>
           </Button>
-        </AdminPageHeader>
+        </PageHeader>
         {/* 日期留在篩選列；其餘條件收進「篩選」（STYLE §14）。MerchantSearchBar 拆兩個實例共用同一份 values（同帳單列表），收合區的那個不讀網址日期 */}
         <ReportToolbar
           date={
@@ -178,7 +178,9 @@ export default function Employees() {
             </div>
           }
         />
-        {!productConsumeListData.loading ? (
+        {productConsumeListData.error ? (
+          <QueryFailed onRetry={() => productConsumeListData.refetch()} />
+        ) : !productConsumeListData.loading ? (
           <Results
             value={value != null ? value : ''}
             productConsumeListReport={idx(productConsumeListData, _ => _.data.productConsumeList)}

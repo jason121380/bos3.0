@@ -10,6 +10,7 @@ import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import Overview from './Overview'
+import QueryFailed from 'components/QueryFailed'
 
 function MerchantBusinessDashboard() {
   const [pageSetting, setPageSetting] = React.useState({
@@ -51,7 +52,9 @@ function MerchantBusinessDashboard() {
           dateChange={value => setPageSetting(value)}
         />
       </Toolbar>
-      {!merchantDashboardData.loading ? (
+      {merchantDashboardData.error ? (
+        <QueryFailed onRetry={() => merchantDashboardData.refetch()} />
+      ) : !merchantDashboardData.loading ? (
         <Fragment>
           <Overview membershipDisplay={membershipDisplay} overview={overview} />
           <Results results={results} />

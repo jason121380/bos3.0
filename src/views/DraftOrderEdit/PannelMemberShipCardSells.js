@@ -20,7 +20,8 @@ const PannelMemberShipCardSells = ({ thirdPartTicket }) => {
 
   React.useEffect(() => {
     if (!membershipOrder.loading && membershipOrder.data) {
-      const membershipData = idx(membershipOrder, _ => _.data.order.membershipOrders)
+      // 查無帳單（order 為 null）時 membershipOrders 取不到，視為沒有會員卡販售
+      const membershipData = idx(membershipOrder, _ => _.data.order.membershipOrders) || []
 
       const newSells = membershipData.length > 0 ? membershipData.map(d => ({
         sellerId: d.seller.id,

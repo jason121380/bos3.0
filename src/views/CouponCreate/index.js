@@ -137,7 +137,6 @@ function ServiceCategoryCreate() {
       history.push('/coupons')
     }).catch(error => {
       setSaveBtn(false)
-      openSnackbar({ variant: 'error', message: error.message })
     })
   }
 

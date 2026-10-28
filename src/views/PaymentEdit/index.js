@@ -12,6 +12,7 @@ import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
 import AboutPayment from './AboutPayment'
+import QueryFailed from 'components/QueryFailed'
 
 function ServiceCategoryEdit(props) {
   const { updatePayment } = useFetchUpdatePayment()
@@ -72,20 +73,26 @@ function ServiceCategoryEdit(props) {
       {/* 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-3xl */}
       <div className="mx-auto flex max-w-3xl flex-col gap-6">
         <PageHeader className="pb-0" title='編輯支付方式' />
-        <AboutPayment
-          payment={payment}
-          onChange={handleOnchange}
-        />
-        <div>
-          <Button
-            variant="primary"
-            disabled={vaild}
-            onClick={handleSubmit}
-            data-testid="update-payment"
-          >
-            儲存
-          </Button>
-        </div>
+        {paymentDetail.error ? (
+          <QueryFailed onRetry={() => paymentDetail.refetch()} />
+        ) : (
+          <>
+          <AboutPayment
+            payment={payment}
+            onChange={handleOnchange}
+          />
+          <div>
+            <Button
+              variant="primary"
+              disabled={vaild}
+              onClick={handleSubmit}
+              data-testid="update-payment"
+            >
+              儲存
+            </Button>
+          </div>
+          </>
+        )}
       </div>
     </Page>
   )

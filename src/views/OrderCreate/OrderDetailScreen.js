@@ -21,7 +21,7 @@ export default function OrderDetailScreen({ merchantName, customer, designer, na
     walletPayBalanceForDetail,
   } = useContext(billContext)
   return (
-    <CardContent id="DivIdToPrint" className="dark:bg-[#202020]">
+    <CardContent id="DivIdToPrint" className="dark:bg-surface-hover">
       <div className="box-border flex w-full flex-wrap">
         <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
           <div className="box-border m-0 grow-0 basis-[66.666667%] max-w-[66.666667%]">
@@ -43,7 +43,7 @@ export default function OrderDetailScreen({ merchantName, customer, designer, na
           </div>
         </div>
         <div className={`box-border flex w-full flex-wrap ${styles.dividerDiv}`}>
-          <div className="h-px w-full bg-border dark:bg-[#5c5c5c]" />
+          <div className="h-px w-full bg-border dark:bg-border-strong" />
         </div>
         <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
           {orderDetail.servicesDetail.length === 0 ? (
@@ -200,7 +200,7 @@ export default function OrderDetailScreen({ merchantName, customer, designer, na
           ))
         )}
         <div className={`box-border flex w-full flex-wrap ${styles.dividerDiv}`}>
-          <div className="h-px w-full bg-border dark:bg-[#5c5c5c]" />
+          <div className="h-px w-full bg-border dark:bg-border-strong" />
         </div>
         <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
           <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
@@ -269,7 +269,7 @@ export default function OrderDetailScreen({ merchantName, customer, designer, na
           )}
         </div>
         <div className={`box-border flex w-full flex-wrap ${styles.dividerDiv}`}>
-          <div className="h-px w-full bg-border dark:bg-[#5c5c5c]" />
+          <div className="h-px w-full bg-border dark:bg-border-strong" />
         </div>
         <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
           <div className={`box-border m-0 grow-0 basis-[25%] max-w-[25%] ${styles.detailBottomCash}`}>

@@ -15,6 +15,7 @@ import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import General from './General'
+import QueryFailed from 'components/QueryFailed'
 
 function InventoryWorkEdit({ match }) {
   const history = useHistory()
@@ -162,7 +163,9 @@ function InventoryWorkEdit({ match }) {
             </Button>
           }
         />
-        {(products.loading || getInventory.loading || productCategories.loading) ?
+        {getInventory.error ? (
+          <QueryFailed onRetry={() => getInventory.refetch()} />
+        ) : (products.loading || getInventory.loading || productCategories.loading) ?
           <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
             <Skeleton className="h-[72px] w-full rounded-lg" />
             <Skeleton className="h-[320px] w-full rounded-lg" />

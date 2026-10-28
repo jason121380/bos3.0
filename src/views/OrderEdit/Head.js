@@ -95,7 +95,8 @@ export default function Head() {
       const customerDetail = idx(customerData, _ =>
         _.data.customer !== null ? _.data.customer : null
       )
-      if (customerDetail !== null && customerDetail.name !== '不留客資') {
+      // 顧客查詢失敗時 idx 回 undefined，也當成沒有顧客（原本讀 undefined.name 整頁錯誤；2026/10/28）
+      if (customerDetail && customerDetail.name !== '不留客資') {
         setValue({
           id: customerDetail.id,
           no: customerDetail.no,
@@ -228,13 +229,11 @@ export default function Head() {
         name: customer.name,
         category: customer.category,
         no: customer.no,
-        category: customer.category,
         nickName: customer.nickName,
         PreferDesignerId: customer.preferDesigner !== null ? customer.preferDesigner.id : '',
         email: customer.email,
         address: customer.address,
         lineId: customer.lineId,
-        gender: customer.gender,
         remark: customer.remark !== null ? customer.remark : '',
         source: customer.source !== null ? customer.source : '',
       })

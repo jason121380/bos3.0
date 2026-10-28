@@ -281,7 +281,7 @@ function Results({
             onRowsPerPageChange={handleOnChangeRowsPerPage}
             page={results.pageOffset}
             rowsPerPage={results.pageLimit}
-            rowsPerPageOptions={[5, 10, 20, 25, 1000]}
+            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
           />
         </div>
       </Card>

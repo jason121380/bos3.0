@@ -154,7 +154,8 @@ describe('查詢與版面', () => {
     })
   })
 
-  it('行事曆與設定查詢失敗：顯示空的週曆，不進錯誤畫面', async () => {
+  // 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／空列表，避免誤以為沒有資料或把空值存回去
+  it('行事曆與設定查詢失敗：顯示無法載入資料與重新查詢，不進錯誤畫面', async () => {
     const utils = setup({
       fixtures: {
         getMerchantDesignerCalendar: new Error('壞了'),
@@ -167,10 +168,11 @@ describe('查詢與版面', () => {
         GET_IS_BOOKING_CUS_CHECK_USING: new Error('壞了'),
       },
     })
-    await ready(utils)
+    // 查詢失敗時不畫週曆表格（ready 會等表頭「時間」），只等查詢都回來
+    await utils.settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-    expect(dayTitles()).toHaveLength(7)
-    expect(document.querySelectorAll('#darkBorder')).toHaveLength(0)
+    expect(screen.getAllByText('無法載入資料')[0]).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
   })
 
   // Jason 2026/10/22 fix all：index.js 的預約歷史顯示（:158）、取消密碼（:318）讀查詢結果前原本沒有防呆，報到設定失敗時（:145）

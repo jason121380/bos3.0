@@ -1,6 +1,5 @@
 import Page from 'components/Page'
 import { useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet'
 
 const a = {
   'hair-color': [
@@ -666,24 +665,21 @@ export default function Employees() {
     }
   }, [])
 
+  // 原 react-helmet：頁名與 YMK SDK 載入腳本；改為掛載時直接設定／插入（只插一次）
+  useEffect(() => {
+    document.title = 'AR 變髮色'
+    const src = 'https://storage.googleapis.com/storage.lambor.io/sdk10.js?apiKey=for-smb'
+    if (document.querySelector(`script[src="${src}"]`)) return
+    const s = document.createElement('script')
+    s.type = 'text/javascript'
+    s.async = true
+    s.src = src
+    const x = document.getElementsByTagName('script')[0]
+    if (x && x.parentNode) x.parentNode.insertBefore(s, x)
+    else document.head.appendChild(s)
+  }, [])
   return (
     <Page className={styles.root} title="打卡記錄">
-      <Helmet>
-        <title>AR 變髮色</title>
-        <script>
-          {`
-         (function (d, k) {
-  var s = d.createElement ('script');
-  s.type = 'text/javascript';
-  s.async = true;
-  s.src = 'https://storage.googleapis.com/storage.lambor.io/sdk10.js?apiKey=' + k;
-  var x = d.getElementsByTagName ('script')[0];
-  x.parentNode.insertBefore (s, x);
-}) (document, 'for-smb');
-
-        `}
-        </script>
-      </Helmet>
       {/* 原 Container maxWidth={false}：滿版、左右內距 16／24px（600px 起） */}
       <div className={`mx-auto box-border block w-full px-4 min-[600px]:px-6 ${styles.container}`}>
         <div className={styles.ar} id="YMK-module" />

@@ -11,10 +11,11 @@ import React, { useEffect, useState } from 'react'
 import { openSnackbar } from 'elements/snackbars'
 import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
-import { HeaderActionsSlot, PageHeader, Toolbar } from 'ui/page-header'
+import { HeaderActionsSlot, PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const styles = {
   result: 'mt-[8px]',
@@ -121,19 +122,24 @@ export default function MerchantIncomeStatementMonthly() {
           </>
         }
       />
-      <Toolbar>
-        <DateSelector
-          date={date}
-          attributes={['lastmonth', 'thismonth', 'startDate']}
-          dateChange={value => setDate(value)}
-          onlyStart
-          inputFormat='yyyy/MM'
-          pickerOption={{
-            views: ['month', 'year']
-          }}
-        />
-      </Toolbar>
-      {!merchantIncomeStatementDataV2.loading && merchantIncomeStatement !== undefined ? (
+      {/* 只有日期的報表：日期放 ReportToolbar 的 date 槽，不放篩選鈕（STYLE §14） */}
+      <ReportToolbar
+        date={
+          <DateSelector
+            date={date}
+            attributes={['lastmonth', 'thismonth', 'startDate']}
+            dateChange={value => setDate(value)}
+            onlyStart
+            inputFormat='yyyy/MM'
+            pickerOption={{
+              views: ['month', 'year']
+            }}
+          />
+        }
+      />
+      {merchantIncomeStatementDataV2.error ? (
+          <QueryFailed onRetry={() => merchantIncomeStatementDataV2.refetch()} />
+        ) : !merchantIncomeStatementDataV2.loading && merchantIncomeStatement !== undefined ? (
         <Results
           className={styles.result}
           merchantIncomeStatement={merchantIncomeStatement}

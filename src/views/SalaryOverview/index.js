@@ -1,7 +1,6 @@
 // 狀態下拉的 onChange 依賴 event.target.value，使用 ui/form-control Select
 import { FormControl, Select, InputLabel, MenuItem } from 'ui/form-control'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { openSnackbar } from 'elements/snackbars'
 import { useFethcMonthlyCloseStatus } from 'hooks/useFetchMerchant'
 import { useFetchUsersSalaryItems, useFetchUsersMonthCheckout } from 'hooks/useFetchUsers'
@@ -25,6 +24,7 @@ import useQueryString from 'hooks/useQueryString'
 import DateSelector from 'components/DateSelector'
 import Overview from './Overview'
 import Results from './Results'
+import { PageHeader } from 'ui/page-header'
 
 export default function SalaryOverview() {
   const lastMonth = startOfMonth(subMonths(new Date(), 1)).getTime()
@@ -193,22 +193,27 @@ export default function SalaryOverview() {
   }, [getIsBorrowDisplayInSalaryOverview.loading])
   return (
     <Page className="ui-root pb-12" title="薪資總表/月結">
-      <AdminPageHeader title='薪資總表/月結'>
-        <DateSelector
-          date={{
-            startDate: startOfMonth(setting.date).getTime(),
-            endDate: endOfMonth(setting.date).getTime()
-          }}
-          attributes={['lastmonth', 'thismonth', 'startDate']}
-          dateChange={({ startDate }) => handleDateChange(startDate)}
-          onlyStart
-          inputFormat='yyyy/MM'
-          pickerOption={{
-            views: ['month', 'year']
-          }}
-          margin={false}
-        />
-      </AdminPageHeader>
+      <PageHeader
+        title='薪資總表/月結'
+        actions={
+          <>
+            <DateSelector
+              date={{
+                startDate: startOfMonth(setting.date).getTime(),
+                endDate: endOfMonth(setting.date).getTime()
+              }}
+              attributes={['lastmonth', 'thismonth', 'startDate']}
+              dateChange={({ startDate }) => handleDateChange(startDate)}
+              onlyStart
+              inputFormat='yyyy/MM'
+              pickerOption={{
+                views: ['month', 'year']
+              }}
+              margin={false}
+            />
+          </>
+        }
+      />
       {salaryUserList.error ? (
         <QueryFailed onRetry={() => salaryUserList.refetch()} />
       ) : idx(salaryUserList, _ => _.data.getSalaryUserList) ?

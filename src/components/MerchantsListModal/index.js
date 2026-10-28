@@ -39,13 +39,10 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, cl
       setFiltIds([]);
       return;
     }
-  
     const filterMerchantsId = merchantList.allMerchants
       .filter(d => d.name.toLowerCase().includes(value.toLowerCase()))
       .map(d => d.id);
-  
     setFiltIds(filterMerchantsId);
-  
     if (filterMerchantsId.length > 0 && !expandedArr.includes('ALL')) {
       setExpandedArr(prevExpandedArr => [...prevExpandedArr, 'ALL']);
     }
@@ -53,7 +50,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, cl
 
   const renderGroup = group => {
     return group.map((data, index) => {
-      allNodeIds.push(`${data.no ? data.no : ''} - ${data.name}(${data.groups.length ? data.groups.length : data.merchants.length})`)
+      allNodeIds.push(`${data.no ? data.no : ''} - ${data.name}(${(data.groups?.length ?? 0) ? data.groups.length : data.merchants.length})`)
       return (
         <div
           key={`${data.name}-${index}`}
@@ -67,7 +64,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, cl
           />
           <TreeItem
             groupClassName={!(data.groups && data.groups.length) ? classes.ulGroup : classes.ulGroupAll}
-            nodeId={`${data.no ? data.no : ''} - ${data.name}(${data.groups.length ? data.groups.length : data.merchants.length})`}
+            nodeId={`${data.no ? data.no : ''} - ${data.name}(${(data.groups?.length ?? 0) ? data.groups.length : data.merchants.length})`}
             label={<RenderLabel isGroup={true} data={data} />}
           >
             {data.merchants.length ? renderItem(data.merchants) : ''}
@@ -114,13 +111,13 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, cl
     return (
       <span
         id={isGroup ?
-          `${data.no ? data.no : ''} - ${data.name}(${data.groups.length ? data.groups.length : data.merchants.length})` : data.name
+          `${data.no ? data.no : ''} - ${data.name}(${(data.groups?.length ?? 0) ? data.groups.length : data.merchants.length})` : data.name
         }
         className={classes.span}
       >
         {isGroup ? <GroupsRoundedIcon /> : <StorefrontIcon />}
         {isGroup ?
-          `${data.no ? data.no : ''} - ${data.name}(${data.groups.length ? data.groups.length : data.merchants.length})` : data.name
+          `${data.no ? data.no : ''} - ${data.name}(${(data.groups?.length ?? 0) ? data.groups.length : data.merchants.length})` : data.name
         }
       </span>
     )
@@ -227,7 +224,6 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, cl
     }
     setExpandedArr([...newArr])
   }
-  
   return (
     // 舊 MUI Dialog 有 onClose（點背景／Esc 走 handleOnClose 清暫存），以 onOpenChange 轉接；hideClose 保留原有關閉路徑（底部「關閉」），不另加 X
     <Dialog open={open} onOpenChange={o => { if (!o) handleOnClose() }}>

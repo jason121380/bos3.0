@@ -3,11 +3,11 @@
 // 載入遮罩改原生 div（#Backdrop 有全域樣式，關閉時同原 Backdrop 以 visibility hidden 保留在畫面上）；Page 根元素不加 ui-root（box-sizing 會改變行事曆格子寬度）
 import { Slider } from 'ui/slider'
 import { Popover, PopoverAnchor, PopoverContent } from 'ui/popover'
-import { LoaderCircle, SlidersHorizontal } from 'lucide-react'
+import { LoaderCircle, SlidersHorizontal, ListFilter } from 'lucide-react'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchMerchant from 'hooks/useFetchMerchant'
 import idx from 'idx'
+import { storedMerchantId } from 'lib/stored-merchant'
 import isPasswordRequired from 'helper/passwordRequired'
 import { useState, useEffect, useRef } from 'react'
 import CalendarColorClip from 'components/CalendarColorClip'
@@ -31,9 +31,11 @@ import { Switch } from 'ui/switch'
 
 import { buildWeekCalendar } from 'components/ReservationCalendar/weekCalendar'
 import OrderTable from './OrderTable'
+import { PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 function Calendar() {
-  const merchantId = JSON.parse(localStorage.getItem('userMerchant')).id
+  const merchantId = storedMerchantId()
   const nameType = useFetchGetDesignerNameForCustomerSide()
   const bookingRemarkDisplay = useFetchGetIsBookingRemarkDisplay()
   const cusBookingRemarkDisplay = useFetchGetIsCusBookingRemarkDisplay()
@@ -109,7 +111,8 @@ function Calendar() {
 
 
   useEffect(() => {
-    if (!merchant.loading && !DesignerCalendar.loading) {
+    // 任一查詢失敗（data 為 undefined）時不整理資料，畫面改顯示 QueryFailed（2026/10/28）
+    if (!merchant.loading && !DesignerCalendar.loading && idx(merchant, _ => _.data.merchant) && DesignerCalendar.data) {
       // 資料整理與個人檔案、員工資料的預約表共用（components/ReservationCalendar/weekCalendar）
       const { openTime, orderRange, calendarData } = buildWeekCalendar({
         DesignerCalendar, merchant, date,
@@ -173,25 +176,35 @@ function Calendar() {
         id='Backdrop'
         role="status"
         aria-live="polite"
-        className="fixed inset-0 flex items-center justify-center !opacity-100 z-[999] ![background:rgba(0,0,0,0)]"
+        className="fixed inset-0 flex items-center justify-center !opacity-100 z-[1300] ![background:rgba(0,0,0,0)]"
         style={{ visibility: (merchant.loading || DesignerCalendar.loading) ? undefined : 'hidden' }}
       >
         <LoaderCircle aria-hidden="true" className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
         <span className="sr-only">預約紀錄載入中…</span>
       </div>
-      <AdminPageHeader
+      <PageHeader
         title="單週預約紀錄"
-        onFilterClick={handleFilterClick}
-        showFilter={filterOpen}
-      >
-        <div className="flex items-center gap-4">
-          <DateSelector
-            date={{ startDate: startOfWeek(date).getTime(), endDate: endOfWeek(date).getTime() }}
-            attributes={['lastweek', 'thisweek', 'nextweek', 'startDate']}
-            dateChange={({ startDate }) => setDate(startDate)}
-          />
-        </div>
-      </AdminPageHeader>
+        actions={
+          <>
+            <div className="flex items-center gap-4">
+              <DateSelector
+                date={{ startDate: startOfWeek(date).getTime(), endDate: endOfWeek(date).getTime() }}
+                attributes={['lastweek', 'thisweek', 'nextweek', 'startDate']}
+                dateChange={({ startDate }) => setDate(startDate)}
+              />
+            </div>
+            <Button
+              variant="secondary"
+              aria-pressed={!!filterOpen}
+              onClick={handleFilterClick}
+              className={filterOpen ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+            >
+              <ListFilter strokeWidth={1.75} />
+              篩選
+            </Button>
+          </>
+        }
+      />
 
       {showFilter && (
         <Card className="ui-root mb-4 flex flex-row flex-wrap items-center gap-8 p-6">
@@ -301,7 +314,14 @@ function Calendar() {
             </PopoverContent>
           </Popover>
         </div>
-        {!merchant.loading && orderRange.length ?
+        {(DesignerCalendar.error || merchant.error) ? (
+          <QueryFailed
+            onRetry={() => {
+              if (DesignerCalendar.error) DesignerCalendar.refetch()
+              if (merchant.error) merchant.refetch()
+            }}
+          />
+        ) : !merchant.loading && orderRange.length ?
           <OrderTable
             orderRange={orderRange}
             calendarData={calendarData}

@@ -54,7 +54,7 @@ const MainEventAutocomplete = ({ value = NO_VALUE, onChange = () => { }, isReadO
         </span>
       )}
       renderInput={params => (
-        <TextField {...params} variant="outlined" placeholder='選擇活動' />
+        <TextField {...params} variant="outlined" label="活動" placeholder='選擇活動' />
       )}
     />
   )

@@ -17,13 +17,14 @@ import { useFetchUsersForCreatePicking } from 'hooks/useFetchUsers'
 import useFetchAccountingSubjects from 'hooks/useFetchAccountingSubjects'
 import useFetchUpdateMoneyFlow from 'hooks/useFetchUpdateMoneyFlow'
 import useFetchDeleteMoneyFlow from 'hooks/useFetchDeleteMoneyFlow'
-import AccountingSubjectModal from './AccountingSubjectModal'
+import AccountingSubjectModal from 'views/AccountingShared/AccountingSubjectModal'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Field, Input } from 'ui/input'
 import { PageHeader } from 'ui/page-header'
 import { Autocomplete } from 'ui/combobox'
+import QueryFailed from 'components/QueryFailed'
 
 //備註快捷
 const remarkItem = [
@@ -307,6 +308,16 @@ export default function AccountingRecordDetail(props) {
     setRelationUserId(null)
     setShowMessage(true)
   }
+  // 主要資料讀取失敗：顯示可重試的錯誤狀態，不顯示空白表單（避免把空值存回去）
+  if (getMoneyFlow.error) {
+    return (
+      <Page className="ui-root" title="收支紀錄詳細">
+        <PageHeader title="收支紀錄詳細" />
+        <QueryFailed onRetry={() => getMoneyFlow.refetch()} />
+      </Page>
+    )
+  }
+
   return (
     <Fragment>
       <Page className="ui-root" title="收支紀錄詳細">

@@ -7,6 +7,7 @@ import React from 'react'
 import { useHistory } from 'react-router'
 
 import Consumption from './Consumption'
+import QueryFailed from 'components/QueryFailed'
 
 function ConsumptionRecords({ location }) {
   const history = useHistory()
@@ -43,7 +44,9 @@ function ConsumptionRecords({ location }) {
 
   return (
     <Page className="ui-root" title="消費記錄">
-      {idx(orders, _ =>
+      {orders.error ? (
+        <QueryFailed onRetry={() => orders.refetch()} />
+      ) : idx(orders, _ =>
         _.data.viewer.customer.orders.orders ? (
           <Consumption
             orders={_.data.viewer.customer.orders.orders}

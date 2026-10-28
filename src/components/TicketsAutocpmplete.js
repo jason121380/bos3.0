@@ -71,7 +71,7 @@ const TicketsAutocpmplete = ({ value = NO_VALUE, onChange = () => { }, isReadOnl
           </span>
         )}
         renderInput={params => (
-          <TextField {...params} variant="outlined" placeholder='選擇卡券' />
+          <TextField {...params} variant="outlined" label="卡券" placeholder='選擇卡券' />
         )}
       />
     </div>

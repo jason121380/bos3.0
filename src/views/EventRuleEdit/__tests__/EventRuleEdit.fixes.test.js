@@ -59,7 +59,6 @@ it('進行中的規則：歸屬多選可修改', async () => {
 })
 
 it.each([
-  ['規則與歸屬都查詢失敗', {}],
   ['查無規則', { GET_EVENT_RULE_GROUP: { eventRuleGroup: null } }],
 ])('%s時不整頁壞，表單空白、沒有可送出的資料', async (_, fixtures) => {
   const { settle } = renderPage(<EventRuleEdit match={{ params: { id: 'rg1' } }} />, { fixtures, fallback: 'error' })
@@ -73,4 +72,13 @@ it('規則名稱空白時提示「請輸入規則名稱。」', async () => {
   await settle()
   fireEvent.click(screen.getByText('儲存').closest('button'))
   await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '請輸入規則名稱。', variant: 'error' }))
+})
+
+// 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／列表，避免使用者把空值存回去；查無資料仍照原本顯示
+it('查詢失敗時顯示無法載入資料與重新查詢', async () => {
+  const { settle } = renderPage(<EventRuleEdit match={{ params: { id: 'rg1' } }} />, { fallback: 'error' })
+  await settle()
+  expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+  expect(screen.getByText('無法載入資料')).toBeInTheDocument()
+  expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
 })

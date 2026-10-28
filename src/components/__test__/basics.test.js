@@ -8,12 +8,11 @@ import React from 'react'
 import { Router } from 'react-router-dom'
 
 import { PAGE_CRASH_TEXT, renderPage } from '__tests__/testkit.test'
-import CustomMockedProvider from 'components/CustomMockedProvider'
+import CustomMockedProvider from '__tests__/CustomMockedProvider.test'
 import GenericMoreButton from 'components/GenericMoreButton'
 import Markdown from 'components/Markdown'
 import NavItem from 'components/NavItem'
 import PageErrorBoundary, { PageErrorFallback } from 'components/PageErrorBoundary'
-import PageTitle from 'components/PageTitle'
 import PasswordDialog from 'components/PasswordDialog'
 import ProgressBar from 'components/ProgressBar'
 import ReferToggleButton from 'components/ReferToggleButton'
@@ -23,7 +22,6 @@ import SlotPortal from 'components/SlotPortal'
 import SourceSelect from 'components/SourceSelect'
 import TableCheckoutBar from 'components/TableCheckoutBar'
 import TableEditBar from 'components/TableEditBar'
-import AdminPageHeader from 'components/AdminPageHeader'
 import CalendarColorClip, { readableTextOn } from 'components/CalendarColorClip'
 import AccountingSubjectsAutocomplete from 'components/AccountingSubjectsAutocomplete'
 
@@ -83,43 +81,6 @@ describe('SlotPortal', () => {
     await wait(() => expect(late).toContainElement(screen.getByRole('button', { name: '搜尋' })))
     late.remove()
     await wait(() => expect(screen.queryByRole('button', { name: '搜尋' })).toBeNull())
-  })
-})
-
-describe('PageTitle／AdminPageHeader', () => {
-  it('只顯示含中文的副標；忽略呼叫端指定的標題顏色但保留其他樣式；可加 className', () => {
-    const { container, rerender } = render(<PageTitle title="帳單列表" subTitle="MANAGEMENT" style={{ color: 'blue', marginTop: 4 }} />)
-    expect(screen.getByRole('heading', { name: '帳單列表' })).toBeInTheDocument()
-    expect(screen.queryByText('MANAGEMENT')).toBeNull()
-    expect(container.firstChild.style.color).toBe('')
-    expect(container.firstChild.style.marginTop).toBe('4px')
-    rerender(<PageTitle title="帳單列表" subTitle="櫃檯作業" className="extra" />)
-    expect(screen.getByText('櫃檯作業')).toBeInTheDocument()
-    expect(container.firstChild).toHaveClass('extra')
-    rerender(<PageTitle title="帳單列表" subTitle={123} />)
-    expect(container.textContent).toBe('帳單列表')
-  })
-
-  it('sx 只轉 backgroundColor 與 mb（數字×8px、字串原樣）；篩選鈕依 showFilter 標示按下；主要動作可為連結', () => {
-    const history = createMemoryHistory({ initialEntries: ['/x'] })
-    const { container, rerender } = render(
-      <Router history={history}>
-        <AdminPageHeader title="商品" sx={{ backgroundColor: 'red', mb: 2 }} onFilterClick={() => {}} showFilter primaryAction={{ label: '新增', to: '/products/create' }} />
-      </Router>
-    )
-    expect(container.firstChild.style.backgroundColor).toBe('red')
-    expect(container.firstChild.style.marginBottom).toBe('16px')
-    expect(screen.getByRole('button', { name: '篩選' })).toHaveAttribute('aria-pressed', 'true')
-    fireEvent.click(screen.getByRole('link', { name: '新增' }))
-    expect(history.location.pathname).toBe('/products/create')
-    rerender(
-      <Router history={history}>
-        <AdminPageHeader title="商品" sx={{ mb: '1rem' }} onFilterClick={() => {}} />
-      </Router>
-    )
-    expect(container.firstChild.style.marginBottom).toBe('1rem')
-    expect(container.firstChild.style.backgroundColor).toBe('')
-    expect(screen.getByRole('button', { name: '篩選' })).toHaveAttribute('aria-pressed', 'false')
   })
 })
 

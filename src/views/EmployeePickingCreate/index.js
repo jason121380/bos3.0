@@ -97,7 +97,6 @@ export default function EmployeePickingCreate({ location }) {
         setIsClick(false)
       }
     }).catch(err => {
-      openSnackbar({ message: err.message, variant: 'error' })
       setIsClick(false)
     })
   }

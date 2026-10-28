@@ -39,7 +39,7 @@ function Results({
   useEffect(() => {
     if (!getIsDisplayHelperRetrieveInDailyReport.loading) {
       setDataVisible(
-        getIsDisplayHelperRetrieveInDailyReport.data.getIsDisplayHelperRetrieveInDailyReport
+        idx(getIsDisplayHelperRetrieveInDailyReport, _ => _.data.getIsDisplayHelperRetrieveInDailyReport)
       )
     }
   }, [getIsDisplayHelperRetrieveInDailyReport.loading])
@@ -137,6 +137,7 @@ function Results({
                           <TableCell className="categoryPrint2">
                             <a
                               target="_blank"
+                              rel="noopener noreferrer"
                               href={`/order/${orderRecord.orderId}`}
                               className="underline text-text"
                             >
@@ -525,7 +526,7 @@ function Results({
                         } ${designer.user.nickName !== null && designer.user.nickName !== ''
                           ? designer.user.nickName
                           : ''
-                        } ${designer.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 日報表 ${Number(designer.totalPageCount) !== 1
+                        } ${designer.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 日報表 ${Number(designer.totalPageCount) !== 1
                           ? `- ${designer.currentPageOrder}/${designer.totalPageCount}`
                           : ''
                         }`}</span></CardHeader>
@@ -555,6 +556,7 @@ function Results({
                                   <TableCell className="categoryPrint2">
                                     <a
                                       target="_blank"
+                                      rel="noopener noreferrer"
                                       href={`/order/${orderRecord.orderId}`}
                                       className="underline text-[color:black]"
                                     >

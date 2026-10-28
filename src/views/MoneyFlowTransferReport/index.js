@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
 import { startOfMonth, format } from 'date-fns'
 import useFetchMoneyFlowTransferReport from 'hooks/useFetchMoneyFlowTransferReport'
@@ -10,7 +9,7 @@ import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
 import QueryFailed from 'components/QueryFailed'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar, PageHeader } from 'ui/page-header'
 
 import Results from './Results'
 
@@ -60,25 +59,32 @@ const MoneyFlowTransferReport = () => {
   return (
     <Page className="ui-root" title="收支匯款表">
       <div>
-        <AdminPageHeader title='收支匯款表'>
-          <CSVLink
-            data={excelData}
-            filename="收支匯款表.csv"
-            style={{ display: 'inline' }}
-          >
-            <Button variant="secondary">
-              <Download strokeWidth={1.75} />
-              報表匯出
-            </Button>
-          </CSVLink>
-        </AdminPageHeader>
-        <Toolbar>
-          <DateSelector
-            date={date}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-          />
-        </Toolbar>
+        <PageHeader
+          title='收支匯款表'
+          actions={
+            <>
+              <CSVLink
+                data={excelData}
+                filename="收支匯款表.csv"
+                style={{ display: 'inline' }}
+              >
+                <Button variant="secondary">
+                  <Download strokeWidth={1.75} />
+                  報表匯出
+                </Button>
+              </CSVLink>
+            </>
+          }
+        />
+        <ReportToolbar
+          date={
+            <DateSelector
+              date={date}
+              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              dateChange={value => setDate(value)}
+            />
+          }
+        />
         {moneyFlowTransferReport.error ? (
           <QueryFailed onRetry={() => moneyFlowTransferReport.refetch()} />
         ) : !moneyFlowTransferReport.loading && reportForDisplay && excelData ? (

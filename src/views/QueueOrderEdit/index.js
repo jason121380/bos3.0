@@ -17,6 +17,7 @@ import Head from './Head'
 import Header from './Header'
 import Pannel from './Pannel'
 import { useClearWalletPayOnCustomerChange } from './PaymentCustomerWallet'
+import QueryFailed from 'components/QueryFailed'
 
 export default function KeyIn({ match }) {
   const onceRef = useRef(true)
@@ -113,7 +114,8 @@ export default function KeyIn({ match }) {
     }
   }, [thirdPartyCouponsData.loading])
   useEffect(() => {
-    if (!order.loading) {
+    // 佇列帳單讀不到（查詢失敗）時不帶入，畫面改顯示 QueryFailed（原本 JSON.parse(undefined) 整頁錯誤；2026/10/28）
+    if (!order.loading && idx(order, _ => _.data.getOrderInputByQueueId)) {
       const orderDetail = JSON.parse(idx(order, _ => _.data.getOrderInputByQueueId))
       setOrderNo(orderDetail.no)
       setBill(
@@ -204,6 +206,15 @@ export default function KeyIn({ match }) {
       ? true
       : paymentReady
 
+
+  // 主要資料讀取失敗：顯示可重試的錯誤狀態，不顯示空白表單（避免把空值存回去）
+  if (order.error) {
+    return (
+      <Page className="ui-root" title="重新開單">
+        <QueryFailed onRetry={() => order.refetch()} />
+      </Page>
+    )
+  }
 
   return (
     <Page title={`重新開單 ${orderNo && `(${orderNo})`}`} className="ui-root">

@@ -5,6 +5,7 @@ import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Field } from 'ui/input'
 import useFetchMerchant from 'hooks/useFetchMerchant'
 import idx from 'idx'
+import { storedMerchantId } from 'lib/stored-merchant'
 import { useState, useEffect, useRef, Fragment } from 'react'
 import CalendarColorClip from 'components/CalendarColorClip'
 import DateSelector from 'components/DateSelector'
@@ -22,7 +23,7 @@ import OrderTable from './OrderTable'
 // className：卡片外距由頁面決定（個人檔案 mt-6、員工資料 pt-4，維持合併前各自的版面）
 function DesignerWeekReservation({ designerId, checkinSettings, bookingCusCheck, checkinMode, bookingHistoryDisplay, className }) {
   const urlParams = new URLSearchParams(window.location.search)
-  const merchantId = JSON.parse(localStorage.getItem('userMerchant')).id
+  const merchantId = storedMerchantId()
   const nameType = useFetchGetDesignerNameForCustomerSide()
   const bookingRemarkDisplay = useFetchGetIsBookingRemarkDisplay()
   const cusBookingRemarkDisplay = useFetchGetIsCusBookingRemarkDisplay()
@@ -110,7 +111,7 @@ function DesignerWeekReservation({ designerId, checkinSettings, bookingCusCheck,
         id='Backdrop'
         role="status"
         aria-live="polite"
-        className="fixed inset-0 flex items-center justify-center !opacity-100 z-[999] ![background:rgba(0,0,0,0)]"
+        className="fixed inset-0 flex items-center justify-center !opacity-100 z-[1300] ![background:rgba(0,0,0,0)]"
         style={{ visibility: (merchant.loading || DesignerCalendar.loading) ? undefined : 'hidden' }}
       >
         <LoaderCircle aria-hidden="true" className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />

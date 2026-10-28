@@ -15,7 +15,7 @@ import ServicesModal from '../ServicesModal'
 
 const styles = {
   heading: '!text-[16px] font-bold text-[rgb(var(--text))] flex items-center',
-  heading2: 'text-[0.8125rem] ml-[10px] font-bold',
+  heading2: 'text-label ml-[10px] font-bold',
   details: 'overflow-x-auto flex justify-start items-center',
   fieldOutter: 'flex justify-start items-start flex-col',
 }

@@ -51,7 +51,7 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
                   ? data.user.designerNo
                   : ''
                   } ${data.user.nickName !== null && data.user.nickName !== '' ? data.user.nickName : ''
-                  } ${data.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 互助報表`}
+                  } ${data.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 互助報表`}
               </UiCardTitle>
             </UiCardHeader>
             <div className="flex flex-col gap-4 px-5 pb-5">
@@ -71,6 +71,7 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
                       <UiTableCell className="tabular-nums">
                         <a
                           target="_blank"
+                          rel="noopener noreferrer"
                           href={`/order/${record.orderId}`}
                           className="text-accent underline"
                         >
@@ -180,7 +181,7 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
                       ? data.user.designerNo
                       : ''
                       } ${data.user.nickName !== null && data.user.nickName !== '' ? data.user.nickName : ''
-                      } ${data.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 互助報表`}</span></CardHeader>
+                      } ${data.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 互助報表`}</span></CardHeader>
                   <CardContent className="last:pb-4 print:!pb-0 p-0">
                     <div>
                       <div className="ui-scroll-x w-full overflow-x-auto print:overflow-visible rounded-lg bg-background text-text print:rounded-none print:shadow-none">
@@ -200,6 +201,7 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
                                 <TableCell className={reportCellClass}>
                                   <a
                                     target="_blank"
+                                    rel="noopener noreferrer"
                                     href={`/order/${record.orderId}`}
                                     className="underline text-[color:black]"
                                   >

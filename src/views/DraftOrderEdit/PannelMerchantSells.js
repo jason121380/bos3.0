@@ -19,7 +19,7 @@ export default function PannelMerchantSells({ thirdPartTicket }) {
 
 
   React.useEffect(() => {
-    if (!productOrder.loading && productOrder.data) {
+    if (!productOrder.loading && productOrder.data?.order) {
       const newSells =
         productOrder.data.order.productOrders.length > 0
           ? productOrder.data.order.productOrders.map(data => ({

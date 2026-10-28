@@ -146,11 +146,13 @@ describe('讀取順序與查詢失敗', () => {
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 
-  it('讀不到設定：不整頁錯誤、不能存檔', async () => {
+  // 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／空列表，避免誤以為沒有資料或把空值存回去
+  it('讀不到設定：顯示無法載入資料與重新查詢，不進錯誤畫面', async () => {
     const utils = mount(null, { fixtures: { GET_DEDUCTION_SETTING: new Error('找不到抽成設定') } })
     await utils.settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-    expect(screen.getByRole('button', { name: '儲存' })).toBeDisabled()
+    expect(screen.getAllByText('無法載入資料')[0]).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
   })
 
   it('類別清單讀取失敗：不整頁錯誤（沒有類別分頁）', async () => {

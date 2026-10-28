@@ -38,7 +38,7 @@ function Results({
     setExcelData(excelData)
   }, [moneyFlows])
   if (!moneyFlows) {
-    return 'Loading...'
+    return '載入中…'
   }
 
   return (

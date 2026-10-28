@@ -9,12 +9,13 @@ import DashboardLayout from './layouts/Dashboard'
 import ErrorLayout from './layouts/Error'
 import EHSLayout from './layouts/EHS'
 import dashboardRoutes from './dashboardRoutes'
+import PageLoadingFallback from 'components/PageLoadingFallback'
 
 // 顧客端（LINE）頁面改為延遲載入：原本同步 import，連後台使用者的首屏都要下載這 10 頁與 google-map-react、superagent。
 // Customer／Line 版面已用 Suspense 包住子路由；AR2 是頂層路由，自行包 Suspense。
 const AR2Lazy = lazy(() => import('views/AR2'))
 const AR2 = props => (
-  <Suspense fallback={null}>
+  <Suspense fallback={<PageLoadingFallback />}>
     <AR2Lazy {...props} />
   </Suspense>
 )

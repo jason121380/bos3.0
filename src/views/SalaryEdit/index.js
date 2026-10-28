@@ -19,6 +19,7 @@ import Header from './Header'
 import SalaryDecrease from './SalaryDecrease'
 import SalaryIncrease from './SalaryIncrease'
 import DesignerSalaryReportV2 from './DesignerSalaryReportV2'
+import QueryFailed from 'components/QueryFailed'
 
 export default React.memo(function SalaryEdit(props) {
   const { match, location } = props
@@ -111,7 +112,7 @@ export default React.memo(function SalaryEdit(props) {
 
   React.useEffect(() => {
     if (!attendanceStatus.loading) {
-      const data = attendanceStatus.data.attendanceRecords
+      const data = idx(attendanceStatus, _ => _.data.attendanceRecords) || []
       if (data[0]) {
         setAttStatus(data[0])
       }
@@ -121,7 +122,8 @@ export default React.memo(function SalaryEdit(props) {
 
   React.useEffect(() => {
     if (!usersMonthCheckoutData.loading) {
-      const isUsersSalaryChacked = idx(usersMonthCheckoutData, _ => _.data.users.users)
+      // 查詢失敗時當成沒有已結算資料（原本讀 undefined.filter 整頁錯誤；2026/10/28）
+      const isUsersSalaryChacked = idx(usersMonthCheckoutData, _ => _.data.users.users) || []
       // 篩選出已結算的資料
       const correctData = isUsersSalaryChacked.filter(el => {
         return el.isSalaryChecked === true
@@ -147,7 +149,8 @@ export default React.memo(function SalaryEdit(props) {
   React.useEffect(() => {
     if (!usersSalayItemData.loading) {
       // 篩選出已結算的資料
-      const usersArr = idx(usersSalayItemData, _ => _.data.users.users).filter(el => {
+      // 查詢失敗時當成沒有員工清單（只影響上一位／下一位；原本讀 undefined.filter 整頁錯誤；2026/10/28）
+      const usersArr = (idx(usersSalayItemData, _ => _.data.users.users) || []).filter(el => {
         return el.isSalaryChecked === true
       })
       const user = usersArr.find(data => data.id === match.params.id)
@@ -170,7 +173,9 @@ export default React.memo(function SalaryEdit(props) {
       decreaseReformatted !== undefined &&
       !designerMonthlyCheckoutRedordData.loading &&
       !usersSalayItemData.loading &&
-      !isMemberShipCardActiveData.loading
+      !isMemberShipCardActiveData.loading &&
+      // 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
+      idx(userSalayItemData, _ => _.data.userSalaryItemRecord)
     ) {
       // ==========INCREASE==========
       const initIncrease = []
@@ -212,7 +217,7 @@ export default React.memo(function SalaryEdit(props) {
         setIncreaseSecondContent({ increaseItems: initIncreaseSecond })
       }
 
-      const memberActive = isMemberShipCardActiveData.data.getIsMemberShipCardActive
+      const memberActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const membership = initIncrease.find(d => d.itemName === '會員卡獎金')
       if (!memberActive && membership && membership.price === 0) {
         const index = initIncrease.findIndex(d => d.itemName === '會員卡獎金')
@@ -470,6 +475,15 @@ export default React.memo(function SalaryEdit(props) {
     })
   }
   // 頁面外距由 #printContainer 提供；「儲存」為本頁唯一主要按鈕
+  // 員工薪資資料讀取失敗：顯示可重試的錯誤狀態，不顯示空白薪資表（避免把空值存回去）
+  if (userSalary.error) {
+    return (
+      <Page title="薪資維護" className="ui-root">
+        <QueryFailed onRetry={() => userSalary.refetch()} />
+      </Page>
+    )
+  }
+
   return (
     <Page title="薪資維護" className="ui-root">
       <div className="noprint flex flex-wrap items-start justify-between gap-4 pb-6">

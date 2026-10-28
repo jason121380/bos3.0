@@ -6,7 +6,6 @@ import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import { DateTimePicker } from 'ui/date-picker';
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { useFetchAttendanceRecordsLazy } from 'hooks/useFetchAttendanceRecords'
 import { useFetchAttendanceRecordsExcelV2, useFetchAttendanceRecordsExcelV2ForHR } from 'hooks/useFetchAttendanceRecordsExcel'
@@ -26,6 +25,8 @@ import QueryFailed from 'components/QueryFailed'
 import Results from './Results'
 import { Autocomplete } from 'ui/combobox'
 import { roleSectionAuthority, hasPageAuthority } from 'helper/rolePageAuthority'
+import { ListFilter } from 'lucide-react'
+import { PageHeader } from 'ui/page-header'
 
 const clockInType = [
   { label: '上班', value: 'CLOCKIN' },
@@ -190,7 +191,6 @@ export default function Employees() {
           handleClose()
         }
       }).catch(error => {
-        openSnackbar({ message: error.message, variant: 'error' })
         setOnClick(false)
       })
     }
@@ -232,33 +232,43 @@ export default function Employees() {
   return (
     <Page className="ui-root" title="全店打卡記錄">
       <div>
-        <AdminPageHeader
+        <PageHeader
           title='全店打卡記錄'
-          showFilter={showFilter}
-          onFilterClick={() => setShowFilter(!showFilter)}
-          primaryAction={identity.add ? {
-            label: '補打卡',
-            onClick: handleOpen,
-            disabled: attendanceRecordsLazyData.data === undefined || attendanceRecordsLazyData.loading
-          } : undefined}
-        >
-          <DateSelector
-            date={date}
-            attributes={['lastmonth', 'thismonth', 'startDate']}
-            dateChange={({ startDate, endDate }) => {
-              setDate({
-                startDate: startOfMonth(startDate).getTime(),
-                endDate: endOfMonth(endDate).getTime()
-              })
-            }}
-            onlyStart
-            inputFormat='yyyy/MM'
-            pickerOption={{
-              views: ['month', 'year']
-            }}
-            margin={false}
-          />
-        </AdminPageHeader>
+          actions={
+            <>
+              <DateSelector
+                date={date}
+                attributes={['lastmonth', 'thismonth', 'startDate']}
+                dateChange={({ startDate, endDate }) => {
+                  setDate({
+                    startDate: startOfMonth(startDate).getTime(),
+                    endDate: endOfMonth(endDate).getTime()
+                  })
+                }}
+                onlyStart
+                inputFormat='yyyy/MM'
+                pickerOption={{
+                  views: ['month', 'year']
+                }}
+                margin={false}
+              />
+              <Button
+                variant="secondary"
+                aria-pressed={!!showFilter}
+                onClick={() => setShowFilter(!showFilter)}
+                className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+              >
+                <ListFilter strokeWidth={1.75} />
+                篩選
+              </Button>
+              {identity.add && (
+                <Button variant="primary" onClick={handleOpen} disabled={attendanceRecordsLazyData.data === undefined || attendanceRecordsLazyData.loading}>
+                  {'補打卡'}
+                </Button>
+              )}
+            </>
+          }
+        />
 
         <div hidden={!showFilter}>
           <Card className="mb-6 p-4">

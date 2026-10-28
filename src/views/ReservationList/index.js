@@ -12,6 +12,7 @@ import { Button } from 'ui/button'
 import { Card, CardContent } from 'ui/card'
 
 import Header from './Header'
+import QueryFailed from 'components/QueryFailed'
 
 // 預約狀態的 Badge 顏色（只影響外觀）
 const statusVariant = status => (status === '預約成功' ? 'success' : status === '待審核' ? 'warning' : 'neutral')
@@ -48,7 +49,9 @@ export default function Reservation({ location }) {
   return (
     <Page className="ui-root flex flex-col gap-4" title="預約管理">
       <Header />
-      {idx(customerBookingResults, _ =>
+      {customerBookingResults.error ? (
+        <QueryFailed onRetry={() => customerBookingResults.refetch()} />
+      ) : idx(customerBookingResults, _ =>
         _.data.viewer.customer.orders.orders.map((data, index) => (
           <Card key={`order-${index}`}>
             <CardContent className="flex flex-col gap-3">

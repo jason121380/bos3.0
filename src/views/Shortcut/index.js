@@ -6,7 +6,9 @@ import { Skeleton } from 'ui/skeleton'
 import idx from 'idx'
 
 import Results from './Results'
-import AdminPageHeader from 'components/AdminPageHeader'
+import QueryFailed from 'components/QueryFailed'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 const Shortcut = () => {
 	const shortcuts = useShortcuts()
@@ -96,15 +98,19 @@ const Shortcut = () => {
 	return (
 		<Page className="ui-root" title="組合設定">
 			<div>
-				<AdminPageHeader
-					title="組合設定"
-					sx={{ backgroundColor: 'transparent', mb: 0 }}
-					primaryAction={{
-						label: '新增組合',
-						to: '/shortcut/create'
-					}}
+				<PageHeader
+				  title="組合設定"
+				  actions={
+				    <>
+				      <Button asChild variant="primary">
+				        <RouterLink to={'/shortcut/create'}>{'新增組合'}</RouterLink>
+				      </Button>
+				    </>
+				  }
 				/>
-				{shortcuts.loading ? (
+				{shortcuts.error ? (
+          <QueryFailed onRetry={() => shortcuts.refetch()} />
+        ) : shortcuts.loading ? (
 					<Skeleton className="h-[320px] w-full rounded-lg" aria-label="載入中" />
 				) : (
 					<Results reportData={reportData} open={open} openCollapse={handleOpenCollapse} onToggleAll={handleToggleAll} />

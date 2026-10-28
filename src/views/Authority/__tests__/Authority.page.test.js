@@ -81,9 +81,22 @@ describe('角色權限管理', () => {
     fireEvent.click(screen.getByLabelText('選取 新人'))
     const before = callsOf(calls, 'GET_MERCHANT_AUTHORITIES').length
     fireEvent.click(screen.getByRole('button', { name: '刪除' }))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '刪除權限成功', variant: 'success' }))
     expect(callsOf(calls, 'DELETE_AUTHORITY').map(c => c.variables)).toEqual([{ authorityId: 'r-mgr' }, { authorityId: 'r-new' }])
     await wait(() => expect(callsOf(calls, 'GET_MERCHANT_AUTHORITIES').length).toBeGreaterThan(before))
+  })
+
+  it('點刪除先出現二次確認；取消不送出刪除', async () => {
+    const { calls } = setup({ DELETE_AUTHORITY: { deleteAuthority: true } })
+    await screen.findByLabelText('選取 店長')
+    fireEvent.click(screen.getByLabelText('選取 店長'))
+    fireEvent.click(screen.getByRole('button', { name: '刪除' }))
+    const dialog = screen.getByRole('alertdialog')
+    expect(dialog).toHaveTextContent('刪除後無法復原')
+    fireEvent.click(within(dialog).getByRole('button', { name: '取消' }))
+    expect(screen.queryByRole('alertdialog')).toBeNull()
+    expect(callsOf(calls, 'DELETE_AUTHORITY')).toHaveLength(0)
   })
 
   it('刪除失敗時提示後端錯誤訊息', async () => {
@@ -91,6 +104,7 @@ describe('角色權限管理', () => {
     await screen.findByText('共 3 筆')
     fireEvent.click(screen.getByLabelText('選取 新人'))
     fireEvent.click(screen.getByRole('button', { name: '刪除' }))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '角色仍有員工使用', variant: 'error' }))
   })
 

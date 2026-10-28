@@ -46,7 +46,7 @@ export function MobileAppBar({ tabs, showTabBar, onOpenMenu }) {
     setDepth(d => (action === 'PUSH' ? d + 1 : action === 'POP' ? Math.max(0, d - 1) : d))
   }), [history])
 
-  // 頁名來自各頁 <Page title>（react-helmet 寫入 document.title）
+  // 頁名來自各頁 <Page title>（components/Page 寫入 document.title）
   useEffect(() => {
     const el = document.querySelector('title')
     if (!el) return

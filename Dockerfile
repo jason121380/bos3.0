@@ -12,6 +12,8 @@ RUN npm config set fetch-retries 5 && \
 # 安裝相依套件 (包含 devDependencies 以便 build)
 # 使用 --legacy-peer-deps 來解決舊版套件之間的相依性衝突 (ERESOLVE)
 # 用 npm ci 依 package-lock.json 安裝，與 CI 相同、每次建置版本一致
+# 不下載 Cypress 二進位（與 CI 相同）：正式 build 用不到，省下數百 MB 下載與一個失敗點
+ENV CYPRESS_INSTALL_BINARY=0
 RUN npm ci --legacy-peer-deps
 
 # 複製原始碼

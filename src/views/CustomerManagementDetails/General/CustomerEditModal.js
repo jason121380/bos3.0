@@ -211,9 +211,9 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
             // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
             event.preventDefault()
             if (!event.target.contains(document.activeElement)) event.target.focus()
-          }} aria-describedby={undefined} {...rest} className={clsx('!max-w-[700px] overflow-y-auto', className)}>
+          }} aria-describedby={undefined} aria-labelledby="customer-edit-modal-title" {...rest} className={clsx('!max-w-[700px] overflow-y-auto', className)}>
         <CardHeader className="pb-4">
-          <CardTitle>編輯客戶資料</CardTitle>
+          <CardTitle id="customer-edit-modal-title">編輯客戶資料</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 gap-6 min-[900px]:grid-cols-2">
@@ -443,7 +443,7 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
                     renderValue={() => <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />}
                   >
                     <MenuItem value="loading">
-                      <em>Loading...</em>
+                      <em>載入中…</em>
                     </MenuItem>
                   </Select>
                 )}

@@ -10,10 +10,11 @@ import { useFetchGetNonCashDisplay } from 'hooks/useFetchGetParameterReportSetti
 import { format } from 'date-fns'
 import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const MerchantBusinessIntervalReport = () => {
   const [date, setDate] = useState({
@@ -38,7 +39,8 @@ const MerchantBusinessIntervalReport = () => {
   const nonCashDisplay = idx(nonCashDisplayData, _ => _.data.getParameterReportSetting.nonCashDisplay) || false
 
   const mergeResultData = useMemo(() => {
-    if (merchantDashboardData.loading) {
+    // 查詢失敗（data 為 undefined）時與載入中一樣回空陣列，不在 render 階段拋錯
+    if (merchantDashboardData.loading || !merchantDashboardData.data?.merchantDashboard) {
       return [];
     }
     const data = merchantDashboardData.data.merchantDashboard
@@ -138,18 +140,22 @@ const MerchantBusinessIntervalReport = () => {
           </Button>
         }
       />
-      <Toolbar>
-        <DateSelector
-          date={date}
-          attributes={[
-            'thismonth', 'lastmonth', 'dbyesterday',
-            'yesterday', 'today', 'startDate', 'endDate'
-          ]}
-          dateChange={value => setDate(value)}
-        />
-      </Toolbar>
+      <ReportToolbar
+        date={
+          <DateSelector
+            date={date}
+            attributes={[
+              'thismonth', 'lastmonth', 'dbyesterday',
+              'yesterday', 'today', 'startDate', 'endDate'
+            ]}
+            dateChange={value => setDate(value)}
+          />
+        }
+      />
 
-      {!merchantDailyReportDataV3.loading && !isServiceTicketMergedData.loading && !merchantDashboardData.loading ? (
+      {merchantDailyReportDataV3.error ? (
+          <QueryFailed onRetry={() => merchantDailyReportDataV3.refetch()} />
+        ) : !merchantDailyReportDataV3.loading && !isServiceTicketMergedData.loading && !merchantDashboardData.loading ? (
         idx(
           merchantDailyReportDataV3,
           _ =>

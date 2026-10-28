@@ -112,10 +112,6 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
         .catch(err => {
           sentRef.current = false
           setCheckoutBtn(false)
-          openSnackbar({
-            message: err.message,
-            variant: 'error',
-          })
           setCheckoutBtnClick(false)
           // 與「結帳並列印」失敗相同，恢復按鈕讓使用者可再按
           setIsClick(false)
@@ -180,10 +176,6 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
         })
         .catch(err => {
           sentRef.current = false
-          openSnackbar({
-            message: err.message,
-            variant: 'error',
-          })
           setCheckoutBtnClick(false)
           setCheckoutBtn(false)
           setIsClick(false)
@@ -231,10 +223,6 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
         })
         .catch(err => {
           sentRef.current = false
-          openSnackbar({
-            message: err.message,
-            variant: 'error',
-          })
           setIsClick(false)
           setCheckoutBtnClick(false)
           setCheckoutBtn(false)

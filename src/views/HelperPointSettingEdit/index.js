@@ -12,6 +12,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import idx from 'idx'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 function HelperPointSettingEdit({ match }) {
   const history = useHistory()
@@ -82,10 +83,6 @@ function HelperPointSettingEdit({ match }) {
         setIsClick(false)
       }
     }).catch(error => {
-      openSnackbar({
-        variant: 'error',
-        message: error.message,
-      })
       setIsClick(false)
     })
   }
@@ -100,7 +97,9 @@ function HelperPointSettingEdit({ match }) {
             </Button>
           }
         />
-        {!getMerchantPointValueSettingsForEdit.loading ?
+        {getMerchantPointValueSettingsForEdit.error ? (
+          <QueryFailed onRetry={() => getMerchantPointValueSettingsForEdit.refetch()} />
+        ) : !getMerchantPointValueSettingsForEdit.loading ?
           <Results
             status={submitData.retrievePointWay}
             submitData={submitData}

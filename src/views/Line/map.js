@@ -7,7 +7,7 @@ import LiffHelper from '../../helper/liffHelper'
 
 // 原 emotion styled 的 Mark／Button／Button2 改為一般元素＋Tailwind（數值逐一對應）
 // 原為 styled.img（無 alt），維持相同輸出
-const AnyReactComponent = ({ text }) => <img className="relative -left-[20px] -top-[30px] w-[20px]" src="/images/been-here-marker.png" />
+const AnyReactComponent = ({ text }) => <img className="relative -left-[20px] -top-[30px] w-[20px]" src="/images/been-here-marker.png" alt="目前位置" />
 
 function Map({ className, match, location, ...rest }) {
   const storeId = getQueryString({ key: 'storeId', location })

@@ -10,7 +10,6 @@ beforeEach(() => loginAs())
 afterEach(cleanup)
 
 it.each([
-  ['查詢失敗', { fallback: 'error' }],
   ['查無分類', { fixtures: { FETCH_MEMBERSHIP_CATEGORY: { membershipCategory: null } } }],
 ])('%s時不整頁壞，表單空白', async (_, options) => {
   const { settle } = renderPage(<MemberCardCategoryEdit match={{ params: { id: 'cat-1' } }} />, options)
@@ -18,4 +17,13 @@ it.each([
   expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   expect(screen.getByText('編輯會員卡分類')).toBeInTheDocument()
   expect(fieldByLabel('名稱')).toHaveValue('')
+})
+
+// 2026/10/28：查詢失敗（網路或後端錯誤）改顯示可重試的錯誤狀態，不再顯示空白表單／列表，避免使用者把空值存回去；查無資料仍照原本顯示
+it('查詢失敗時顯示無法載入資料與重新查詢', async () => {
+  const { settle } = renderPage(<MemberCardCategoryEdit match={{ params: { id: 'cat-1' } }} />, { fallback: 'error' })
+  await settle()
+  expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+  expect(screen.getByText('無法載入資料')).toBeInTheDocument()
+  expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
 })

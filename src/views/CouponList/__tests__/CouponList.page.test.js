@@ -153,12 +153,13 @@ describe('預收卡設定：列表與匯出', () => {
   })
 
   // Jason 2026/10/22：卡券列表查詢失敗時以空清單顯示（共 0 筆、全選停用），不整頁錯誤
-  it('卡券列表查詢失敗時頁面正常，顯示 0 筆', async () => {
+  it('卡券列表查詢失敗時頁面正常，顯示無法載入資料與重新查詢', async () => {
+    // 2026/10/28 稽核 C-1：查詢失敗改顯示 QueryFailed（「無法載入資料」＋「重新查詢」），不再顯示成空表／0 筆，避免誤以為真的沒有資料
     const { settle } = setup({ GET_TICKETS_FOR_LIST: new Error('壞了') })
     await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-    expect(screen.getByText('共 0 筆')).toBeInTheDocument()
-    expect(screen.getByLabelText('全選')).toBeDisabled()
+    expect(screen.getByText('無法載入資料')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '重新查詢' })).toBeEnabled()
   })
 })
 

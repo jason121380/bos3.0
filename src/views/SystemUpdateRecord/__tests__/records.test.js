@@ -11,17 +11,20 @@ const displayDate = record => format(record.updateTime, 'yyyy/MM/dd')
 
 describe('靜態清單', () => {
   it('新紀錄在最前面，接著是匯出的 18 筆，日期不改寫到 2026', () => {
-    expect(systemUpdateRecordSource).toHaveLength(24)
-    expect(systemUpdateRecords).toHaveLength(24)
+    expect(systemUpdateRecordSource).toHaveLength(27)
+    expect(systemUpdateRecords).toHaveLength(27)
 
-    const head = systemUpdateRecordSource.slice(0, 7).map(record => [
+    const head = systemUpdateRecordSource.slice(0, 10).map(record => [
       record.title,
       record.versionNo,
       record.updateTime,
     ])
     expect(systemUpdateRecordSource[0].versionNo).toBe(APP_VERSION)
     expect(head).toEqual([
-      ['2026/10/26 側欄換欄', APP_VERSION, '2026-10-26'],
+      ['2026/10/28 載入畫面', APP_VERSION, '2026-10-28'],
+      ['2026/10/28 頁首與報表篩選統一', 'v3.10282101', '2026-10-28'],
+      ['2026/10/28 穩定性與介面修正', 'v3.10282028', '2026-10-28'],
+      ['2026/10/26 側欄換欄', 'v3.10260256', '2026-10-26'],
       ['2026/10/26 側欄細項', 'v3.10260211', '2026-10-26'],
       ['2026/10/26 側欄', 'v3.10260058', '2026-10-26'],
       ['2026/10/25 更新', 'v3.10251924', '2026-10-25'],
@@ -30,7 +33,7 @@ describe('靜態清單', () => {
       ['更新統整', '23.053~23.061', '2023-06-07'],
     ])
 
-    expect(systemUpdateRecordSource.slice(6)).toEqual(historicalRecords)
+    expect(systemUpdateRecordSource.slice(9)).toEqual(historicalRecords)
     expect(historicalRecords.map(record => record.updateTime)).toEqual([
       '2023-06-07',
       '2023-04-21',
@@ -54,7 +57,10 @@ describe('靜態清單', () => {
     expect(historicalRecords.find(record => record.versionNo === '22.399').title).toBe('10/04 - 10/21 更新')
     expect(historicalRecords.find(record => record.versionNo === '22.386').content).toContain('```mermaid')
 
-    expect(systemUpdateRecords.slice(0, 7).map(record => [record.title, displayDate(record)])).toEqual([
+    expect(systemUpdateRecords.slice(0, 10).map(record => [record.title, displayDate(record)])).toEqual([
+      ['2026/10/28 載入畫面', '2026/10/28'],
+      ['2026/10/28 頁首與報表篩選統一', '2026/10/28'],
+      ['2026/10/28 穩定性與介面修正', '2026/10/28'],
       ['2026/10/26 側欄換欄', '2026/10/26'],
       ['2026/10/26 側欄細項', '2026/10/26'],
       ['2026/10/26 側欄', '2026/10/26'],
@@ -80,8 +86,11 @@ describe('清單頁', () => {
 
     expect(screen.getByRole('heading', { name: '版本更新紀錄' })).toBeInTheDocument()
     const titles = Array.from(container.querySelectorAll('h2')).map(node => node.textContent)
-    expect(titles).toHaveLength(24)
-    expect(titles.slice(0, 7)).toEqual([
+    expect(titles).toHaveLength(27)
+    expect(titles.slice(0, 10)).toEqual([
+      '2026/10/28 載入畫面',
+      '2026/10/28 頁首與報表篩選統一',
+      '2026/10/28 穩定性與介面修正',
       '2026/10/26 側欄換欄',
       '2026/10/26 側欄細項',
       '2026/10/26 側欄',

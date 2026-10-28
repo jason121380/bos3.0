@@ -156,18 +156,19 @@ describe('查詢與時間軸', () => {
     expect(hasBlock('林先生')).toBe(true)
   })
 
-  it('行事曆查詢失敗：顯示空的時間軸與不指定欄，可切換日期', async () => {
+  // 2026/10/28：行事曆查詢失敗改顯示可重試的錯誤狀態，不再顯示空的時間軸讓人誤以為當天沒有預約；換日期後照常重查
+  it('行事曆查詢失敗：顯示無法載入資料與重新查詢，可切換日期', async () => {
     let fail = true
     const utils = setupRecord({
       fixtures: {
         getMerchantDesignerCalendar: vars => (fail ? new Error('壞了') : calendarResponse([AMY], NDS)(vars)),
       },
     })
-    await pageReady(utils)
+    // 查詢失敗時不畫時間軸表格（pageReady 會等表頭「時間」），只等查詢都回來
+    await utils.settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-    expect(designerHeaders()).toEqual([])
-    expect(screen.getByText('不指定')).toBeInTheDocument()
-    expect(timeLabels()[0]).toBe('10:00')
+    expect(screen.getByText('無法載入資料')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '重新查詢' })).toBeEnabled()
     expect(document.getElementById('Backdrop')).toHaveStyle('visibility: hidden')
     fail = false
     fireEvent.change(screen.getByLabelText('選擇日期'), { target: { value: String(new Date(2025, 2, 11).getTime()) } })

@@ -72,10 +72,7 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
         setIsClick(false)
       }
     } catch (error) {
-      openSnackbar({
-        message: error.message,
-        variant: 'error'
-      })
+      // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
       setIsClick(false)
     }
   }

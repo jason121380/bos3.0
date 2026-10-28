@@ -12,6 +12,7 @@ import { PageHeader, Toolbar } from 'ui/page-header'
 
 import DailyMoneyFlowResults from './DailyMoneyFlowResults'
 import WaitCloseOrderResults from './WaitCloseOrderResults'
+import QueryFailed from 'components/QueryFailed'
 
 function CheckoutDaily() {
   const getisDailyCheckoutBlockedByDraftOrder = useFetchGetisDailyCheckoutBlockedByDraftOrder()
@@ -84,6 +85,14 @@ function CheckoutDaily() {
         />
       </Toolbar>
       <div className="flex flex-col gap-6">
+        {(waitCloseOrderDate.error || dailyMoneyFlowReport.error) && (
+          <QueryFailed
+            onRetry={() => {
+              if (waitCloseOrderDate.error) waitCloseOrderDate.refetch()
+              if (dailyMoneyFlowReport.error) dailyMoneyFlowReport.refetch()
+            }}
+          />
+        )}
         {idx(
           waitCloseOrderDate,
           _ =>

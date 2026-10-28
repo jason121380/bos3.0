@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, screen, wait } from '@testing-library/react'
-import CustomMockedProvider from 'components/CustomMockedProvider'
+import CustomMockedProvider from '__tests__/CustomMockedProvider.test'
 import React from 'react'
 import { spy } from 'sinon'
 

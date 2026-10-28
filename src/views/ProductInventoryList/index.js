@@ -3,16 +3,17 @@ import { useState, useEffect } from 'react'
 import useFetchGetProductInventoryList from 'hooks/useFetchGetProductInventoryList'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { format } from 'date-fns'
 import idx from 'idx'
 import Results from './Results'
-import { Printer } from 'lucide-react'
+import { Printer, ListFilter } from 'lucide-react'
 import { Button } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 import { Autocomplete } from 'ui/combobox'
+import QueryFailed from 'components/QueryFailed'
+import { PageHeader } from 'ui/page-header'
 
 const sortEnum = [
   { label: '數量', value: 'COUNT' },
@@ -119,19 +120,29 @@ const ProductInventoryList = () => {
   return (
     <Page className='ProductInventoryList ui-root' title="商品庫存表">
       <div>
-        <AdminPageHeader
+        <PageHeader
           title='商品庫存表'
-          showFilter={showFilter}
-          onFilterClick={() => setShowFilter(!showFilter)}
-        >
-          <Button
-            onClick={() => window.print()}
-            variant="secondary"
-          >
-            <Printer strokeWidth={1.75} />
-            列印
-          </Button>
-        </AdminPageHeader>
+          actions={
+            <>
+              <Button
+                onClick={() => window.print()}
+                variant="secondary"
+              >
+                <Printer strokeWidth={1.75} />
+                列印
+              </Button>
+              <Button
+                variant="secondary"
+                aria-pressed={!!showFilter}
+                onClick={() => setShowFilter(!showFilter)}
+                className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+              >
+                <ListFilter strokeWidth={1.75} />
+                篩選
+              </Button>
+            </>
+          }
+        />
 
         {showFilter && (
           <Card className="mb-3 p-4">
@@ -242,7 +253,9 @@ const ProductInventoryList = () => {
             </Button>
           </div>
         </div> */}
-        {!productInventoryList.loading ? <Results reportData={reportData} /> : (
+        {productInventoryList.error ? (
+          <QueryFailed onRetry={() => productInventoryList.refetch()} />
+        ) : !productInventoryList.loading ? <Results reportData={reportData} /> : (
           // 載入中：與舊版 CircularProgress 相同時機顯示
           <div className="noprint" aria-busy="true" aria-label="載入中">
             <Skeleton className="h-[320px] w-full rounded-lg" />

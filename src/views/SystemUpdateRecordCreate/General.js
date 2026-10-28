@@ -55,10 +55,6 @@ const General = () => {
         }
       })
       .catch(error => {
-        openSnackbar({
-          message: error.message,
-          variant: 'error',
-        })
         setEnable(false)
       })
   }

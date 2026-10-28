@@ -5,6 +5,7 @@ import { useHistory } from 'react-router'
 import { renderRoutes } from 'react-router-config'
 
 import Topbar from './Topbar'
+import PageLoadingFallback from 'components/PageLoadingFallback'
 
 function Auth({ route }) {
   const history = useHistory()
@@ -21,7 +22,7 @@ function Auth({ route }) {
       <Snackbar />
       <div className="flex min-h-screen bg-canvas">
         <div className="max-w-full flex-1 overflow-x-hidden pt-14">
-          <Suspense fallback={<div className="h-0.5 w-full animate-pulse bg-accent" />}>{renderRoutes(route.routes)}</Suspense>
+          <Suspense fallback={<PageLoadingFallback />}>{renderRoutes(route.routes)}</Suspense>
         </div>
       </div>
     </>

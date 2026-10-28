@@ -93,7 +93,6 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
         setModalOpen(false)
       }
     }).catch(error => {
-      openSnackbar({ message: error.message, variant: 'error' })
       setBtnDisabled(false)
     })
   }

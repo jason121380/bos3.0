@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
 import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
@@ -16,7 +15,8 @@ import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
-import { ReportToolbar } from 'ui/page-header'
+import { ReportToolbar, PageHeader } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 const isIncludeProductPerformanceValue = [
   { label: '含店販', value: true },
@@ -68,7 +68,7 @@ const MerchantLeaderBoard = () => {
   // 店家排行榜服務業績月平均是否顯示
   useEffect(() => {
     if (!isMonthlyAverageDisplayForMerchantLeaderBoard.loading) {
-      const monthlyAverageDisplayForMerchantLeaderBoard = isMonthlyAverageDisplayForMerchantLeaderBoard.data.getIsMonthlyAverageDisplayForMerchantLeaderBoard
+      const monthlyAverageDisplayForMerchantLeaderBoard = idx(isMonthlyAverageDisplayForMerchantLeaderBoard, _ => _.data.getIsMonthlyAverageDisplayForMerchantLeaderBoard)
       setMonthlyAverageDisplayForMerchantLeaderBoard(monthlyAverageDisplayForMerchantLeaderBoard)
     }
   }, [isMonthlyAverageDisplayForMerchantLeaderBoard.loading]);
@@ -88,7 +88,7 @@ const MerchantLeaderBoard = () => {
   useEffect(() => {
     if (!merchantLeaderBoard.loading) {
       const report = idx(merchantLeaderBoard, _ => _.data.merchantLeaderBoard.merchantLeaderBoard)
-      if (report.length > 0) {
+      if (report && report.length > 0) {
         const excelData = []
         let isDisplayExcelWithMembership = false
         const isMembershipIsZero = report.filter(result => result.membershipTotal === 0)
@@ -230,7 +230,8 @@ const MerchantLeaderBoard = () => {
         }
       }
     }
-  }, [merchantLeaderBoard.loading, valueSelect, isIncludeMembershipPerformance, isMemberShipCardActive])
+    // 「服務業績月平均」欄位的顯示設定可能比排行資料晚到，補進依賴才不會匯出少一欄（B2 清單 #15）
+  }, [merchantLeaderBoard.loading, valueSelect, isIncludeMembershipPerformance, isMemberShipCardActive, monthlyAverageDisplayForMerchantLeaderBoard])
 
   const handleToggleButtonChange = value => {
     value && setPerformReference(value)
@@ -286,22 +287,27 @@ const MerchantLeaderBoard = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <AdminPageHeader title='店家排行榜'>
-          <CSVLink data={excelData} filename="店家排行榜.csv">
-            <Button variant="secondary" disabled={merchantLeaderBoard.loading}>
-              <Download strokeWidth={1.75} />
-              報表匯出
-            </Button>
-          </CSVLink>
-          <Button
-            variant="secondary"
-            disabled={merchantLeaderBoard.loading}
-            onClick={() => window.print()}
-          >
-            <Printer strokeWidth={1.75} />
-            列印
-          </Button>
-        </AdminPageHeader>
+        <PageHeader
+          title='店家排行榜'
+          actions={
+            <>
+              <CSVLink data={excelData} filename="店家排行榜.csv">
+                <Button variant="secondary" disabled={merchantLeaderBoard.loading}>
+                  <Download strokeWidth={1.75} />
+                  報表匯出
+                </Button>
+              </CSVLink>
+              <Button
+                variant="secondary"
+                disabled={merchantLeaderBoard.loading}
+                onClick={() => window.print()}
+              >
+                <Printer strokeWidth={1.75} />
+                列印
+              </Button>
+            </>
+          }
+        />
         <ReportToolbar
           date={
             <DateSelector
@@ -371,7 +377,9 @@ const MerchantLeaderBoard = () => {
             </Button>
           }
         />
-        {!merchantLeaderBoard.loading && !isMonthlyAverageDisplayForMerchantLeaderBoard.loading && !isMemberShipCardActiveData.loading ? (
+        {merchantLeaderBoard.error ? (
+          <QueryFailed onRetry={() => merchantLeaderBoard.refetch()} />
+        ) : !merchantLeaderBoard.loading && !isMonthlyAverageDisplayForMerchantLeaderBoard.loading && !isMemberShipCardActiveData.loading ? (
           <Results
             performReference={performReference}
             merchantLeaderBoard={idx(merchantLeaderBoard, _ => _.data.merchantLeaderBoard)}

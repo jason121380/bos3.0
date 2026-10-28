@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { endOfDay, startOfMonth } from 'date-fns'
 import { CSVLink } from "react-csv";
 import useFetchGetProductLeaderBoardV2 from 'hooks/useFetchGetProductLeaderBoardV2'
@@ -10,7 +9,7 @@ import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
 import QueryFailed from 'components/QueryFailed'
-import { ReportToolbar } from 'ui/page-header'
+import { ReportToolbar, PageHeader } from 'ui/page-header'
 import ProductListTreeView from 'components/ProductListTreeView'
 
 import Results from './Results'
@@ -63,19 +62,24 @@ const ProductLeaderBoard = () => {
   return (
     <Page className="ui-root" title="商品銷售排行榜">
       <div>
-        <AdminPageHeader title='商品銷售排行榜'>
-          {excelData.length !== 0 && (
-            <Button asChild variant="secondary" className="shrink-0">
-              <CSVLink
-                data={excelData}
-                filename="商品銷售排行榜.csv"
-              >
-                <Download strokeWidth={1.75} />
-                報表匯出
-              </CSVLink>
-            </Button>
-          )}
-        </AdminPageHeader>
+        <PageHeader
+          title='商品銷售排行榜'
+          actions={
+            <>
+              {excelData.length !== 0 && (
+                <Button asChild variant="secondary" className="shrink-0">
+                  <CSVLink
+                    data={excelData}
+                    filename="商品銷售排行榜.csv"
+                  >
+                    <Download strokeWidth={1.75} />
+                    報表匯出
+                  </CSVLink>
+                </Button>
+              )}
+            </>
+          }
+        />
         <ReportToolbar
           date={
             <DateSelector

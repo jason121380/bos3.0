@@ -26,7 +26,7 @@ export default function PannelMerchantSells({ thirdPartTicket, expanded, setExpa
 
   React.useEffect(() => {
     // 同一張帳單只帶入一次（見 useOncePerOrder）
-    if (!productOrder.loading && productOrder.data && isFirstLoad(orderId)) {
+    if (!productOrder.loading && productOrder.data?.order && isFirstLoad(orderId)) {
       const newSells =
         productOrder.data.order.productOrders.length > 0
           ? productOrder.data.order.productOrders.map(data => ({

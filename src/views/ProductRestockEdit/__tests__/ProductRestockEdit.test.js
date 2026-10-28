@@ -201,6 +201,7 @@ describe('編輯進貨單：未入庫', () => {
     const { settle, calls } = renderEdit()
     await settle()
     fireEvent.click(screen.getByRole('button', { name: '刪除' }))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '刪除成功', variant: 'success' }))
     expect(callsOf(calls, 'DELETE_PURCHASE')[0].variables).toEqual({ purchaseUUIds: ['pr-1'] })
     await wait(() => expect(currentLocation()).toBe('/product/restock/'))
@@ -210,6 +211,7 @@ describe('編輯進貨單：未入庫', () => {
     const second = renderEdit({ DELETE_PURCHASE: new Error('已有銷貨') })
     await second.settle()
     fireEvent.click(screen.getByRole('button', { name: '刪除' }))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '已有銷貨', variant: 'error' }))
     cleanup()
 
@@ -217,6 +219,7 @@ describe('編輯進貨單：未入庫', () => {
     const third = renderEdit({ DELETE_PURCHASE: { deletePurchase: false } })
     await third.settle()
     fireEvent.click(screen.getByRole('button', { name: '刪除' }))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(callsOf(third.calls, 'DELETE_PURCHASE')).toHaveLength(1))
     await third.settle()
     expect(openSnackbar).not.toHaveBeenCalled()

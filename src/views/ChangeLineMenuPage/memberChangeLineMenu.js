@@ -79,7 +79,7 @@ function Reservation({ match, location }) {
 
   return (
     <Page className="min-w-[275px] p-8 mt-6" title="員工切換選單">
-      <Card className="min-w-[275px] p-8 mt-6">Loading...</Card>
+      <Card className="min-w-[275px] p-8 mt-6">載入中…</Card>
     </Page>
   )
 }
