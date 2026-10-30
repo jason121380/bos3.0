@@ -4,7 +4,7 @@ import DateSelector from 'components/DateSelector'
 import { endOfMonth, format } from 'date-fns'
 import useFetchMerchantIncomeStatementV2 from 'hooks/useFetchMerchantIncomeStatementV2'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
-import useFetchGetmerchantIncomeStatementV2Excel from 'hooks/useFetchGetmerchantIncomeStatementV2Excel'
+import useFetchGetMerchantIncomeStatementV2Excel from 'hooks/useFetchGetMerchantIncomeStatementV2Excel'
 import { useFetchGetCARPTDISPLAY } from 'hooks/useFetchGetParameterReportSetting'
 import idx from 'idx'
 import React, { useEffect, useState } from 'react'
@@ -33,7 +33,7 @@ export default function MerchantIncomeStatementMonthly() {
   const merchantIncomeStatementDataV2 = useFetchMerchantIncomeStatementV2({ date: date.startDate })
   const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
   const getCARPTDISPLAY = useFetchGetCARPTDISPLAY()
-  const [getmerchantIncomeStatementV2ExcelLazy, getmerchantIncomeStatementV2ExcelLazyData] = useFetchGetmerchantIncomeStatementV2Excel()
+  const [getmerchantIncomeStatementV2ExcelLazy, getmerchantIncomeStatementV2ExcelLazyData] = useFetchGetMerchantIncomeStatementV2Excel()
 
   useEffect(() => {
     if (!getCARPTDISPLAY.loading) {

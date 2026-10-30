@@ -39,7 +39,7 @@ function OrderRecord({
   bonusDisplay,
   loading,
   membershipDisplay,
-  pagenationLabel,
+  paginationLabel,
   ...rest
 }) {
   const pageRef = useRef(null)
@@ -66,10 +66,10 @@ function OrderRecord({
       )
       setOrders(data)
       if (pageRef.current) {
-        pagenationLabel(pageRef.current)
+        paginationLabel(pageRef.current)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [profileOrders.loading, page, rowsPerPage, pageRef.current] 變動時執行；pagenationLabel、profileOrders 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [profileOrders.loading, page, rowsPerPage, pageRef.current] 變動時執行；paginationLabel、profileOrders 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [profileOrders.loading, page, rowsPerPage, pageRef.current])
 
   useEffect(() => {
@@ -78,7 +78,7 @@ function OrderRecord({
     setRaffleDisplay(display)
   }, [orders])
 
-  // 分頁改用 ui/table 的 TablePagination：ref 原樣保留，pagenationLabel 找不到 MUI 元素時不動作
+  // 分頁改用 ui/table 的 TablePagination：ref 原樣保留，paginationLabel 找不到 MUI 元素時不動作
   return (
     <div {...rest}>
       <p className="pb-2 text-label tabular-nums text-text-secondary">

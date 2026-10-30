@@ -7,6 +7,8 @@ import { lazyWithRetry as lazy } from 'lib/lazy-with-retry'
 // 舊路徑拼字 deatil 仍留著，書籤與外部連結導向正確的 detail（2026/10/25）
 const redirectAccountingDetail = ({ match }) => <Redirect to={`/accounting/detail/${match.params.id}`} />
 const redirectGeneralAccountingDetail = ({ match }) => <Redirect to={`/general/accounting/detail/${match.params.id}`} />
+// 舊路徑拼字 perforamnce 仍留著，書籤與外部連結導向正確的 performance（2026/10/30）
+const redirectDesignerPerformanceAnalyzeReport = () => <Redirect to="/designer-performance-analyze-report" />
 
 export default [
   {
@@ -505,9 +507,14 @@ export default [
     component: lazy(() => import('views/MoneyFlowTransferReport')),
   },
   {
+    path: '/designer-performance-analyze-report',
+    exact: true,
+    component: lazy(() => import('views/DesignerPerformanceAnalyzeReport')),
+  },
+  {
     path: '/designer-perforamnce-analyze-report',
     exact: true,
-    component: lazy(() => import('views/DesignerPerforamnceAnalyzeReport')),
+    component: redirectDesignerPerformanceAnalyzeReport,
   },
   {
     path: '/merchant-daily-report',

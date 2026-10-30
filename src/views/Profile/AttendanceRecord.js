@@ -10,19 +10,19 @@ const AttendanceRecord = ({
   onChangePage,
   onChangeRowsPerPage,
   results,
-  pagenationLabel,
+  paginationLabel,
   ...rest
 }) => {
   const pageRef = useRef(null)
 
   useEffect(() => {
     if (pageRef.current) {
-      pagenationLabel(pageRef.current)
+      paginationLabel(pageRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（pagenationLabel）；只在 [results, pageRef.current] 變動時呼叫，補上會每次 render 重跑
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（paginationLabel）；只在 [results, pageRef.current] 變動時呼叫，補上會每次 render 重跑
   }, [results, pageRef.current])
 
-  // 分頁改用 ui/table 的 TablePagination：ref 原樣保留，pagenationLabel 找不到 MUI 元素時不動作
+  // 分頁改用 ui/table 的 TablePagination：ref 原樣保留，paginationLabel 找不到 MUI 元素時不動作
   return (
     <div {...rest}>
       {results && (results.length === 0 ?

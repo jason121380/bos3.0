@@ -31,7 +31,7 @@ const PAGES = [
   ['views/CustomerWalletLeaderboard', '顧客入金排行榜', { empty: true, error: true }],
   ['views/DecreaseDetail', '互助點數明細', { empty: true, error: true }],
   ['views/DesignerMonthlyReport', '設計師業績月報表', { error: true }],
-  ['views/DesignerPerforamnceAnalyzeReport', '設計師業績分析表', { error: true }],
+  ['views/DesignerPerformanceAnalyzeReport', '設計師業績分析表', { error: true }],
   ['views/DesignerPerformDetail', '設計師細項分析', { empty: true, error: true }],
   ['views/DesignerPerformanceReport', '設計師業績表', { empty: true }],
   ['views/DesignerRakeReport', '設計師抽成報表', { empty: '無資料', error: true }],

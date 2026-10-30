@@ -300,7 +300,7 @@ MerchantsListModal.propTypes = {
   merchantList: PropTypes.object,
   values: PropTypes.array,
   setValues: PropTypes.func,
-  // 樹狀樣式（class 字串組）：預設 defaultTreeClasses；MerchantListAutocpmpleteForManagement 傳 managementTreeClasses
+  // 樹狀樣式（class 字串組）：預設 defaultTreeClasses；MerchantListAutocompleteForManagement 傳 managementTreeClasses
   classes: PropTypes.object
 }
 

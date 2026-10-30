@@ -12,7 +12,7 @@
 import { runContractRows } from './hookContract.test'
 import * as useFetchServiceTicket from 'hooks/useFetchServiceTicket'
 import * as useFetchServices from 'hooks/useFetchServices'
-import * as useFetchServiecAndTicketList from 'hooks/useFetchServiecAndTicketList'
+import * as useFetchServiceAndTicketList from 'hooks/useFetchServiceAndTicketList'
 import * as useFetchSetAddEmployeeClockInSchedule from 'hooks/useFetchSetAddEmployeeClockInSchedule'
 import * as useFetchSetAdminBookingTimes from 'hooks/useFetchSetAdminBookingTimes'
 import * as useFetchSetBookingCancelCheckin from 'hooks/useFetchSetBookingCancelCheckin'
@@ -145,8 +145,8 @@ const ROWS = [
   },
   // 參數 input 目前沒有用到：查詢不帶條件，一律取全部服務與票券。
   {
-    id: 'useFetchServiecAndTicketList',
-    hook: useFetchServiecAndTicketList.default,
+    id: 'useFetchServiceAndTicketList',
+    hook: useFetchServiceAndTicketList.default,
     args: [],
     expect: {
       initial: [{ operationName: 'GET_SERVICES_AND_TICKETS', variables: {} }],

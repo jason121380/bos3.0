@@ -22,7 +22,7 @@ import * as useFetchSettingUserBookingLimit from 'hooks/useFetchSettingUserBooki
 import * as useFetchSettingUserClockIn from 'hooks/useFetchSettingUserClockIn'
 import * as useFetchSettingUserDeductionWay from 'hooks/useFetchSettingUserDeductionWay'
 import * as useFetchSettingUserFixedSalaryItem from 'hooks/useFetchSettingUserFixedSalaryItem'
-import * as useFetchSettingUserSaleryItem from 'hooks/useFetchSettingUserSaleryItem'
+import * as useFetchSettingUserSalaryItem from 'hooks/useFetchSettingUserSalaryItem'
 import * as useFetchShortcut from 'hooks/useFetchShortcut'
 import * as useFetchSingleServiceReportExcelV2 from 'hooks/useFetchSingleServiceReportExcelV2'
 import * as useFetchSortMerchantCusExternalLink from 'hooks/useFetchSortMerchantCusExternalLink'
@@ -76,8 +76,8 @@ import * as useFetchWalletDeposit from 'hooks/useFetchWalletDeposit'
 import * as useFetchWalletDepositDetail from 'hooks/useFetchWalletDepositDetail'
 import * as useFetchWalletDepositRecord from 'hooks/useFetchWalletDepositRecord'
 import * as useFetchWalletUseRecord from 'hooks/useFetchWalletUseRecord'
-import * as useFetchsSetMerchantClockInSetting from 'hooks/useFetchsSetMerchantClockInSetting'
-import * as useFetctSetUpdateDefaultAuthority from 'hooks/useFetctSetUpdateDefaultAuthority'
+import * as useFetchSetMerchantClockInSetting from 'hooks/useFetchSetMerchantClockInSetting'
+import * as useFetchSetUpdateDefaultAuthority from 'hooks/useFetchSetUpdateDefaultAuthority'
 import * as useForgotPasswordVerify from 'hooks/useForgotPasswordVerify'
 import * as useRemoveUserFromMerchant from 'hooks/useRemoveUserFromMerchant'
 
@@ -301,8 +301,8 @@ const ROWS = [
     },
   },
   {
-    id: 'useFetchSettingUserSaleryItem',
-    hook: useFetchSettingUserSaleryItem.default,
+    id: 'useFetchSettingUserSalaryItem',
+    hook: useFetchSettingUserSalaryItem.default,
     args: [],
     invoke: [{ fn: 'setUserSalaryItem', args: [{ input: { probe: 'input' } }] }],
     expect: {
@@ -1823,8 +1823,8 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchsSetMerchantClockInSetting',
-    hook: useFetchsSetMerchantClockInSetting.default,
+    id: 'useFetchSetMerchantClockInSetting',
+    hook: useFetchSetMerchantClockInSetting.default,
     args: [],
     invoke: [{ fn: 'setMerchantClockInSetting', args: [{ input: { probe: 'input' } }] }],
     expect: {
@@ -1841,8 +1841,8 @@ const ROWS = [
     },
   },
   {
-    id: 'useFetctSetUpdateDefaultAuthority',
-    hook: useFetctSetUpdateDefaultAuthority.default,
+    id: 'useFetchSetUpdateDefaultAuthority',
+    hook: useFetchSetUpdateDefaultAuthority.default,
     args: [],
     invoke: [{ fn: 'setUpdateDefaultAuthority', args: [{ authorityId: 'authorityId-v' }] }],
     expect: {

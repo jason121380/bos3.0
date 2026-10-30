@@ -1,4 +1,4 @@
-// src/hooks 契約測試（2/6）：useFetchDestroyQueueById ～ useFetchGetIsOpenDateRangeInOrderMangement
+// src/hooks 契約測試（2/6）：useFetchDestroyQueueById ～ useFetchGetIsOpenDateRangeInOrderManagement
 // 保護什麼：頁面透過這些 hook 讀寫後端，hook 一旦把參數組錯（漏了店家 id、日期、帳單內容）、快取策略寫錯
 // （設定類應為 cache-first 並登記 settingsQuery、交易與報表應為 cache-and-network），或回傳值形狀變了，
 // 頁面會送出錯誤的帳單／顯示舊資料／整頁拋錯。每一列鎖住一個 hook 的完整契約（量測方式見 hookContract.test.js）：
@@ -81,7 +81,7 @@ import * as useFetchGetIsLockDateDisplaySetting from 'hooks/useFetchGetIsLockDat
 import * as useFetchGetIsLockDateSetting from 'hooks/useFetchGetIsLockDateSetting'
 import * as useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import * as useFetchGetIsMonthlyAverageDisplayForMerchantLeaderBoard from 'hooks/useFetchGetIsMonthlyAverageDisplayForMerchantLeaderBoard'
-import * as useFetchGetIsOpenDateRangeInOrderMangement from 'hooks/useFetchGetIsOpenDateRangeInOrderMangement'
+import * as useFetchGetIsOpenDateRangeInOrderManagement from 'hooks/useFetchGetIsOpenDateRangeInOrderManagement'
 
 const ROWS = [
   {
@@ -1147,8 +1147,8 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchGetIsOpenDateRangeInOrderMangement',
-    hook: useFetchGetIsOpenDateRangeInOrderMangement.default,
+    id: 'useFetchGetIsOpenDateRangeInOrderManagement',
+    hook: useFetchGetIsOpenDateRangeInOrderManagement.default,
     args: [],
     expect: {
       initial: [{ operationName: 'GET_IS_OPEN_DATE_RANGE_IN_ORDER_MANGEMENT', variables: {} }],
@@ -1159,6 +1159,6 @@ const ROWS = [
   },
 ]
 
-describe('useFetchDestroyQueueById ～ useFetchGetIsOpenDateRangeInOrderMangement', () => {
+describe('useFetchDestroyQueueById ～ useFetchGetIsOpenDateRangeInOrderManagement', () => {
   runContractRows(ROWS)
 })

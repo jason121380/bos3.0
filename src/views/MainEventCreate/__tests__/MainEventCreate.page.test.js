@@ -11,7 +11,7 @@ import MainEventCreate from '..'
 
 jest.mock('elements/snackbars', () => ({ openSnackbar: jest.fn() }))
 jest.mock('ui/date-picker', () => require('../../__tests__/settingsPageKit.test').datePickerModule)
-jest.mock('components/MerchantListAutocpmpleteForManagement', () => require('../../__tests__/settingsPageKit.test').merchantPickerModule)
+jest.mock('components/MerchantListAutocompleteForManagement', () => require('../../__tests__/settingsPageKit.test').merchantPickerModule)
 jest.setTimeout(20000)
 
 const setup = (fixtures = {}) =>

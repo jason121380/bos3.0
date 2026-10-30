@@ -107,7 +107,7 @@ export default function MerchantSells({
     <Fragment>
       <div className={styles.merchantSells}>
         {/* 必填 *：helper/billVerify.js checkProductOrders 要求每列有 sellerId 與 productId。
-            本頁 PannelMerchantSells 只把 count > 0 的列寫入 bill.productOrders（選了商品才會變成 1），
+            本頁 PanelMerchantSells 只把 count > 0 的列寫入 bill.productOrders（選了商品才會變成 1），
             handleTidyBill 再丟掉兩欄皆空的列，所以：選了商品、或填了服務人員且數量 > 0 的列才標必填 */}
         <Field label="服務人員" required={!!sells.productId || (!!sells.sellerId && sells.count > 0)}>
           <EmployeeAutoComplete

@@ -7,7 +7,7 @@ import { fieldByLabel } from '../../__tests__/settingsPageKit.test'
 import MainEventEdit from '..'
 
 jest.mock('ui/date-picker', () => require('../../__tests__/settingsPageKit.test').datePickerModule)
-jest.mock('components/MerchantListAutocpmpleteForManagement', () => require('../../__tests__/settingsPageKit.test').merchantPickerModule)
+jest.mock('components/MerchantListAutocompleteForManagement', () => require('../../__tests__/settingsPageKit.test').merchantPickerModule)
 jest.setTimeout(20000)
 beforeEach(() => loginAs())
 afterEach(cleanup)

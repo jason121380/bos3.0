@@ -11,7 +11,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from "react-csv"
 import { maskCustomerName, maskCellphone } from 'helper/exportCustomerMask'
 
-function UsagedResult({ className, walletUseRecord, resultSetting, onChange, date, pagenationLabel, isCustomerDataMarked, ...rest }) {
+function UsagedResult({ className, walletUseRecord, resultSetting, onChange, date, paginationLabel, isCustomerDataMarked, ...rest }) {
   const [excelData, setExcelData] = useState([])
 
   useEffect(() => {

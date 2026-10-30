@@ -22,7 +22,7 @@ import billPaymentSummary from 'helper/billPaymentSummary'
 
 import Head from './Head'
 import Header from './Header'
-import Pannel from './Pannel'
+import Panel from './Panel'
 
 function OrderCreate() {
   const [isClick, setIsClick] = useState(false)
@@ -378,7 +378,7 @@ function OrderCreate() {
         >
           <Header />
           <Head />
-          <Pannel />
+          <Panel />
         </Provider>
       )}
       </>

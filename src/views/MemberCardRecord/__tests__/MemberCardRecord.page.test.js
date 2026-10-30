@@ -243,4 +243,21 @@ describe('會員卡列表', () => {
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
     expect(screen.queryByText(/共 \d+ 筆/)).toBeNull()
   })
+
+  // CI 曾偶發：會員卡清單先回來、類別還沒回來時就按「編輯會員卡類別」，彈窗對 undefined 呼叫 map 進錯誤畫面（2026/10/30）
+  it('類別比會員卡晚回來時開啟批次改類別：彈窗照常顯示，不整頁壞', async () => {
+    renderPage(<MemberCardRecord />, {
+      fixtures: {
+        FETCH_MEMBERSHIPS: { memberships: { data: CARDS } },
+        FETCH_MEMBERSHIPS_CATEGORY: { membershipCategories: CATEGORIES },
+      },
+      delays: { FETCH_MEMBERSHIPS_CATEGORY: 500 },
+      route: '/member-card-record',
+    })
+    await screen.findByText('共 3 筆')
+    fireEvent.click(screen.getByTestId('membership-萬元儲值卡-checkbox'))
+    fireEvent.click(toolbar().getByText('編輯會員卡類別'))
+    expect(await screen.findByRole('dialog')).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+  })
 })

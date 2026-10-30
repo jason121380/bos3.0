@@ -6,7 +6,7 @@ const SET_USER_FIXED_SALARY_ITEM = gql`
   }
 `
 
-export default function useFetchSettingUserFixedSaleryItem() {
+export default function useFetchSettingUserFixedSalaryItem() {
   const [setUserFixedSalaryItem] = useMutation(SET_USER_FIXED_SALARY_ITEM)
   return {
     setUserFixedSalaryItem: ({ input }) =>

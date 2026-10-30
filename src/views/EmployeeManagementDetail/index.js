@@ -26,7 +26,7 @@ import { Redirect } from 'react-router-dom'
 import useFetchProfile from 'hooks/useFetchProfile'
 import useFetchMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'
 import { startOfDay, endOfDay } from 'date-fns'
-import useFetchSettingUserFixedSaleryItem from 'hooks/useFetchSettingUserFixedSalaryItem'
+import useFetchSettingUserFixedSalaryItem from 'hooks/useFetchSettingUserFixedSalaryItem'
 import { useFetchGetIsEPWDDisplayLazy } from 'hooks/useFetchGetIsEPWDDisplay'
 import { useFetchGetCheckinSettingsForCalendar } from 'hooks/useFetchGetMerchantCheckinSettings'
 import useFetchGetIsBookingCusCheckUsing from 'hooks/useFetchGetIsBookingCusCheckUsing'
@@ -104,7 +104,7 @@ function Settings({ match, history }) {
     decreaseItems: [{ itemName: '', price: 0, type: 'DECREASE' }],
   })
   const [itemAuthority, setItemAuthority] = useState([])
-  const { setUserFixedSalaryItem } = useFetchSettingUserFixedSaleryItem()
+  const { setUserFixedSalaryItem } = useFetchSettingUserFixedSalaryItem()
   const [designerName, setDesignerName] = useState('')
   const [orderRecords, setOrderRecords] = useState([])
   const [isDisplayFakePerformance, setIsDisplayFakePerformance] = useState(false)

@@ -36,7 +36,7 @@ function EditMemberCardRecordModal({
               value={selectedCategoryId}
               onChange={event => handleSelectCategoryId(event)}
             >
-              {categories.map((data, idx) => (
+              {(categories || []).map((data, idx) => (
                 <NativeSelectOption key={`${data.uuid}-${idx}`} value={data.uuid}>
                   {data.no} {data.name}
                 </NativeSelectOption>

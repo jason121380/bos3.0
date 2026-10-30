@@ -36,7 +36,7 @@ describe('報表的設計師篩選：選項依編號自然排序，沒有編號�
     ['views/ConsumptionAnalyticsDashboard'],
     ['views/CustomerWalletLeaderboard'],
     ['views/CustomerConsumptionLeaderboard'],
-    ['views/DesignerPerforamnceAnalyzeReport'],
+    ['views/DesignerPerformanceAnalyzeReport'],
   ])('%s', async modulePath => {
     const { settle } = renderModule(modulePath)
     await settle()

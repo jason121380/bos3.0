@@ -10,7 +10,7 @@ import { useHistory } from 'react-router'
 import { CSVLink } from "react-csv"
 import { maskCustomerName, maskCellphone } from 'helper/exportCustomerMask'
 
-function Results({ className, date, walletDepositRecord, onChange, resultSetting, pagenationLabel, isCustomerDataMarked, ...rest }) {
+function Results({ className, date, walletDepositRecord, onChange, resultSetting, paginationLabel, isCustomerDataMarked, ...rest }) {
   const history = useHistory()
   const [excelData, setExcelData] = useState([])
 

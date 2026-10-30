@@ -269,7 +269,7 @@ export default function Services({
         ) : (
           <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
-        {/* 不標必填 *：本頁 PannelService 寫入 bill.serviceOrders 前一律 filter(d => d.serviceId)，
+        {/* 不標必填 *：本頁 PanelService 寫入 bill.serviceOrders 前一律 filter(d => d.serviceId)，
             沒選服務的列會被略過，不會被 helper/billVerify.js 的 checkServicesOrders 擋下 */}
         <Field label="服務項目">
           <ServicesAutoComplete

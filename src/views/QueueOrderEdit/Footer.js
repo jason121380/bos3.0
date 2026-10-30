@@ -234,7 +234,7 @@ export default function Footer({ enable }) {
   ])
 
   // 業績合計、現金應收：只顯示在金額彙總（彙總卡與底部固定列共用），不送後端（後端依品項明細自己算業績）。
-  // 四頁預覽以打帳單（PannelPerformance）為準（Jason 2026/10/22）：
+  // 四頁預覽以打帳單（PanelPerformance）為準（Jason 2026/10/22）：
   // - 業績合計：會員卡用第三方卡券時照樣計入售價全額（原本排除，與打帳單、掛單詳細不一致）
   // - 現金應收：與打帳單共用 billPaymentSummary——扣掉紅利點數折抵（原本漏扣）。
   //   （另一個寫法差異：原式排除「未選商品」的店販列，但這種列價格一律是 0，結果相同）
@@ -287,7 +287,7 @@ export default function Footer({ enable }) {
   )
   return (
     <Fragment>
-      {/* 金額彙總卡（放在 Pannel 下方右欄，比照打帳單 PannelPerformance）：「重試」在合計下方；
+      {/* 金額彙總卡（放在 Panel 下方右欄，比照打帳單 PanelPerformance）：「重試」在合計下方；
           手機版（< 640px）不顯示彙總明細與合計，改由底部固定列展開；卡片只留「重試」 */}
       <EditSummaryCard
         details={details}

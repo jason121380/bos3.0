@@ -141,7 +141,7 @@ function DashBoardListContent() {
       visible: canDesigner,
       children: (
         <>
-          <LinkItem userPageAuth={userPageAuth} itemName={'設計師業績分析表'} link={'/designer-perforamnce-analyze-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'設計師業績分析表'} link={'/designer-performance-analyze-report'} />
           <LinkItem userPageAuth={userPageAuth} itemName={'設計師排行榜'} link={'/designer-perform-basic'} />
           <LinkItem userPageAuth={userPageAuth} itemName={'設計師抽成報表'} link={'/designer-rake-report'} />
           <LinkItem userPageAuth={userPageAuth} itemName={'設計師業績月報表'} link={'/designer-monthly-report'} />

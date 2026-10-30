@@ -101,7 +101,7 @@ export default function CouponSells({
         ) : (
           <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
-        {/* 不標必填：PannelCouponSells 寫入 bill.ticketOrders 前一律 filter(d => d.serviceId)，空列會被略過 */}
+        {/* 不標必填：PanelCouponSells 寫入 bill.ticketOrders 前一律 filter(d => d.serviceId)，空列會被略過 */}
         <Field label="卡券">
           <TicketAutoComplete
             className={styles.fieldWidth}

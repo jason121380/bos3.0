@@ -50,7 +50,7 @@ function setup(couponUsage, { index = 0 } = {}) {
     </MockedProvider>
   )
   const utils = render(tree(couponUsage))
-  // 模擬帳單收到 onChange 後把新的這一列傳回來（頁面的 PannelCouponUse 會換一個新物件）
+  // 模擬帳單收到 onChange 後把新的這一列傳回來（頁面的 PanelCouponUse 會換一個新物件）
   const setUsage = usage => utils.rerender(tree(usage))
   return { ...utils, calls, onChange, onClear, latest, setUsage }
 }

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 // 業績包含（多選）切換鈕改 ui/toggle-group（非 exclusive、陣列值原樣傳遞）
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import Page from 'components/Page'
-import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
+import MerchantListAutocomplete from 'components/MerchantListAutocomplete'
 import DateSelector from 'components/DateSelector'
 import { endOfMonth, startOfMonth, format } from 'date-fns'
 import idx from 'idx'
@@ -229,7 +229,7 @@ const OverallPerformanceAnalysisReport = () => {
               </ToggleGroup>
             </div>
             <div className="min-w-0">
-              <MerchantListAutocpmplete
+              <MerchantListAutocomplete
                 onValueChange={value => {
                   handleChecked(value)
                 }}

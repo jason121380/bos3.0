@@ -10,6 +10,16 @@ export function calendarUpdateTime(isoDate) {
 
 const shippedRecords = [
   {
+    title: '2026/10/30 檔名修正',
+    versionNo: 'v3.10302000',
+    updateTime: '2026-10-30',
+    content: [
+      '- 設計師業績分析表的網址改為正確拼法；舊網址會自動轉到新網址，書籤照常可用',
+      '- 內部檔名拼字修正；使用上沒有變化',
+      '- 會員卡列表：類別還沒載入完就按「編輯會員卡類別」不再出現「這個頁面發生錯誤」',
+    ].join('\n'),
+  },
+  {
     title: '2026/10/30 下拉選單統一',
     versionNo: 'v3.10301821',
     updateTime: '2026-10-30',

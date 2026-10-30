@@ -3,7 +3,7 @@ import { ChevronUp } from 'lucide-react'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatMoney, formatNumber } from 'ui/format'
 
-// 四個帳單頁的「金額彙總」畫面（打帳單 PannelPerformance、帳單詳細／掛單詳細／重新開單 Footer 原本各一份，2026/10/21 合併）。
+// 四個帳單頁的「金額彙總」畫面（打帳單 PanelPerformance、帳單詳細／掛單詳細／重新開單 Footer 原本各一份，2026/10/21 合併）。
 // 這裡只負責排版與千分位；每個數值的運算式仍留在各頁、一字未改，以 props 傳入。
 
 // 明細的一列：左邊名稱、右邊金額（千分位）
@@ -66,7 +66,7 @@ export function BillActions({ reason, children }) {
   )
 }
 
-// 帳單詳細／掛單詳細／重新開單的金額彙總卡（放在 Pannel 下方右欄，比照打帳單 PannelPerformance）：
+// 帳單詳細／掛單詳細／重新開單的金額彙總卡（放在 Panel 下方右欄，比照打帳單 PanelPerformance）：
 // 桌機顯示明細與合計，動作按鈕在合計下方；手機（< 640px）只留動作按鈕，明細與合計收進底部固定列（StickySummaryBar）。
 // children 放在卡片最後（密碼視窗、列印範本等），輸出位置與合併前相同
 export function EditSummaryCard({ details, performanceTotal, cashDue, actions, children }) {

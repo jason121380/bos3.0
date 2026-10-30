@@ -9,7 +9,7 @@ import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { endOfMonth } from 'date-fns'
 import idx from 'idx'
 import { CSVLink } from "react-csv";
-import useFetchServiceDedcutionDetailMultiple from 'hooks/useFetchGetUserServiceDeductionDetialMultiple'
+import useFetchServiceDedcutionDetailMultiple from 'hooks/useFetchGetUserServiceDeductionDetailMultiple'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'

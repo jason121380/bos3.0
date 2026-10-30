@@ -8,7 +8,7 @@ import fs from 'fs'
 import path from 'path'
 import React from 'react'
 import { render } from '@testing-library/react'
-import { MemoryRouter, Redirect } from 'react-router-dom'
+import { MemoryRouter, Redirect, Route, Switch } from 'react-router-dom'
 
 const SRC = path.join(__dirname, '..')
 const lazyTargets = file => [...fs.readFileSync(path.join(SRC, file), 'utf8').matchAll(/import\('([^']+)'\)/g)].map(m => m[1])
@@ -84,6 +84,26 @@ describe('路由表結構', () => {
       expect(node.type).toBe(Redirect)
       expect(node.props.to).toBe(to)
     })
+  })
+
+  it('設計師業績分析表舊拼字網址導向正確網址，書籤仍可用', () => {
+    const legacy = dashboardRoutes.find(r => r.path === '/designer-perforamnce-analyze-report')
+    const canonical = dashboardRoutes.find(r => r.path === '/designer-performance-analyze-report')
+    expect(legacy.exact).toBe(true)
+    expect(isLazy(canonical.component)).toBe(true)
+    const node = legacy.component()
+    expect(node.type).toBe(Redirect)
+    expect(node.props.to).toBe('/designer-performance-analyze-report')
+    let location
+    render(
+      <MemoryRouter initialEntries={['/designer-perforamnce-analyze-report']}>
+        <Switch>
+          <Route path={legacy.path} exact component={legacy.component} />
+          <Route render={props => { location = props.location; return null }} />
+        </Switch>
+      </MemoryRouter>
+    )
+    expect(location.pathname).toBe('/designer-performance-analyze-report')
   })
 })
 

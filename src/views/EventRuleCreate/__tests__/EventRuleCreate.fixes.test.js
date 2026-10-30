@@ -10,7 +10,7 @@ import EventRuleCreate from '..'
 
 jest.mock('elements/snackbars', () => ({ openSnackbar: jest.fn() }))
 jest.mock('ui/date-picker', () => require('../../__tests__/settingsPageKit.test').datePickerModule)
-jest.mock('components/MerchantListAutocpmpleteForManagement', () => require('../../__tests__/settingsPageKit.test').merchantPickerModule)
+jest.mock('components/MerchantListAutocompleteForManagement', () => require('../../__tests__/settingsPageKit.test').merchantPickerModule)
 jest.mock('components/BelongAutocomplete', () => require('../../__tests__/settingsPageKit.test').belongModule)
 jest.mock('components/PaywayAutocomplete', () => require('../../__tests__/settingsPageKit.test').paywayModule)
 jest.setTimeout(20000)

@@ -11,7 +11,7 @@ import MembershipCardList from 'components/MembershipCardList'
 import PaywayAutocomplete from 'components/PaywayAutocomplete'
 import ShortcutDialog from 'components/ShortcutDialog'
 import SourcesAutocomplete from 'components/SourcesAutocomplete'
-import TicketsAutocpmplete from 'components/TicketsAutocpmplete'
+import TicketsAutocomplete from 'components/TicketsAutocomplete'
 import WalletDepositToggleButton from 'components/WalletDepositToggleButton'
 
 afterEach(cleanup)
@@ -139,7 +139,7 @@ describe('PaywayAutocomplete 付款方式', () => {
   })
 })
 
-describe('TicketsAutocpmplete 卡券', () => {
+describe('TicketsAutocomplete 卡券', () => {
   const fixtures = {
     GET_TICKETS_FOR_AUTOCOMPLETE: {
       ticketsForList: [
@@ -154,20 +154,20 @@ describe('TicketsAutocpmplete 卡券', () => {
   // 已修正（Jason 2026/10/22 fix all）：排序原本寫成 a.no - b.no，英數編號（A01、B02）相減得 NaN、維持後端順序；
   // 改為字串自然排序（utils/compareNo），空白編號排最後
   it('沒有編號的卡券不列出；空白編號仍列出但不加前綴、排最後；英數編號依自然順序', async () => {
-    const { settle } = renderPage(<TicketsAutocpmplete value={[]} />, { fixtures })
+    const { settle } = renderPage(<TicketsAutocomplete value={[]} />, { fixtures })
     await settle()
     openCombo()
     expect(optionTexts()).toEqual(['A01 - 洗髮五次', 'B02 - 護髮十次', '空白編號'])
   })
 
   it('沒給 value 時不拋錯；查詢失敗時沒有選項（Jason 2026/10/22 fix all）', async () => {
-    const { settle } = renderPage(<TicketsAutocpmplete />, { fixtures })
+    const { settle } = renderPage(<TicketsAutocomplete />, { fixtures })
     await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
     openCombo()
     expect(optionTexts()).toHaveLength(3)
     cleanup()
-    const { settle: s2 } = renderPage(<TicketsAutocpmplete value={['t1']} />, { fallback: 'error' })
+    const { settle: s2 } = renderPage(<TicketsAutocomplete value={['t1']} />, { fallback: 'error' })
     await s2()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
     openCombo()
@@ -175,7 +175,7 @@ describe('TicketsAutocpmplete 卡券', () => {
   })
 
   it('純數字編號依數值排序（2 排在 10 前面）', async () => {
-    const { settle } = renderPage(<TicketsAutocpmplete value={[]} />, {
+    const { settle } = renderPage(<TicketsAutocomplete value={[]} />, {
       fixtures: { GET_TICKETS_FOR_AUTOCOMPLETE: { ticketsForList: [{ id: 'a', no: '10', name: '十號' }, { id: 'b', no: '2', name: '二號' }] } },
     })
     await settle()
@@ -185,7 +185,7 @@ describe('TicketsAutocpmplete 卡券', () => {
 
   it('輸入編號或名稱篩選（不分大小寫）；勾選回傳 id 陣列；已選 id 顯示成名稱', async () => {
     const onChange = jest.fn()
-    const { settle } = renderPage(<TicketsAutocpmplete value={['t2']} onChange={onChange} />, { fixtures })
+    const { settle } = renderPage(<TicketsAutocomplete value={['t2']} onChange={onChange} />, { fixtures })
     await settle()
     expect(screen.getByText('護髮十次')).toBeInTheDocument()
     const input = screen.getByRole('combobox')
@@ -236,7 +236,7 @@ describe('其他預設 onChange', () => {
       [<BelongAutocomplete optionData={['A 區']} value={[]} />, {}, 'A 區'],
       [<MainEventAutocomplete value={[]} />, { GET_MAIN_EVENTS_FOR_AUTOCOMPLETE: { mainEvents: [{ id: 'e1', nameDefault: '母親節' }] } }, '母親節'],
       [<PaywayAutocomplete value={[]} />, { GET_PAY_WAYS: { payWays: [{ value: 'CASH', label: '現金' }] } }, '現金'],
-      [<TicketsAutocpmplete value={[]} />, { GET_TICKETS_FOR_AUTOCOMPLETE: { ticketsForList: [{ id: 't1', no: 'A', name: '卡' }] } }, 'A - 卡'],
+      [<TicketsAutocomplete value={[]} />, { GET_TICKETS_FOR_AUTOCOMPLETE: { ticketsForList: [{ id: 't1', no: 'A', name: '卡' }] } }, 'A - 卡'],
     ]
     for (const [ui, fixtures, name] of cases) {
       const { settle } = renderPage(ui, { fixtures })

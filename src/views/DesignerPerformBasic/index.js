@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Page from 'components/Page'
 import { PageHeader, ReportToolbar } from 'ui/page-header'
-import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
+import MerchantListAutocomplete from 'components/MerchantListAutocomplete'
 import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
 import { endOfDay, startOfMonth, format, isSameDay } from 'date-fns'
@@ -422,7 +422,7 @@ const DesignerPerformBasic = () => {
                 </div>
               </div>
               <div className="noprint min-w-0">
-                <MerchantListAutocpmplete
+                <MerchantListAutocomplete
                   onValueChange={value => {
                     handleChecked(value)
                   }}

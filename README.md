@@ -247,7 +247,7 @@ bos3.0/
     ├── helper/                 # 業務工具函數
     │   ├── pageData.js         # 全站頁面資料定義 (導航用)
     │   ├── formatMoney.js      # 金額格式化
-    │   ├── pagenationLabel.js  # 分頁標籤中文化
+    │   ├── paginationLabel.js  # 分頁標籤中文化
     │   ├── billVerify.js       # 帳單驗證（有測試）
     │   ├── truncateDecimal.js  # 卡券金額無條件捨去（修正浮點誤差）
     │   └── dailyUnlock.js      # 打帳單鎖定日期每日 23:59 解除
@@ -716,7 +716,7 @@ const handleSubmit = () => createOrder({ variables: { input } })
 | **WebSocket** | 全站即時更新依賴 TopBar.js 的 Socket 連線（內建自動重連），勿隨意修改 |
 | **薪資系統** | 薪資結算具備鎖定機制，鎖定後前端不可直接修改 |
 | **Snackbar** | 使用 `openSnackbar({ message, variant })` 全局呼叫，支援 `success`/`error`/`warning`/`info`；畫在右下角，錯誤需手動關閉，確認型（離職、月結、掛單…）畫成對話框 |
-| **分頁標籤** | 使用 `pagenationLabel()` 工具函數進行中文化 |
+| **分頁標籤** | 使用 `paginationLabel()` 工具函數進行中文化 |
 | **CSV 匯出** | 使用 `react-csv` 的 `CSVLink` 元件，包裝在 ManagementTable 內 |
 
 ---

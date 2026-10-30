@@ -54,7 +54,7 @@ describe('報表目錄', () => {
   it('只有「設計師業績分析表」「商品庫存表」「顧客消費排行榜」「顧客入金排行榜」權限時，所屬分類照常出現', async () => {
     await renderList(userFixture(reports(['設計師業績分析表', '商品庫存表', '顧客消費排行榜', '顧客入金排行榜'])))
     expect(tabs()).toEqual(['設計師', '商品', '管理分析'])
-    expect(links()).toEqual([['設計師業績分析表', '/designer-perforamnce-analyze-report']])
+    expect(links()).toEqual([['設計師業績分析表', '/designer-performance-analyze-report']])
     fireEvent.mouseDown(screen.getByRole('tab', { name: '商品' }), { button: 0 })
     expect(links()).toEqual([['商品庫存表', '/product-inventoryList']])
     fireEvent.mouseDown(screen.getByRole('tab', { name: '管理分析' }), { button: 0 })

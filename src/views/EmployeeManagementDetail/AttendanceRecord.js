@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
 import { useRef, useEffect } from 'react'
-import pagenationLabel from './../../helper/pagenationLabel'
+import paginationLabel from './../../helper/paginationLabel'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TablePagination, TableRow } from 'ui/table'
@@ -16,7 +16,7 @@ const AttendanceRecord = ({
 
   useEffect(() => {
     if (pageRef.current) {
-      pagenationLabel(pageRef.current)
+      paginationLabel(pageRef.current)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
   }, [results, pageRef.current])
@@ -62,7 +62,7 @@ const AttendanceRecord = ({
               ))}
             </TableBody>
           </Table>
-          {/* pageRef 保留：pagenationLabel 只改寫 MUI 分頁文字，新分頁元件已是中文，查無元素時不動作 */}
+          {/* pageRef 保留：paginationLabel 只改寫 MUI 分頁文字，新分頁元件已是中文，查無元素時不動作 */}
           <div ref={pageRef}>
             <TablePagination
               count={page.count}

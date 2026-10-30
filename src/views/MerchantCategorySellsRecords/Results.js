@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { CSVLink } from "react-csv";
 import { maskCustomerName } from 'helper/exportCustomerMask'
 import { startOfDay } from 'date-fns'
-import pagenationLabel from './../../helper/pagenationLabel'
+import paginationLabel from './../../helper/paginationLabel'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
@@ -88,7 +88,7 @@ function Results({
     })
     setExcelData(excelData)
     if (pageRef.current) {
-      pagenationLabel(pageRef.current)
+      paginationLabel(pageRef.current)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [results, sortWay, pageRef.current] 變動時執行；displayResults 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [results, sortWay, pageRef.current])
@@ -375,7 +375,7 @@ function Results({
               </TableRow>
             </TableBody>
           </Table>
-          {/* pageRef 原供 pagenationLabel 改寫 MUI 分頁文字；ui 分頁本身即為中文，保留 ref 於外框 */}
+          {/* pageRef 原供 paginationLabel 改寫 MUI 分頁文字；ui 分頁本身即為中文，保留 ref 於外框 */}
           <div ref={pageRef}>
             <TablePagination
               count={results.totalCount}

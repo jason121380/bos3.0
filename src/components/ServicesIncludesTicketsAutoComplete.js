@@ -1,5 +1,5 @@
 import { TextField } from 'ui/text-field'
-import useFetchServiecAndTicketList from 'hooks/useFetchServiecAndTicketList'
+import useFetchServiceAndTicketList from 'hooks/useFetchServiceAndTicketList'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
 import { Fragment, forwardRef, useState, useEffect } from 'react'
@@ -26,7 +26,7 @@ function ServicesIncludesTicketsAutoComplete(
   const servicesToggle = useToggle()
   const [servicesKeyword, setServicesKeyword] = useState('')
 
-  const services = useFetchServiecAndTicketList()
+  const services = useFetchServiceAndTicketList()
   const handleFieldChange = event => {
     idx(event, _ => {
       setServicesKeyword(_.target.value)

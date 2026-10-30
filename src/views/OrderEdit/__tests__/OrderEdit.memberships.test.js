@@ -1,4 +1,4 @@
-// 保護「帳單詳細」的會員卡銷售（PannelMemberShipCardSells／MemberShipCardSells）：
+// 保護「帳單詳細」的會員卡銷售（PanelMemberShipCardSells／MemberShipCardSells）：
 // - 既有帳單的會員卡（服務人員、卡、價格、到期日、第三方卡券、備註）原樣帶回並展開；鎖價卡不能改價格
 // - 到期日：可改到期日並送出；早於帳單隔天、晚於 50 年後、無效時在欄位下方說明原因
 // - 永久會籍：勾選後到期日為空（不送日期）；取消勾選時依「原帳單的有效天數」重算到期日（購買日＋有效天數；

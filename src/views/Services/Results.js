@@ -14,7 +14,7 @@ import useFetchSettingBatchSettingForHelper from 'hooks/useFetchBatchSettingForH
 import useFetchSettingBatchSettingForDeduction from 'hooks/useFetchBatchSettingForDeduction'
 import useFetchMerchantCommissionWay from 'hooks/useFetchMerchantCommissionWay'
 import useFetchMerchantPassword from 'hooks/useFetchMerchantPassword'
-import pagenationLabel from './../../helper/pagenationLabel'
+import paginationLabel from './../../helper/paginationLabel'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
@@ -319,7 +319,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
 
   useEffect(() => {
     if (pageRef.current) {
-      pagenationLabel(pageRef.current)
+      paginationLabel(pageRef.current)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
   }, [services, pageRef.current])
@@ -431,7 +431,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
               ))}
             </TableBody>
           </Table>
-          {/* pageRef 保留給 pagenationLabel（只改寫 MUI 分頁的英文標籤；新分頁已是中文，找不到 MUI 元素時不做事） */}
+          {/* pageRef 保留給 paginationLabel（只改寫 MUI 分頁的英文標籤；新分頁已是中文，找不到 MUI 元素時不做事） */}
           <div ref={pageRef}>
             <TablePagination
               count={services.totalCount}

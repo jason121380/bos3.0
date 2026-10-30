@@ -1,6 +1,6 @@
 import { Checkbox } from 'ui/checkbox'
 import { TextField, InputAdornment } from 'ui/text-field'
-import MerchantListAutocpmpleteForPinnedTable from 'components/MerchantListAutocpmpleteForPinnedTable'
+import MerchantListAutocompleteForPinnedTable from 'components/MerchantListAutocompleteForPinnedTable'
 import useFetchSetPinnedTable from 'hooks/useFetchSetPinnedTable'
 import { TreeView, TreeItem } from 'ui/tree'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -254,7 +254,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
         <Skeleton className="h-96 w-full" />
       ) : (
         <>
-          <MerchantListAutocpmpleteForPinnedTable
+          <MerchantListAutocompleteForPinnedTable
             values={merchantListValue}
             setValues={setMerchantListValue}
             onValueChange={v => handleSetValue('stores', v)}
