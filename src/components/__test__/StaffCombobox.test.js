@@ -92,6 +92,11 @@ describe('StaffCombobox', () => {
     expect(input).toHaveValue('Amy')
     fireEvent.change(input, { target: { value: '' } })
     expect(within(screen.getByRole('listbox')).getAllByRole('option').map(o => o.textContent)).toEqual(['Amy', '李大華'])
+    // 顯示暱稱的設計師也能用本名找到（Codex，PR #321）；也能用暱稱找
+    fireEvent.change(input, { target: { value: '王' } })
+    expect(within(screen.getByRole('listbox')).getAllByRole('option').map(o => o.textContent)).toEqual(['Amy'])
+    fireEvent.change(input, { target: { value: 'amy' } })
+    expect(within(screen.getByRole('listbox')).getAllByRole('option').map(o => o.textContent)).toEqual(['Amy'])
     fireEvent.change(input, { target: { value: '大' } })
     expect(within(screen.getByRole('listbox')).getAllByRole('option').map(o => o.textContent)).toEqual(['李大華'])
     act(() => input.focus())

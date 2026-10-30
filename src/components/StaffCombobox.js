@@ -3,10 +3,12 @@
 // onChange 交給原本的欄位 handler（讀 event.target.name／value）：value 為員工 id，按清除鈕時為 ''（與原本選「None」相同）。
 // getLabel：清單與欄位顯示的文字（預設本名；顧客端預約頁傳「有暱稱用暱稱」）；inputProps 合併到輸入框（保留原本的 data-testid）。
 import React from 'react'
-import { Autocomplete } from 'ui/combobox'
+import { Autocomplete, createFilterOptions } from 'ui/combobox'
 import { TextField } from 'ui/text-field'
 
 const defaultLabel = user => user.name
+// 打字時同時比對顯示文字、本名與暱稱：顯示用暱稱的設計師也能用本名找到（Codex，PR #321）
+const filterStaff = createFilterOptions({ stringify: user => [user.name, user.nickName].filter(Boolean).join(' ') })
 
 export default function StaffCombobox({ id, label, name, value, users, onChange, disabled = false, loading = false, getLabel = defaultLabel, inputProps }) {
   const list = users || []
@@ -24,6 +26,7 @@ export default function StaffCombobox({ id, label, name, value, users, onChange,
       fullWidth
       autoHighlight
       options={list}
+      filterOptions={filterStaff}
       value={selected}
       disabled={disabled}
       loading={loading}
