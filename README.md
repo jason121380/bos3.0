@@ -67,6 +67,9 @@ npm run build
 | `npm run build` | 生產環境建置（Vite，輸出 `build/`，不含 source map） |
 | `npm run preview` | 以正式 build 啟動本機預覽 |
 | `npm run lint`（別名：`npm run lint:build`） | ESLint 檢查。CI 見 [`docs/CURRENT.md`](docs/CURRENT.md) 的 `frontend-ci.yml`；合併前仍請本機執行 |
+| `npm run format` | Prettier 格式化（`.prettierrc`；gql／css 樣板字串不動，md 不格式化）。commit 前執行 |
+| `npm run format:check` | 只檢查格式（CI 的 Lint and build job 會跑，沒通過就擋下） |
+| `npm run test:e2e` | 全站畫面掃描（Playwright＋假 GraphQL，不連任何後端；CI 的 Visual scan job） |
 | `npm test` | 執行測試 (watch mode) |
 | `npm run test:nowatch` | 執行測試 (單次；合併前本機執行) |
 | `npm run test:coverage` | 覆蓋率測試（門檻：現況下限＋金額／API 模組逐檔門檻） |
@@ -391,9 +394,10 @@ localStorage 儲存：
 
 ### 新畫面怎麼寫
 
-- 元件一律從 `ui/xxx` import（Button、Input／Field、Select、Table、Card、Dialog、Accordion…），不要新增 MUI import。
+- 元件一律從 `ui/xxx` import（Button、Input／Field、NativeSelect、Combobox、Table、Card、Dialog、Accordion…），不要新增 MUI import。
+- 下拉只有兩種（2026/10/30）：固定選項用 `ui/native-select` 的 `NativeSelect`；要打字搜尋或多選用 `ui/combobox`（選員工用 `components/StaffCombobox`）。`ui/select` 與 `ui/form-control` 的 `Select`／`MenuItem` 已刪除。
 - 顏色只用 tokens（`text-text`、`bg-surface`、`border-border`…），不寫死 hex。
-- 欄位：標籤在上＋佔位字；必填加 `required`（`*`）並在註解寫明依據；圖示按鈕一律要有 `title`／`aria-label`；金額一律 `NT$ 1,234`（`ui/format`）。
+- 欄位：標籤在上＋佔位字；必填加 `required`（`*`）並在註解寫明依據；圖示按鈕一律要有 `title`／`aria-label`；金額一律 `1,234`（千分位、不加幣別，`ui/format`；見 `STYLE.md` §7）。
 - `ui` 元件放在 MUI 彈出層（Dialog、Popper）內時，外層要有 `.ui-root`（見 `CLAUDE.md` 踩雷清單）。
 
 ### 舊頁面（相容層）
@@ -728,7 +732,7 @@ const handleSubmit = () => createOrder({ variables: { input } })
 | 分支 | 用途 |
 |---|---|
 | `main` | 主要分支；push／合併後 Railway 自動部署，須以正式站版號確認上線 |
-| `claude/*` 等功能分支 | 驗證通過（lint、測試全過、build 成功）後以 PR 合併（merge commit）；合併前先把最新 `main` 合進來重跑驗證（可能有多個 session 同時開發） |
+| `claude/*` 等功能分支 | 驗證通過（格式、lint、測試全過、build 成功、CI 與 Codex review 全綠）後以 PR squash 合併（規則見 `CLAUDE.md`「Git 與合併」）；合併前先把最新 `main` 合進來重跑驗證（可能有多個 session 同時開發） |
 
 ### Commit Message 格式
 

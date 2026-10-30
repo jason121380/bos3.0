@@ -5,6 +5,8 @@
 > **下文批次是歷史／已過時。** 版號、測試總數、CI、健康分、後端債只看 [`docs/CURRENT.md`](../CURRENT.md)（健康分程式 `v3.10241717`，CI 為 `frontend-ci.yml`）。不要假設 Actions 已停用。
 > **2026/10/23 快照**：`package.json` 已無 MUI 套件。最後一批完成後，相容元件頁面使用檔案 2 → 0，日期選擇器內部亦不再引用 modal／overlay-compat；歷史批次與列印證據保留於下文。日期時間沿用 `lib/business-timezone.js`，不得自行加時區換算。下文未標為歷史的「MUI 元件」是遷移當時的叫法，不可重新安裝或引入 `@mui/*`。
 
+> **2026/10/30 更新**：①下拉只剩兩種——`ui/native-select` 的 `NativeSelect` 與 `ui/combobox`；`ui/select`（Radix）與 `ui/form-control` 的 `Select`／`MultipleSelect`／`MenuItem` 已刪除（#319、#321），下表對應列已標註。②57 個錯字檔名已改名（#320），例如 `DesignerPerforamnceAnalyzeReport` → `DesignerPerformanceAnalyzeReport`、`MerchantListAutocpmplete*` → `MerchantListAutocomplete*`、`Pannel*` → `Panel*`；網址 `/designer-perforamnce-analyze-report` 改為 `/designer-performance-analyze-report`（舊網址 Redirect）。下文歷史批次保留當時的檔名，找檔請用新名稱。③程式碼格式交給 Prettier（#322），改完跑 `npm run format`。
+
 > 正式站僅供唯讀查看；寫入、送出及列印測試只用 mock／隔離測試資料。刪檔先經 Jason 同意。
 
 ## 0. 鐵則（違反任何一條，該頁不得 commit）
@@ -22,7 +24,7 @@
 |---|---|---|
 | `ui/button` | `Button` | `variant`: primary（主題藍，每頁最多一個）/ secondary（淺灰實心）/ ghost / danger；`size`: sm / md / lg / icon；`asChild` 可包 `RouterLink` |
 | `ui/input` | `Input`, `Textarea`, `Label`, `Field` | `Field label required hint error htmlFor`；`Input invalid` |
-| `ui/select` | `Select`, `SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`, `SelectGroup`, `SelectLabel` | Radix：`value` 必須是**非空字串**，用 `onValueChange(v)`。舊值若為數字／物件／可為空字串，**保留既有 Select 相容元件** |
+| ~~`ui/select`~~ | **已刪除（2026/10/30，#319）** | 改用 `ui/native-select` 的 `NativeSelect`（固定選項）或 `ui/combobox`（搜尋／多選）。`@radix-ui/react-select` 已移除 |
 | `ui/table` | `Table`, `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableHead`, `TableCell`, `TablePagination` | `TableHead/TableCell numeric` 右對齊＋等寬數字；`TablePagination` 與 MUI 同名 props（`count page rowsPerPage onPageChange(e, p) rowsPerPageOptions onRowsPerPageChange(e)`） |
 | `ui/card` | `Card`, `CardHeader`（`action` prop 放右側按鈕）, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter` | 取代 MUI Card / Paper |
 | `ui/page-header` | `PageHeader`（`title description actions`）, `Toolbar`, `ToolbarSpacer` | 頁首。`AdminPageHeader`、`PageTitle` 已於 2026/10/28 刪除，一律用 `PageHeader`（報表頁加同檔的 `ReportToolbar`） |
@@ -105,7 +107,7 @@ Claude-Session: https://claude.ai/code/session_01BUenXFDZo7NpQzri398TMd
 
 | MUI | 換成 | 規則 |
 |---|---|---|
-| `FormControl` + `InputLabel` + `Select` + `MenuItem`（單選） | `ui/native-select` 的 `NativeSelect` + `NativeSelectOption` | `value`、`onChange`、`name`、`disabled`、`error`、`required` 原樣搬過去；InputLabel 的文字放 `label`；`MenuItem value={x}` → `NativeSelectOption value={x}`（值型別不變）。`onChange(event)` 與 MUI 相同，`event.target.value` 是原始值。**以下保留 MUI**：`multiple`、`renderValue`、`MenuProps`、handler 用到第二個參數（child）、用 `inputRef` / `inputProps.ref` 註冊（react-hook-form）、MenuItem 內含圖示 / Checkbox 等非純文字內容 |
+| `FormControl` + `InputLabel` + `Select` + `MenuItem`（單選） | `ui/native-select` 的 `NativeSelect` + `NativeSelectOption` | `value`、`onChange`、`name`、`disabled`、`error`、`required` 原樣搬過去；InputLabel 的文字放 `label`；`MenuItem value={x}` → `NativeSelectOption value={x}`（值型別不變）。`onChange(event)` 與 MUI 相同，`event.target.value` 是原始值。**以下保留 MUI**：`multiple`、`renderValue`、`MenuProps`、handler 用到第二個參數（child）、用 `inputRef` / `inputProps.ref` 註冊（react-hook-form）、MenuItem 內含圖示 / Checkbox 等非純文字內容。**2026/10/30 更新**：`NativeSelect` 已補 `defaultValue`／`readOnly`／`renderValue`／`displayEmpty`／`placeholder`／`inputRef`／`labelId`，`multiple` 改用 `ui/combobox multiple`；`ui/form-control` 的 `Select`／`MultipleSelect`／`MenuItem` 已刪除（#321），上述「保留」情境已不存在 |
 | `TextField select` | 同上 | 只在沒有 `helperText` 邏輯、`InputProps` adornment、`inputRef` 時才換 |
 | `ToggleButtonGroup` + `ToggleButton` | `ui/toggle-group` 的 `ToggleGroup` + `ToggleGroupItem` | `value`、`exclusive`、`onChange(event, newValue)`、`disabled` 原樣；`size="small"` 可保留；`color`、`orientation` 刪除。handler 一字不改 |
 | 單獨的 `ToggleButton selected onChange`、用 secondary Button 拼出來的篩選鈕 | `ToggleGroupItem selected onChange` | 外觀為篩選鈕（選取時主題色） |

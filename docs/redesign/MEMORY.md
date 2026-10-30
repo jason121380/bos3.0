@@ -372,3 +372,8 @@
 
 202. **always merge 恢復（Jason 2026/10/30，取代 10/23 的廢止）**：檢查全綠就由代理直接合併，不必再等 Jason。全綠是：本機 `npm run lint`、全套 `npm run test:nowatch`、`npm run build` 通過；GitHub Frontend CI（Lint and build、Unit tests）在最新 head 通過；Codex review 完成且沒有待處理 finding；沒有衝突。任一項不過就不合併。合併方式 squash；合併後確認正式站左上角版號（工作環境連不到 `bos.lure.com.tw` 時請 Jason 確認）。同日 Jason 也指示「後端先不理」：LINE 打卡寫死網址、GraphQL 操作名去重兩項擱置。
 
+203. **CI 偶發失敗不是 flake，先找競態（2026/10/30，PR #320）**：會員卡列表測試在 CI 偶爾失敗、本機重跑又過，根因是「會員卡清單先回來、類別查詢還沒回來」時按「編輯會員卡類別」，`EditMemberCardRecordModal` 對 `undefined` 呼叫 `.map` 進錯誤邊界——真實使用者在慢網路下也會撞到。重現方法是 `renderPage(…, { delays: { 查詢名稱: 毫秒 } })` 讓類別查詢晚回，修正前紅燈、改 `(categories || []).map` 後綠燈。教訓：CI 偶發失敗先當成時序 bug 追，不要直接重跑或加 retry；凡是「清單先到、選項或設定後到」就能開的彈窗，都要用 `delays` 測一次晚到。
+
+204. **Codex review 在 #321 抓到兩個搜尋選單的真 bug（2026/10/30）**：①**輸入法組字 Enter**：清單停在目前已選的設計師上時，注音／拼音確認選字的 Enter 被 combobox 當成「再選一次」，預約頁因此清掉已選時段與服務項目；`onKeyDown` 要略過 `event.nativeEvent.isComposing`／`keyCode === 229`。②**顯示標籤與搜尋欄位要分開**：預約頁顯示暱稱優先，但 combobox 預設只比對顯示文字，有暱稱的設計師打本名查不到；`StaffCombobox` 改用 `createFilterOptions` 的 `stringify` 同時比對本名與暱稱，顯示仍依 `getLabel`。兩項都先寫修正前會失敗的測試。教訓：中文介面的文字輸入元件一律要測 IME 組字中的 Enter；「顯示什麼」與「能搜什麼」是兩件事，改顯示標籤時要確認搜尋欄位。
+
+205. **Prettier 落地的兩個坑（2026/10/30，PR #322）**：①預設 `embeddedLanguageFormatting: "auto"` 會重排 `gql`／`css` 樣板字串，GraphQL 文字一改，`settings-cache` 的掃描與後端比對都可能受影響，所以 `.prettierrc` 設 `"embeddedLanguageFormatting": "off"`（另設 `quoteProps: "preserve"` 保持物件鍵引號）。②格式化會把長的依賴陣列或 JSX 拆行，`// eslint-disable-next-line` 因此落到別的行、原本的目標行重新冒出警告（#322 的 `useOrderDetailCheckout` 就是），要手動移回目標行上方再跑 `lint:build`。驗證方式：關 minify／chunk 合併後比對打包產物（395 檔中 385 檔逐字相同，其餘 10 檔是 CSS 色碼大小寫、JSX 文字拆合等不影響畫面的差異），列印 15 份報表與 12 份收據逐位元比對。

@@ -48,7 +48,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 ## Git 與合併
 
 - 功能分支以當次 session 指定的為準（例如 `claude/pensive-fermi-v6ufcq`、`claude/upbeat-carson-pdc7rf`）；PR 範本在 `.github/PULL_REQUEST_TEMPLATE.md`（沿用其標題結構）。
-- **always merge（Jason 2026/10/30）**：檢查全綠就由代理直接合併，不必再等 Jason 點頭。「全綠」是：本機 `npm run lint`、全套 `npm run test:nowatch`、`npm run build` 都通過；GitHub Frontend CI（Lint and build、Unit tests）在最新 head 通過；Codex review 已完成且沒有待處理的 finding；PR 沒有衝突。任一項不過就不合併，先修或停下來回報。合併方式沿用 squash。合併後確認正式站左上角版號（工作環境若連不到正式站，請 Jason 確認）。這取代 10/23 的「代理只開 PR，不自行 merge」。
+- **always merge（Jason 2026/10/30）**：檢查全綠就由代理直接合併，不必再等 Jason 點頭。「全綠」是：本機 `npm run format:check`、`npm run lint`、全套 `npm run test:nowatch`、`npm run build`、`npm run test:e2e` 都通過；GitHub Frontend CI（Lint and build〔含 format:check〕、Unit tests、Visual scan）在最新 head 通過；Codex review 已完成且沒有待處理的 finding；PR 沒有衝突。任一項不過就不合併，先修或停下來回報。合併方式沿用 squash。合併後確認正式站左上角版號（工作環境若連不到正式站，請 Jason 確認）。這取代 10/23 的「代理只開 PR，不自行 merge」。
 - **可能有多個 session 同時開發**：合併前一定先 `git fetch origin main` 並 merge 進自己的分支，重跑 lint／測試／build 再合併；衝突逐一解，不覆蓋對方的內容。`MEMORY.md` 的教訓編號、`TODO.md` 的條目合併後要檢查重號，後到者順延編號並同步文件內的引用。
 - PR 開啟後若有 Codex 自動 review：等它完成；有 finding 就驗證是否成立、修正或在討論串說明理由；合併仍依上方 always merge 的全綠條件。GitHub Actions 見 `.github/workflows/frontend-ci.yml`（現況見 `docs/CURRENT.md`）。
 - PR 合併後，分支從最新 `main` 重置再繼續（`git fetch origin main && git checkout -B <branch> origin/main`），不在已合併的歷史上堆疊。若強制推送被權限擋下（2026/10/30 曾發生），改用 `git merge origin/main` 把 main 合進分支再推（不需強制推送，PR 差異仍只有新改動）。
