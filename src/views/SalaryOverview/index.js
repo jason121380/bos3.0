@@ -69,6 +69,7 @@ export default function SalaryOverview() {
       const data = idx(salaryItemLockData, _ => _.data.isSalaryitemLocked)
       setIsSalaryItemsLock(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [salaryItemLockData.loading, salaryItemLockData.data])
   const latestMonthlyCheckoutTime = useFetchMerchantLatestMonthlyCheckoutTime({
     date: setting.date,
@@ -81,6 +82,7 @@ export default function SalaryOverview() {
         idx(latestMonthlyCheckoutTime, _ => _.data.merchantLatestMonthlyCheckoutTime)
       )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [latestMonthlyCheckoutTime.loading, latestMonthlyCheckoutTime.data])
   // -------------------------------------------------------------
   const showOption = [
@@ -100,6 +102,7 @@ export default function SalaryOverview() {
       const isUsersSalaryChacked = idx(users, _ => _.data.users.users)
       setUsersIsSalaryChecked(isUsersSalaryChacked)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [users.loading, users.data])
 
   const userSalayItemData = useFetchUsersSalaryItems({
@@ -121,6 +124,7 @@ export default function SalaryOverview() {
       const isSalaryChacked = idx(isSalaryChackedData, _ => _.data.isSalaryChacked)
       setIsThisMonthSalaryChacked(isSalaryChacked)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isSalaryChackedData.loading, isSalaryChackedData.data])
 
   const handleOnChangePage = (event, page) => {
@@ -193,6 +197,7 @@ export default function SalaryOverview() {
       const btnStatus = idx(salaryItemLockData, _ => _.data.isSalaryitemLocked)
       setEditBtnStatus(btnStatus)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [salaryItemLockData.loading, salaryItemLockData.data])
 
   React.useEffect(() => {
@@ -200,6 +205,7 @@ export default function SalaryOverview() {
       const data = idx(getIsBorrowDisplayInSalaryOverview, _ => _.data.getIsBorrowDisplayInSalaryOverview)
       setBorrowDisplay(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBorrowDisplayInSalaryOverview.loading])
   return (
     <Page className="ui-root pb-12" title="薪資總表/月結">

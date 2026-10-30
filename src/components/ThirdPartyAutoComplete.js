@@ -42,6 +42,7 @@ function ThirdPartyAutoComplete(
       // 查詢失敗或回 null 時以空清單顯示，Autocomplete 拿到 null 會整頁壞（2026/10/22）
       setOptions(idx(designers, _ => _.data.merchant.thirdpartyCoupons) || [])
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designers.loading]);
 
   useEffect(() => {
@@ -51,6 +52,7 @@ function ThirdPartyAutoComplete(
       )
       setSelectedValue(selectedValue)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designers.loading, value]);
   return (
     <Autocomplete

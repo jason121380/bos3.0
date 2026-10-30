@@ -77,6 +77,7 @@ function ItemPickerModal({
       clearInterval(timer)
       clearTimeout(clearTimer)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [pagingSource, open] 變動時執行；paging 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [pagingSource, open])
 
   // 以點選為主的選擇窗：開啟時焦點放在彈窗本身，不自動聚焦第一顆分類鈕（STYLE §6 Dialog「開啟時的焦點」）

@@ -47,6 +47,7 @@ function InventoryWorkEdit({ match }) {
       }))
       setCSVData(csv)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getInventory.loading])
 
   return (

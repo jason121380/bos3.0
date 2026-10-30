@@ -42,6 +42,7 @@ export default function EmployeePickingCreate() {
       const data = idx(getEmployeePickingPurpose, _ => _.data.getEmployeePickingPurpose)
       setPurpose(data || [])
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getEmployeePickingPurpose.loading])
 
   useEffect(() => {
@@ -59,6 +60,7 @@ export default function EmployeePickingCreate() {
         PickerName: getPicking.data.picking.Picker.name,
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getPicking.loading])
 
   const dateHandler = value => {

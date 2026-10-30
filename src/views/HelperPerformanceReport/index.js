@@ -55,6 +55,7 @@ export default function HelperPerformance() {
       })
       setJobTitle(title)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantJobTitlePoint.loading])
 
   useEffect(() => {
@@ -103,6 +104,7 @@ export default function HelperPerformance() {
       })
       setExcelData(excelData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [useFetchGetHelperPerformanceData.loading, isMemberShipCardActiveData.loading])
   return (
     <Page title="互助業績報表" className="ui-root">

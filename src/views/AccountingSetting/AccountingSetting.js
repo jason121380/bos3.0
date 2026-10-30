@@ -94,6 +94,7 @@ function AccountingSetting() {
       // 收付方式查詢失敗時留一列空白（同科目查詢失敗），不整頁錯誤（Jason 2026/10/22）
       setAccountingType(accountingType || [{ accountingTypeName: '' }])
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [
     accountingTypeData.data,
     accountingTypeData.loading,

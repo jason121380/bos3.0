@@ -16,6 +16,7 @@ const BelongAutocomplete = ({ value, onChange = () => { }, fetchData = false, op
     if (fetchData) {
       getAttributionLazy()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   // 呼叫端給選項時跟著 optionData 更新（原本只在掛載時讀一次，選項較晚到時下拉仍是空的；Jason 2026/10/22 fix all）
@@ -30,6 +31,7 @@ const BelongAutocomplete = ({ value, onChange = () => { }, fetchData = false, op
       const data = idx(attributionLazyData, _ => _.data.getAttribution).map(({ name }) => name)
       setAttributions(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [attributionLazyData.loading, attributionLazyData.data])
 
   return (

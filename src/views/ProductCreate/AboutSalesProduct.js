@@ -42,7 +42,7 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
 
       setValue('customerSellSetting', categories)
     }
-  }, [customerCategories, watchSellPrice])
+  }, [customerCategories, watchSellPrice, setValue])
 
   useEffect(() => {
     register({ name: 'commissionWay' })

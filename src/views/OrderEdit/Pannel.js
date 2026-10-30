@@ -44,6 +44,7 @@ export default function SimpleAccordion({ children }) {
       const thirdPartTicket = idx(thirdPartTicketData, _ => _.data.getIsThirdPartTicketDisplay)
       setthirdPartTicketData(thirdPartTicket)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [thirdPartTicketData.loading])
 
   useEffect(() => {
@@ -51,6 +52,7 @@ export default function SimpleAccordion({ children }) {
       const active = idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) || bill.bonusDecount > 0 || bill.bonusDeposit > 0 || bill.bonusUsed > 0
       setBonusActive(active)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerBonusActive.loading, bill, onceRef])
 
   React.useEffect(() => {

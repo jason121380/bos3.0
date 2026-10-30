@@ -46,6 +46,7 @@ const DesignerPerformanceReport = () => {
 			link.href = url
 			link.click()
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
 	}, [designerPerformanceExcelData.loading])
 
 	useEffect(() => {
@@ -54,6 +55,7 @@ const DesignerPerformanceReport = () => {
 				isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
 			setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
 	}, [isDisplayTogglePerformanceButtonData.loading])
 
 	useEffect(() => {
@@ -113,6 +115,7 @@ const DesignerPerformanceReport = () => {
 				setDesignerPerformance([])
 			}
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
 	}, [getDesignerPerformance.loading, isMemberShipCardActiveData.loading, sort])
 
 	return (

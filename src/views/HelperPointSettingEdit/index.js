@@ -44,6 +44,7 @@ function HelperPointSettingEdit({ match }) {
       if (newSubmitData[data.retrievePointWay]) newSubmitData[data.retrievePointWay] = data.retrieveSegmentSetting
       setSubmitData(newSubmitData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getMerchantPointValueSettingsForEdit、submitData）；只在 [getMerchantPointValueSettingsForEdit.loading] 變動時呼叫，補上會每次 render 重跑
   }, [getMerchantPointValueSettingsForEdit.loading])
 
   const handleUpdate = () => {

@@ -58,12 +58,14 @@ export default function Services({
 
   useEffect(() => {
     setServiceDetailAlready(!serviceDetail.loading)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [setServiceDetailAlready] 變動時執行；serviceDetail.loading 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [setServiceDetailAlready]);
   useEffect(() => {
     if (expanded && focusFirstField && bill.serviceOrders.length === index && bill.designerId) {
       idx(serviceRef, _ => _.current.focus())
     } else {
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [expanded, focusFirstField] 變動時執行；bill.designerId、bill.serviceOrders.length、index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [expanded, focusFirstField])
 
   useEffect(() => {
@@ -107,6 +109,7 @@ export default function Services({
       })
       setHelper(newHelper)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [serviceDetail.data, serviceDetail.loading] 變動時執行；helper 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [serviceDetail.data, serviceDetail.loading])
   useEffect(() => {
     if (helper.length > 0) {
@@ -223,6 +226,7 @@ export default function Services({
       default:
         break
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [focus, focusRow] 變動時執行；helper.length、helperRefs、index、service.isLocked 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [focus, focusRow])
 
   const handleFocus = event => {

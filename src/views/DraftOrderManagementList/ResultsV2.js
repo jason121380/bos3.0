@@ -121,6 +121,7 @@ function Results({
     } else {
       setOrderExtendArr([])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在切換「全部展開」時套用；列表沒有分頁，重新查詢時本元件會重新掛載並重設為收合，orders 不會在展開期間換成新帳單
   }, [allExtend])
   useEffect(() => {
     const excelData = []
@@ -170,6 +171,7 @@ function Results({
     if (printOrderDetail.length > 0) {
       printDiv()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（printDiv）；只在 [printOrderDetail] 變動時呼叫，補上會每次 render 重跑
   }, [printOrderDetail])
   const printDiv = () => {
     var printMain = document.getElementById('printMain')

@@ -159,6 +159,7 @@ export default function AccountingRecordDetail(props) {
       setRemark(getMoneyFlow.data.moneyFlow.remark)
       setWalletType({ title: getMoneyFlow.data.moneyFlow.walletType, value: getMoneyFlow.data.moneyFlow.walletType })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMoneyFlow.loading])
 
   useEffect(() => {
@@ -190,6 +191,7 @@ export default function AccountingRecordDetail(props) {
       setRevenueSubjects(revenueInit)
       setExpenditureSubjects(expenditureInit)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [accountingSubjects.loading])
 
   useEffect(() => {
@@ -200,6 +202,7 @@ export default function AccountingRecordDetail(props) {
       )
       setEditPwdIsUsing(editPwdIsUsing)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantPassword.loading])
 
   useEffect(() => {
@@ -208,6 +211,7 @@ export default function AccountingRecordDetail(props) {
         setShowMessage(false);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（showMessage）；只在 [accountingSubject, relationUserId] 變動時呼叫，補上會每次 render 重跑
   }, [accountingSubject, relationUserId])
 
   if (getMoneyFlow.loading) return ''

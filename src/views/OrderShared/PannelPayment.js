@@ -12,6 +12,7 @@ export default function PannelPayment({ Payment }) {
     if (bill.payType.length === 1 || bill.amountByOtherPay > 0 || bill.walletPay > 0) {
       setExpanded(true)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [bill.payType] 變動時執行；bill.amountByOtherPay、bill.walletPay 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [bill.payType])
   // 付款／備註改為與打帳單相同的常駐卡片（不可收合）：原本的展開 state 與自動展開 effect 保留，
   // expanded 仍標在卡片的 data-state（與原 Accordion 根節點相同）；收合時內容本來就保持掛載，改常駐不影響查詢與副作用。

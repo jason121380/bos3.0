@@ -220,6 +220,7 @@ function Parameter() {
       const isLockDate = idx(merchantIsLockDateSettingData, _ => _.data.getIsDateLock)
       setIsLockDate(isLockDate)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantIsLockDateSettingData.loading])
   useEffect(() => {
     if (!merchantBankSettingsData.loading && merchantBankSettingsData.data) {
@@ -229,6 +230,7 @@ function Parameter() {
       )
       setMerchantBankSettings(merchantBankSettings)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantBankSettingsData.loading])
   useEffect(() => {
     if (!merchantFakePerformanceReferData.loading && merchantFakePerformanceReferData.data) {
@@ -238,6 +240,7 @@ function Parameter() {
       )
       setMerchantFakePerformanceRefer(merchantFakePerformanceRefer)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantFakePerformanceReferData.loading])
   useEffect(() => {
     if (
@@ -270,6 +273,7 @@ function Parameter() {
         salaryDecreaseItem
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [
     merchantDeductionItems.loading,
     merchantSalaryIncreaseItems.loading,
@@ -280,6 +284,7 @@ function Parameter() {
       const merchantPasswordData = idx(merchantPassword, _ => _.data.merchantPassword)
       setPasswordSetting(merchantPasswordData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantPassword.loading])
   useEffect(() => {
     if (!merchantClockInSettingData.loading && merchantClockInSettingData.data) {
@@ -289,6 +294,7 @@ function Parameter() {
       )
       setIsMerchantClockInSetting(getMerchantClockInSetting)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantClockInSettingData.loading])
   useEffect(() => {
     if (!isDisplayNonBankAccountInBankTransferReport.loading && isDisplayNonBankAccountInBankTransferReport.data) {
@@ -296,30 +302,35 @@ function Parameter() {
         isDisplayNonBankAccountInBankTransferReport, _ => _.data.getIsDisplayNonBankAccountInBankTransferReport)
       setDisplayNonBankAccountInBankTransferReport(isDisplayNonBankAccountInBankTransferReportData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isDisplayNonBankAccountInBankTransferReport.loading])
   useEffect(() => {
     if (!merchantBookingNotificationSetting.loading && merchantBookingNotificationSetting.data) {
       const data = idx(merchantBookingNotificationSetting, _ => _.data.getMerchantBookingNotificationSetting)
       setMerchantBookingNotification(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantBookingNotificationSetting.loading])
   useEffect(() => {
     if (!bookingLineNotifySettings.loading && bookingLineNotifySettings.data) {
       const data = idx(bookingLineNotifySettings, _ => _.data.getBookingLineNotifySettings)
       setBookingLineNotify(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [bookingLineNotifySettings.loading])
   useEffect(() => {
     if (!getParameterReportSetting.loading && getParameterReportSetting.data) {
       const data = idx(getParameterReportSetting, _ => _.data.getParameterReportSetting)
       setAboutReport(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getParameterReportSetting.loading])
   useEffect(() => {
     if (!getParameterCheckoutAndSalaryItemsSetting.loading && getParameterCheckoutAndSalaryItemsSetting.data) {
       const data = idx(getParameterCheckoutAndSalaryItemsSetting, _ => _.data.getParameterCheckoutAndSalaryItemsSetting)
       setCheckoutAndSalaryItem(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getParameterCheckoutAndSalaryItemsSetting.loading])
   useEffect(() => {
     if (!getMerchantExternalLink.loading && getMerchantExternalLink.data) {
@@ -327,18 +338,21 @@ function Parameter() {
       setExternalLink(data)
     }
     // 連結的新增／編輯／刪除／排序直接送出 mutation 後重抓（refetch 不會改變 loading），清單要跟著重抓的資料更新
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantExternalLink.loading, getMerchantExternalLink.data])
   useEffect(() => {
     if (!getMerchantReservationTime.loading && getMerchantReservationTime.data) {
       const data = idx(getMerchantReservationTime, _ => _.data.getMerchantReservationTime)
       setMerchantReservation(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantReservationTime.loading])
   useEffect(() => {
     if (!getMerchantHairCondition.loading && getMerchantHairCondition.data) {
       const data = idx(getMerchantHairCondition, _ => _.data.getMerchantHairCondition)
       setHairCondition(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantHairCondition.loading])
   useEffect(() => {
     if (!nonDesignateBookingRecipients.loading && !lineConnectedUser.loading && nonDesignateBookingRecipients.data && lineConnectedUser.data) {
@@ -347,42 +361,49 @@ function Parameter() {
       const select = lineConnectedIds.filter(d => idArray.includes(d.id))
       setNDBRecipients(select)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [nonDesignateBookingRecipients.loading, lineConnectedUser.loading])
   useEffect(() => {
     if (!getParameterOrderCreateSetting.loading && getParameterOrderCreateSetting.data) {
       const data = idx(getParameterOrderCreateSetting,_=>_.data.getParameterOrderCreateSetting)
       setOrderCreateSetting(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getParameterOrderCreateSetting.loading])
   useEffect(() => {
     if (!getMerchantCusExternalLink.loading && getMerchantCusExternalLink.data) {
       const data = idx(getMerchantCusExternalLink,_=>_.data.merchantCusExternalLink)
       setCusExternalLink(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantCusExternalLink.loading, getMerchantCusExternalLink.data])
   useEffect(() => {
     if (!getParameterAboutSettingFunction.loading && getParameterAboutSettingFunction.data) {
       const data = idx(getParameterAboutSettingFunction,_=>_.data.getParameterAboutSettingFunction)
       setAboutSettingFunction(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getParameterAboutSettingFunction.loading])
   useEffect(() => {
     if (!getCustomerReference.loading && getCustomerReference.data) {
       const data = idx(getCustomerReference,_=>_.data.getCustomerReference)
       setReference(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getCustomerReference.loading])
   useEffect(() => {
     if (!getMerchantAvatar.loading && getMerchantAvatar.data) {
       const data = idx(getMerchantAvatar,_=>_.data.getMerchantAvatar)
       setMerchantLogo(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantAvatar.loading])
   useEffect(() => {
     if (!getMerchantRakeReference.loading && getMerchantRakeReference.data) {
       const data = idx(getMerchantRakeReference,_=>_.data.getMerchantRakeReference)
       setMerchantRakeReferemce(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantRakeReference.loading])
   useEffect(() => {
     if (!getParameterAboutBookingSetting.loading && getParameterAboutBookingSetting.data) {
@@ -394,6 +415,7 @@ function Parameter() {
       }
       setAboutBooking(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getParameterAboutBookingSetting.loading])
   useEffect(() => {
     if (!getParameterAboutCustomerSetting.loading && getParameterAboutCustomerSetting.data) {
@@ -401,48 +423,56 @@ function Parameter() {
       data.requiredColumnForNewCustomer = requiredColumnOptions.filter(d => data.requiredColumnForNewCustomer.includes(d.value))
       setAboutCustomer(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getParameterAboutCustomerSetting.loading])
   useEffect(() => {
     if (!getSpecificBookingNotificationDayCount.loading && getSpecificBookingNotificationDayCount.data) {
       const data = idx(getSpecificBookingNotificationDayCount,_=>_.data.getSpecificBookingNotificationDayCount)
       setNotificationDayCount(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getSpecificBookingNotificationDayCount.loading])
   useEffect(() => {
     if (!getDisableBookingDayLimit.loading && getDisableBookingDayLimit.data) {
       const data = idx(getDisableBookingDayLimit,_=>_.data.getDisableBookingDayLimit)
       setDisableDayLimit(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getDisableBookingDayLimit.loading])
   useEffect(() => {
     if (!getMerchantCheckinSettings.loading && getMerchantCheckinSettings.data) {
       const data = idx(getMerchantCheckinSettings,_=>_.data.getMerchantCheckinSettings)
       setCheckinSettings(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantCheckinSettings.loading])
   useEffect(() => {
     if (!getIsBookingCusCheckUsing.loading && getIsBookingCusCheckUsing.data) {
       const data = idx(getIsBookingCusCheckUsing,_=>_.data.getIsBookingCusCheckUsing)
       setBookingCusCheck(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBookingCusCheckUsing.loading])
   useEffect(() => {
     if (!getBookingTypeForSocket.loading && getBookingTypeForSocket.data) {
       const data = idx(getBookingTypeForSocket,_=>_.data.getBookingTypeForSocket)
       setBookingTypeForSocket(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBookingTypeForSocket.loading])
   useEffect(() => {
     if (!getUESUsingSetting.loading && getUESUsingSetting.data) {
       const data = idx(getUESUsingSetting,_=>_.data.getUESUsingSetting)
       setUESUsing(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getUESUsingSetting.loading])
   useEffect(() => {
     if (!getIsCBRDStylist.loading && getIsCBRDStylist.data) {
       const data = idx(getIsCBRDStylist,_=>_.data.getIsCBRDStylist)
       setCBRDStylist(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsCBRDStylist.loading])
 
   // 任一設定查詢失敗（查詢結果沒有資料）時不可編輯與存檔：存檔會把所有設定一起送出，讀不到的部分會以空白預設值蓋掉後端設定

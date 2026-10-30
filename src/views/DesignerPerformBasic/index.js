@@ -75,6 +75,7 @@ const DesignerPerformBasic = () => {
         isDRRPEVDisplay
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getDRRDataDisplay.loading])
 
   useEffect(() => {
@@ -83,6 +84,7 @@ const DesignerPerformBasic = () => {
         isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
       setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isDisplayTogglePerformanceButtonData.loading])
 
   useEffect(() => {
@@ -93,6 +95,7 @@ const DesignerPerformBasic = () => {
       )
       setIsMemberShipCardActive(isMemberShipCardActive)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
 
   useEffect(() => {
@@ -103,6 +106,7 @@ const DesignerPerformBasic = () => {
       )
       setMonthlyAverageDisplayForDesignerLeaderBoard(monthlyAverageDisplayForDesignerLeaderBoard)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [monthlyAverageDisplayForDesignerLeaderBoardData.loading])
 
   useEffect(() => {
@@ -248,6 +252,7 @@ const DesignerPerformBasic = () => {
       setExcelData(excelData)
       setMonthlyAveragePerformanceTotal(monthlyAveragePerformanceTotal)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [
     designersLeaboardData.loading,
     performReference,
@@ -263,6 +268,7 @@ const DesignerPerformBasic = () => {
       setIsSubmit(true)
       setSubmitValue(valueSelect)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [date] 變動時執行；valueSelect 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [date])
 
   const handleSearchReport = () => {

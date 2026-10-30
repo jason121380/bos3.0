@@ -112,6 +112,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       const data = idx(getIsReportListExtended, _ => _.data.getIsReportListExtended)
       setReportListExtended(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsReportListExtended.loading])
 
   // 拿參數設定是否啟用紅利點數功能
@@ -131,6 +132,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       )
       setIsMemberShipCardActive(isMemberShipCardActive)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
 
   useEffect(() => {
@@ -138,6 +140,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       const data = idx(getIsCustomerBonusActive, _ => _.data.getIsCustomerBonusActive)
       setCustomerBonusActive(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsCustomerBonusActive.loading])
 
   useEffect(() => {
@@ -153,6 +156,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       })
       dispatch(pinnedTableActions.setPinnedTable(pages))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getUserPinnedTable.loading, dispatch])
 
 
@@ -382,6 +386,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
         window.location.reload()
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [profile.loading])
 
   // 拿登入者的id
@@ -399,6 +404,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       const userPageAuth = idx(userData, _ => _.data.user.pageAuthority.pageAuthority)
       setUserPageAuth(userPageAuth)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [userData.data, userData.loading])
 
   // 登出按鈕

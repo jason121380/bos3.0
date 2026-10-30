@@ -153,6 +153,7 @@ function Settings({ match, history }) {
       const data = idx(getIsBookingCusCheckUsing, _ => _.data.getIsBookingCusCheckUsing)
       setBookingCusCheck(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBookingCusCheckUsing.loading])
 
   useEffect(() => {
@@ -184,6 +185,7 @@ function Settings({ match, history }) {
         // 其他值不處理（與原本沒有 default 時相同）
         break
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [currentTab] 變動時執行；attendance.length、getAttendanceRecord、getOrderRecordsData、getRakeReport、getSalaryItems、getSalaryReport、orderRecords.length、rakeReport.length、salaryIncreaseItemsReformatted.length、userPaySlip.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [currentTab])
 
   useEffect(() => {
@@ -200,6 +202,7 @@ function Settings({ match, history }) {
       default:
         break
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [resultsSetting, getLastMonth] 變動時執行；currentTab、getAttendanceRecord、getOrderRecordsData、getSalaryReport 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [resultsSetting, getLastMonth])
 
   const getOrderRecordsData = () => {
@@ -227,6 +230,7 @@ function Settings({ match, history }) {
       setMembershipDisplay(active || performance !== 0)
       setOrderRecords(getOrderListLazyData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getOrderListLazyData.loading, memberActiveLazyData.loading, customerBonusActiveData.loading])
 
   const getRakeReport = () => {
@@ -244,10 +248,12 @@ function Settings({ match, history }) {
     if (!designerRakeReportLazyData.loading && designerRakeReportLazyData.data !== undefined) {
       setRakeReport(designerRakeReportLazyData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designerRakeReportLazyData.loading])
 
   useEffect(() => {
     getRakeReport()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getRakeReport）；只在 [rakeReportDate] 變動時呼叫，補上會每次 render 重跑
   }, [rakeReportDate])
 
   const getSalaryItems = () => {
@@ -287,6 +293,7 @@ function Settings({ match, history }) {
       setIsDisplayFakePerformance(FakePerformance)
       setUserPaySlip(userSalaryReportLazyData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [userSalaryReportLazyData.loading, getIsDisplayFakePerformanceInSalaryReportLazyData.loading])
 
   // 初始化薪資加項需要的state
@@ -356,6 +363,7 @@ function Settings({ match, history }) {
         })
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantSalaryIncreaseItemsLazyData.loading, designerFixedSalaryItemsLazyData.loading])
 
   // 初始化薪資扣項需要的state
@@ -423,6 +431,7 @@ function Settings({ match, history }) {
         })
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantSalaryDecreaseItemsLazyData.loading, designerFixedSalaryItemsLazyData.loading])
 
   useEffect(() => {
@@ -430,6 +439,7 @@ function Settings({ match, history }) {
       const loginUserAuthName = idx(profile, _ => _.data.me.merchantIdentity.authorityName)
       setLoginUserAuthName(loginUserAuthName)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [profile.loading])
   useEffect(() => {
     if (!designer.loading) {
@@ -440,6 +450,7 @@ function Settings({ match, history }) {
       )
       setClickedUserAuthName(clickedUserAuthName)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designer.loading])
 
   useEffect(() => {
@@ -449,6 +460,7 @@ function Settings({ match, history }) {
       const tmpArr = roleSectionAuthority(merchantAuth, loginUserAuthId, '編輯員工')
       setItemAuthority(tmpArr)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantAuthData.loading, profile.loading])
   const tabValue = [
     { value: 'general', label: '基本資料' },
@@ -500,6 +512,7 @@ function Settings({ match, history }) {
     if (!uerAttendanceLazyData.loading && uerAttendanceLazyData.data !== undefined) {
       setAttendance(uerAttendanceLazyData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [uerAttendanceLazyData.loading])
 
   const handleTabsChange = (event, newValue) => {
@@ -523,6 +536,7 @@ function Settings({ match, history }) {
       const data = idx(getMerchantCheckinSettings, _ => _.data.getMerchantCheckinSettings)
       setCheckinSettings(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantCheckinSettings.loading])
 
 
@@ -532,6 +546,7 @@ function Settings({ match, history }) {
       const data = Boolean(idx(getBookinHistoryDisplay, _ => _.data.getParameterAboutBookingSetting.isBookingHistoryDisplay))
       setBookingHistoryDisplay(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBookinHistoryDisplay.loading])
 
   if (!currentTabItem) return <Redirect to={`/management/employee/${id}/general`} />

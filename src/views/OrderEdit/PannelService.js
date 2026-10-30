@@ -56,6 +56,7 @@ export default function PannelService({ thirdPartTicket, expanded, setExpanded }
 
       setIsHelperDesignationData(isHelperDesignation)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isHelperDesignationData.loading])
 
   React.useEffect(() => {
@@ -66,6 +67,7 @@ export default function PannelService({ thirdPartTicket, expanded, setExpanded }
       setServiceCategories(serviceCategories)
       setServicesInModal(servicesInModal)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [serviceCategoriesData.loading, servicesData.loading])
 
   React.useEffect(() => {
@@ -104,6 +106,7 @@ export default function PannelService({ thirdPartTicket, expanded, setExpanded }
       }
       setServices(newServices)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [servicesOrder.loading, setExpanded, setServices, isFirstLoad, orderId])
   function handleAddService() {
     const newServices = cloneDeep(services)

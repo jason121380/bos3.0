@@ -69,6 +69,7 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
 
       setExcelData(excelData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [walletDepositRecord.loading, isCustomerDataMarked])
   let total = 0
   if (walletDepositRecord != null) {

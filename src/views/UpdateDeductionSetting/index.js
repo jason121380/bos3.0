@@ -37,6 +37,7 @@ function ProfitSharing({ match }) {
       const data = idx(getAttributionForRake, _ => _.data.getAttributionForRake) || []
       setAttributions(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAttributionForRake.loading])
   useEffect(() => {
     if (!getDeductionSetting.loading && idx(getDeductionSetting, _ => _.data.getDeductionSetting)) {
@@ -94,6 +95,7 @@ function ProfitSharing({ match }) {
       )
       setSettingLoaded(true)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getDeductionSetting.loading])
   const handleSave = () => {
     // 判斷抽成設定是判斷抽成設定是全段或分段

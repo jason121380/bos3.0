@@ -39,11 +39,13 @@ function InventoryWorkCreate() {
       // 依目前選的排序（預設「庫存」）顯示，與排序鈕的選取狀態一致
       setInventoryData(sortData(data, sort))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [products.loading] 變動時執行；products、sort 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [products.loading])
 
   useEffect(() => {
     const resData = sortData(inventoryData, sort)
     setInventoryData(resData)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [sort] 變動時執行；inventoryData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [sort])
 
   useEffect(() => {
@@ -57,6 +59,7 @@ function InventoryWorkCreate() {
       })
       setInventoryData(newData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [productInventoryData.loading] 變動時執行；inventoryData、productInventoryData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [productInventoryData.loading])
 
   const handleCreateIventory = async (isDraft = true) => {

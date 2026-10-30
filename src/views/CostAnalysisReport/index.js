@@ -40,6 +40,7 @@ export default function MerchantIncomeStatementMonthly() {
       const data = idx(getCARPTDISPLAY, _ => _.data.getParameterReportSetting.CARPTDisplay)
       setCARPTDISPLAY(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getCARPTDISPLAY.loading])
 
 
@@ -74,6 +75,7 @@ export default function MerchantIncomeStatementMonthly() {
         })
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantIncomeStatementDataV2.loading, isMemberShipCardActiveData.loading])
   useEffect(() => {
     if (!getmerchantIncomeStatementV2ExcelLazyData.loading && getmerchantIncomeStatementV2ExcelLazyData.data !== undefined) {
@@ -82,6 +84,7 @@ export default function MerchantIncomeStatementMonthly() {
       link.href = url
       link.click()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getmerchantIncomeStatementV2ExcelLazyData.loading])
 
   const handleExcel = () => {

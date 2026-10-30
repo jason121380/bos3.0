@@ -89,6 +89,7 @@ function AboutOrderCreate({
         variant: 'error'
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [croppedAreaPixels] 變動時執行；handleSetValue、imageSrc、rotation、uploadMerchantLogo 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [croppedAreaPixels])
 
   const onSelectFile = event => {

@@ -42,6 +42,7 @@ function Results({
       }
     }
     // 「有掛單未結不可日結」設定由父層 state 傳入、可能比列表晚一拍更新；設定改變時重算全選上限（B2 #13）
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [loading, checkoutStatus] 變動時執行；waitCloseOrderResults 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [loading, checkoutStatus])
   const [selectedOrders, setSelectedOrders] = React.useState([])
   const handleSelectAll = event => {

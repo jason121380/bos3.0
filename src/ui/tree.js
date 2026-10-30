@@ -22,6 +22,7 @@ const TreeView = React.forwardRef(function TreeView({
   const selected = selectedProp === undefined ? innerSelected : selectedProp
   const items = () => Array.from(root.current.querySelectorAll('[role="treeitem"]:not([aria-disabled="true"])'))
   // 搜尋或受控收合可能移除目前項目；保持恰好一個可見項目可由 Tab 進入。
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意每次 render 後確認恰好一個項目可由 Tab 進入；有條件判斷，不會無限更新
   React.useLayoutEffect(() => {
     const visible = items()
     if (!visible.some(el => el.id === active)) {

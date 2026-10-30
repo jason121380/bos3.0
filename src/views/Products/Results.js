@@ -197,6 +197,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
       )
       setDisableDeleteProduct(disableDeleteProduct)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [passwordData.loading])
 
   useEffect(() => {
@@ -204,6 +205,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
       const productCategories = idx(productCategoriesData, _ => _.data.productCategories) || []
       setProductCategories(productCategories)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productCategoriesData.loading])
 
   useEffect(() => {
@@ -211,6 +213,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
     if (pageRef.current) {
       pagenationLabel(pageRef.current)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（refetchProducts）；只在 [products, pageRef.current] 變動時呼叫，補上會每次 render 重跑
   }, [products, pageRef.current])
 
   useEffect(() => {

@@ -29,6 +29,7 @@ function ServiceCategoryEdit({ match }) {
       const data = idx(getAttribution, _ => _.data.getAttribution)
       setAttributions(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAttribution.loading])
 
   useEffect(() => {
@@ -42,6 +43,7 @@ function ServiceCategoryEdit({ match }) {
 
       setCategoryId(serviceCategoryDetail.data.serviceCategory.id)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（setValue）；只在 [serviceCategoryDetail.loading, serviceCategoryDetail.data] 變動時呼叫，補上會每次 render 重跑
   }, [serviceCategoryDetail.loading, serviceCategoryDetail.data])
 
   const onSubmit = data => {

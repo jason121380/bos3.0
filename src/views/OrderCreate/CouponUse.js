@@ -100,12 +100,14 @@ export default function CouponUse({
     if (index === focusRow && focus === 'coupon') {
       couponRef.current.focus()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [focus, focusRow] 變動時執行；index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [focus, focusRow])
   
   useEffect(() => {
     if (couponUsages[index].price) {
       setPrice(couponUsages[index].price)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [couponUsages] 變動時執行；index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [couponUsages])
 
   // render 時已讀 helper[index].map，能執行到這裡 helper[index] 一定存在
@@ -120,6 +122,7 @@ export default function CouponUse({
         .fill()
         .map((_, i) => elRefs[i] || createRef())
     )
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [helper] 變動時執行；index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [helper])
 
   const handleFocus = event => {

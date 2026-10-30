@@ -38,6 +38,7 @@ export default function Employees() {
       const data = idx(businessItemsMonthlyReport, _ => _.data.businessItemsMonthlyReport)
       setReportData(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [businessItemsMonthlyReport.loading])
 
   useEffect(() => {
@@ -47,6 +48,7 @@ export default function Employees() {
       link.href = url
       link.click()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [businessItemsMonthlyReportData.loading])
 
   return (

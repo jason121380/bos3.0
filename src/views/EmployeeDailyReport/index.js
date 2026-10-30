@@ -45,6 +45,7 @@ const EmployeeDailyReport = () => {
       const data = idx(optimizationPrintMode, _ => _.data.getIsOptimizationPrintModeOn)
       setPrintMode(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [optimizationPrintMode.loading])
 
   useEffect(() => {
@@ -65,6 +66,7 @@ const EmployeeDailyReport = () => {
       })
       setPrintData(report)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designerReportData.loading])
 
   useEffect(() => {
@@ -75,6 +77,7 @@ const EmployeeDailyReport = () => {
       )
       setIsMemberShipCardActive(isMemberShipCardActive)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
 
   useEffect(() => {
@@ -90,6 +93,7 @@ const EmployeeDailyReport = () => {
       setPriceDisplayOnReport(isPriceDisplayOnDailyReport)
       setIsHelperPointPriceDisplay(isHelperPointPriceDisplay)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isPriceDisplayOnDailyReportData.loading])
   return (
     <Page className="ui-root" title="設計師日報表">

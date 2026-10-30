@@ -42,6 +42,7 @@ function ThirdPartyAutoCompleteforQueueOrder(
     if (!designers.loading) {
       setOptions(idx(designers, _ => _.data.merchant.thirdpartyCoupons))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designers.loading]);
 
   useEffect(() => {
@@ -50,6 +51,7 @@ function ThirdPartyAutoCompleteforQueueOrder(
         _.data.merchant.thirdpartyCoupons.find(d => d.id === value))
       setSelectedValue(tmpSelectValue)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designers.loading, value])
   return (
     <Autocomplete

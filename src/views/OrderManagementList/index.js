@@ -108,12 +108,14 @@ function OrderManagementList() {
       const data = idx(getSerialNumberUsing, _ => _.data.getParameterOrderCreateSetting.isOrderSerialNumberUsing)
       setSerialNumberUsing(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getSerialNumberUsing.loading])
   useEffect(() => {
     if (!getIsPrintWindowClosureDelayed.loading) {
       const data = idx(getIsPrintWindowClosureDelayed, _ => _.data.getParameterOrderCreateSetting.isPrintWindowClosureDelayed)
       setClosureDelayed(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsPrintWindowClosureDelayed.loading])
 
   useEffect(() => {
@@ -125,6 +127,7 @@ function OrderManagementList() {
       const membership = idx(getOrderList, _ => _.data.getOrderList.intervalSummary.membership)
       setMembershipDisplay(isMemberShipCardActive || membership !== 0)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading, getOrderList.loading])
 
   useEffect(() => {
@@ -136,12 +139,14 @@ function OrderManagementList() {
       const bonus = idx(getOrderList, _ => _.data.getOrderList.intervalSummary.bonusDecountForReport)
       setBonusDisplay(bonusActive || bonus !== 0)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerBonusActive.loading, getOrderList.loading])
 
   useEffect(() => {
     if (!customerDataMarkedData.loading) {
       setIsCustomerDataMarked(isExportCustomerMasked(customerDataMarkedData))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerDataMarkedData.loading, customerDataMarkedData.error])
 
   useEffect(() => {
@@ -179,6 +184,7 @@ function OrderManagementList() {
       })
       setAttrs(attrs)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsOpenDateRangeInOrderMangement.loading, getOrderListDateAuth.loading])
 
   useEffect(() => {
@@ -192,6 +198,7 @@ function OrderManagementList() {
       setOrderList(pageData)
       setOrtderIds([...ids])
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getOrderList.loading, pageSetting.pageLimit, pageSetting.pageOffset])
 
   useEffect(() => {
@@ -213,6 +220,7 @@ function OrderManagementList() {
       }
     }
     // 含 getOrderList.loading：重新查詢結果沒變時 data 不會換，但上面的 effect 會以不含明細的資料重設列表，這裡要再補一次明細
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [orderStaticDetail.loading, getOrderList.loading, getOrderList.data, pageSetting.pageLimit, pageSetting.pageOffset])
 
   useEffect(() => {
@@ -250,6 +258,7 @@ function OrderManagementList() {
         getDataUrl().catch(() => {})
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [
     getLogoDisplayOnInvoice.loading,
     getQrcodeDisplayOnInvoice.loading,

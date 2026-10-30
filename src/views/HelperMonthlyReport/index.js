@@ -36,6 +36,7 @@ const HelperMontlyReport = () => {
         isMemberShipCardActive
       )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading, helperMonthlyData.loading])
 
   return (

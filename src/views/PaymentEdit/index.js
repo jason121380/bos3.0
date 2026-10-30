@@ -40,6 +40,7 @@ function ServiceCategoryEdit(props) {
         })
       )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [paymentDetail.data, paymentDetail.loading])
   const handleOnchange = ({ event, key }) => {
     if (key === 'fee' && isNaN(idx(event, _ => _.target.value))) return

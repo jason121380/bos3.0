@@ -298,6 +298,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
       setNoVerify(data)
       data && setFocus('no')
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [checkIsCustomerNoUsedLazyData.loading])
 
   React.useEffect(() => {
@@ -312,6 +313,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
     } else {
       setNoVerify(false)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（checkNo）；只在 [values.no] 變動時呼叫，補上會每次 render 重跑
   }, [values.no])
 
   React.useEffect(() => {
@@ -319,6 +321,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
       const data = idx(lastCustomerNo, _ => _.data.getLastCustomerNo)
       setLastNo(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [lastCustomerNo.loading])
 
   return (

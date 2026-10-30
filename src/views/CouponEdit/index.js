@@ -47,6 +47,7 @@ function ServiceCategoryEdit({ match }) {
 
   useEffect(() => {
     ticket.refetch()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   useEffect(() => {
@@ -215,6 +216,7 @@ function ServiceCategoryEdit({ match }) {
         })
       )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ ticket.data, ticket.loading, customerCategory.data, cus…] 變動時執行；isDuplicate 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [
     ticket.data,
     ticket.loading,
@@ -393,6 +395,7 @@ function ServiceCategoryEdit({ match }) {
         }
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [tickets.loading, ticket.loading])
 
   useEffect(() => {

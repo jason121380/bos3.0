@@ -69,6 +69,7 @@ function ConsumptionAnalyticsDashboard() {
       const display = idx(getIsDisplayTogglePerformanceButton, _ => _.data.getIsDisplayTogglePerformanceButton)
       setReferDisplay(display)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsDisplayTogglePerformanceButton.loading])
 
   useEffect(() => {
@@ -82,6 +83,7 @@ function ConsumptionAnalyticsDashboard() {
         }
       }
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   useEffect(() => {
@@ -176,10 +178,12 @@ function ConsumptionAnalyticsDashboard() {
         weekly: weeklyArr.length > 0,
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getConsumptionAnalyticsDashboardLazyData、tidyDataV2）；只在 [getConsumptionAnalyticsDashboardLazyData.loading, dataType, sortType] 變動時呼叫，補上會每次 render 重跑
   }, [getConsumptionAnalyticsDashboardLazyData.loading, dataType, sortType])
 
   useEffect(() => {
     handleSearch()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [date] 變動時呼叫，補上會每次 render 重跑
   }, [date])
 
   const handleFetchData = (start, end) => {

@@ -121,6 +121,7 @@ export default function Employees() {
         delete: del,
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [profileIdentity.loading, merchantAuthorities.loading])
 
   useEffect(() => {
@@ -128,6 +129,7 @@ export default function Employees() {
       const data = idx(user, _ => _.data.users.users)
       setUserOptioons(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [user.loading])
 
 
@@ -146,6 +148,7 @@ export default function Employees() {
     }
     setDisplayDate(displayDate)
     handleSearch()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [date] 變動時呼叫，補上會每次 render 重跑
   }, [date])
 
   useEffect(() => {
@@ -155,6 +158,7 @@ export default function Employees() {
       link.href = url
       link.click()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [attendanceRecordsExcelLazyDataV2.loading])
 
   useEffect(() => {
@@ -164,6 +168,7 @@ export default function Employees() {
       link.href = url
       link.click()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [attendanceRecordsExcelLazyDataV2ForHR.loading])
 
   const handleOpen = () => {

@@ -113,6 +113,7 @@ export default function KeyIn({ match }) {
       const data = idx(getIsBonusRewardWithLine, _ => _.data.getParameterAboutSettingFunction.isBonusRewardWithLine)
       setBonusRewardWithLINE(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBonusRewardWithLine.loading])
 
   useEffect(() => {
@@ -120,6 +121,7 @@ export default function KeyIn({ match }) {
       const data = idx(getIsLBCusDisplay, _ => _.data.getParameterOrderCreateSetting.isLBCusDisplay)
       setLBCusDisplay(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsLBCusDisplay.loading])
 
   useEffect(() => {
@@ -127,18 +129,21 @@ export default function KeyIn({ match }) {
       const data = idx(getSerialNumberUsing, _ => _.data.getParameterOrderCreateSetting.isOrderSerialNumberUsing)
       setSerialNumberUsing(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getSerialNumberUsing.loading])
   useEffect(() => {
     if(!getIsBonusConversion.loading) {
       const data = idx(getIsBonusConversion,_=>_.data.getParameterAboutSettingFunction)
       setBonusConversion(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBonusConversion.loading])
   useEffect(() => {
     if (!getBindedThirdPartTicketLockedSetting.loading) {
       const data = idx(getBindedThirdPartTicketLockedSetting, _ => _.data.getBindedThirdPartTicketLockedSetting)
       setBindedThirdPart(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBindedThirdPartTicketLockedSetting.loading])
 
   useEffect(() => {
@@ -146,6 +151,7 @@ export default function KeyIn({ match }) {
       const thirdPartyCoupons = idx(thirdPartyCouponsData, _ => _.data.merchant.thirdpartyCoupons)
       setThirdPartyCoupons(thirdPartyCoupons)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [thirdPartyCouponsData.loading])
   useEffect(() => {
     // 同一張帳單只帶入一次：之後重新查詢（loading 再變回 false）不再把原帳單蓋回櫃檯改過的內容（見 useOncePerOrder）
@@ -230,6 +236,7 @@ export default function KeyIn({ match }) {
       })
 
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [order.loading, isFirstLoad, match.params.id])
   const handleBillChange = ({ value, key }) => {
     setBill(prev => ({
@@ -242,6 +249,7 @@ export default function KeyIn({ match }) {
       const data = idx(getBonusRewardRule, _ => _.data.getParameterAboutSettingFunction.bonusRewardRule)
       setBonusSetting(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBonusRewardRule.loading])
 
   useEffect(() => {
@@ -381,6 +389,7 @@ export default function KeyIn({ match }) {
       })
     )
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [shortcut] 變動時執行；couponSells、mData、memberCardSells、pData、sData、sells、services、tData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [shortcut])
 
   // 確認欄位資料是否載入完成

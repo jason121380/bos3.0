@@ -41,12 +41,14 @@ function ProductAutoComplete(
   
   useEffect(() => {
     if (options.length > 0) getData && getData(options)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getData）；只在 [options] 變動時呼叫，補上會每次 render 重跑
   }, [options])
 
   useEffect(() => {
     if (selectedValue?.no === productKeyword || selectedValue?.name.includes(productKeyword)) {
       setProductKeyword(selectedValue.name)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [selectedValue] 變動時執行；productKeyword 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [selectedValue])
   useEffect(() => {
     if (selectedValue === null && value === '') {

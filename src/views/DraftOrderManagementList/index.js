@@ -104,6 +104,7 @@ function DraftOrderManagementList() {
       const data = idx(getIsPrintWindowClosureDelayed, _ => _.data.getParameterOrderCreateSetting.isPrintWindowClosureDelayed)
       setClosureDelayed(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsPrintWindowClosureDelayed.loading])
   React.useEffect(() => {
     if (!isMemberShipCardActiveData.loading && !orders.loading) {
@@ -118,6 +119,7 @@ function DraftOrderManagementList() {
       // membership 是布林：未啟用會員卡且沒有會員卡金額時不顯示會員卡欄（原本比較 membership !== 0 永遠為 true，Jason 2026/10/22）
       setMembershipDisplay(Boolean(isMemberShipCardActive || membership))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading, orders.loading])
   React.useEffect(() => {
     if (!customerBonusActive.loading && !orders.loading) {
@@ -129,11 +131,13 @@ function DraftOrderManagementList() {
       const bonus = allOrers.some(({ bonusDecount }) => bonusDecount !== 0)
       setBonusDisplay(bonusActive || bonus)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerBonusActive.loading, orders.loading])
   React.useEffect(() => {
     if (!customerDataMarkedData.loading) {
       setIsCustomerDataMarked(isExportCustomerMasked(customerDataMarkedData))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerDataMarkedData.loading, customerDataMarkedData.error])
 
   React.useEffect(() => {
@@ -171,6 +175,7 @@ function DraftOrderManagementList() {
         getDataUrl().catch(() => {})
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [
     getLogoDisplayOnInvoice.loading,
     getQrcodeDisplayOnInvoice.loading,

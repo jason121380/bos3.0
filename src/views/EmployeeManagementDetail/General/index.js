@@ -161,6 +161,7 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
           designerDetail.data.merchantDesigner.isDisplayOnClockInReportList,
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designerDetail.data, designerDetail.loading, setNameInHeader])
   const handleFieldChange = ({ value, key }) => {
     setDesigner(

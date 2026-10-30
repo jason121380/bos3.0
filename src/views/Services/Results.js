@@ -56,6 +56,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
       )
       setDisableDeleteService(disableDeleteService)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [passwordData.loading])
 
   const [helperDeductionSetting, setHelperDeductionSetting] = useState([
@@ -245,6 +246,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
         )
       )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantCommissions.loading, openEditDeductionModal])
 
   const handleOpenEditDeductionModal = () => {
@@ -319,6 +321,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
     if (pageRef.current) {
       pagenationLabel(pageRef.current)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
   }, [services, pageRef.current])
 
   // 不可點的列操作（停用的服務）：連結無 disabled 屬性，比照 MUI ButtonBase 改用 aria-disabled + 取消指標事件

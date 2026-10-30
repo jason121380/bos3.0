@@ -41,6 +41,7 @@ const MerchantListAutocpmpleteForManagement = ({ onValueChange = () => { }, sele
   useEffect(() => {
     const ids = values.map(d => d.id)
     onValueChange(ids)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（onValueChange）；只在 [values] 變動時呼叫，補上會每次 render 重跑
   }, [values])
 
   useEffect(() => {
@@ -51,6 +52,7 @@ const MerchantListAutocpmpleteForManagement = ({ onValueChange = () => { }, sele
       const data = JSON.parse(eventJoinMerchantsData.data.eventJoinedMerchants)
       handleSetData(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSetData）；只在 [merchantForManagementData, eventJoinMerchantsData] 變動時呼叫，補上會每次 render 重跑
   }, [merchantForManagementData, eventJoinMerchantsData])
 
   useEffect(() => {
@@ -69,6 +71,7 @@ const MerchantListAutocpmpleteForManagement = ({ onValueChange = () => { }, sele
     } else {
       merchantForManagement()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（eventJoinMerchants、merchantForManagement）；只在 [inRule, eventId] 變動時呼叫，補上會每次 render 重跑
   }, [inRule, eventId])
 
   return (

@@ -87,6 +87,7 @@ export default function AboutDesignerSalary({ className,
       setService({point})
       setServiceForType({helperTypeName})
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantJobTitlePoint.loading, merchantHelperItems.loading])
   const handleServiceChange = ({ changedData, key }) => {
     setService(

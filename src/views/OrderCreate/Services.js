@@ -68,6 +68,7 @@ function Services({
       idx(serviceRef, _ => _.current.focus())
     } else {
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [expanded, focusFirstField] 變動時執行；bill.designerId、bill.serviceOrders.length、index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [expanded, focusFirstField])
 
   useEffect(() => {
@@ -107,6 +108,7 @@ function Services({
     ) {
       setHelper(helperFromModal)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [helperFromModal, servicesModalOpen] 變動時執行；index、servicesOnPannel.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [helperFromModal, servicesModalOpen])
 
   useEffect(() => {
@@ -166,6 +168,7 @@ function Services({
         },
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getService）；只在 [service.serviceId] 變動時呼叫，補上會每次 render 重跑
   }, [service.serviceId])
 
   useEffect(() => {
@@ -189,6 +192,7 @@ function Services({
           helperDeductiontype: data.helperDeductiontype,
         }))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [serviceDetail.data, serviceDetail.loading,] 變動時執行；service 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [serviceDetail.data, serviceDetail.loading,])
 
   const handlePriceChange = (event, index) => {
@@ -260,6 +264,7 @@ function Services({
       default:
         break
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [focus] 變動時執行；helper.length、helperRefs、service.isLocked 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [focus])
 
   const handleFocus = event => {

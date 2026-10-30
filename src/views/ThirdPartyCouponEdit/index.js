@@ -32,6 +32,7 @@ function ServiceCategoryEdit(props) {
       const found = list.find(data => data.id === props.match.params.id)
       if (found) setThirdPartyCouponDetail(found)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [thirdPartyCouponsData.loading] 變動時執行；props.match.params.id、thirdPartyCouponsData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [thirdPartyCouponsData.loading])
 
   React.useEffect(() => {

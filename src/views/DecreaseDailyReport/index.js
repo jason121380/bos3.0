@@ -47,6 +47,7 @@ const DecreaseDailyReport = () => {
 
   useEffect(() => {
     isPriceDisplayOnDailyReportData.refetch()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [date.startDate, sortJobTitle] 變動時執行；isPriceDisplayOnDailyReportData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [date.startDate, sortJobTitle])
 
   useEffect(() => {
@@ -54,6 +55,7 @@ const DecreaseDailyReport = () => {
       const data = idx(getHelperDailyReport, _ => _.data.helperDailyReport)
       setHelperReport(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getHelperDailyReport.loading])
 
   useEffect(() => {
@@ -61,6 +63,7 @@ const DecreaseDailyReport = () => {
       const data = idx(designerNameForReportType, _ => _.data.getDesignerNameForReportType)
       setDesignerNameForReportTypeData(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designerNameForReportType.loading])
 
   useEffect(() => {
@@ -68,6 +71,7 @@ const DecreaseDailyReport = () => {
       const data = idx(optimizationPrintMode, _ => _.data.getIsOptimizationPrintModeOn)
       setPrintMode(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [optimizationPrintMode.loading])
 
   useEffect(() => {
@@ -78,6 +82,7 @@ const DecreaseDailyReport = () => {
       )
       setIsMemberShipCardActive(isMemberShipCardActive)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
 
   useEffect(() => {
@@ -88,6 +93,7 @@ const DecreaseDailyReport = () => {
       )
       setPriceDisplayOnReport(isPriceDisplayOnDailyReport)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isPriceDisplayOnDailyReportData.loading])
 
   // Autocomplete元件的選項
@@ -105,6 +111,7 @@ const DecreaseDailyReport = () => {
       })
       setJobTitle(title)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantJobTitlePoint.loading])
 
   const handleChecked = value => {

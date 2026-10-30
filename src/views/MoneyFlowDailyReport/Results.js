@@ -86,7 +86,7 @@ export default function Results({ moneyFlowDailyReport, displayDate, isMemberShi
     })
     secExcelData(excelData)
     // 會員卡設定可能比報表晚回來（父層 state 在子層 effect 之後才更新）；設定改變時要重算，否則啟用會員卡的店家會被隱藏「會員卡消費」列（B2 #12）
-  }, [moneyFlowDailyReport, isMemberShipCardActive])
+  }, [moneyFlowDailyReport, isMemberShipCardActive, displayDate, secExcelData])
 
   return (
     <Table dense aria-label="a dense table">

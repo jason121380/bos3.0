@@ -10,6 +10,12 @@ export function calendarUpdateTime(isoDate) {
 
 const shippedRecords = [
   {
+    title: '2026/10/30 程式檢查',
+    versionNo: 'v3.10301600',
+    updateTime: '2026-10-30',
+    content: '- 內部程式檢查：逐一確認畫面資料更新的時機，補上說明；使用上沒有變化',
+  },
+  {
     title: '2026/10/30 不再整頁重新整理',
     versionNo: 'v3.10301527',
     updateTime: '2026-10-30',

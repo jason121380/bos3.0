@@ -42,6 +42,7 @@ function Results({
         idx(getIsDisplayHelperRetrieveInDailyReport, _ => _.data.getIsDisplayHelperRetrieveInDailyReport)
       )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsDisplayHelperRetrieveInDailyReport.loading])
 
   useEffect(() => {
@@ -91,6 +92,7 @@ function Results({
     }
     // 列印資料由父層 effect 設定，比本元件掛載晚一拍；換日期時本元件重新掛載、四捨五入設定已有快取，
     // 只看設定的 loading 會用到上一天的列印資料（畫面正確、印出來是前一天），資料改變時要重算（2026/10/30）
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [mathRoundSetting.loading, designerDailyReport, printData])
 
   return (

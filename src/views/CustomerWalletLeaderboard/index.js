@@ -34,6 +34,7 @@ function CustomerWalletLeaderboard() {
 
   useEffect(() => {
     handleSearch()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [inputData.dateRange] 變動時呼叫，補上會每次 render 重跑
   }, [inputData.dateRange])
 
   useEffect(() => {

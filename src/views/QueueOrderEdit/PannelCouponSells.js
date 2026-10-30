@@ -39,6 +39,7 @@ export default function PannelCouponSells() {
       setCouponCategories(couponCategories)
     } else {
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [tickets.loading, serviceCategoriesData.loading])
 
   useEffect(() => {
@@ -91,6 +92,7 @@ export default function PannelCouponSells() {
       }
       setCouponSells(newTicketSells)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [order.loading])
 
   function handleAddCouponSell() {

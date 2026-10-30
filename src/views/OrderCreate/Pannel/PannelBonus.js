@@ -31,6 +31,7 @@ export default function PannelBonus({ expanded, onPanelClick, bonusActive }) {
       bonusDecount: 0
     })
     setBill(newBill)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [bill.customerId, setBill] 變動時執行；bill、bonusActive、bonusSetting.isUsing、getCustomerBonusRecord 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [bill.customerId, setBill])
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export default function PannelBonus({ expanded, onPanelClick, bonusActive }) {
     bonusDecount: 0
   })
     setBill(newBill)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [customerBonusRecordData.loading, setBill, setCustomerBonus] 變動時執行；bill、bonusSetting.isUsing、customerBonusRecordData.data 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [customerBonusRecordData.loading, setBill, setCustomerBonus])
 
   return (

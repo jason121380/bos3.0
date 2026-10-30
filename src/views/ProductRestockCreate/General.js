@@ -93,6 +93,7 @@ export default function General({
     if (!getMerchantVendor.loading) {
       setVendorOptions(idx(getMerchantVendor, _ => _.data.getMerchantVendorList) || [])
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantVendor.loading])
 
   useEffect(() => {
@@ -101,6 +102,7 @@ export default function General({
 
       setProductCategories(productCategories)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productCategoriesData.loading])
 
   useEffect(() => {
@@ -109,6 +111,7 @@ export default function General({
       const operator = idx(users, _ => _.data.users.users) || []
       setOperator(operator)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [users.loading, setPageLoading])
 
   useEffect(() => {
@@ -116,6 +119,7 @@ export default function General({
       const data = (idx(products, _ => _.data.products.data) || []).filter(d => d.merchantVendor !== null)
       setProductOptions(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading])
 
   useEffect(() => {
@@ -170,6 +174,7 @@ export default function General({
       })
       setProductList(productsAddCount)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading, picking, setting])
 
   const hadnleSelectProduct = (product, index) => {

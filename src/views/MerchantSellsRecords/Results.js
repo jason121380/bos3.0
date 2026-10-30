@@ -75,6 +75,7 @@ function Results({
     if (pageRef.current) {
       pagenationLabel(pageRef.current)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
   }, [results, pageRef.current])
 
   return (

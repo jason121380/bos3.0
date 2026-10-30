@@ -56,6 +56,7 @@ const ProductInvoicingRecordReport = () => {
         recordType: ['SALE', 'PICKING', 'PURCHASE'],
       }
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   useEffect(() => {
@@ -63,6 +64,7 @@ const ProductInvoicingRecordReport = () => {
       const data = idx(getAllProducts, _ => _.data.products.data)
       setProductOptions(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAllProducts.loading])
 
   useEffect(() => {
@@ -70,16 +72,19 @@ const ProductInvoicingRecordReport = () => {
       const data = idx(invoicingRecordReportLazyData, _ => _.data.productInvoicingRecordReport)
       setReportData(data);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [invoicingRecordReportLazyData.loading])
 
   useEffect(() => {
     if (submitValue.selectProduct.length === 0) {
       handleSearch()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [submitValue.selectProduct] 變動時呼叫，補上會每次 render 重跑
   }, [submitValue.selectProduct])
 
   useEffect(() => {
     handleSearch()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [date] 變動時呼叫，補上會每次 render 重跑
   }, [date])
 
   const handleSearch = (inputDate = date) => {

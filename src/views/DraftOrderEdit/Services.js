@@ -63,6 +63,7 @@ export default function Services({
       idx(serviceRef, _ => _.current.focus())
     } else {
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [expanded, focusFirstField] 變動時執行；bill.designerId、bill.serviceOrders.length、index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [expanded, focusFirstField])
 
   React.useEffect(() => {
@@ -111,6 +112,7 @@ export default function Services({
       // }))
       setHelper(newHelper)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [serviceDetail.data, serviceDetail.loading] 變動時執行；helper 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [serviceDetail.data, serviceDetail.loading])
   React.useEffect(() => {
     if (helper.length > 0) {
@@ -227,6 +229,7 @@ export default function Services({
       default:
         break
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [focus, focusRow] 變動時執行；helper.length、helperRefs、index、service.isLocked 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [focus, focusRow])
 
   const handleFocus = event => {

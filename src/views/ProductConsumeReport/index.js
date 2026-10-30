@@ -46,6 +46,7 @@ export default function Employees() {
       const data = idx(getProductPurpose, _ => _.data.getProductPurpose)
       setPurpose(data || [])
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getProductPurpose.loading])
 
   useEffect(() => {
@@ -127,6 +128,7 @@ export default function Employees() {
       }
       setExcelData(excelData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productConsumeListData.loading, value])
   return (
     <Page className="ui-root" title="商品消耗明細">

@@ -120,6 +120,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
           setOpen(false)
         })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（closeModal、handleBtnDisabled、stayInCreateOrder）；只在 [bill, history, setCheckoutBtnClick, setOpen, setReset] 變動時呼叫，補上會每次 render 重跑
   }, [bill, history, setCheckoutBtnClick, setOpen, setReset])
 
   const usehandleCreateOrderAndPrint = useCallback(() => {
@@ -184,6 +185,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
           setOpen(false)
         })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（closeModal、handleBtnDisabled、printDiv、stayInCreateOrder）；只在 [bill, history, setCheckoutBtnClick, setOpen, setReset] 變動時呼叫，補上會每次 render 重跑
   }, [bill, history, setCheckoutBtnClick, setOpen, setReset])
 
   const usehandleCreateDraftOrder = useCallback(() => {
@@ -241,6 +243,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
           setOpen(false)
         })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（closeModal、handleBtnDisabled、stayInCreateOrder）；只在 [bill, history, setCheckoutBtnClick, setOpen, setReset] 變動時呼叫，補上會每次 render 重跑
   }, [bill, history, setCheckoutBtnClick, setOpen, setReset])
 
   useEffect(() => {
@@ -256,6 +259,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
     return () => {
       document.removeEventListener('keydown', handleCreateOrderShortCut)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（usehandleCreateOrderAndPrint）；只在 [usehandleCreateOrder] 變動時呼叫，補上會每次 render 重跑
   }, [usehandleCreateOrder])
 
   function printDiv() {

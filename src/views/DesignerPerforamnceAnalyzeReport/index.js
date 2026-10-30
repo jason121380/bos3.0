@@ -139,6 +139,7 @@ const DesignerPerforamnceAnalyzeReport = () => {
       const data = idx(getUserList, _ => _.data.getUserOrderableList)
       setUserList(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getUserList.loading])
 
   useEffect(() => {
@@ -147,6 +148,7 @@ const DesignerPerforamnceAnalyzeReport = () => {
         isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
       setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isDisplayTogglePerformanceButtonData.loading])
 
   useEffect(() => {
@@ -177,6 +179,7 @@ const DesignerPerforamnceAnalyzeReport = () => {
       setIsMemberShipCardActive(isMemberShipCardActive || isMembershipIsZero)
       setCompareData(reportData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [
     analyzeCompareReport.loading,
     isMemberShipCardActiveData.loading,
@@ -206,6 +209,7 @@ const DesignerPerforamnceAnalyzeReport = () => {
       setIsMemberShipCardActive(isMemberShipCardActive || isMembershipIsZero)
       setReportForDisplay(filrterData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [
     analyzeReport.loading,
     isMemberShipCardActiveData.loading,
@@ -219,10 +223,12 @@ const DesignerPerforamnceAnalyzeReport = () => {
       link.href = url
       link.click()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designerPerforamnceAnalyzeExcelLazyData.loading])
 
   useEffect(() => {
     handleSearch()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [inputData.dateRange, inputData.displayReference] 變動時呼叫，補上會每次 render 重跑
   }, [inputData.dateRange, inputData.displayReference])
 
   return (

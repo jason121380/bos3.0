@@ -91,6 +91,7 @@ function Dashboard({ route, location }) {
         input: input
       }
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（checkPageAuthorityLazy）；只在 [url] 變動時呼叫，補上會每次 render 重跑
   }, [url])
 
   useEffect(() => {
@@ -107,6 +108,7 @@ function Dashboard({ route, location }) {
         history.push('/profile/general')
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [checkPageAuthorityData.loading, history] 變動時執行；checkPageAuthorityData、url 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [checkPageAuthorityData.loading, history])
 
   const handleToggleNavBar = () => {

@@ -34,6 +34,7 @@ function EventRuleCreate({ match }) {
       const data = (idx(getAttribution, _ => _.data.getAttribution) || []).map(({ name }) => name)
       setAttributions(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAttribution.loading])
 
   useEffect(() => {
@@ -62,6 +63,7 @@ function EventRuleCreate({ match }) {
         maxCount: maxCountDefault
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [getMainEvent.loading] 變動時執行；getMainEvent、inputValue 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [getMainEvent.loading])
 
   const handleSubmit = async () => {

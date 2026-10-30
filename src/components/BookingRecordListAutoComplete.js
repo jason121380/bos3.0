@@ -54,6 +54,7 @@ function BookingRecordListAutoComplete(
     if(options.length > 0) {
       getCustomerData(options)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getCustomerData）；只在 [options] 變動時呼叫，補上會每次 render 重跑
   }, [options])
 
   const filterOptions = (options, state) => {

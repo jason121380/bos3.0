@@ -96,6 +96,7 @@ function SearchV2({
       const parseData = JSON.parse(queryString)
       setKeyword(parseData.keyword)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   return (
