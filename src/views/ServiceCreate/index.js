@@ -301,10 +301,16 @@ function ServiceCategoryCreate() {
           onChange={handleOnChange}
         />
 
-        <div>
-          <Button variant="primary" disabled={vaild || saveBtn} onClick={handleSubmit}>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button variant="primary" disabled={vaild || saveBtn} aria-describedby={vaild ? 'service-create-missing' : undefined} onClick={handleSubmit}>
             新增
           </Button>
+          {/* 停用原因（STYLE.md §6）：依 vaild（名稱、服務類別必填） */}
+          {vaild && (
+            <p id="service-create-missing" role="status" className="text-caption text-text-secondary">
+              尚缺：{[!service.name && '名稱', !service.ServiceCategoryId && '服務類別'].filter(Boolean).join('、')}
+            </p>
+          )}
         </div>
       </div>
     </Page>

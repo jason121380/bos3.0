@@ -40,7 +40,8 @@ export default function OrderListTable({
   return (
     <Card className="mt-6">
       <CardHeader
-        className="items-center pb-4"
+        // 手機寬度空間不夠時，按鈕整組換到下一行，標題與筆數不被擠成直排（2026/10/30 瀏覽器驗收）
+        className="flex-wrap items-center pb-4"
         action={
           <Fragment>
             <Button size="sm" variant="secondary" onClick={() => setAllExtend(!allExtend)}>
@@ -56,7 +57,7 @@ export default function OrderListTable({
           </Fragment>
         }
       >
-        <div className="flex items-baseline gap-3">
+        <div className="flex items-baseline gap-3 whitespace-nowrap">
           <CardTitle>帳單列表</CardTitle>
           <span className="text-label text-text-secondary tabular-nums" data-testid="result-counter">
             共 {totalCount} 筆

@@ -65,10 +65,14 @@ describe('新增服務項目：送出', () => {
     const { settle } = setup()
     await settle()
     expect(submitButton()).toBeDisabled()
+    // 按鈕停用時要說出還缺什麼（STYLE.md §6），填一項就少一項，都填了就不顯示
+    expect(screen.getByText('尚缺：名稱、服務類別')).toHaveAttribute('role', 'status')
     await typeText(controlByLabel('名稱'), '頭皮隔離霜')
     expect(submitButton()).toBeDisabled()
+    expect(screen.getByText('尚缺：服務類別')).toBeInTheDocument()
     pick(controlByLabel('服務類別'), '剪髮')
     expect(submitButton()).not.toBeDisabled()
+    expect(screen.queryByText(/^尚缺：/)).toBeNull()
   })
 
   it('預設值：鎖價與第三方卡券鎖定為「依系統參數設定」、綁定「無」送 null；扣項依抽成方式、販售設定依顧客分類產生', async () => {
