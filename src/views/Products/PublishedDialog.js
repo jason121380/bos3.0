@@ -1,5 +1,6 @@
 import { Dialog, DialogTitle, DialogContent, DialogHeader, DialogBody, DialogFooter } from 'ui/dialog'
-import { Select, FormControl, MenuItem } from 'ui/form-control'
+import { FormControl } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Button } from 'ui/button'
 
 const PublishedDialog = ({
@@ -12,13 +13,15 @@ const PublishedDialog = ({
         <DialogHeader><DialogTitle id="alert-dialog-title">編輯上下架</DialogTitle></DialogHeader>
         <DialogBody style={{ overflow: 'visible' }}>
           <FormControl variant="outlined" style={{ width: 200 }}>
-            <Select
+            <NativeSelect
               value={isPublished}
               onChange={({ target: { value } }) => setIsPublished(value)}
+              displayEmpty={false}
+              placeholder="請選擇…"
             >
-              <MenuItem value={true}>上架</MenuItem>
-              <MenuItem value={false}>下架</MenuItem>
-            </Select>
+              <NativeSelectOption value={true}>上架</NativeSelectOption>
+              <NativeSelectOption value={false}>下架</NativeSelectOption>
+            </NativeSelect>
           </FormControl>
         </DialogBody>
         <DialogFooter>

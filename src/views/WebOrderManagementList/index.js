@@ -1,5 +1,6 @@
 // 報到狀態篩選 Select 使用 ui/form-control（值為 true／false／空字串，不適用 Radix Select）
-import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
+import { FormControl } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import Page from 'components/Page'
 import { addDays, endOfDay, startOfMonth } from 'date-fns'
 import useFetchGetBookingManagement from 'hooks/useFetchGetBookingManagement'
@@ -126,20 +127,21 @@ function WebOrderMangagementList() {
           {checkInDisplay && (
             <div>
               <FormControl variant="outlined" style={{ width: 120 }} >
-                <InputLabel>報到狀態</InputLabel>
-                <Select
-                  label='報到狀態'
+                <NativeSelect
                   onChange={e => setPageSetting(
                     produce(draft => {
                       draft.isCheckin = e.target.value
                     })
                   )}
                   value={pageSetting.isCheckin}
+                  displayEmpty={false}
+                  placeholder="請選擇…"
+                  label="報到狀態"
                 >
-                  <MenuItem value=''><em>無</em></MenuItem>
-                  <MenuItem value={true}>報到成功</MenuItem>
-                  <MenuItem value={false}>未報到</MenuItem>
-                </Select>
+                  <NativeSelectOption value=''><em>無</em></NativeSelectOption>
+                  <NativeSelectOption value={true}>報到成功</NativeSelectOption>
+                  <NativeSelectOption value={false}>未報到</NativeSelectOption>
+                </NativeSelect>
               </FormControl>
             </div>
           )}

@@ -275,8 +275,8 @@ describe('薪資總表：月結（未鎖定）', () => {
   it('換月份：查詢新月份並把月份寫進網址', async () => {
     const { calls } = setup()
     await screen.findByText('共 4 筆')
-    fireEvent.keyDown(screen.getByRole('combobox', { name: '快速選擇日期區間' }), { key: 'Enter' })
-    fireEvent.keyDown(screen.getByRole('option', { name: '本月' }), { key: 'Enter' })
+    fireEvent.click(screen.getByRole('combobox', { name: '快速選擇日期區間' }))
+    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: '本月' }))
     const thisMonth = startOfMonth(new Date()).getTime()
     await wait(() => expect(callsOf(calls, 'GET_SALARY_USER_LIST').map(c => c.variables.date)).toContain(thisMonth))
     expect(currentLocation()).toBe(`/salary/overview?startDate=${thisMonth}`)

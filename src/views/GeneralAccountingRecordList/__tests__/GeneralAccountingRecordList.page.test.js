@@ -139,8 +139,10 @@ describe('現金收支登錄', () => {
     choose('選擇科目', '雜支')
     await wait(() => expect(lastInput(calls).accountingSubjectName).toBe('雜支'))
     await settle()
-    fireEvent.keyDown(screen.getByRole('combobox', { name: '快速選擇日期區間' }), { key: 'Enter' })
-    fireEvent.keyDown(screen.getByRole('option', { name: '昨天' }), { key: 'Enter' })
+    // 頁面上可能還有另一個下拉的清單：只在「快速選擇」按鈕對應（aria-controls）的清單裡選
+    const quick = screen.getByRole('combobox', { name: '快速選擇日期區間' })
+    fireEvent.click(quick)
+    fireEvent.click(within(document.getElementById(quick.getAttribute('aria-controls'))).getByRole('option', { name: '昨天' }))
     await wait(() =>
       expect(lastInput(calls)).toEqual({
         pageLimit: 1000,

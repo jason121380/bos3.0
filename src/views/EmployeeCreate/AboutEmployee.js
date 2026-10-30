@@ -1,5 +1,5 @@
 // 人員身分下拉的值可能為空字串（尚未載入預設值），使用 ui/form-control Select
-import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
@@ -39,23 +39,22 @@ function AboutEmployee({ className, employee, onChange, service, setEmployee, ..
           />
         </Field>
         <div className="mt-2 flex justify-between">
-          <FormControl variant="outlined" fullWidth>
-            <InputLabel>人員身分類別設定</InputLabel>
-            <Select
-              label='人員身分類別設定'
-              value={employee.jobPointId}
-              onChange={event => onChange({ event, key: 'jobPointId' })}
-            >
-              <MenuItem value='未設定' key={null}>
-                未設定
-              </MenuItem>
-              {service.map((data, idx) => (
-                <MenuItem value={data.id} key={`${data.jobTitle}-${idx}`}>
-                  {data.jobTitle}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <NativeSelect
+            value={employee.jobPointId}
+            onChange={event => onChange({ event, key: 'jobPointId' })}
+            displayEmpty={false}
+            placeholder="請選擇…"
+            label="人員身分類別設定"
+          >
+            <NativeSelectOption value='未設定' key={null}>
+              未設定
+            </NativeSelectOption>
+            {service.map((data, idx) => (
+              <NativeSelectOption value={data.id} key={`${data.jobTitle}-${idx}`}>
+                {data.jobTitle}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
         </div>
       </CardContent>
     </Card>

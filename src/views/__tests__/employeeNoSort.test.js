@@ -3,7 +3,7 @@
 // 空編號當 0 排最前；改用 utils/compareNo（與共用下拉 EmployeeAutoComplete 相同）。
 // GraphQL 由 testkit 的模擬 link 回應，不連後端。
 import React from 'react'
-import { cleanup, fireEvent, screen } from '@testing-library/react'
+import { cleanup, fireEvent, screen, within } from '@testing-library/react'
 import { renderPage, loginAs } from '../../__tests__/testkit.test'
 import HelperSelfRecord from 'views/Profile/HelperSelfRecord'
 
@@ -41,7 +41,8 @@ describe('報表的設計師篩選：選項依編號自然排序，沒有編號�
     const { settle } = renderModule(modulePath)
     await settle()
     fireEvent.click(designerInput())
-    expect((await screen.findAllByRole('option')).map(o => o.textContent)).toEqual(EXPECTED)
+    // 只看設計師清單：日期快速選擇（第三波改為 NativeSelect）的隱藏 select 也有 option
+    expect(within(await screen.findByRole('listbox')).getAllByRole('option').map(o => o.textContent)).toEqual(EXPECTED)
   })
 })
 

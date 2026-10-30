@@ -1,5 +1,5 @@
 import { DialogFooter as DialogActions, Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from 'ui/dialog'
-import { InputLabel, Select, FormControl, MenuItem } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField } from 'ui/text-field'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import Page from 'components/Page'
@@ -350,20 +350,19 @@ function CustomerFilterExport() {
                       margin: '20px auto',
                     }}
                   >
-                    <FormControl fullWidth variant="outlined">
-                      <InputLabel>來店之顧客</InputLabel>
-                      <Select
-                        label='來店之顧客'
-                        onChange={event => {
-                          handleCustomerIsCome(event.target.value)
-                        }}
-                        value={isComeValue}
-                      >
-                        {selecterCustomer.map((data, index) => (
-                          <MenuItem key={index} value={data.value}>{data.label}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <NativeSelect
+                      onChange={event => {
+                        handleCustomerIsCome(event.target.value)
+                      }}
+                      value={isComeValue}
+                      displayEmpty={false}
+                      placeholder="請選擇…"
+                      label="來店之顧客"
+                    >
+                      {selecterCustomer.map((data, index) => (
+                        <NativeSelectOption key={index} value={data.value}>{data.label}</NativeSelectOption>
+                      ))}
+                    </NativeSelect>
                   </div>
                   <div className="h-px bg-border" />
 
@@ -414,24 +413,23 @@ function CustomerFilterExport() {
                       />
                     </div>
                     <div className={styles.formGroup}>
-                      <FormControl fullWidth variant="outlined">
-                        <InputLabel>之前/之後</InputLabel>
-                        <Select
-                          disabled={disable[1] || !valid}
-                          label='之前/之後'
-                          onChange={event => {
-                            setFromDateValue({
-                              ...fromDateValue,
-                              toDate: event.target.value,
-                            })
-                          }}
-                          value={fromDateValue.toDate}
-                        >
-                          {selecter.map((data, index) => (
-                            <MenuItem key={index} value={data.value}>{data.label}</MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                      <NativeSelect
+                        disabled={disable[1] || !valid}
+                        onChange={event => {
+                          setFromDateValue({
+                            ...fromDateValue,
+                            toDate: event.target.value,
+                          })
+                        }}
+                        value={fromDateValue.toDate}
+                        displayEmpty={false}
+                        placeholder="請選擇…"
+                        label="之前/之後"
+                      >
+                        {selecter.map((data, index) => (
+                          <NativeSelectOption key={index} value={data.value}>{data.label}</NativeSelectOption>
+                        ))}
+                      </NativeSelect>
                     </div>
                     <div className={styles.formGroup}>
                       <TextField

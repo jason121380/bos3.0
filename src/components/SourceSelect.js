@@ -1,4 +1,5 @@
-import { Select, MenuItem, FormControl, InputLabel } from 'ui/form-control'
+import { FormControl } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import useFetchGetCustomerReference from 'hooks/useFetchGetCustomerReference'
 import { useState, useEffect, forwardRef } from 'react'
 import idx from 'idx'
@@ -18,23 +19,22 @@ const SourceSelect = ({
       variant="outlined"
       className={`${className} w-full`}
     >
-      <InputLabel>{label}</InputLabel>
-      <Select
+      <NativeSelect
         inputRef={ref}
         value={value || ''}
         disabled={getReference.loading}
-        label={label}
         onChange={onChange}
         name="source"
         // 空值對應「無」。未開 displayEmpty 時關閉的按鈕是透明空白，看起來像沒選到（打帳單「帳單來源」）
         displayEmpty
+        label={label}
       >
-        {emptyOption && <MenuItem value=""><em>無</em></MenuItem>}
+        {emptyOption && <NativeSelectOption value=""><em>無</em></NativeSelectOption>}
         {/* 查詢失敗時 data 為 undefined：當成沒有來源，不讓整頁拋錯（Jason 2026/10/22 fix all） */}
         {(idx(getReference, _ => _.data.getCustomerReference) || []).map(data => (
-          <MenuItem key={data} value={data}>{data}</MenuItem>
+          <NativeSelectOption key={data} value={data}>{data}</NativeSelectOption>
         ))}
-      </Select>
+      </NativeSelect>
     </FormControl>
   )
 }

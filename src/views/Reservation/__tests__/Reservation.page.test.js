@@ -167,6 +167,8 @@ describe('指定設計師', () => {
     expect(callsOf(utils.calls, 'designerBookingTimes').pop().variables.GetBookingTimesInput.designerId).toBe('d-2')
     const cleared = screen.getByTestId('service-time')
     expect(cleared.options[cleared.selectedIndex].textContent).toBe('')
+    // 清空後欄位顯示「請選擇…」而不是空白（Jason 2026/10/30 決定：未選的下拉顯示佔位字）
+    expect(cleared).toHaveTextContent('請選擇…')
     expect(optionTexts(screen.getByTestId('service-time'))).toContain('11:30')
   })
 

@@ -1,4 +1,5 @@
-import { FormControl, FormHelperText, MenuItem, InputLabel, Select } from 'ui/form-control'
+import { FormControl, FormHelperText } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField } from 'ui/text-field'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Field, Input } from 'ui/input'
@@ -50,21 +51,23 @@ function AboutServiceCategory({ serviceCategory, className, onChange, attributio
           className="mb-[24px]"
           error={!!errors.attribution}
         >
-          <InputLabel>服務歸屬</InputLabel>
-          <Select
+          <NativeSelect
             name="attribution"
-            label='服務歸屬'
             onChange={e => setValue('attribution', e.target.value)}
             defaultValue={''}
             value={watchAttribution || ''}
+            displayEmpty={false}
+            placeholder="請選擇…"
+            error={!!errors.attribution}
+            label="服務歸屬"
           >
-            <MenuItem value={''}>None</MenuItem>
+            <NativeSelectOption value={''}>None</NativeSelectOption>
             {attributions.map((data, idx) => (
-              <MenuItem value={data.value} key={`attribution-${idx}`}>
+              <NativeSelectOption value={data.value} key={`attribution-${idx}`}>
                 {data.name}
-              </MenuItem>
+              </NativeSelectOption>
             ))}
-          </Select>
+          </NativeSelect>
           {errors.attribution && <FormHelperText>{errors.attribution.message}</FormHelperText>}
         </FormControl>
         <TextField

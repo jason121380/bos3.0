@@ -140,8 +140,8 @@ describe('預約管理', () => {
   it('快速選擇「昨天」只改查詢區間，保留筆數與報到篩選', async () => {
     const { calls, settle } = setup()
     await settle()
-    fireEvent.keyDown(screen.getByRole('combobox', { name: '快速選擇日期區間' }), { key: 'Enter' })
-    fireEvent.keyDown(screen.getByRole('option', { name: '昨天' }), { key: 'Enter' })
+    fireEvent.click(screen.getByRole('combobox', { name: '快速選擇日期區間' }))
+    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: '昨天' }))
     await wait(() =>
       expect(lastInput(calls)).toEqual({
         dateRange: { startDate: startOfDay(subDays(new Date(), 1)).getTime(), endDate: endOfDay(subDays(new Date(), 1)).getTime() },

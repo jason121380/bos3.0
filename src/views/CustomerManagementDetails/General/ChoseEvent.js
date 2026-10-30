@@ -1,4 +1,4 @@
-import { FormControl, MenuItem, Select, InputLabel } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { useState, useEffect } from 'react'
@@ -123,19 +123,20 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
           }}
         />
         {bookTimeOption.length && (
-          <FormControl variant='standard' className="[&_input]:!px-0 [&_input]:!pb-[7px] [&_input]:!pt-[6px]">
-            <Select
-              value={values.dateTime}
-              sx={{ paddingRight: '24px' }}
-              onChange={event => setValues({ ...values, dateTime: event.target.value })}
-            >
-              {bookTimeOption.map(time => (
-                <MenuItem value={time} key={time}>
-                  {format(time, 'HH:mm')}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <NativeSelect
+            value={values.dateTime}
+            onChange={event => setValues({ ...values, dateTime: event.target.value })}
+            displayEmpty={false}
+            placeholder="請選擇…"
+            fullWidth={false}
+            className="min-w-[120px] align-top [&_input]:!px-0 [&_input]:!pb-[7px] [&_input]:!pt-[6px]"
+          >
+            {bookTimeOption.map(time => (
+              <NativeSelectOption value={time} key={time}>
+                {format(time, 'HH:mm')}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
         )}
       </div>
       <BookingRecordListAutoComplete
@@ -149,23 +150,18 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
           setValues(data)
         }}
       />
-      <FormControl
-        fullWidth
+      <NativeSelect
+        value={values.timeCost}
+        onChange={event => setValues({ ...values, timeCost: event.target.value })}
+        displayEmpty={false}
+        placeholder="請選擇…"
+        label="服務時長"
         className="!mb-4"
-        variant='outlined'
       >
-        <InputLabel>服務時長</InputLabel>
-        <Select
-          label='服務時長'
-          fullWidth
-          value={values.timeCost}
-          onChange={event => setValues({ ...values, timeCost: event.target.value })}
-        >
-          {timeCostArray.map(d => (
-            <MenuItem key={`${d.value}-${d.label}`} value={d.value}>{d.label}</MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+        {timeCostArray.map(d => (
+          <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
+        ))}
+      </NativeSelect>
       <TextField
         label="備註"
         value={values.remark}

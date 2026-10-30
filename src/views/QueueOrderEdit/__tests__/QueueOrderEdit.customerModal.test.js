@@ -27,6 +27,12 @@ const openModal = async title => {
   return (await screen.findByText(title)).closest('[role="dialog"]')
 }
 const field = (modal, name) => modal.querySelector(`[name="${name}"]`)
+// 偏好設計師改為可打字搜尋的 ui/combobox（Jason 2026/10/30 決定：員工清單可搜尋）：打字後點選選項
+const chooseStaff = async (input, text) => {
+  fireEvent.change(input, { target: { value: '' } })
+  fireEvent.change(input, { target: { value: text } })
+  fireEvent.click(within(await screen.findByRole('listbox')).getByText(text))
+}
 const button = (modal, text) => within(modal).getByText(text, { selector: 'button' })
 
 describe('重新開單：顧客欄已輸入手機時新增顧客', () => {
@@ -54,7 +60,7 @@ describe('重新開單：顧客欄已輸入手機時新增顧客', () => {
     typeLikeBrowser(field(modal, 'day'), '32')
     typeLikeBrowser(field(modal, 'day'), '20')
     chooseNative(field(modal, 'gender'), '女')
-    chooseNative(field(modal, 'PreferDesignerId'), DESIGNER.userName)
+    await chooseStaff(field(modal, 'PreferDesignerId'), DESIGNER.userName)
     fireEvent.click(button(modal, '儲存'))
     await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))
     expect(callsOf(page.calls, 'SET_CUSTOMER')[0].variables.input).toEqual(
@@ -195,8 +201,7 @@ describe('重新開單：編輯沒有生日資料的顧客', () => {
     expect(field(modal, 'year')).toHaveValue('')
     expect(field(modal, 'month')).toHaveValue('')
     expect(field(modal, 'day')).toHaveValue('')
-    const prefer = field(modal, 'PreferDesignerId')
-    expect(prefer.options[prefer.selectedIndex].textContent).toBe(DESIGNER.userName)
+    expect(field(modal, 'PreferDesignerId')).toHaveValue(DESIGNER.userName)
     fireEvent.click(button(modal, '儲存'))
     await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))
     expect(callsOf(page.calls, 'SET_CUSTOMER')[0].variables.input).toEqual(
@@ -303,8 +308,8 @@ describe('重新開單：沒輸入手機時新增顧客', () => {
     const page = setupQueue({ queue: noCustomerYet() }, { delays: { FETCH_USERS: 300 } })
     await screen.findByText(/重新開單 \(A777\)/)
     const modal = await openModal('新增客戶')
-    expect(within(modal).getByText('載入中…')).toBeInTheDocument()
-    await wait(() => expect(within(modal).queryByText('載入中…')).toBeNull())
+    expect(field(modal, 'PreferDesignerId')).toHaveAttribute('placeholder', '載入中…')
+    await wait(() => expect(field(modal, 'PreferDesignerId')).toHaveAttribute('placeholder', '請選擇…'))
     fireEvent.click(button(modal, '取消'))
     await wait(() => expect(screen.queryByText('新增客戶')).toBeNull())
     expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')).toHaveLength(0)

@@ -1,5 +1,5 @@
 // 用途下拉含空字串選項（全部），Radix Select 不支援空值，使用 ui/form-control Select
-import { MenuItem, InputLabel, FormControl, Select } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import Page from 'components/Page'
 import idx from 'idx'
 import { useEffect, useState } from 'react'
@@ -167,15 +167,12 @@ export default function Employees() {
                 />
               </div>
               <div>
-                <FormControl variant="outlined" className="w-[100px]">
-                  <InputLabel>用途</InputLabel>
-                  <Select label='用途' disabled={purpose.length === 0} onChange={event => onChange({ event, key: 'purpose' })}>
-                    <MenuItem value=''>全部</MenuItem>
-                    {purpose.map(data => (
-                      <MenuItem key={data} value={data}>{data}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <NativeSelect disabled={purpose.length === 0} onChange={event => onChange({ event, key: 'purpose' })} displayEmpty={false} placeholder="請選擇…" label="用途" fullWidth={false} className="min-w-[120px] align-top w-[100px]">
+                  <NativeSelectOption value=''>全部</NativeSelectOption>
+                  {purpose.map(data => (
+                    <NativeSelectOption key={data} value={data}>{data}</NativeSelectOption>
+                  ))}
+                </NativeSelect>
               </div>
             </div>
           }

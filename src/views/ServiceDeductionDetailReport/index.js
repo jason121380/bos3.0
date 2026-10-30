@@ -1,4 +1,4 @@
-import { Select, InputLabel, FormControl, MenuItem } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { useState, useEffect } from 'react'
 // 抽成類別的選項含 value={null}（全部），Radix Select 不支援空值，使用 ui/form-control Select
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
@@ -106,15 +106,12 @@ const ServiceDeductionDetailReport = () => {
                   setInputData({ ...inputData, serviceId: value ? value.id : [] })
                 }}
               />
-              <FormControl className="!min-w-[180px]" variant="outlined">
-                <InputLabel>抽成類別</InputLabel>
-                <Select label='抽成類別' onChange={event => hanldeOnChange(event)}>
-                  <MenuItem value={null}>全部</MenuItem>
-                  {attributions.map((data, index) => (
-                    <MenuItem key={index} value={data.value}>{data.label}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <NativeSelect onChange={event => hanldeOnChange(event)} displayEmpty={false} placeholder="請選擇…" label="抽成類別" fullWidth={false} className="min-w-[120px] align-top !min-w-[180px]">
+                <NativeSelectOption value={null}>全部</NativeSelectOption>
+                {attributions.map((data, index) => (
+                  <NativeSelectOption key={index} value={data.value}>{data.label}</NativeSelectOption>
+                ))}
+              </NativeSelect>
             </div>
           }
         />

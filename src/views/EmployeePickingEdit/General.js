@@ -1,5 +1,6 @@
 // 表單欄位以 inputRef 串接 Enter 跳下一欄（含 Autocomplete、DatePicker、Select），使用正式 ui 元件；保留原焦點流程
-import { Select, MenuItem, FormControl, InputLabel } from 'ui/form-control'
+import { FormControl } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField } from 'ui/text-field'
 import { useFetchProductsInEmployeePickingEdit } from 'hooks/useFetchProducts'
 import { useFetchUsersForCreatePicking } from 'hooks/useFetchUsers'
@@ -231,11 +232,9 @@ export default function General({
           className={styles.formControl}
           variant="outlined"
         >
-          <InputLabel>用途</InputLabel>
-          <Select
+          <NativeSelect
             disabled={purpose.length === 0}
             inputRef={purposeRef}
-            label='用途'
             value={idx(formState, _ => _.purpose)}
             onChange={e => {
               changeHandler('purpose', e.target.value)
@@ -246,11 +245,14 @@ export default function General({
                 setFocus('remark')
               }
             }}
+            displayEmpty={false}
+            placeholder="請選擇…"
+            label="用途"
           >
             {purpose.map(data => (
-              <MenuItem key={data} value={data}>{data}</MenuItem>
+              <NativeSelectOption key={data} value={data}>{data}</NativeSelectOption>
             ))}
-          </Select>
+          </NativeSelect>
         </FormControl>
         <TextField
           multiline

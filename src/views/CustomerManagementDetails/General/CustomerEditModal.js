@@ -2,7 +2,7 @@
 // 只換彈窗外殼，保留內部欄位、驗證與表單 refs。
 import clsx from 'clsx'
 import { Dialog, DialogContent } from 'ui/dialog'
-import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField, InputAdornment } from 'ui/text-field'
 import { LoaderCircle } from 'lucide-react'
 import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
@@ -18,6 +18,7 @@ import React from 'react'
 import useStore from 'hooks/useStore'
 import useFetchGetCheckIsCustomerNoUsed from 'hooks/useFetchGetCheckIsCustomerNoUsed'
 import SourceSelect from 'components/SourceSelect'
+import StaffCombobox from 'components/StaffCombobox'
 import { Button } from 'ui/button'
 import { CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 
@@ -262,26 +263,26 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
               />
             </div>
             <div>
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel ref={inputLabel}>性別</InputLabel>
-                <Select
-                  inputRef={genderRef}
-                  label='性別'
-                  value={values.gender}
-                  name="gender"
-                  onChange={handleFieldChange}
-                // onKeyDown={e => handleKeyDownFocus(e)}
-                >
-                  <MenuItem value="UNKNOWN">
-                    <em>未知</em>
-                  </MenuItem>
-                  {gender.map((data, index) => (
-                    <MenuItem value={data.value} key={`${data.value}-${index}`}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <NativeSelect
+                inputRef={genderRef}
+                value={values.gender}
+                name="gender"
+                onChange={handleFieldChange}
+                displayEmpty={false}
+                placeholder="請選擇…"
+                label="性別"
+                labelRef={inputLabel}
+              // onKeyDown={e => handleKeyDownFocus(e)}
+              >
+                <NativeSelectOption value="UNKNOWN">
+                  <em>未知</em>
+                </NativeSelectOption>
+                {gender.map((data, index) => (
+                  <NativeSelectOption value={data.value} key={`${data.value}-${index}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
             </div>
             <div>
               <TextField
@@ -393,63 +394,38 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
               />
             </div>
             <div>
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel ref={inputLabel}>最近設計師</InputLabel>
-                <Select
-                  label='最近設計師'
-                  value={values.DesignerId || ''}
-                  onChange={handleFieldChange}
-                  name="DesignerId"
-                  disabled
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {idx(designers, _ =>
-                    _.data.users.users.map((data, index) => (
-                      <MenuItem value={data.id} key={`${data.id}-${index}`}>
-                        {data.name}
-                      </MenuItem>
-                    ))
-                  )}
-                </Select>
-              </FormControl>
+              <NativeSelect
+                value={values.DesignerId || ''}
+                onChange={handleFieldChange}
+                name="DesignerId"
+                disabled
+                displayEmpty={false}
+                placeholder="請選擇…"
+                label="最近設計師"
+                labelRef={inputLabel}
+              >
+                <NativeSelectOption value="">
+                  <em>None</em>
+                </NativeSelectOption>
+                {idx(designers, _ =>
+                  _.data.users.users.map((data, index) => (
+                    <NativeSelectOption value={data.id} key={`${data.id}-${index}`}>
+                      {data.name}
+                    </NativeSelectOption>
+                  ))
+                )}
+              </NativeSelect>
             </div>
             <div>
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel ref={inputLabel}>偏好設計師</InputLabel>
-                {designers.data ? (
-                  <Select
-                    label='偏好設計師'
-                    value={values.PreferDesignerId}
-                    onChange={handleFieldChange}
-                    name="PreferDesignerId"
-                  >
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
-                    {idx(designers, _ =>
-                      _.data.users.users.map((data, index) => (
-                        <MenuItem value={data.id} key={`${data.id}-${index}`}>
-                          {data.name}
-                        </MenuItem>
-                      ))
-                    )}
-                  </Select>
-                ) : (
-                  <Select
-                    label='偏好設計師'
-                    value='loading'
-                    onChange={handleFieldChange}
-                    name="PreferDesignerId"
-                    renderValue={() => <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />}
-                  >
-                    <MenuItem value="loading">
-                      <em>載入中…</em>
-                    </MenuItem>
-                  </Select>
-                )}
-              </FormControl>
+              {/* 員工清單可打字搜尋（Jason 2026/10/30 決定）；清除鈕＝原本的「None」 */}
+              <StaffCombobox
+                label="偏好設計師"
+                name="PreferDesignerId"
+                value={values.PreferDesignerId}
+                users={idx(designers, _ => _.data.users.users)}
+                loading={!designers.data}
+                onChange={handleFieldChange}
+              />
             </div>
             <div>
               <TextField

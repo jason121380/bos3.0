@@ -1,6 +1,7 @@
 // 排序依據 Select（handler 讀 e.target.value）與設計師多選 Autocomplete 使用 ui/combobox
 import { Checkbox } from 'ui/checkbox'
-import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
+import { FormControl } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField } from 'ui/text-field'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
@@ -57,17 +58,19 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit }) =>
               fullWidth variant='outlined'
               style={{ width: 120 }}
             >
-              <InputLabel>排序依據</InputLabel>
-              <Select
+              <NativeSelect
                 value={inputData.orderType}
-                label='排序依據'
                 onChange={e => dataChange(e.target.value, 'orderType')}
+                displayEmpty={false}
+                placeholder="請選擇…"
+                disabled={loading || userOrderableList.loading}
+                label="排序依據"
 
               >
                 {accordance.map(({ label, value }) => (
-                  <MenuItem key={value} value={value}>{label}</MenuItem>
+                  <NativeSelectOption key={value} value={value}>{label}</NativeSelectOption>
                 ))}
-              </Select>
+              </NativeSelect>
             </FormControl>
           </div>
           <div className="min-w-0">

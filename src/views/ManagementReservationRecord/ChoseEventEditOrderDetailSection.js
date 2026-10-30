@@ -1,6 +1,5 @@
 import { Fragment } from 'react'
 import { Button } from 'ui/button'
-import { FormControl, MenuItem, Select } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
 import { Avatar } from 'ui/avatar'
 import { CheckboxField } from 'ui/checkbox'
@@ -84,19 +83,20 @@ export function EditOrderDetailSection({
             }
           }}
         />
-        <FormControl variant='standard' className={styles.datepicker}>
-          <Select
-            value={editOrder.date}
-            sx={{ paddingRight: '24px' }}
-            onChange={event => setEditOrder({ ...editOrder, date: event.target.value })}
-          >
-            {bookTimeOption.map(delayTime => (
-              <MenuItem value={delayTime} key={delayTime}>
-                {format(delayTime, 'HH:mm')}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <NativeSelect
+          value={editOrder.date}
+          onChange={event => setEditOrder({ ...editOrder, date: event.target.value })}
+          displayEmpty={false}
+          placeholder="請選擇…"
+          fullWidth={false}
+          className={`min-w-[120px] align-top ${styles.datepicker}`}
+        >
+          {bookTimeOption.map(delayTime => (
+            <NativeSelectOption value={delayTime} key={delayTime}>
+              {format(delayTime, 'HH:mm')}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
       </div>
       <div className={styles.field}>
         <CustomerAutoComplete

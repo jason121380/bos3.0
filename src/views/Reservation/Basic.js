@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, Select } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { DatePicker } from 'ui/date-picker'
 import ReservationContext from 'context/ReservationContext'
@@ -107,123 +107,114 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
           _ =>
             _.data.viewer.anonymous.designers.data &&
             asignDesigner && (
-              <FormControl
-                variant="outlined"
-                fullWidth
-                required={asignDesigner}
+              <NativeSelect
+                onChange={event => {
+                  onChange({
+                    key: 'designerId',
+                    value: idx(event, _ => idx(event, _ => _.target.value)),
+                  })
+                  // 與選單顯示一致：有暱稱用暱稱，沒有用本名；選回空白時清空（原本判斷陣列的 nickName、永遠用本名，Jason 2026/10/22 fix all）
+                  const picked = _.data.viewer.anonymous.designers.data.find(d => d.id === event.target.value)
+                  onDesignerChange(picked ? picked.nickName || picked.name : '')
+                }}
+                value={values.designerId}
+                inputProps={{
+                  'data-testid': 'designer-name',
+                }}
+                displayEmpty={false}
+                placeholder="請選擇…"
+                label={<>服務設計師{asignDesigner && <span className="text-danger"> *</span>}</>}
+                labelRef={selectRef}
               >
-                <InputLabel ref={selectRef}>服務設計師</InputLabel>
-                <Select
-                  native
-                  onChange={event => {
-                    onChange({
-                      key: 'designerId',
-                      value: idx(event, _ => idx(event, _ => _.target.value)),
-                    })
-                    // 與選單顯示一致：有暱稱用暱稱，沒有用本名；選回空白時清空（原本判斷陣列的 nickName、永遠用本名，Jason 2026/10/22 fix all）
-                    const picked = _.data.viewer.anonymous.designers.data.find(d => d.id === event.target.value)
-                    onDesignerChange(picked ? picked.nickName || picked.name : '')
-                  }}
-                  label="服務設計師"
-                  value={values.designerId}
-                  inputProps={{
-                    'data-testid': 'designer-name',
-                  }}
-                >
-                  <option aria-label="None" value="" />
-                  {idx(designers, _ =>
-                    _.data.viewer.anonymous.designers.data.map(data => {
-                      return (
-                        asignDesigner && (
-                          <option value={data.id} key={data.id}>
-                            {data.nickName || data.name}
-                          </option>
-                        )
+                <NativeSelectOption aria-label="None" value="" />
+                {idx(designers, _ =>
+                  _.data.viewer.anonymous.designers.data.map(data => {
+                    return (
+                      asignDesigner && (
+                        <NativeSelectOption value={data.id} key={data.id}>
+                          {data.nickName || data.name}
+                        </NativeSelectOption>
                       )
-                    })
-                  )}
-                </Select>
-              </FormControl>
+                    )
+                  })
+                )}
+              </NativeSelect>
             )
         )}
         {(designerBookingTimesResponse.data || unspecifiedBookingTimesResponse.data) && (
-          <FormControl variant="outlined" fullWidth required>
-            <InputLabel ref={serviceTimeRef} htmlFor="outlined-age-native-simple">
-              服務時間
-            </InputLabel>
-            <Select
-              native
-              label="服務時間"
-              value={values.dateTime}
-              onChange={event => {
-                onChange({
-                  key: 'dateTime',
-                  value: +event.target.value,
-                })
-              }}
-              inputProps={{
-                'data-testid': 'service-time',
-              }}
-            >
-              <option aria-label="None" value="" />
-              {idx(designerBookingTimesResponse, _ =>
-                _.data.getBookingTimes.map(data => {
-                  return (
-                    asignDesigner && (
-                      <option
-                        value={data.time}
-                        key={data.time}
-                        disabled={data.status === '不可預約'}
-                      >
-                        {format(new Date(data.time), 'HH:mm')}
-                      </option>
-                    )
-                  )
-                })
-              )}
-
-              {idx(unspecifiedBookingTimesResponse, _ =>
-                _.data.unspecifiedBookingTimes.map(data => {
-                  return (
-                    !asignDesigner && (
-                      <option
-                        value={data.time}
-                        key={data.time}
-                        disabled={data.status === '不可預約'}
-                      >
-                        {format(new Date(data.time), 'HH:mm')}
-                      </option>
-                    )
-                  )
-                })
-              )}
-            </Select>
-          </FormControl>
-        )}
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel ref={referenceRef}>您是如何知道我們的呢</InputLabel>
-          <Select
-            native
-            value={values.reference}
-            label="您是如何知道我們的呢"
-            onChange={event =>
+          <NativeSelect
+            value={values.dateTime}
+            onChange={event => {
               onChange({
-                key: 'reference',
-                value: idx(event, _ => _.target.value),
+                key: 'dateTime',
+                value: +event.target.value,
               })
-            }
-            inputProps={{
-              'data-testid': 'reference',
             }}
+            inputProps={{
+              'data-testid': 'service-time',
+            }}
+            displayEmpty={false}
+            placeholder="請選擇…"
+            label={<>服務時間<span className="text-danger"> *</span></>}
+            labelRef={serviceTimeRef}
           >
-            <option aria-label="None" value="" />
-            {reference.map((data, index) => (
-              <option aria-label="None" value={data.value} key={index}>
-                {data.label}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
+            <NativeSelectOption aria-label="None" value="" />
+            {idx(designerBookingTimesResponse, _ =>
+              _.data.getBookingTimes.map(data => {
+                return (
+                  asignDesigner && (
+                    <NativeSelectOption
+                      value={data.time}
+                      key={data.time}
+                      disabled={data.status === '不可預約'}
+                    >
+                      {format(new Date(data.time), 'HH:mm')}
+                    </NativeSelectOption>
+                  )
+                )
+              })
+            )}
+
+            {idx(unspecifiedBookingTimesResponse, _ =>
+              _.data.unspecifiedBookingTimes.map(data => {
+                return (
+                  !asignDesigner && (
+                    <NativeSelectOption
+                      value={data.time}
+                      key={data.time}
+                      disabled={data.status === '不可預約'}
+                    >
+                      {format(new Date(data.time), 'HH:mm')}
+                    </NativeSelectOption>
+                  )
+                )
+              })
+            )}
+          </NativeSelect>
+        )}
+        <NativeSelect
+          value={values.reference}
+          onChange={event =>
+            onChange({
+              key: 'reference',
+              value: idx(event, _ => _.target.value),
+            })
+          }
+          inputProps={{
+            'data-testid': 'reference',
+          }}
+          displayEmpty={false}
+          placeholder="請選擇…"
+          label="您是如何知道我們的呢"
+          labelRef={referenceRef}
+        >
+          <NativeSelectOption aria-label="None" value="" />
+          {reference.map((data, index) => (
+            <NativeSelectOption aria-label="None" value={data.value} key={index}>
+              {data.label}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
       </CardContent>
     </Card>
   )

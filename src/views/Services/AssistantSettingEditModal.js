@@ -1,6 +1,7 @@
 // 共用圖層支援窗內 picker；保留原受控開關與表單行為。
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter } from 'ui/dialog'
-import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
+import { FormControl } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import PropTypes from 'prop-types'
@@ -267,62 +268,65 @@ function AssistantSettingEditModal({
           {helperDeductionSetting.map((content, index) => (
             <div className="flex flex-wrap items-center gap-3" key={index}>
               <FormControl variant="outlined" style={{ width: '6rem' }} fullWidth>
-                <InputLabel>扣項類別</InputLabel>
-                <Select
-                  label='扣項類別'
+                <NativeSelect
                   onChange={event => handleDeductionTypeChange(event, index)}
                   value={content.helperDeductionType}
+                  displayEmpty={false}
+                  placeholder="請選擇…"
+                  label="扣項類別"
                 >
                   {deductions.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.value}-${idx}`}>
+                    <NativeSelectOption value={data.value} key={`${data.value}-${idx}`}>
                       {data.label}
-                    </MenuItem>
+                    </NativeSelectOption>
                   ))}
-                </Select>
+                </NativeSelect>
               </FormControl>
               <FormControl variant="outlined" style={{ width: '7rem' }} fullWidth>
-                <InputLabel>類別</InputLabel>
-                <Select
-                  label='類別'
+                <NativeSelect
                   value={content.type}
                   onChange={event => handleHelperType(event, index)}
+                  displayEmpty={false}
+                  placeholder="請選擇…"
+                  label="類別"
                 >
                   {merchantHelperItems?.map((data, idx) => (
-                    <MenuItem value={data.type} key={`${data.type}-${idx}`}>
+                    <NativeSelectOption value={data.type} key={`${data.type}-${idx}`}>
                       {data.type}
-                    </MenuItem>
+                    </NativeSelectOption>
                   ))}
-                </Select>
+                </NativeSelect>
               </FormControl>
               <FormControl variant="outlined" style={{ width: '7rem' }} fullWidth>
-                <InputLabel id="select-item-label">
-                  協助人員人數
-                </InputLabel>
-                <Select
-                  label='協助人員人數'
+                <NativeSelect
                   onChange={event => handleAssistantName(event, index)}
+                  displayEmpty={false}
+                  placeholder="請選擇…"
+                  label="協助人員人數"
+                  labelId="select-item-label"
                 // value={content.type}
                 >
                   {assistantNum.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.label}-${idx}`}>
+                    <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                       {data.label}
-                    </MenuItem>
+                    </NativeSelectOption>
                   ))}
-                </Select>
+                </NativeSelect>
               </FormControl>
               <FormControl variant="outlined" style={{ width: '7rem' }} fullWidth>
-                <InputLabel>扣項方式</InputLabel>
-                <Select
-                  label='扣項方式'
+                <NativeSelect
                   value={content.deductionWay}
                   onChange={event => handleDeductionWayChange(event, index)}
+                  displayEmpty={false}
+                  placeholder="請選擇…"
+                  label="扣項方式"
                 >
                   {deductionWay2.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.label}-${idx}`}>
+                    <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                       {data.label}
-                    </MenuItem>
+                    </NativeSelectOption>
                   ))}
-                </Select>
+                </NativeSelect>
               </FormControl>
               {content.deductionWay !== '' && (
                 <span className="flex flex-col whitespace-nowrap">

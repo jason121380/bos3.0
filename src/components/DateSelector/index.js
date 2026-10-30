@@ -1,6 +1,6 @@
 import { MobileDatePicker } from 'ui/date-picker'
 import { CalendarDays } from 'lucide-react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'ui/select'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { cn, focusRing } from 'ui/utils'
 import cloneDeep from 'lodash/cloneDeep'
 import {
@@ -263,25 +263,29 @@ const DateSelector = ({
     <>
     <div id='DateSelector' className={cn('ui-root noprint inline-flex flex-wrap items-center gap-2', margin && 'my-6')}>
       {quickOptions.length > 0 && (
-        <Select
+        // 2026/10/30 第三波：由 Radix ui/select 改為全站統一的 NativeSelect（自家清單，與其他單選下拉同一套操作）。
+        // 未選任何快速區間時值為 ''、清單沒有對應項目，按鈕顯示佔位字「快速選擇」。
+        <NativeSelect
           value={activeQuick ? activeQuick.title : ''}
-          onValueChange={title => {
-            const option = quickOptions.find(d => d.title === title)
+          placeholder="快速選擇"
+          onChange={event => {
+            const option = quickOptions.find(d => d.title === event.target.value)
             option && option.func()
           }}
           disabled={disabled}
+          fullWidth={false}
+          className="w-auto"
+          inputProps={{
+            'aria-label': '快速選擇日期區間',
+            className: cn('min-w-[112px]', activeQuick && 'border-accent/40'),
+          }}
         >
-          <SelectTrigger aria-label="快速選擇日期區間" className={cn('w-auto min-w-[112px] gap-2', activeQuick && 'border-accent/40 text-accent')}>
-            <SelectValue placeholder="快速選擇" />
-          </SelectTrigger>
-          <SelectContent className="min-w-[140px]">
-            {quickOptions.map(option => (
-              <SelectItem key={option.title} value={option.title}>
-                {option.title}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          {quickOptions.map(option => (
+            <NativeSelectOption key={option.title} value={option.title}>
+              {option.title}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
       )}
       {hasStart && (
         <div className="flex h-9 max-sm:h-10 items-center gap-0.5 rounded-md border border-solid border-border-strong bg-background pl-2.5 pr-1 hover:border-border-strong-hover">

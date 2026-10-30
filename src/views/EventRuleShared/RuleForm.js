@@ -1,5 +1,5 @@
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
-import { Select, MenuItem, FormControl, InputLabel } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Fragment } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
@@ -138,59 +138,63 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
             </div>
             {inputValue.consumptionTypeUsing === 'CUSTOMIZE' && (
               <>
-                <FormControl variant="outlined" className="w-[150px]">
-                  <InputLabel>店販</InputLabel>
-                  <Select
-                    readOnly={isReadOnly}
-                    label='店販'
-                    value={inputValue.product}
-                    onChange={e => handleValueChange('product', e.target.value)}
-                  >
-                    <MenuItem value={false}>不套用</MenuItem>
-                    <MenuItem value={true}>套用</MenuItem>
-                  </Select>
-                </FormControl>
+                <NativeSelect
+                  readOnly={isReadOnly}
+                  value={inputValue.product}
+                  onChange={e => handleValueChange('product', e.target.value)}
+                  displayEmpty={false}
+                  placeholder="請選擇…"
+                  label="店販"
+                  fullWidth={false}
+                  className="min-w-[120px] align-top w-[150px]"
+                >
+                  <NativeSelectOption value={false}>不套用</NativeSelectOption>
+                  <NativeSelectOption value={true}>套用</NativeSelectOption>
+                </NativeSelect>
                 <div className="h-px bg-border" />
-                <FormControl variant="outlined" className="w-[150px]">
-                  <InputLabel>會員卡</InputLabel>
-                  <Select
-                    readOnly={isReadOnly}
-                    label='會員卡'
-                    value={inputValue.membershipCard}
-                    onChange={e => handleValueChange('membershipCard', e.target.value)}
-                  >
-                    <MenuItem value={false}>不套用</MenuItem>
-                    <MenuItem value={true}>套用</MenuItem>
-                  </Select>
-                </FormControl>
+                <NativeSelect
+                  readOnly={isReadOnly}
+                  value={inputValue.membershipCard}
+                  onChange={e => handleValueChange('membershipCard', e.target.value)}
+                  displayEmpty={false}
+                  placeholder="請選擇…"
+                  label="會員卡"
+                  fullWidth={false}
+                  className="min-w-[120px] align-top w-[150px]"
+                >
+                  <NativeSelectOption value={false}>不套用</NativeSelectOption>
+                  <NativeSelectOption value={true}>套用</NativeSelectOption>
+                </NativeSelect>
                 <div className="h-px bg-border" />
                 <div className="flex flex-col gap-5">
                   <div className="flex flex-wrap gap-5">
-                    <FormControl variant="outlined" className="w-[150px]">
-                      <InputLabel>服務</InputLabel>
-                      <Select
-                        readOnly={isReadOnly}
-                        label='服務'
-                        value={inputValue.service.type !== ''}
-                        onChange={e => handleTypeChange('service', 'type', e.target.value ? 'ALL' : '')}
-                      >
-                        <MenuItem value={false}>不套用</MenuItem>
-                        <MenuItem value={true}>套用</MenuItem>
-                      </Select>
-                    </FormControl>
+                    <NativeSelect
+                      readOnly={isReadOnly}
+                      value={inputValue.service.type !== ''}
+                      onChange={e => handleTypeChange('service', 'type', e.target.value ? 'ALL' : '')}
+                      displayEmpty={false}
+                      placeholder="請選擇…"
+                      label="服務"
+                      fullWidth={false}
+                      className="min-w-[120px] align-top w-[150px]"
+                    >
+                      <NativeSelectOption value={false}>不套用</NativeSelectOption>
+                      <NativeSelectOption value={true}>套用</NativeSelectOption>
+                    </NativeSelect>
                     {inputValue.service.type !== '' && (
-                      <FormControl variant="outlined" className="w-[150px]">
-                        <InputLabel>歸屬</InputLabel>
-                        <Select
-                          readOnly={isReadOnly}
-                          label='歸屬'
-                          value={inputValue.service.type}
-                          onChange={e => handleTypeChange('service', 'type', e.target.value)}
-                        >
-                          <MenuItem value='ALL'>全部套用</MenuItem>
-                          <MenuItem value='SPECIFIC'>自訂</MenuItem>
-                        </Select>
-                      </FormControl>
+                      <NativeSelect
+                        readOnly={isReadOnly}
+                        value={inputValue.service.type}
+                        onChange={e => handleTypeChange('service', 'type', e.target.value)}
+                        displayEmpty={false}
+                        placeholder="請選擇…"
+                        label="歸屬"
+                        fullWidth={false}
+                        className="min-w-[120px] align-top w-[150px]"
+                      >
+                        <NativeSelectOption value='ALL'>全部套用</NativeSelectOption>
+                        <NativeSelectOption value='SPECIFIC'>自訂</NativeSelectOption>
+                      </NativeSelect>
                     )}
                   </div>
                   {inputValue.service.type === 'SPECIFIC' && (
@@ -207,32 +211,34 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                 <div className="h-px bg-border" />
                 <div className="flex flex-col gap-3">
                   <div className="flex flex-wrap gap-5">
-                    <FormControl variant="outlined" className="w-[150px]">
-                      <InputLabel>賣卡先入</InputLabel>
-                      <Select
-                        readOnly={isReadOnly}
-                        label='賣卡先入'
-                        value={inputValue.ticketSellInPerformance.type !== ''}
-                        onChange={e => handleTypeChange('ticketSellInPerformance', 'type', e.target.value ? 'ALL' : '')}
-                      >
-                        <MenuItem value={false}>不套用</MenuItem>
-                        <MenuItem value={true}>套用</MenuItem>
-                      </Select>
-                    </FormControl>
+                    <NativeSelect
+                      readOnly={isReadOnly}
+                      value={inputValue.ticketSellInPerformance.type !== ''}
+                      onChange={e => handleTypeChange('ticketSellInPerformance', 'type', e.target.value ? 'ALL' : '')}
+                      displayEmpty={false}
+                      placeholder="請選擇…"
+                      label="賣卡先入"
+                      fullWidth={false}
+                      className="min-w-[120px] align-top w-[150px]"
+                    >
+                      <NativeSelectOption value={false}>不套用</NativeSelectOption>
+                      <NativeSelectOption value={true}>套用</NativeSelectOption>
+                    </NativeSelect>
                     {inputValue.ticketSellInPerformance.type !== '' && (
                       <>
-                        <FormControl variant="outlined" className="w-[150px]">
-                          <InputLabel>歸屬</InputLabel>
-                          <Select
-                            readOnly={isReadOnly}
-                            label='歸屬'
-                            value={inputValue.ticketSellInPerformance.type}
-                            onChange={e => handleTypeChange('ticketSellInPerformance', 'type', e.target.value)}
-                          >
-                            <MenuItem value='ALL'>全部套用</MenuItem>
-                            <MenuItem value='SPECIFIC'>自訂</MenuItem>
-                          </Select>
-                        </FormControl>
+                        <NativeSelect
+                          readOnly={isReadOnly}
+                          value={inputValue.ticketSellInPerformance.type}
+                          onChange={e => handleTypeChange('ticketSellInPerformance', 'type', e.target.value)}
+                          displayEmpty={false}
+                          placeholder="請選擇…"
+                          label="歸屬"
+                          fullWidth={false}
+                          className="min-w-[120px] align-top w-[150px]"
+                        >
+                          <NativeSelectOption value='ALL'>全部套用</NativeSelectOption>
+                          <NativeSelectOption value='SPECIFIC'>自訂</NativeSelectOption>
+                        </NativeSelect>
                       </>
                     )}
                   </div>
@@ -249,32 +255,34 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                 </div>
                 <div className="mt-6 flex flex-col gap-3">
                   <div className="flex flex-wrap gap-5">
-                    <FormControl variant="outlined" className="w-[150px]">
-                      <InputLabel>賣卡後入</InputLabel>
-                      <Select
-                        readOnly={isReadOnly}
-                        label='賣卡後入'
-                        value={inputValue.ticketSellNotInPerformance.type !== ''}
-                        onChange={e => handleTypeChange('ticketSellNotInPerformance', 'type', e.target.value ? 'ALL' : '')}
-                      >
-                        <MenuItem value={false}>不套用</MenuItem>
-                        <MenuItem value={true}>套用</MenuItem>
-                      </Select>
-                    </FormControl>
+                    <NativeSelect
+                      readOnly={isReadOnly}
+                      value={inputValue.ticketSellNotInPerformance.type !== ''}
+                      onChange={e => handleTypeChange('ticketSellNotInPerformance', 'type', e.target.value ? 'ALL' : '')}
+                      displayEmpty={false}
+                      placeholder="請選擇…"
+                      label="賣卡後入"
+                      fullWidth={false}
+                      className="min-w-[120px] align-top w-[150px]"
+                    >
+                      <NativeSelectOption value={false}>不套用</NativeSelectOption>
+                      <NativeSelectOption value={true}>套用</NativeSelectOption>
+                    </NativeSelect>
                     {inputValue.ticketSellNotInPerformance.type !== '' && (
                       <>
-                        <FormControl variant="outlined" className="w-[150px]">
-                          <InputLabel>歸屬</InputLabel>
-                          <Select
-                            readOnly={isReadOnly}
-                            label='歸屬'
-                            value={inputValue.ticketSellNotInPerformance.type}
-                            onChange={e => handleTypeChange('ticketSellNotInPerformance', 'type', e.target.value)}
-                          >
-                            <MenuItem value='ALL'>全部套用</MenuItem>
-                            <MenuItem value='SPECIFIC'>自訂</MenuItem>
-                          </Select>
-                        </FormControl>
+                        <NativeSelect
+                          readOnly={isReadOnly}
+                          value={inputValue.ticketSellNotInPerformance.type}
+                          onChange={e => handleTypeChange('ticketSellNotInPerformance', 'type', e.target.value)}
+                          displayEmpty={false}
+                          placeholder="請選擇…"
+                          label="歸屬"
+                          fullWidth={false}
+                          className="min-w-[120px] align-top w-[150px]"
+                        >
+                          <NativeSelectOption value='ALL'>全部套用</NativeSelectOption>
+                          <NativeSelectOption value='SPECIFIC'>自訂</NativeSelectOption>
+                        </NativeSelect>
                       </>
                     )}
                   </div>
@@ -292,32 +300,34 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                 <div className="h-px bg-border" />
                 <div className="flex flex-col gap-3">
                   <div className="flex flex-wrap gap-5">
-                    <FormControl variant="outlined" className="w-[150px]">
-                      <InputLabel>用卡先入</InputLabel>
-                      <Select
-                        readOnly={isReadOnly}
-                        label='用卡先入'
-                        value={inputValue.ticketUsePerformanceEntered.type !== ''}
-                        onChange={e => handleTypeChange('ticketUsePerformanceEntered', 'type', e.target.value ? 'ALL' : '')}
-                      >
-                        <MenuItem value={false}>不套用</MenuItem>
-                        <MenuItem value={true}>套用</MenuItem>
-                      </Select>
-                    </FormControl>
+                    <NativeSelect
+                      readOnly={isReadOnly}
+                      value={inputValue.ticketUsePerformanceEntered.type !== ''}
+                      onChange={e => handleTypeChange('ticketUsePerformanceEntered', 'type', e.target.value ? 'ALL' : '')}
+                      displayEmpty={false}
+                      placeholder="請選擇…"
+                      label="用卡先入"
+                      fullWidth={false}
+                      className="min-w-[120px] align-top w-[150px]"
+                    >
+                      <NativeSelectOption value={false}>不套用</NativeSelectOption>
+                      <NativeSelectOption value={true}>套用</NativeSelectOption>
+                    </NativeSelect>
                     {inputValue.ticketUsePerformanceEntered.type !== '' && (
                       <>
-                        <FormControl variant="outlined" className="w-[150px]">
-                          <InputLabel>歸屬</InputLabel>
-                          <Select
-                            readOnly={isReadOnly}
-                            label='歸屬'
-                            value={inputValue.ticketUsePerformanceEntered.type}
-                            onChange={e => handleTypeChange('ticketUsePerformanceEntered', 'type', e.target.value)}
-                          >
-                            <MenuItem value='ALL'>全部套用</MenuItem>
-                            <MenuItem value='SPECIFIC'>自訂</MenuItem>
-                          </Select>
-                        </FormControl>
+                        <NativeSelect
+                          readOnly={isReadOnly}
+                          value={inputValue.ticketUsePerformanceEntered.type}
+                          onChange={e => handleTypeChange('ticketUsePerformanceEntered', 'type', e.target.value)}
+                          displayEmpty={false}
+                          placeholder="請選擇…"
+                          label="歸屬"
+                          fullWidth={false}
+                          className="min-w-[120px] align-top w-[150px]"
+                        >
+                          <NativeSelectOption value='ALL'>全部套用</NativeSelectOption>
+                          <NativeSelectOption value='SPECIFIC'>自訂</NativeSelectOption>
+                        </NativeSelect>
                       </>
                     )}
                   </div>
@@ -334,32 +344,34 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                 </div>
                 <div className="mt-6 flex flex-col gap-3">
                   <div className="flex flex-wrap gap-5">
-                    <FormControl variant="outlined" className="w-[150px]">
-                      <InputLabel>用卡後入</InputLabel>
-                      <Select
-                        label='用卡後入'
-                        readOnly={isReadOnly}
-                        value={inputValue.ticketUsePerformanceNotEntered.type !== ''}
-                        onChange={e => handleTypeChange('ticketUsePerformanceNotEntered', 'type', e.target.value ? 'ALL' : '')}
-                      >
-                        <MenuItem value={false}>不套用</MenuItem>
-                        <MenuItem value={true}>套用</MenuItem>
-                      </Select>
-                    </FormControl>
+                    <NativeSelect
+                      readOnly={isReadOnly}
+                      value={inputValue.ticketUsePerformanceNotEntered.type !== ''}
+                      onChange={e => handleTypeChange('ticketUsePerformanceNotEntered', 'type', e.target.value ? 'ALL' : '')}
+                      displayEmpty={false}
+                      placeholder="請選擇…"
+                      label="用卡後入"
+                      fullWidth={false}
+                      className="min-w-[120px] align-top w-[150px]"
+                    >
+                      <NativeSelectOption value={false}>不套用</NativeSelectOption>
+                      <NativeSelectOption value={true}>套用</NativeSelectOption>
+                    </NativeSelect>
                     {inputValue.ticketUsePerformanceNotEntered.type !== '' && (
                       <>
-                        <FormControl variant="outlined" className="w-[150px]">
-                          <InputLabel>歸屬</InputLabel>
-                          <Select
-                            readOnly={isReadOnly}
-                            label='歸屬'
-                            value={inputValue.ticketUsePerformanceNotEntered.type}
-                            onChange={e => handleTypeChange('ticketUsePerformanceNotEntered', 'type', e.target.value)}
-                          >
-                            <MenuItem value='ALL'>全部套用</MenuItem>
-                            <MenuItem value='SPECIFIC'>自訂</MenuItem>
-                          </Select>
-                        </FormControl>
+                        <NativeSelect
+                          readOnly={isReadOnly}
+                          value={inputValue.ticketUsePerformanceNotEntered.type}
+                          onChange={e => handleTypeChange('ticketUsePerformanceNotEntered', 'type', e.target.value)}
+                          displayEmpty={false}
+                          placeholder="請選擇…"
+                          label="歸屬"
+                          fullWidth={false}
+                          className="min-w-[120px] align-top w-[150px]"
+                        >
+                          <NativeSelectOption value='ALL'>全部套用</NativeSelectOption>
+                          <NativeSelectOption value='SPECIFIC'>自訂</NativeSelectOption>
+                        </NativeSelect>
                       </>
                     )}
                   </div>
@@ -452,20 +464,21 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
             </div>
             <div className="flex flex-col gap-5">
               <div className="flex flex-wrap gap-5">
-                <FormControl variant="outlined" className="w-[150px]">
-                  <InputLabel>現金</InputLabel>
-                  <Select
-                    readOnly={isReadOnly}
-                    label='現金'
-                    value={inputValue.walletDepositForCash.using}
-                    onChange={e => {
-                      handleWalletDepositChange('walletDepositForCash', 'using', e.target.value)
-                    }}
-                  >
-                    <MenuItem value={false}>不套用</MenuItem>
-                    <MenuItem value={true}>套用</MenuItem>
-                  </Select>
-                </FormControl>
+                <NativeSelect
+                  readOnly={isReadOnly}
+                  value={inputValue.walletDepositForCash.using}
+                  onChange={e => {
+                    handleWalletDepositChange('walletDepositForCash', 'using', e.target.value)
+                  }}
+                  displayEmpty={false}
+                  placeholder="請選擇…"
+                  label="現金"
+                  fullWidth={false}
+                  className="min-w-[120px] align-top w-[150px]"
+                >
+                  <NativeSelectOption value={false}>不套用</NativeSelectOption>
+                  <NativeSelectOption value={true}>套用</NativeSelectOption>
+                </NativeSelect>
                 {inputValue.walletDepositForCash.using && (
                   <Field label='金額門檻' className='w-40'>
                     <Input
@@ -485,18 +498,19 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
             </div>
             <div className="mt-6 flex flex-col gap-5">
               <div className="flex flex-wrap gap-5">
-                <FormControl variant="outlined" className="w-[150px]">
-                  <InputLabel>其他付款方式</InputLabel>
-                  <Select
-                    readOnly={isReadOnly}
-                    label='其他付款方式'
-                    value={inputValue.walletDepositForOtherPay.using}
-                    onChange={e => handleWalletDepositChange('walletDepositForOtherPay', 'using', e.target.value)}
-                  >
-                    <MenuItem value={false}>不套用</MenuItem>
-                    <MenuItem value={true}>套用</MenuItem>
-                  </Select>
-                </FormControl>
+                <NativeSelect
+                  readOnly={isReadOnly}
+                  value={inputValue.walletDepositForOtherPay.using}
+                  onChange={e => handleWalletDepositChange('walletDepositForOtherPay', 'using', e.target.value)}
+                  displayEmpty={false}
+                  placeholder="請選擇…"
+                  label="其他付款方式"
+                  fullWidth={false}
+                  className="min-w-[120px] align-top w-[150px]"
+                >
+                  <NativeSelectOption value={false}>不套用</NativeSelectOption>
+                  <NativeSelectOption value={true}>套用</NativeSelectOption>
+                </NativeSelect>
                 {inputValue.walletDepositForOtherPay.using && (
                   <Field label='金額門檻' className='w-40'>
                     <Input

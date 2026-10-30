@@ -1,5 +1,6 @@
 // 狀態下拉的 onChange 依賴 event.target.value，使用 ui/form-control Select
-import { FormControl, Select, InputLabel, MenuItem } from 'ui/form-control'
+import { FormControl } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
 import { useFethcMonthlyCloseStatus } from 'hooks/useFetchMerchant'
@@ -264,21 +265,22 @@ export default function SalaryOverview() {
                 </div>
                 <div className="mb-4 flex flex-wrap items-center gap-4">
                   <FormControl variant="outlined" style={{ width: '150px' }}>
-                    <InputLabel id="select-item-label">狀態</InputLabel>
-                    <Select
+                    <NativeSelect
                       labelId="select-item-label"
                       id="select-item"
-                      label='狀態'
                       size="small"
                       value={listStatus}
                       onChange={event => setListStatus(event.target.value)}
+                      displayEmpty={false}
+                      placeholder="請選擇…"
+                      label="狀態"
                     >
                       {showOption.map((data, idx) => (
-                        <MenuItem value={data.value} key={`${data.label}-${idx}`}>
+                        <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                           {data.label}
-                        </MenuItem>
+                        </NativeSelectOption>
                       ))}
-                    </Select>
+                    </NativeSelect>
                   </FormControl>
 
                   <Button

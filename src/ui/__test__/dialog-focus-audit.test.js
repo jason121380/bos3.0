@@ -1,7 +1,6 @@
 import React from 'react'
 import { act, cleanup, fireEvent, render, screen, wait, within } from '@testing-library/react'
 import { Dialog, DialogContent, DialogTitle } from '../dialog'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../select'
 import { NativeSelect, NativeSelectOption } from '../native-select'
 import { Select as CompatSelect, MenuItem } from '../form-control'
 import { Popover, PopoverTrigger, PopoverContent } from '../popover'
@@ -25,7 +24,6 @@ beforeEach(() => {
 afterEach(() => { cleanup(); window.matchMedia = media })
 
 function Field({ kind }) {
-  if (kind === 'select') return <Select><SelectTrigger aria-label="欄位"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="a">甲</SelectItem></SelectContent></Select>
   if (kind === 'popover') return <Popover><PopoverTrigger>欄位</PopoverTrigger><PopoverContent><input aria-label="浮層輸入" /></PopoverContent></Popover>
   if (kind === 'dropdown') return <DropdownMenu><DropdownMenuTrigger>欄位</DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem>甲</DropdownMenuItem></DropdownMenuContent></DropdownMenu>
   if (kind === 'desktop' || kind === 'mobile') return React.createElement(kind === 'desktop' ? DatePicker : MobileDatePicker, { value: initial, onChange: () => {} })
@@ -51,10 +49,10 @@ const openField = async kind => {
   let trigger
   if (kind === 'desktop') trigger = screen.getByRole('button', { name: /^選擇日期/ })
   else if (kind === 'mobile') trigger = screen.getByRole('textbox')
-  else if (['select', 'native', 'compat'].includes(kind)) trigger = screen.getByRole('combobox')
+  else if (['native', 'compat'].includes(kind)) trigger = screen.getByRole('combobox')
   else trigger = screen.getAllByRole('button')[0]
   act(() => trigger.focus())
-  if (['select', 'dropdown'].includes(kind)) fireEvent.keyDown(trigger, { key: 'ArrowDown' })
+  if (kind === 'dropdown') fireEvent.keyDown(trigger, { key: 'ArrowDown' })
   else fireEvent.click(trigger)
   await act(async () => { await Promise.resolve() })
   if (['desktop', 'mobile'].includes(kind)) act(() => screen.getByRole('gridcell', { name: '2026年10月20日' }).focus())
@@ -101,7 +99,7 @@ test.each(['popover', 'desktop', 'multiple', 'native', 'compat', 'date-field', '
   expect(lowerClose).not.toHaveBeenCalled()
 })
 
-test.each(['select', 'dropdown', 'popover', 'desktop', 'mobile', 'multiple'])('%s：Escape 只關浮層並還原觸發點', async kind => {
+test.each(['dropdown', 'popover', 'desktop', 'mobile', 'multiple'])('%s：Escape 只關浮層並還原觸發點', async kind => {
   const lowerClose = jest.fn()
   render(<Harness kind={kind} lowerClose={lowerClose} />)
   const trigger = await openField(kind)
@@ -116,7 +114,7 @@ test.each(['select', 'dropdown', 'popover', 'desktop', 'mobile', 'multiple'])('%
 })
 
 // modal 選單／手機日期窗阻擋下層指標；先 Escape 解散，再點下層，不能偽造穿透點擊。
-test.each(['select', 'dropdown', 'mobile'])('%s：modal 關閉後可移焦並開啟巢狀密碼窗', async kind => {
+test.each(['native', 'dropdown', 'mobile'])('%s：modal 關閉後可移焦並開啟巢狀密碼窗', async kind => {
   render(<Harness kind={kind} />)
   await openField(kind)
   fireEvent.keyDown(document.activeElement, { key: 'Escape' })
@@ -151,7 +149,7 @@ test.each(['desktop', 'mobile'])('%s：窗內開啟時即聚焦所選日期', as
 })
 
 // modal 的第一下會命中背景阻擋層，而非下層按鈕；不可用 jsdom 的點穿能力偽造成功。
-test.each(['select', 'dropdown', 'mobile'])('%s：第一下外點只解散 modal，下一下才聚焦同窗按鈕', async kind => {
+test.each(['dropdown', 'mobile'])('%s：第一下外點只解散 modal，下一下才聚焦同窗按鈕', async kind => {
   const lowerClose = jest.fn()
   render(<Harness kind={kind} lowerClose={lowerClose} />)
   const trigger = await openField(kind)

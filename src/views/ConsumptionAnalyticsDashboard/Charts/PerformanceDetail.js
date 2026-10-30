@@ -1,6 +1,7 @@
-// 多選篩選（值為陣列）使用正式 ui 元件
-import { InputLabel, MenuItem, FormControl, Select } from 'ui/form-control'
+// 多選篩選（值為陣列）：ui/combobox 多選，已選項目顯示成膠囊、清單可打字搜尋（2026/10/30 第三波：全站多選統一）
+import { Autocomplete } from 'ui/combobox'
 import { Checkbox } from 'ui/checkbox'
+import { TextField } from 'ui/text-field'
 import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { EmptyState } from 'ui/empty-state'
@@ -56,15 +57,6 @@ const PerformanceDetail = ({
     return object.map((d, i) => <Line key={d} dataKey={d} strokeWidth={2} stroke={performanceColor[i % 30]} />)
   }
 
-  const renderLabel = values => {
-    const label = []
-    values.forEach(v => {
-      const findData = selectOptions.find(({ value }) => value === v)
-      label.push(findData.label)
-    })
-    return label.join(', ')
-  }
-  
   return (
     <div className="min-w-0 lg:col-span-2">
       <Card className="h-full min-h-[390px] overflow-visible">
@@ -88,23 +80,24 @@ const PerformanceDetail = ({
             </div>
           </div>
           <div className="flex w-full max-w-[350px] items-center">
-            <FormControl fullWidth>
-              <InputLabel>篩選</InputLabel>
-              <Select
-                multiple
-                value={sortType}
-                label='篩選'
-                renderValue={(selected) => renderLabel(selected)}
-                onChange={e => setSortType(e.target.value)}
-              >
-                {selectOptions.map(({ label, value }) => (
-                  <MenuItem key={value} value={value}>
-                    <Checkbox checked={sortType.includes(value)} />
-                    <span className="flex-1">{label}</span>
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <Autocomplete
+              multiple
+              fullWidth
+              disableCloseOnSelect
+              options={selectOptions}
+              // 依 sortType 的順序帶入，新增的接在後面、移除的拿掉（與原本多選相同，送出的陣列順序不變）
+              value={sortType.map(v => selectOptions.find(({ value }) => value === v)).filter(Boolean)}
+              isOptionEqualToValue={(option, current) => option.value === current.value}
+              getOptionLabel={option => option.label}
+              onChange={(e, list) => setSortType(list.map(({ value }) => value))}
+              renderOption={({ key, ...props }, option, { selected }) => (
+                <li key={option.value} {...props}>
+                  <Checkbox checked={selected} />
+                  <span className="flex-1">{option.label}</span>
+                </li>
+              )}
+              renderInput={params => <TextField {...params} label="篩選" />}
+            />
           </div>
         </div>
           {data.length > 0 ?

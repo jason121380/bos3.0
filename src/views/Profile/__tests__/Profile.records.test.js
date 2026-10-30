@@ -182,8 +182,8 @@ describe('個人頁：抽成報表（日期）', () => {
       startDate: startOfDay(start).getTime(),
       endDate: endOfDay(end).getTime(),
     })
-    fireEvent.keyDown(screen.getByRole('combobox', { name: '快速選擇日期區間' }), { key: 'Enter' })
-    fireEvent.keyDown(screen.getByRole('option', { name: '昨天' }), { key: 'Enter' })
+    fireEvent.click(screen.getByRole('combobox', { name: '快速選擇日期區間' }))
+    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: '昨天' }))
     const y = new Date()
     y.setDate(y.getDate() - 1)
     await wait(() =>

@@ -143,8 +143,8 @@ describe('週曆版面', () => {
     fireEvent.change(select, { target: { value: '1' } })
     expect(chip('王小明')).toBeInTheDocument()
     expect(() => chip('陳小美')).toThrow()
-    fireEvent.keyDown(screen.getByRole('combobox', { name: '快速選擇日期區間' }), { key: 'Enter' })
-    fireEvent.keyDown(screen.getByRole('option', { name: '上週' }), { key: 'Enter' })
+    fireEvent.click(screen.getByRole('combobox', { name: '快速選擇日期區間' }))
+    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: '上週' }))
     expect(mockCalendarInput.dateRange.startDate).toBe(startOfWeek(addDays(new Date(), -7)).getTime())
   })
 

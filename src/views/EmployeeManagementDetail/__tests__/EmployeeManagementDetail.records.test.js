@@ -5,7 +5,7 @@
 // - 抽成報表：以員工 id 與日期區間查詢（預設今天 00:00～23:59:59.999，網址帶區間時沿用）；各列為服務＋卡券金額四捨五入；
 //   會員卡欄位在會員卡啟用或有會員卡數字時才顯示；沒有資料顯示「無資料」。
 // GraphQL 全由模擬 link 回應，不連後端。
-import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
+import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { endOfDay, startOfDay, subDays } from 'date-fns'
 import { loginAs, callsOf } from '../../../__tests__/testkit.test'
 import { renderDetail, EMP_ID } from './employeeDetailKit.test'
@@ -303,8 +303,8 @@ describe('抽成報表', () => {
     const { calls } = renderDetail('rakeReport', { fixtures: report() })
     await screen.findByText('總應領薪資')
     expect(callsOf(calls, 'FETCH_DESIGNER_RAKE_REPORT')[0].variables.input).toEqual({ startDate: start, endDate: end })
-    fireEvent.keyDown(screen.getByRole('combobox', { name: '快速選擇日期區間' }), { key: 'Enter' })
-    fireEvent.keyDown(screen.getByRole('option', { name: '昨天' }), { key: 'Enter' })
+    fireEvent.click(screen.getByRole('combobox', { name: '快速選擇日期區間' }))
+    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: '昨天' }))
     const y = subDays(new Date(), 1)
     await wait(() =>
       expect(callsOf(calls, 'FETCH_DESIGNER_RAKE_REPORT').map(c => c.variables.input)).toContainEqual({

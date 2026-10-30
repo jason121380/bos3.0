@@ -167,8 +167,8 @@ describe('薪資條', () => {
   it('換月份：查詢所選月份', async () => {
     const { calls } = setup()
     await screen.findByText(`測試店 - ${lastMonth()} - 小美`)
-    fireEvent.keyDown(screen.getByRole('combobox', { name: '快速選擇日期區間' }), { key: 'Enter' })
-    fireEvent.keyDown(screen.getByRole('option', { name: '本月' }), { key: 'Enter' })
+    fireEvent.click(screen.getByRole('combobox', { name: '快速選擇日期區間' }))
+    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: '本月' }))
     const thisMonth = startOfMonth(new Date()).getTime()
     await wait(() => expect(callsOf(calls, 'FETCH_USER_SALARY_REPORT').map(c => c.variables.date)).toContain(thisMonth))
   })
