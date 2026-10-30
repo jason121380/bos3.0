@@ -74,7 +74,7 @@ function AboutProject({
           <div className="flex flex-wrap items-center gap-2.5">
             {!isLoading && <span className="text-body tabular-nums text-text-secondary">{`最新顧客編號: ${lastNo}`}</span>}
             {/* 與下方新增鈕共用送出中停用，連按不重複建立（Jason 2026/10/22 fix all） */}
-            <Button variant="secondary" onClick={handleOnClick} disabled={vaild || submitting}>
+            <Button variant="secondary" onClick={handleOnClick} disabled={vaild || submitting} aria-describedby={vaild ? 'customer-create-missing' : undefined}>
               新增
             </Button>
           </div>

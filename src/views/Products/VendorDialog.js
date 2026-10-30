@@ -49,11 +49,17 @@ const VendorDialog = ({
             />
           </Field>
         </DialogBody>
-        <DialogFooter>
+        <DialogFooter className="flex-wrap">
+          {/* 停用原因（STYLE.md §6）：還沒選廠商時「確認」停用 */}
+          {!merchantVendorId && (
+            <p id="vendor-dialog-missing" role="status" className="mr-auto text-caption text-text-secondary">
+              尚缺：廠商
+            </p>
+          )}
           <Button disabled={isClick} variant="secondary" onClick={handleClosePublishDialog}>
             取消
           </Button>
-          <Button disabled={isClick || !merchantVendorId} variant="primary" onClick={handleSetVendor} autoFocus data-testid="confirm">
+          <Button disabled={isClick || !merchantVendorId} aria-describedby={!merchantVendorId ? 'vendor-dialog-missing' : undefined} variant="primary" onClick={handleSetVendor} autoFocus data-testid="confirm">
             確認
           </Button>
         </DialogFooter>

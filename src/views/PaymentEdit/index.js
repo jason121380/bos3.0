@@ -11,7 +11,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-import AboutPayment from './AboutPayment'
+import AboutPayment from 'views/PaymentShared/AboutPayment'
 import QueryFailed from 'components/QueryFailed'
 
 function ServiceCategoryEdit(props) {
@@ -69,6 +69,13 @@ function ServiceCategoryEdit(props) {
     }
   }
   const vaild = !(payment.type && payment.name && payment.fee >= 0 && payment.amountType)
+  // 停用原因（STYLE.md §6）：依 vaild 的四個欄位，依畫面順序列出目前缺的
+  const missing = [
+    !payment.name && '名稱',
+    !payment.amountType && '手續費類別',
+    !(payment.fee >= 0) && '手續費',
+    !payment.type && '手續費扣項方式',
+  ].filter(Boolean)
   return (
     <Page className="ui-root" title="編輯支付方式">
       {/* 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-3xl */}
@@ -82,15 +89,21 @@ function ServiceCategoryEdit(props) {
             payment={payment}
             onChange={handleOnchange}
           />
-          <div>
+          <div className="flex flex-wrap items-center gap-3">
             <Button
               variant="primary"
               disabled={vaild}
+              aria-describedby={vaild ? 'payment-edit-missing' : undefined}
               onClick={handleSubmit}
               data-testid="update-payment"
             >
               儲存
             </Button>
+            {vaild && (
+              <p id="payment-edit-missing" role="status" className="text-caption text-text-secondary">
+                尚缺：{missing.join('、')}
+              </p>
+            )}
           </div>
           </>
         )}

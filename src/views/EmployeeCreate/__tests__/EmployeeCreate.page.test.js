@@ -50,12 +50,16 @@ describe('新增員工', () => {
     await settle()
     const button = screen.getByRole('button', { name: '新增' })
     expect(button).toBeDisabled()
+    // 停用時說出還缺什麼（STYLE.md §6），填一項少一項
+    expect(screen.getByText('尚缺：姓氏、名字、手機號碼')).toHaveAttribute('role', 'status')
     expect(selectedText(screen.getByLabelText('人員身分類別設定'))).toBe('助理')
     fill('姓氏', '陳')
     fill('名字', '小華')
     expect(button).toBeDisabled()
+    expect(screen.getByText('尚缺：手機號碼')).toBeInTheDocument()
     fill('手機號碼', '0912345678')
     expect(button).toBeEnabled()
+    expect(screen.queryByText(/^尚缺：/)).toBeNull()
     // 滾輪不會改到手機號碼（數字欄位滾動時先移開焦點）
     const phone = screen.getByLabelText('手機號碼')
     phone.focus()

@@ -1,9 +1,9 @@
 // 欄位標籤放在上方（Field＋Input／NativeSelect）；扣項方式的值可為空字串，NativeSelect 以 disabled 空值選項顯示提示、onChange 回原始值。
-// 原「保留 MUI Select／TextField」註記已由 Jason 同意推翻，比照 ThirdPartyCouponCreate 改版；Checkbox 使用 ui/checkbox
+// 新增／編輯第三方卡券共用（2026/10/30 自兩頁合併，兩份內容原本逐字相同）；Checkbox 使用 ui/checkbox
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import idx from 'idx'
 import PropTypes from 'prop-types'
-import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 

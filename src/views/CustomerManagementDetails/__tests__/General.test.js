@@ -237,8 +237,11 @@ describe('編輯客戶資料', () => {
     fireEvent.keyDown(inputOf('地址'), { key: 'Enter' })
     expect(document.activeElement).toBe(inputOf('地址'))
     fireEvent.keyDown(inputOf('客戶編號'), { key: 'a' })
+    expect(screen.queryByText(/^尚缺：/)).toBeNull()
     typeLikeBrowser(inputOf('電話'), '')
     expect(screen.getByText('儲存')).toBeDisabled()
+    // 停用時說出還缺什麼（STYLE.md §6）
+    expect(screen.getByText('尚缺：電話')).toHaveAttribute('role', 'status')
     fireEvent.click(screen.getByText('取消'))
     await wait(() => expect(screen.queryByText('編輯客戶資料')).toBeNull())
   })
@@ -249,6 +252,7 @@ describe('編輯客戶資料', () => {
     await utils.settle()
     await openEdit()
     expect(screen.getByText('儲存')).toBeDisabled()
+    expect(screen.getByRole('status').textContent).toMatch(/目前店家/)
   })
 
   it('設計師清單載入中：偏好設計師顯示載入中；顧客沒有資料的欄位帶入空白', async () => {

@@ -1,22 +1,20 @@
 import { Field, Input } from 'ui/input'
 import { Button } from 'ui/button'
 import { Card, CardContent } from 'ui/card'
-import TransferList from '../../components/TransferList.js';
+import TransferList from 'components/TransferList'
 
-const styles = {
-  content: 'flex flex-col gap-[20px] pt-[16px]',
-}
+// 新增快捷鍵／編輯快捷鍵共用（2026/10/30 自兩頁合併）。兩頁只差送出鈕文字：新增頁傳 submitLabel="新增"，編輯頁用預設「儲存」。
 
 function General({
   servicesData, submitData, handleSetValue, servicesKeyword,
   keyWordsOnChange, productData, productKeyword, ticketData,
   ticketKeyword, memberCardsData, memberCardsKeyword, isClick,
-  handleSubmit
+  handleSubmit, submitLabel = '儲存'
 }) {
   return (
     <>
       <Card className="mt-6">
-        <CardContent className={styles.content}>
+        <CardContent className="flex flex-col gap-[20px] pt-[16px]">
           <Field label="代號">
             <Input
               placeholder="請輸入代號"
@@ -79,7 +77,7 @@ function General({
       </Card>
       <div className="mt-6 flex justify-end">
         <Button disabled={isClick} onClick={handleSubmit} variant="primary">
-          新增
+          {submitLabel}
         </Button>
       </div>
     </>

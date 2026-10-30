@@ -138,9 +138,15 @@ const ProfileImportModal = ({ open, onClose, selectedDesigners, setSelectedDesig
             </div>
           ))}
         </DialogBody>
-        <DialogFooter className="ui-root">
+        <DialogFooter className="ui-root flex-wrap">
+          {/* 停用原因（STYLE.md §6）：依 vaild（要選身份類別，且至少勾一項要導入的設定） */}
+          {!vaild && (
+            <p id="profile-import-missing" role="status" className="mr-auto text-caption text-text-secondary">
+              尚缺：{[!inputData.jobTitlePointId && '人員身份類別', !(inputData.jobTitlePoint || inputData.deductionWay || inputData.rakeRule) && '至少勾選一項要導入的設定'].filter(Boolean).join('、')}
+            </p>
+          )}
           <Button variant='secondary' onClick={onClose} disabled={onSubmit}>關閉</Button>
-          <Button variant='primary' onClick={handleSetProfileData} disabled={!vaild || onSubmit}>確認</Button>
+          <Button variant='primary' onClick={handleSetProfileData} disabled={!vaild || onSubmit} aria-describedby={!vaild ? 'profile-import-missing' : undefined}>確認</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

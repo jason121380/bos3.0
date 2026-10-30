@@ -293,6 +293,8 @@ describe('薪資總表：已鎖定', () => {
     fireEvent.click(screen.getByLabelText('全選'))
     expect(screen.getByText('2 selected')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '刪除' })).toBeDisabled()
+    // 停用時說出原因與下一步（STYLE.md §6）
+    expect(screen.getByText('薪資已鎖定，請先按「取消鎖定薪資」才能刪除')).toHaveAttribute('role', 'status')
     expect(screen.queryByRole('button', { name: '月結帳單' })).toBeNull()
     expect(screen.getByLabelText('選取 老王')).not.toBeChecked()
   })

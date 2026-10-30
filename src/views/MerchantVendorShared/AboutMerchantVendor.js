@@ -1,17 +1,25 @@
-// 廠商選擇 Autocomplete 使用 ui/combobox
+// 廠商選擇使用 ui/combobox Autocomplete（樣式由正式 ui 元件提供）
 import { TextField } from 'ui/text-field'
+import cloneDeep from 'lodash/cloneDeep'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
-import React from 'react'
-import cloneDeep from 'lodash/cloneDeep'
 import { Autocomplete } from 'ui/combobox'
 
-function AboutMerchantVendorCreate({ className, vendorOption, isLodaing, submitData, setSubmitData }) {
+// 新增／編輯廠商共用（2026/10/30 自兩頁合併）。兩頁原本只差欄位 id 寫法與「代號」必填星號：
+// 以 isEdit 保留各頁原本的 id（新增頁 merchantVendor-no…、編輯頁 merchantVendorNo…）與新增頁的 required 標示。
+const FIELD_IDS = {
+  create: { no: 'merchantVendor-no', name: 'merchantVendor-name', nickname: 'merchantVendor-nickname', remark: 'merchantVendor-remark' },
+  edit: { no: 'merchantVendorNo', name: 'merchantVendorName', nickname: 'merchantVendorNickname', remark: 'merchantVendorRemark' },
+}
+
+function AboutMerchantVendor({ className, vendorOption, isLodaing, submitData, setSubmitData, isEdit = false }) {
+  const ids = isEdit ? FIELD_IDS.edit : FIELD_IDS.create
   const handleInputChange = (key, value) => {
     const newData = cloneDeep(submitData)
     newData[key] = value
     setSubmitData(newData)
   }
+
   return (
     <Card className={className}>
       <CardHeader>
@@ -24,7 +32,7 @@ function AboutMerchantVendorCreate({ className, vendorOption, isLodaing, submitD
             options={vendorOption}
             value={submitData.vendorUUId}
             autoHighlight
-            getOptionLabel={option => option.name}
+            getOptionLabel={option => option ? option.name : ''}
             onChange={(event, value) => handleInputChange('vendorUUId', value)}
             renderOption={(props, option) => (
               <li {...props}>{option.name}</li>
@@ -42,30 +50,30 @@ function AboutMerchantVendorCreate({ className, vendorOption, isLodaing, submitD
             )}
           />
         </Field>
-        <Field label="代號" htmlFor="merchantVendor-no" required>
+        <Field label="代號" htmlFor={ids.no} required={!isEdit}>
           <Input
-            id="merchantVendor-no"
+            id={ids.no}
             value={submitData.no}
             onChange={event => handleInputChange('no', event.target.value)}
           />
         </Field>
-        <Field label="名稱" htmlFor="merchantVendor-name">
+        <Field label="名稱" htmlFor={ids.name}>
           <Input
-            id="merchantVendor-name"
+            id={ids.name}
             value={submitData.name}
             onChange={event => handleInputChange('name', event.target.value)}
           />
         </Field>
-        <Field label="暱稱" htmlFor="merchantVendor-nickname">
+        <Field label="暱稱" htmlFor={ids.nickname}>
           <Input
-            id="merchantVendor-nickname"
+            id={ids.nickname}
             value={submitData.nickname}
             onChange={event => handleInputChange('nickname', event.target.value)}
           />
         </Field>
-        <Field label="備註" htmlFor="merchantVendor-remark">
+        <Field label="備註" htmlFor={ids.remark}>
           <Input
-            id="merchantVendor-remark"
+            id={ids.remark}
             value={submitData.remark}
             onChange={event => handleInputChange('remark', event.target.value)}
           />
@@ -74,4 +82,4 @@ function AboutMerchantVendorCreate({ className, vendorOption, isLodaing, submitD
     </Card>
   )
 }
-export default AboutMerchantVendorCreate
+export default AboutMerchantVendor

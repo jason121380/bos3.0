@@ -77,7 +77,10 @@ describe('新增收借支紀錄（現金）', () => {
     await settle()
     expect(screen.queryByLabelText('科目')).toBeNull()
     expect(submitButton()).toBeDisabled()
+    // 停用時說出還缺什麼（STYLE.md §6）：收付方式預設「現場現金」不缺
+    expect(screen.getByText('尚缺：收入／支出、科目、金額')).toHaveAttribute('role', 'status')
     fireEvent.click(toggle('收入'))
+    expect(screen.getByText('尚缺：科目、金額')).toBeInTheDocument()
     expect(options('科目')).toEqual(['4101 營業收入'])
     fireEvent.keyDown(field('科目'), { key: 'Escape' })
     // 再按一次已選的收入不會取消選取（維持收入）

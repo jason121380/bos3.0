@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { useSelector } from 'react-redux'
 
-import AboutAssistantSetting from './AboutAssistantSetting'
+import AboutAssistantSetting from 'views/CouponShared/AboutAssistantSetting'
 // 一般資訊區塊與另一頁共用（views/CouponShared，2026/10/28）
 import AboutCoupon from 'views/CouponShared/AboutCoupon'
 import AboutDeduction from './AboutDeduction'
@@ -424,6 +424,13 @@ function ServiceCategoryEdit({ match }) {
     )
   }
 
+  // 停用原因（STYLE.md §6）：與上方 effect 設定 vaild 的三個欄位相同，依畫面順序列出目前缺的
+  const missing = [
+    !coupon.name && '名稱',
+    !coupon.ServiceCategoryId && '服務類別',
+    !coupon.ticketAvailableCount && '次數',
+  ].filter(Boolean)
+
   return (
     <Page className="ui-root" title={isDuplicate ? "新增卡券項目" : "編輯卡券項目"} >
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
@@ -441,16 +448,17 @@ function ServiceCategoryEdit({ match }) {
           merchantHelperItems={merchantHelperItems}
           support={coupon.helperDeductionSetting}
           onChange={handleOnChange}
+          isEdit
         />
 
         <div className="flex flex-wrap items-center justify-between gap-2">
         {isDuplicate ? (
-          <Button variant="primary" disabled={saveBtn || vaild} onClick={handleCreate}>
+          <Button variant="primary" disabled={saveBtn || vaild} aria-describedby={vaild ? 'coupon-edit-missing' : undefined} onClick={handleCreate}>
             新增
           </Button>
         ) : (
           <>
-            <Button variant="primary" disabled={saveBtn || vaild} onClick={() => handleSubmit('toList')}>
+            <Button variant="primary" disabled={saveBtn || vaild} aria-describedby={vaild ? 'coupon-edit-missing' : undefined} onClick={() => handleSubmit('toList')}>
               儲存
             </Button>
             <div className="flex flex-wrap gap-2">
@@ -472,6 +480,11 @@ function ServiceCategoryEdit({ match }) {
           </>
         )}
         </div>
+        {vaild && (
+          <p id="coupon-edit-missing" role="status" className="text-caption text-text-secondary">
+            尚缺：{missing.join('、')}
+          </p>
+        )}
       </div>
     </Page>
   )

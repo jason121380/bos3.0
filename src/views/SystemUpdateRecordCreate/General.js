@@ -34,6 +34,13 @@ const General = () => {
     return () => clearInterval(getTheme)
   }, [])
 
+  const missingFields = [
+    updateRecord.title === '' && '標題',
+    updateRecord.content === '' && '內容',
+    updateRecord.versionNo === '' && '版本',
+    updateRecord.updateTime === '' && '更新日期',
+  ].filter(Boolean)
+
   const onSubmit = () => {
     setEnable(true)
     SystemUpdateCreate({ input: updateRecord })
@@ -165,15 +172,22 @@ const General = () => {
           />
         </div>
       </Card>
-      <div className="ui-root">
+      <div className="ui-root flex flex-wrap items-center gap-3">
         <Button
           variant="primary"
           data-testid="createSystemUpdate"
           onClick={onSubmit}
           disabled={enable}
+          aria-describedby={missingFields.length > 0 ? 'system-update-create-missing' : undefined}
         >
           新增
         </Button>
+        {/* 停用原因（STYLE.md §6）：依 enable 的欄位條件（標題、內容、版本、更新日期必填）；送出中 enable 也為 true，但不列原因 */}
+        {missingFields.length > 0 && (
+          <p id="system-update-create-missing" role="status" className="text-caption text-text-secondary">
+            尚缺：{missingFields.join('、')}
+          </p>
+        )}
       </div>
     </Fragment>
   )

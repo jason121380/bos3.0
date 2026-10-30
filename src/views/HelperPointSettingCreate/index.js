@@ -7,7 +7,7 @@ import { PageHeader } from 'ui/page-header'
 
 import { useState } from 'react'
 
-import Results from './Results'
+import Results from 'views/HelperPointSettingShared/Results'
 
 const styles = {
   about: 'mt-[24px]',

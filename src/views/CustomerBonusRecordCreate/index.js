@@ -6,7 +6,7 @@ import useFetchAddCustomerBonus from 'hooks/useFetchAddCustomerBonus'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-import AboutCustomerBonusRecordCreate from './AboutCustomerBonusRecordCreate'
+import AboutCustomerBonusRecord from 'views/CustomerBonusRecordShared/AboutCustomerBonusRecord'
 
 function CustomerBonusRecordCreate() {
   const { id } = useParams()
@@ -73,7 +73,7 @@ function CustomerBonusRecordCreate() {
     <Page className="ui-root" title="新增紅利點數">
       <div className="mx-auto max-w-3xl">
         <PageHeader title="新增紅利點數" className="pb-0" />
-        <AboutCustomerBonusRecordCreate
+        <AboutCustomerBonusRecord
           submitData={submitData}
           setSubmitData={setSubmitData}
         />

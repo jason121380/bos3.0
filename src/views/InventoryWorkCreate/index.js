@@ -13,7 +13,7 @@ import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
-import General from './General'
+import General from 'views/InventoryWorkShared/General'
 
 function InventoryWorkCreate() {
   const history = useHistory()

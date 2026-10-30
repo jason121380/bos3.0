@@ -33,6 +33,9 @@ const pick = (testId, index) => fireEvent.change(screen.getByTestId(testId), { t
 const feeInput = () => document.querySelector('input[data-testid^="fee-"]')
 const submit = () => screen.getByTestId('create-payment')
 
+// 停用鈕旁的「尚缺：…」（STYLE.md §6，2026/10/30）：讓使用者知道還差哪些欄位
+const missingText = () => (screen.queryByText(/^尚缺：/) || {}).textContent
+
 const fillValid = () => {
   typeLikeBrowser(screen.getByTestId('name'), '信用卡')
   pick('fee-category', 1) // PERCENT 百分比(%)
@@ -44,12 +47,17 @@ describe('新增支付方式', () => {
     const { settle } = setup()
     await settle()
     expect(submit()).toBeDisabled()
+    expect(missingText()).toMatch(/名稱.*手續費類別.*手續費扣項方式/)
+    expect(submit()).toHaveAttribute('aria-describedby', 'payment-create-missing')
     typeLikeBrowser(screen.getByTestId('name'), '信用卡')
     expect(submit()).toBeDisabled()
+    expect(missingText()).not.toMatch(/名稱/)
     pick('fee-category', 1)
     expect(submit()).toBeDisabled()
+    expect(missingText()).toBe('尚缺：手續費扣項方式')
     pick('payment-deductions', 1)
     expect(submit()).not.toBeDisabled()
+    expect(missingText()).toBeUndefined()
   })
 
   it('百分比手續費保留小數、勾選金額呈現為0，送出 fee 為數字並導回列表', async () => {

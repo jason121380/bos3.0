@@ -8,7 +8,7 @@ import { Provider } from 'hooks/useStore'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-import AboutProductCategory from './AboutProductCategory'
+import AboutProductCategory from 'views/ProductCategoryShared/AboutProductCategory'
 
 function ServiceCategoryCreate() {
   const history = useHistory()
@@ -45,7 +45,7 @@ function ServiceCategoryCreate() {
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <PageHeader title="新增商品分類" className="pb-0" />
           <Provider value={value}>
-            <AboutProductCategory />
+            <AboutProductCategory idPrefix="product-category-create" />
           </Provider>
           <div className="flex justify-end">
             <Button variant="primary" type="submit" data-testid="submit-create">

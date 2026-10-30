@@ -1,3 +1,4 @@
+// 新增／編輯紅利點數紀錄共用（2026/10/30 自兩頁合併，兩份只差樣式寫法與元件名稱）。
 import { Input, InputAdornment } from 'ui/text-field'
 import { FormControl, InputLabel } from 'ui/form-control'
 import { MobileDatePicker } from 'ui/date-picker'
@@ -8,9 +9,13 @@ import format from 'date-fns/format'
 import { Card, CardContent } from 'ui/card'
 import { Field, Input as UiInput } from 'ui/input'
 
-// Employee／CustomerAutoComplete 的 className 以字串直通（原 emotion 物件等值轉 Tailwind）
+// styles 以 className 字串傳給 FormControl 與 Employee／CustomerAutoComplete
+const styles = {
+  formGroup: '!mb-[24px]',
+  fullWidth: '!w-full',
+}
 
-function AboutMerchantVendorCreate({ className, submitData, setSubmitData }) {
+function AboutCustomerBonusRecord({ className, submitData, setSubmitData }) {
   return (
     <Card className="mt-6">
       <CardContent>
@@ -30,7 +35,7 @@ function AboutMerchantVendorCreate({ className, submitData, setSubmitData }) {
           }}
           slots={{
             field: inputProps => (
-              <FormControl className="!mb-[24px]" variant="filled">
+              <FormControl className={styles.formGroup} variant="filled">
                 <InputLabel htmlFor="date-picker">日期</InputLabel>
                 <Input
                   id="date-picker"
@@ -48,7 +53,7 @@ function AboutMerchantVendorCreate({ className, submitData, setSubmitData }) {
         />
         <EmployeeAutoComplete
           label="選擇設計師"
-          className="!mb-[24px]"
+          className={styles.formGroup}
           value={submitData.designerId}
           onChange={e => {
             setSubmitData({ ...submitData, designerId: e.userId ? e.userId : '' })
@@ -56,7 +61,7 @@ function AboutMerchantVendorCreate({ className, submitData, setSubmitData }) {
         />
         <CustomerAutoComplete
           label="選擇顧客"
-          className="!mb-[24px] !w-full"
+          className={`${styles.formGroup} ${styles.fullWidth}`}
           value={submitData.customerId}
           onChange={e => {
             setSubmitData({ ...submitData, customerId: e.id ? e.id : '' })
@@ -87,4 +92,4 @@ function AboutMerchantVendorCreate({ className, submitData, setSubmitData }) {
     </Card>
   )
 }
-export default AboutMerchantVendorCreate
+export default AboutCustomerBonusRecord

@@ -9,7 +9,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-import AboutMerchantVendorEdit from './AboutMerchantVendorEdit'
+import AboutMerchantVendor from 'views/MerchantVendorShared/AboutMerchantVendor'
 import QueryFailed from 'components/QueryFailed'
 
 function MerchantVendorEdit({ match }) {
@@ -98,7 +98,8 @@ function MerchantVendorEdit({ match }) {
           <QueryFailed onRetry={() => { if (merchantVendor.error) merchantVendor.refetch(); if (vendorList.error) vendorList.refetch() }} />
         ) : (
           <>
-          <AboutMerchantVendorEdit
+          <AboutMerchantVendor
+            isEdit
             vendorOption={vendorOption}
             isLodaing={vendorList.loading}
             submitData={submitData}

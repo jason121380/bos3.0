@@ -370,11 +370,15 @@ describe('由人員身分設定檔導入', () => {
     const { calls } = setup()
     await openImport()
     expect(confirm()).toBeDisabled()
+    // 停用時說出還缺什麼（STYLE.md §6）
+    expect(screen.getByText('尚缺：人員身份類別、至少勾選一項要導入的設定')).toHaveAttribute('role', 'status')
     await pickJob('助理')
     expect(confirm()).toBeDisabled()
+    expect(screen.getByText('尚缺：至少勾選一項要導入的設定')).toBeInTheDocument()
     fireEvent.click(screen.getByLabelText('扣項方式'))
     fireEvent.click(screen.getByLabelText('抽成方式'))
     expect(confirm()).toBeEnabled()
+    expect(screen.queryByText(/^尚缺：/)).toBeNull()
     fireEvent.click(confirm())
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'success', message: '設定成功' }))
     expect(callsOf(calls, 'SET_PERFORMANCE_RULE_FROM_PERSONAL_PROFILE')[0].variables.input).toEqual({

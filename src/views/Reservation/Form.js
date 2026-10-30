@@ -59,6 +59,16 @@ export default function () {
         : values.customers[key].name && cellphoneRegex.test(values.customers[key].cellphone)
     )
 
+  // 預約鈕停用原因（STYLE.md §6）：與上方 isValidInput／isValidFriendsInput 同一組條件，只用於顯示
+  const missingFields = [
+    !values.merchantId && '店家',
+    !values.dateTime && '服務時間',
+    isAssign && !values.designerId && '服務設計師',
+    !values.customers.main.name && '顧客姓名',
+    !cellphoneRegex.test(values.customers.main.cellphone) && '顧客電話（09 開頭 10 碼）',
+    !isValidFriendsInput && '同行友人的姓名與電話',
+  ].filter(Boolean)
+
   const { booking } = useFetchBooking()
   const { nonDesignationBooking } = useFetchNonDesignationBooking()
   const handleChange = ({ key, value }) => {
@@ -330,10 +340,16 @@ export default function () {
         size="lg"
         className="h-11 w-full"
         disabled={!isValidInput || !isValidFriendsInput || isDisabled}
+        aria-describedby={missingFields.length > 0 && !isDisabled ? 'booking-missing' : undefined}
         data-testid="booking-submit"
       >
         預約
       </Button>
+      {missingFields.length > 0 && !isDisabled && (
+        <p id="booking-missing" role="status" className="text-center text-caption text-text-secondary">
+          尚缺：{missingFields.join('、')}
+        </p>
+      )}
     </form>
   )
 }

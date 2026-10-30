@@ -36,6 +36,9 @@ jest.mock('elements/snackbars', () => ({
 const fixtures = (overrides = {}) => settingFixtures({ CREATE_COUPON: { createCoupon: true }, ...overrides })
 const setup = overrides => renderPage(<CouponCreate />, { fixtures: fixtures(overrides), route: '/coupon/create' })
 const submitButton = () => screen.getByText('新增卡券', { selector: 'button' })
+
+// 停用鈕旁的「尚缺：…」（STYLE.md §6，2026/10/30）：讓使用者知道還差哪些欄位
+const missingText = () => (screen.queryByText(/^尚缺：/) || {}).textContent
 const DEFAULT_SECTION = '項目扣項設定 - 系統預設'
 const DESIGNER_SECTION = '項目扣項設定 - 設計師抽成'
 const HELPER = '互助點數設定'
@@ -81,10 +84,13 @@ describe('新增卡券項目：送出', () => {
     const { settle } = setup()
     await settle()
     expect(submitButton()).toBeDisabled()
+    expect(missingText()).toMatch(/^尚缺：名稱、服務類別/)
     await typeText(controlByLabel('名稱'), '護髮十次卡')
     expect(submitButton()).toBeDisabled()
+    expect(missingText()).not.toMatch(/名稱/)
     pick(controlByLabel('服務類別'), '染髮')
     expect(submitButton()).not.toBeDisabled()
+    expect(missingText()).toBeUndefined()
   })
 
   it('預設值送出：鎖價 UNSET、使用時入業績、每次使用時扣手續費、上架；扣項與販售設定依店家設定產生', async () => {

@@ -10,7 +10,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-import AboutPayment from './AboutPayment'
+import AboutPayment from 'views/PaymentShared/AboutPayment'
 
 function ServiceCategoryCreate() {
   const { createPayment } = useFetchCreatePayment()
@@ -46,6 +46,13 @@ function ServiceCategoryCreate() {
     }
   }
   const vaild = !(payment.type && payment.name && payment.fee >= 0 && payment.amountType)
+  // 停用原因（STYLE.md §6）：依 vaild 的四個欄位，依畫面順序列出目前缺的
+  const missing = [
+    !payment.name && '名稱',
+    !payment.amountType && '手續費類別',
+    !(payment.fee >= 0) && '手續費',
+    !payment.type && '手續費扣項方式',
+  ].filter(Boolean)
 
   return (
     <Page className="ui-root" title="新增支付方式">
@@ -56,15 +63,21 @@ function ServiceCategoryCreate() {
           payment={payment}
           onChange={handleOnchange}
         />
-        <div>
+        <div className="flex flex-wrap items-center gap-3">
           <Button
             variant="primary"
             disabled={vaild}
+            aria-describedby={vaild ? 'payment-create-missing' : undefined}
             onClick={handleSubmit}
             data-testid="create-payment"
           >
             新增
           </Button>
+          {vaild && (
+            <p id="payment-create-missing" role="status" className="text-caption text-text-secondary">
+              尚缺：{missing.join('、')}
+            </p>
+          )}
         </div>
       </div>
     </Page>

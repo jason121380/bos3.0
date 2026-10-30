@@ -9,7 +9,7 @@ import produce from 'immer'
 import React from 'react'
 import { useHistory } from 'react-router'
 
-import AboutThirdPartyCoupon from './AboutThirdPartyCoupon'
+import AboutThirdPartyCoupon from 'views/ThirdPartyCouponShared/AboutThirdPartyCoupon'
 
 function ServiceCategoryCreate() {
   const { createThirdPartyCoupon } = useFetchCreateThirdPartyCoupon()
@@ -46,6 +46,12 @@ function ServiceCategoryCreate() {
     thirdPartyCoupon.name &&
     thirdPartyCoupon.handlingFee >= 0
   )
+  // 停用原因（STYLE.md §6）：依 vaild 的三個欄位，依畫面順序列出目前缺的
+  const missing = [
+    !thirdPartyCoupon.name && '名稱',
+    !(thirdPartyCoupon.handlingFee >= 0) && '手續費',
+    !thirdPartyCoupon.type && '手續費扣項方式',
+  ].filter(Boolean)
 
   return (
     <Page className="ui-root" title="新增第三方卡券">
@@ -55,8 +61,13 @@ function ServiceCategoryCreate() {
           thirdPartyCoupon={thirdPartyCoupon}
           onChange={handleOnchange}
         />
-        <div className="mt-6 flex justify-end">
-          <Button variant="primary" disabled={vaild} onClick={handleSubmit}>
+        <div className="mt-6 flex flex-wrap items-center justify-end gap-3">
+          {vaild && (
+            <p id="third-party-coupon-create-missing" role="status" className="text-caption text-text-secondary">
+              尚缺：{missing.join('、')}
+            </p>
+          )}
+          <Button variant="primary" disabled={vaild} aria-describedby={vaild ? 'third-party-coupon-create-missing' : undefined} onClick={handleSubmit}>
             新增
           </Button>
         </div>

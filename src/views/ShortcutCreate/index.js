@@ -12,7 +12,7 @@ import produce from 'immer'
 import idx from 'idx'
 
 import Page from 'components/Page'
-import General from './General'
+import General from 'views/ShortcutShared/General'
 
 function ShortcutCreate() {
   const history = useHistory()
@@ -176,6 +176,7 @@ function ShortcutCreate() {
             handleSubmit={handleSubmit}
             isLoading={isLoading}
             isClick={isClick}
+            submitLabel="新增"
           />
         )}
       </div>

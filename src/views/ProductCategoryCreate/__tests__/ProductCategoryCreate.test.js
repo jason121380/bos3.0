@@ -55,6 +55,9 @@ describe('<ProductCategoryCreate />', () => {
 
     const no = getByTestId('no')
     const name = getByTestId('name')
+    // 與編輯頁共用欄位元件後，新增頁的欄位 id 仍維持 product-category-create-*（2026/10/30 抽共用）
+    expect(no).toHaveAttribute('id', 'product-category-create-no')
+    expect(name).toHaveAttribute('id', 'product-category-create-name')
     const submitCreate = getByTestId('submit-create')
 
     fireEvent.change(no, {

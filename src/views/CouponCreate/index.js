@@ -12,10 +12,10 @@ import cloneDeep from 'lodash/cloneDeep'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-import AboutAssistantSetting from './AboutAssistantSetting'
+import AboutAssistantSetting from 'views/CouponShared/AboutAssistantSetting'
 // 一般資訊區塊與另一頁共用（views/CouponShared，2026/10/28）
 import AboutCoupon from 'views/CouponShared/AboutCoupon'
-import AboutDeduction from './AboutDeduction'
+import AboutDeduction from 'views/CouponShared/AboutDeduction'
 
 function ServiceCategoryCreate() {
   const merchantId = localStorage.getItem('userMerchant')
@@ -112,6 +112,12 @@ function ServiceCategoryCreate() {
     )
   }
   const vaild = !(coupon.name && coupon.ServiceCategoryId && coupon.ticketAvailableCount)
+  // 停用原因（STYLE.md §6）：依 vaild 的三個欄位，依畫面順序列出目前缺的
+  const missing = [
+    !coupon.name && '名稱',
+    !coupon.ServiceCategoryId && '服務類別',
+    !coupon.ticketAvailableCount && '次數',
+  ].filter(Boolean)
   const handleSubmit = () => {
     setSaveBtn(true)
     const newCoupon = cloneDeep(coupon)
@@ -159,10 +165,15 @@ function ServiceCategoryCreate() {
           onChange={handleOnChange}
         />
 
-        <div>
-          <Button variant="primary" disabled={vaild || saveBtn} onClick={handleSubmit}>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button variant="primary" disabled={vaild || saveBtn} aria-describedby={vaild ? 'coupon-create-missing' : undefined} onClick={handleSubmit}>
             新增卡券
           </Button>
+          {vaild && (
+            <p id="coupon-create-missing" role="status" className="text-caption text-text-secondary">
+              尚缺：{missing.join('、')}
+            </p>
+          )}
         </div>
       </div>
     </Page>

@@ -7,8 +7,11 @@ import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
 
-function General({ dateChange, inputValue, valueChange, isClick, submit }) {
-  const isReadOnly = Boolean(inputValue.endDateActual)
+// 新增／編輯主活動共用（2026/10/30 自兩頁合併）。兩頁差異以 isEdit 保留：
+// - 編輯頁：活動已結束（endDateActual）時全部唯讀、不顯示儲存鈕；私人店家選單以 display:none 隱藏（保留掛載）並傳 onEdit；按鈕「儲存」
+// - 新增頁：沒有唯讀狀態；私人店家選單切到公開時卸載；按鈕「新增」
+function General({ dateChange, inputValue, valueChange, isClick, submit, isEdit = false }) {
+  const isReadOnly = isEdit && Boolean(inputValue.endDateActual)
 
   const PrivateToggle = () => (
     <ToggleGroup onChange={(e, v) => v !== null && valueChange('isPublic', v)} value={inputValue.isPublic} exclusive>
@@ -68,13 +71,22 @@ function General({ dateChange, inputValue, valueChange, isClick, submit }) {
               readOnly={isReadOnly}
             />
           </Field>
-          <div style={{ display: inputValue.isPublic ? 'none' : '' }}>
-            <MLAutocpmplete
-              onEdit
-              selectIds={inputValue.merchantIds}
-              onValueChange={v => valueChange('merchantIds', v)}
-            />
-          </div>
+          {isEdit ? (
+            <div style={{ display: inputValue.isPublic ? 'none' : '' }}>
+              <MLAutocpmplete
+                onEdit
+                selectIds={inputValue.merchantIds}
+                onValueChange={v => valueChange('merchantIds', v)}
+              />
+            </div>
+          ) : (
+            !inputValue.isPublic && (
+              <MLAutocpmplete
+                selectIds={inputValue.merchantIds}
+                onValueChange={v => valueChange('merchantIds', v)}
+              />
+            )
+          )}
           <div className="flex flex-col gap-4">
             <Field label='總張數上限' className='w-40'>
               <Input
@@ -102,7 +114,7 @@ function General({ dateChange, inputValue, valueChange, isClick, submit }) {
         {isReadOnly ? '' : (
           <CardFooter>
             <Button disabled={isClick} onClick={submit} variant="primary">
-              儲存
+              {isEdit ? '儲存' : '新增'}
             </Button>
           </CardFooter>
         )}

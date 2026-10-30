@@ -198,14 +198,20 @@ export default function ProductCreate({ match }) {
                 onChange={handleOnChange}
               />
             )}
+            {/* 停用原因（STYLE.md §6）：依 vaild（名稱、庫存單位、商品類別必填），只列目前真的缺的 */}
+            {vaild && (
+              <p id="product-edit-missing" role="status" className="text-caption text-text-secondary">
+                {`尚缺：${[!product.name && '名稱', !product.stockUnit && '庫存單位', !product.ProductCategoryId && '商品類別'].filter(Boolean).join('、')}`}
+              </p>
+            )}
             <div className="flex flex-wrap items-center justify-between gap-2">
               {isDuplicate ? (
-                <Button variant="primary" disabled={saveBtn || vaild} onClick={handleCreate}>
+                <Button variant="primary" disabled={saveBtn || vaild} aria-describedby={vaild ? 'product-edit-missing' : undefined} onClick={handleCreate}>
                   新增
                 </Button>
               ) : (
                 <>
-                  <Button variant="primary" disabled={saveBtn || vaild} onClick={() => handleSubmit('toList')}>
+                  <Button variant="primary" disabled={saveBtn || vaild} aria-describedby={vaild ? 'product-edit-missing' : undefined} onClick={() => handleSubmit('toList')}>
                     儲存
                   </Button>
                   <div className="flex items-center gap-2">

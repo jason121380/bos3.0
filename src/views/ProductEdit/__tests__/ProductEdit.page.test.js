@@ -6,7 +6,7 @@
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
-import { callsOf, currentLocation, loginAs, renderPage, MERCHANT_ID, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
+import { callsOf, currentLocation, loginAs, renderPage, MERCHANT_ID, PAGE_CRASH_TEXT, typeLikeBrowser } from '../../../__tests__/testkit.test'
 import { CATEGORIES, VENDORS, byQueryText, chooseNative, clearCombo, inputsByLabel, optionTexts, pickOption } from '../../__tests__/stockKit.test'
 import ProductEdit from '..'
 
@@ -173,14 +173,20 @@ describe('編輯商品', () => {
   it('名稱、類別、單位任一空白：儲存鈕停用', async () => {
     const { settle } = renderEdit()
     await settle()
+    expect(screen.queryByText(/^尚缺：/)).toBeNull()
     fireEvent.change(field('名稱'), { target: { value: '' } })
     expect(saveButton()).toBeDisabled()
-    fireEvent.change(field('名稱'), { target: { value: '洗髮精' } })
+    // 停用時說出缺什麼（STYLE.md §6），只列目前真的缺的欄位
+    expect(screen.getByText('尚缺：名稱')).toHaveAttribute('role', 'status')
+    // 名稱的 onChange 在 produce updater 裡才讀 event.target，要用 typeLikeBrowser 才會真的填回（CLAUDE.md 踩雷）
+    typeLikeBrowser(field('名稱'), '洗髮精')
     chooseNative(field('商品類別'), 'None')
     expect(saveButton()).toBeDisabled()
+    expect(screen.getByText('尚缺：商品類別')).toBeInTheDocument()
     chooseNative(field('商品類別'), 'C1 洗髮')
     chooseNative(field('庫存單位'), 'None')
     expect(saveButton()).toBeDisabled()
+    expect(screen.getByText('尚缺：庫存單位')).toBeInTheDocument()
   })
 
   it('儲存並上一筆／下一筆：依商品列表順序換到前後一筆；第一筆不能上一筆、最後一筆不能下一筆', async () => {

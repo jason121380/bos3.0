@@ -151,11 +151,18 @@ function AddDesignersModal({
             </div>
           ))}
         </DialogBody>
-        <DialogFooter className="justify-center">
+        <DialogFooter className="flex-wrap justify-center">
+          {/* 停用原因（STYLE.md §6）：第一列還沒選服務人員時不能新增 */}
+          {designers[0].designerId.length === 0 && (
+            <p id="add-designers-missing" role="status" className="w-full text-center text-caption text-text-secondary">
+              尚缺：服務人員
+            </p>
+          )}
           <Button
             variant="primary"
             onClick={handleAddDesignersToSchedule}
             disabled={designers[0].designerId.length === 0}
+            aria-describedby={designers[0].designerId.length === 0 ? 'add-designers-missing' : undefined}
           >
             新增
           </Button>

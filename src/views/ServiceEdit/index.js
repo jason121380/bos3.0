@@ -577,18 +577,19 @@ function ServiceCategoryEdit({ match }) {
         />
         <div className="flex items-center justify-between gap-2">
           {isDuplicate ? (
-            <Button variant="primary" disabled={saveBtn || vaild} onClick={handleCreate}>
+            <Button variant="primary" disabled={saveBtn || vaild} aria-describedby={vaild ? 'service-edit-missing' : undefined} onClick={handleCreate}>
               新增
             </Button>
           ) : (
             <>
-              <Button variant="primary" disabled={saveBtn || vaild} onClick={() => handleSubmit('toList')}>
+              <Button variant="primary" disabled={saveBtn || vaild} aria-describedby={vaild ? 'service-edit-missing' : undefined} onClick={() => handleSubmit('toList')}>
                 儲存
               </Button>
               <div className="flex items-center gap-2">
                 <Button
                   variant="secondary"
                   disabled={serviceIndex === 0 || saveBtn || vaild}
+                  aria-describedby={vaild ? 'service-edit-missing' : undefined}
                   onClick={() => handleSubmit('toLast')}
                 >
                   儲存並上一筆
@@ -596,6 +597,7 @@ function ServiceCategoryEdit({ match }) {
                 <Button
                   variant="secondary"
                   disabled={serviceIndex >= servicesArr.length - 1 || saveBtn || vaild}
+                  aria-describedby={vaild ? 'service-edit-missing' : undefined}
                   onClick={() => handleSubmit('toNext')}
                 >
                   儲存並下一筆
@@ -604,6 +606,12 @@ function ServiceCategoryEdit({ match }) {
             </>
           )}
         </div>
+        {/* 停用原因（STYLE.md §6）：依 vaild（名稱、服務類別必填），所有儲存鈕共用這一句 */}
+        {vaild && (
+          <p id="service-edit-missing" role="status" className="text-caption text-text-secondary">
+            尚缺：{[!service.name && '名稱', !service.ServiceCategoryId && '服務類別'].filter(Boolean).join('、')}
+          </p>
+        )}
       </div>
     </Page>
   )

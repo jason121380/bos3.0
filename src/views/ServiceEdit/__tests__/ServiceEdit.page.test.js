@@ -241,10 +241,15 @@ describe('編輯服務項目：帶入原資料與儲存', () => {
     const { settle } = setup()
     await settle()
     expect(button('儲存')).not.toBeDisabled()
+    expect(screen.queryByText(/^尚缺：/)).toBeNull()
     await typeText(controlByLabel('名稱'), '')
     expect(button('儲存')).toBeDisabled()
     expect(button('儲存並上一筆')).toBeDisabled()
     expect(button('儲存並下一筆')).toBeDisabled()
+    // 三顆儲存鈕共用同一句停用原因，只顯示一次（STYLE.md §6）
+    const reason = screen.getByText('尚缺：名稱')
+    expect(reason).toHaveAttribute('role', 'status')
+    ;['儲存', '儲存並上一筆', '儲存並下一筆'].forEach(name => expect(button(name)).toHaveAttribute('aria-describedby', reason.id))
   })
 
   it('儲存並上一筆／下一筆：依服務列表的順序導到相鄰服務', async () => {

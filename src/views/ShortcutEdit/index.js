@@ -15,7 +15,7 @@ import produce from 'immer'
 import idx from 'idx'
 
 import Page from 'components/Page'
-import General from './General'
+import General from 'views/ShortcutShared/General'
 import QueryFailed from 'components/QueryFailed'
 
 function ShortcutEdit({ match }) {

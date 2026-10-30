@@ -1,5 +1,6 @@
 import { Fragment, useState } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
+import format from 'date-fns/format'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
@@ -7,8 +8,10 @@ import { Input } from 'ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import { formatNumber } from 'ui/format'
 
+// 新增盤點／編輯盤點共用（2026/10/30 自兩頁合併，畫面與 handler 逐字保留）。
+// info：編輯頁才傳（建立時間、建立者），新增頁不傳＝null，不顯示這一行。
 function General({
-  isClick, inventoryData, setInventoryData, categoriesData,
+  info = null, isClick, inventoryData, setInventoryData, categoriesData,
   handleCreateIventory, sort, setSort
 }) {
   const [categorys, setCategorys] = useState([])
@@ -28,13 +31,13 @@ function General({
     setCategorys(cloneData)
   }
 
-  const handleCheckCount = currentCount => {
-    if (currentCount === 0) {
+  const handleCheckCount = count => {
+    if (count === 0) {
       return 0
-    } else if (currentCount > 0) {
-      return <span className="font-bold text-accent">{`+${formatNumber(currentCount)}`}</span>
+    } else if (count > 0) {
+      return <span className="font-bold text-accent">{`+${formatNumber(count)}`}</span>
     } else {
-      return <span className="font-bold text-danger">{formatNumber(currentCount)}</span>
+      return <span className="font-bold text-danger">{formatNumber(count)}</span>
     }
   }
 
@@ -80,7 +83,19 @@ function General({
             </div>
           }
         >
-          <CardTitle>盤點列表</CardTitle>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <CardTitle>盤點列表</CardTitle>
+            {info !== null && (
+              <div className="flex flex-wrap items-center gap-2.5 self-end">
+                <span className="whitespace-break-spaces text-caption tabular-nums text-text-secondary">
+                  {`建立時間:${format(info.date, 'yyyy/MM/dd HH:mm')}`}
+                </span>
+                <span className="whitespace-break-spaces text-caption text-text-secondary">
+                  {`建立者:${info.creatorName}`}
+                </span>
+              </div>
+            )}
+          </div>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <div className="flex justify-between gap-5">

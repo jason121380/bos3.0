@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-import AboutProductCategory from './AboutProductCategory'
+import AboutProductCategory from 'views/ProductCategoryShared/AboutProductCategory'
 import QueryFailed from 'components/QueryFailed'
 
 function ServiceCategoryCreate({ match }) {
