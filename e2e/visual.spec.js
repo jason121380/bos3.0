@@ -65,7 +65,9 @@ async function inspect(page) {
   return page.evaluate(() => {
     const de = document.documentElement
     return {
-      crash: (document.body.innerText || '').includes('這個頁面發生錯誤'),
+      // 只認錯誤邊界本身（components/PageErrorBoundary 的 role="alert" 區塊），不比對整頁文字：
+      // 版本更新紀錄等頁面的內容可能正好寫到「這個頁面發生錯誤」這幾個字（2026/10/30 CI 曾因此誤判）
+      crash: Array.from(document.querySelectorAll('[role="alert"]')).some(el => (el.innerText || '').includes('這個頁面發生錯誤')),
       scrollWidth: de.scrollWidth,
       clientWidth: de.clientWidth,
     }

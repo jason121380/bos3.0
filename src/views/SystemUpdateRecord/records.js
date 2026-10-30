@@ -11,7 +11,7 @@ export function calendarUpdateTime(isoDate) {
 const shippedRecords = [
   {
     title: '2026/10/30 查詢失敗不再整頁錯誤（第二批）',
-    versionNo: 'v3.10301636',
+    versionNo: 'v3.10301644',
     updateTime: '2026-10-30',
     content: [
       '- 打帳單、帳單詳細、個人頁、工程模式、員工資料、顧客列表、服務類別新增與編輯、版本紀錄編輯：後端暫時無法回應時不再出現「這個頁面發生錯誤」',
