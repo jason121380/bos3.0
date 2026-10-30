@@ -30,7 +30,7 @@ export function fieldByLabel(text, root = document.body) {
   return found[0]
 }
 
-// 原生 select（ui/native-select、ui/form-control）以選項文字選取
+// 下拉（ui/native-select）以選項文字選取
 export function pickOption(select, optionText) {
   const option = Array.from(select.options).find(o => o.textContent.trim() === optionText)
   if (!option) {

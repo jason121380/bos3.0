@@ -9,8 +9,11 @@ import useFetchViewer from 'hooks/useFetchViewer'
 import idx from 'idx'
 import React from 'react'
 import { Card, CardContent } from 'ui/card'
+import StaffCombobox from 'components/StaffCombobox'
 
 import reference from './reference'
+
+const designerLabel = designer => designer.nickName || designer.name
 
 export default function ({ asignDesigner, onChange, onAssignChange, onDesignerChange }) {
   const { merchantId, values } = React.useContext(ReservationContext)
@@ -107,38 +110,28 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
           _ =>
             _.data.viewer.anonymous.designers.data &&
             asignDesigner && (
-              <NativeSelect
-                onChange={event => {
-                  onChange({
-                    key: 'designerId',
-                    value: idx(event, _ => idx(event, _ => _.target.value)),
-                  })
-                  // 與選單顯示一致：有暱稱用暱稱，沒有用本名；選回空白時清空（原本判斷陣列的 nickName、永遠用本名，Jason 2026/10/22 fix all）
-                  const picked = _.data.viewer.anonymous.designers.data.find(d => d.id === event.target.value)
-                  onDesignerChange(picked ? picked.nickName || picked.name : '')
-                }}
-                value={values.designerId}
-                inputProps={{
-                  'data-testid': 'designer-name',
-                }}
-                displayEmpty={false}
-                placeholder="請選擇…"
-                label={<>服務設計師{asignDesigner && <span className="text-danger"> *</span>}</>}
-                labelRef={selectRef}
-              >
-                <NativeSelectOption aria-label="None" value="" />
-                {idx(designers, _ =>
-                  _.data.viewer.anonymous.designers.data.map(data => {
-                    return (
-                      asignDesigner && (
-                        <NativeSelectOption value={data.id} key={data.id}>
-                          {data.nickName || data.name}
-                        </NativeSelectOption>
-                      )
-                    )
-                  })
-                )}
-              </NativeSelect>
+              // 服務設計師可打字搜尋（Jason 2026/10/30）：StaffCombobox 選取時交給原 handler { target: { value: 設計師 id } }，
+              // 按清除鈕為 ''（與原本選回空白相同）；清單與欄位文字維持「有暱稱用暱稱，沒有用本名」。
+              <div ref={selectRef} className="min-w-0">
+                <StaffCombobox
+                  onChange={event => {
+                    onChange({
+                      key: 'designerId',
+                      value: idx(event, _ => idx(event, _ => _.target.value)),
+                    })
+                    // 與選單顯示一致：有暱稱用暱稱，沒有用本名；選回空白時清空（原本判斷陣列的 nickName、永遠用本名，Jason 2026/10/22 fix all）
+                    const picked = _.data.viewer.anonymous.designers.data.find(d => d.id === event.target.value)
+                    onDesignerChange(picked ? picked.nickName || picked.name : '')
+                  }}
+                  value={values.designerId}
+                  users={_.data.viewer.anonymous.designers.data}
+                  getLabel={designerLabel}
+                  inputProps={{
+                    'data-testid': 'designer-name',
+                  }}
+                  label={<>服務設計師{asignDesigner && <span className="text-danger"> *</span>}</>}
+                />
+              </div>
             )
         )}
         {(designerBookingTimesResponse.data || unspecifiedBookingTimesResponse.data) && (

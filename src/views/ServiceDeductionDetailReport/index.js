@@ -1,6 +1,6 @@
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { useState, useEffect } from 'react'
-// 抽成類別的選項含 value={null}（全部），Radix Select 不支援空值，使用 ui/form-control Select
+// 抽成類別的選項含 value={null}（全部），Radix Select 不支援空值，使用 ui/native-select NativeSelect
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import ServicesIncludesTicketsAutoComplete from 'components/ServicesIncludesTicketsAutoComplete'
 import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'

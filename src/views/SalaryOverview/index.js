@@ -1,4 +1,4 @@
-// 狀態下拉的 onChange 依賴 event.target.value，使用 ui/form-control Select
+// 狀態下拉的 onChange 依賴 event.target.value，使用 ui/native-select NativeSelect
 import { FormControl } from 'ui/form-control'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import Page from 'components/Page'

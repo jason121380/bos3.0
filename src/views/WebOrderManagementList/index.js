@@ -1,4 +1,4 @@
-// 報到狀態篩選 Select 使用 ui/form-control（值為 true／false／空字串，不適用 Radix Select）
+// 報到狀態篩選使用 ui/native-select（值為 true／false／空字串，不適用 Radix Select）
 import { FormControl } from 'ui/form-control'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import Page from 'components/Page'

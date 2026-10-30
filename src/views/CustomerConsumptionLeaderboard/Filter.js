@@ -1,4 +1,4 @@
-// 排序依據使用 ui/form-control Select（與同列 ui/combobox Autocomplete 並排）
+// 排序依據使用 ui/native-select NativeSelect（與同列 ui/combobox Autocomplete 並排）
 import { Checkbox } from 'ui/checkbox'
 import { FormControl } from 'ui/form-control'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'

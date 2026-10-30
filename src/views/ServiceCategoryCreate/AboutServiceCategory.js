@@ -1,4 +1,4 @@
-// 代號／類別名稱改 Field＋ui Input：register 仍以 ref 掛 react-hook-form、error 訊息由 Field 呈現（文字／驗證時機不變）；備註 multiline 與 Select 使用 ui/form-control
+// 代號／類別名稱改 Field＋ui Input：register 仍以 ref 掛 react-hook-form、error 訊息由 Field 呈現（文字／驗證時機不變）；備註 multiline 使用 ui/form-control、下拉使用 ui/native-select
 import { FormControl, FormHelperText } from 'ui/form-control'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField } from 'ui/text-field'

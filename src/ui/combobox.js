@@ -234,6 +234,13 @@ const Autocomplete = React.forwardRef(function Autocomplete(
         selectOption(event, selectedItem)
         if (!disableCloseOnSelect && !multiple) setOpen(false, event)
         if (multiple && !disableCloseOnSelect) setOpen(false, event)
+      } else if ((type === T.ItemClick || type === T.InputKeyDownEnter) && !disableCloseOnSelect) {
+        // 單選點（或 Enter）目前已選的那一項：downshift 不回報 selectedItem（沒有變；多選的 selectedItem 固定為 null，一定走上一段），比照 MUI 不呼叫 onChange，
+        // 但要跟選別項一樣收起清單、把打到一半的字還原成已選項目（原本清單停在畫面上、輸入框留著搜尋字）；disableCloseOnSelect 維持原狀
+        menuPointerAt.current = 0
+        setDirty(false)
+        setInputText(labelOf(getOptionLabel, singleSelected), event, 'reset')
+        setOpen(false, event)
       }
       if (nextOpen !== undefined && type !== T.ItemClick && type !== T.InputKeyDownEnter) setOpen(nextOpen, event)
     },
