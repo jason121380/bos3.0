@@ -3,7 +3,7 @@
 //   以「查詢」一次送出：販賣紀錄的 input 帶 dateRange 與 ticketIds，使用紀錄的 input 帶分頁、ticketIds 放在 input 外
 // - 販賣紀錄在前端分頁、合計金額（四捨五入到小數 2 位）與張數；使用紀錄由後端分頁，換頁／改每頁筆數重新查詢
 // - 兩份報表的匯出內容與合計列（顧客姓名與手機依 exportCustomerMask 遮罩）；查詢中顯示載入骨架
-// 共用的 DateSelector／MerchantSearchBar／TicketsAutocpmplete 以替身取代（各自另有測試），這裡只驗證頁面如何接它們的值。
+// 共用的 DateSelector／MerchantSearchBar／TicketsAutocomplete 以替身取代（各自另有測試），這裡只驗證頁面如何接它們的值。
 // GraphQL 全由 MockedProvider（testkit 的模擬 link）回應，不連後端。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
@@ -26,7 +26,7 @@ jest.mock('components/MerchantSearchBar/index', () => ({ values, onFilter }) => 
     選設計師與顧客
   </button>
 ))
-jest.mock('components/TicketsAutocpmplete', () => ({ value, onChange }) => (
+jest.mock('components/TicketsAutocomplete', () => ({ value, onChange }) => (
   <button type="button" data-value={JSON.stringify(value)} onClick={() => onChange(['t1', 't2'])}>
     選卡券
   </button>

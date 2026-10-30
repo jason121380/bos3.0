@@ -29,7 +29,7 @@ import { useFetchGetBookinHistoryDisplay } from 'hooks/useFetchGetParameterAbout
 import useFetchGetIsBookingCusCheckUsing from 'hooks/useFetchGetIsBookingCusCheckUsing'
 import useFetchGetUserPinnedTableSettings from 'hooks/useFetchGetUserPinnedTableSettings'
 import useFetchGetPinnedTableDefStructures from 'hooks/useFetchGetPinnedTableDefStructures'
-import pagenationLabel from './../../helper/pagenationLabel'
+import paginationLabel from './../../helper/paginationLabel'
 import { Skeleton } from 'ui/skeleton'
 import QueryFailed from 'components/QueryFailed'
 
@@ -659,7 +659,7 @@ function Settings({ match, history }) {
                 <Skeleton className="h-64 w-full" />
               </div> :
               <OrderRecord
-                pagenationLabel={pagenationLabel}
+                paginationLabel={paginationLabel}
                 bonusDisplay={bonusDisplay}
                 profileOrders={getOrderListLazyData}
                 handleOnChangePage={handleOnChangePage}
@@ -737,7 +737,7 @@ function Settings({ match, history }) {
                 <Skeleton className="h-64 w-full" />
               </div> :
               <AttendanceRecord
-                pagenationLabel={pagenationLabel}
+                paginationLabel={paginationLabel}
                 results={idx(attendance, _ => _.data.user.attendanceRecords.records)}
                 onChangePage={(_event, page) =>
                   handlePageChange({

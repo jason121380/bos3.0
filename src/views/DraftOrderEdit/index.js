@@ -19,7 +19,7 @@ import { checkedOutDraft, checkedOutDraftPath } from './draftCheckoutGuard'
 import Footer from './Footer'
 import Head from './Head'
 import Header from './Header'
-import Pannel from './Pannel'
+import Panel from './Panel'
 
 export default function KeyIn({ match }) {
   const history = useHistory()
@@ -196,7 +196,7 @@ export default function KeyIn({ match }) {
             isLocked: product.isLocked,
             thirdPartyCouponMerchantId: product.thirdPartyPayId,
           }))
-          // 預收卡販賣與服務、店販同時帶入（欄位與 PannelCouponSells 寫回帳單的相同）：原本要等預收卡販賣區塊稍後寫回，
+          // 預收卡販賣與服務、店販同時帶入（欄位與 PanelCouponSells 寫回帳單的相同）：原本要等預收卡販賣區塊稍後寫回，
           // 這段空檔「應收」少算預收卡，原掛單的入金／其他付款／點數折抵會被 useDraftCheckout「應收小於 0 歸零」的檢查清掉
           draft.ticketOrders = order.data.order.ticketOrders.map(ticketOrder => ({
             serviceId: ticketOrder.service.id,
@@ -309,10 +309,10 @@ export default function KeyIn({ match }) {
       >
         <Header />
         <Head />
-        {/* 版面比照打帳單：金額彙總卡與動作按鈕（Footer）放在 Pannel 下方的右欄；Footer 仍在這裡建立、props 不變 */}
-        <Pannel>
+        {/* 版面比照打帳單：金額彙總卡與動作按鈕（Footer）放在 Panel 下方的右欄；Footer 仍在這裡建立、props 不變 */}
+        <Panel>
           <Footer />
-        </Pannel>
+        </Panel>
       </Provider>
       </>
     </Page>

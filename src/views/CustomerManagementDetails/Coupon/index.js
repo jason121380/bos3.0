@@ -8,7 +8,7 @@ import { Skeleton } from 'ui/skeleton'
 import BoughtResults from './BoughtResults'
 import UsagedResults from './UsagedResults'
 
-export default function Coupon({ customer, pagenationLabel }) {
+export default function Coupon({ customer, paginationLabel }) {
   const [resultSetting, setResultSetting] = useState({
     boughtRecords: {
       customerId: customer.id,
@@ -58,7 +58,7 @@ export default function Coupon({ customer, pagenationLabel }) {
                       name: 'boughtRecords',
                     })
                   }}
-                  pagenationLabel={pagenationLabel}
+                  paginationLabel={paginationLabel}
                   roundDecimal={roundDecimal}
                 />
               )
@@ -84,7 +84,7 @@ export default function Coupon({ customer, pagenationLabel }) {
                       name: 'usagedResults',
                     })
                   }}
-                  pagenationLabel={pagenationLabel}
+                  paginationLabel={paginationLabel}
                   roundDecimal={roundDecimal}
                 />
               )

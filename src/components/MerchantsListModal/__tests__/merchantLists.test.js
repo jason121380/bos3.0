@@ -6,9 +6,9 @@ import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react
 import React from 'react'
 
 import { callsOf, renderPage } from '__tests__/testkit.test'
-import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
-import MerchantListAutocpmpleteForManagement from 'components/MerchantListAutocpmpleteForManagement'
-import MerchantListAutocpmpleteForPinnedTable from 'components/MerchantListAutocpmpleteForPinnedTable'
+import MerchantListAutocomplete from 'components/MerchantListAutocomplete'
+import MerchantListAutocompleteForManagement from 'components/MerchantListAutocompleteForManagement'
+import MerchantListAutocompleteForPinnedTable from 'components/MerchantListAutocompleteForPinnedTable'
 
 afterEach(cleanup)
 
@@ -38,10 +38,10 @@ const selectedNames = () => [...dialog().querySelectorAll('li.onSelect')].map(li
 const lastIds = fn => fn.mock.calls[fn.mock.calls.length - 1][0]
 const chips = () => screen.queryAllByRole('button', { name: /^移除 / }).map(b => b.getAttribute('aria-label').replace('移除 ', ''))
 
-describe('MerchantListAutocpmplete 選擇店家（跨店報表）', () => {
+describe('MerchantListAutocomplete 選擇店家（跨店報表）', () => {
   const setup = async () => {
     const onValueChange = jest.fn()
-    const utils = renderPage(<MerchantListAutocpmplete onValueChange={onValueChange} />, { fixtures: { GET_USER_MERCHANTS: { getUserMerchant: json } } })
+    const utils = renderPage(<MerchantListAutocomplete onValueChange={onValueChange} />, { fixtures: { GET_USER_MERCHANTS: { getUserMerchant: json } } })
     await utils.settle()
     return { ...utils, onValueChange }
   }
@@ -166,7 +166,7 @@ describe('MerchantListAutocpmplete 選擇店家（跨店報表）', () => {
   })
 
   it('沒有群組、沒有未分組店家、沒有店家時樹狀窗仍可開；沒給 onValueChange 不拋錯', async () => {
-    const { settle } = renderPage(<MerchantListAutocpmplete />, {
+    const { settle } = renderPage(<MerchantListAutocomplete />, {
       fixtures: { GET_USER_MERCHANTS: { getUserMerchant: JSON.stringify({ allMerchants: [], groups: [], merchants: [] }) } },
     })
     await settle()
@@ -179,7 +179,7 @@ describe('MerchantListAutocpmplete 選擇店家（跨店報表）', () => {
   // 改為當成沒有店家
   it('店家清單查詢失敗時不拋錯，當成沒有店家（全選回傳空陣列、樹狀窗為空）', async () => {
     const onValueChange = jest.fn()
-    const { settle } = renderPage(<MerchantListAutocpmplete onValueChange={onValueChange} />, { fallback: 'error' })
+    const { settle } = renderPage(<MerchantListAutocomplete onValueChange={onValueChange} />, { fallback: 'error' })
     await settle()
     expect(screen.queryByText('這個頁面發生錯誤')).toBeNull()
     fireEvent.click(screen.getByText('全選'))
@@ -189,10 +189,10 @@ describe('MerchantListAutocpmplete 選擇店家（跨店報表）', () => {
   })
 })
 
-describe('MerchantListAutocpmpleteForManagement 選擇店家（活動）', () => {
+describe('MerchantListAutocompleteForManagement 選擇店家（活動）', () => {
   it('一般：查詢可管理店家；selectIds 預先選取；確認後回傳 id', async () => {
     const onValueChange = jest.fn()
-    const { settle, calls } = renderPage(<MerchantListAutocpmpleteForManagement selectIds={['m2']} onValueChange={onValueChange} />, {
+    const { settle, calls } = renderPage(<MerchantListAutocompleteForManagement selectIds={['m2']} onValueChange={onValueChange} />, {
       fixtures: { GET_USER_MERCHANTS_FOR_MANAGEMENT: { advancedManagerMerchants: json } },
     })
     await settle()
@@ -224,7 +224,7 @@ describe('MerchantListAutocpmpleteForManagement 選擇店家（活動）', () =>
   it('活動規則（inRule＋eventId）：改查參加活動的店家；唯讀時沒有全選與選擇店家、點輸入框不開', async () => {
     const onValueChange = jest.fn()
     const { settle, calls } = renderPage(
-      <MerchantListAutocpmpleteForManagement inRule eventId="ev1" isReadOnly selectIds={['m1', 'm4']} onValueChange={onValueChange} />,
+      <MerchantListAutocompleteForManagement inRule eventId="ev1" isReadOnly selectIds={['m1', 'm4']} onValueChange={onValueChange} />,
       { fixtures: { GET_EVENT_JOIN_MERCHANTS: { eventJoinedMerchants: json } } }
     )
     await settle()
@@ -238,12 +238,12 @@ describe('MerchantListAutocpmpleteForManagement 選擇店家（活動）', () =>
   })
 
   it('預設值：沒給 selectIds／onValueChange 時不選任何店家、不拋錯；查詢失敗時清單為空', async () => {
-    const { settle } = renderPage(<MerchantListAutocpmpleteForManagement />, { fallback: 'error' })
+    const { settle } = renderPage(<MerchantListAutocompleteForManagement />, { fallback: 'error' })
     await settle()
     fireEvent.click(screen.getByRole('button', { name: '選擇店家' }))
     expect(treeLabel('全部(0)')).toBeInTheDocument()
     cleanup()
-    const { settle: s2 } = renderPage(<MerchantListAutocpmpleteForManagement />, {
+    const { settle: s2 } = renderPage(<MerchantListAutocompleteForManagement />, {
       fixtures: { GET_USER_MERCHANTS_FOR_MANAGEMENT: { advancedManagerMerchants: json } },
     })
     await s2()
@@ -251,14 +251,14 @@ describe('MerchantListAutocpmpleteForManagement 選擇店家（活動）', () =>
   })
 })
 
-describe('MerchantListAutocpmpleteForPinnedTable 選擇店家（個人頁釘選表）', () => {
+describe('MerchantListAutocompleteForPinnedTable 選擇店家（個人頁釘選表）', () => {
   function Harness({ initial = [], isClick = false, onValueChange }) {
     const [selectIds, setSelectIds] = React.useState(initial)
     const [values, setValues] = React.useState([])
     return (
       <>
         <output data-testid="modal-values">{values.join(',')}</output>
-        <MerchantListAutocpmpleteForPinnedTable
+        <MerchantListAutocompleteForPinnedTable
           values={values}
           setValues={setValues}
           selectIds={selectIds}
@@ -366,7 +366,7 @@ describe('MerchantListAutocpmpleteForPinnedTable 選擇店家（個人頁釘選�
     cleanup()
     const Bare = () => {
       const [values, setValues] = React.useState([])
-      return <MerchantListAutocpmpleteForPinnedTable values={values} setValues={setValues} />
+      return <MerchantListAutocompleteForPinnedTable values={values} setValues={setValues} />
     }
     const { settle } = renderPage(<Bare />, {
       fixtures: { GET_USER_GROUPS_WOCS: { getUserGroupWOCS: JSON.stringify({ allMerchants: [], groups: [], merchants: [] }) } },

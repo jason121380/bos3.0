@@ -2,7 +2,7 @@
 import React from 'react'
 import { render, fireEvent, screen, within } from '@testing-library/react'
 import MerchantsListModal, { managementTreeClasses } from '..'
-import PinnedMerchantsListModal from 'components/MerchantListAutocpmpleteForPinnedTable/MerchantsListModal'
+import PinnedMerchantsListModal from 'components/MerchantListAutocompleteForPinnedTable/MerchantsListModal'
 
 const merchant = { id: 'm1', name: '甲店' }
 const merchantList = { allMerchants: [merchant], groups: [], merchants: [] }

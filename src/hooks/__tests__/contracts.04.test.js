@@ -16,15 +16,15 @@ import * as useFetchGetUserPinnedTableSettings from 'hooks/useFetchGetUserPinned
 import * as useFetchGetUserSalaryDetailExcel from 'hooks/useFetchGetUserSalaryDetailExcel'
 import * as useFetchGetUserSalaryExcel from 'hooks/useFetchGetUserSalaryExcel'
 import * as useFetchGetUserSalaryTransferReport from 'hooks/useFetchGetUserSalaryTransferReport'
-import * as useFetchGetUserServiceDeductionDetialMultiple from 'hooks/useFetchGetUserServiceDeductionDetialMultiple'
+import * as useFetchGetUserServiceDeductionDetailMultiple from 'hooks/useFetchGetUserServiceDeductionDetailMultiple'
 import * as useFetchGetUsingOrderQueue from 'hooks/useFetchGetUsingOrderQueue'
 import * as useFetchGetVendor from 'hooks/useFetchGetVendor'
 import * as useFetchGetVoucherIssuanceRecord from 'hooks/useFetchGetVoucherIssuanceRecord'
 import * as useFetchGetisDailyCheckoutBlockedByDraftOrder from 'hooks/useFetchGetisDailyCheckoutBlockedByDraftOrder'
-import * as useFetchGetmerchantIncomeStatementV2Excel from 'hooks/useFetchGetmerchantIncomeStatementV2Excel'
+import * as useFetchGetMerchantIncomeStatementV2Excel from 'hooks/useFetchGetMerchantIncomeStatementV2Excel'
 import * as useFetchHelperLeaderboard from 'hooks/useFetchHelperLeaderboard'
 import * as useFetchIsPriceDisplayOnDailyReport from 'hooks/useFetchIsPriceDisplayOnDailyReport'
-import * as useFetchIsSalaryChacked from 'hooks/useFetchIsSalaryChacked'
+import * as useFetchIsSalaryChecked from 'hooks/useFetchIsSalaryChecked'
 import * as useFetchIsSalaryitemLocked from 'hooks/useFetchIsSalaryitemLocked'
 import * as useFetchLoginSMS from 'hooks/useFetchLoginSMS'
 import * as useFetchLoginV2 from 'hooks/useFetchLoginV2'
@@ -170,8 +170,8 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchGetUserServiceDeductionDetialMultiple',
-    hook: useFetchGetUserServiceDeductionDetialMultiple.default,
+    id: 'useFetchGetUserServiceDeductionDetailMultiple',
+    hook: useFetchGetUserServiceDeductionDetailMultiple.default,
     args: [{ input: { probe: 'input' } }],
     expect: {
       initial: [
@@ -257,8 +257,8 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchGetmerchantIncomeStatementV2Excel',
-    hook: useFetchGetmerchantIncomeStatementV2Excel.default,
+    id: 'useFetchGetMerchantIncomeStatementV2Excel',
+    hook: useFetchGetMerchantIncomeStatementV2Excel.default,
     args: [],
     invoke: [{ fn: 0, args: [{ variables: { date: 'date-v' } }] }],
     expect: {
@@ -322,8 +322,8 @@ const ROWS = [
     },
   },
   {
-    id: 'useFetchIsSalaryChacked',
-    hook: useFetchIsSalaryChacked.default,
+    id: 'useFetchIsSalaryChecked',
+    hook: useFetchIsSalaryChecked.default,
     args: [{ date: 'date-v' }],
     expect: {
       initial: [{ operationName: 'FETCH_IS_SALARY_CHECKED', variables: { date: 'date-v' } }],

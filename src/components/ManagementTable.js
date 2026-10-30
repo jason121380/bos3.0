@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import { useRef, useEffect } from 'react'
 import { CSVLink } from "react-csv"
-import pagenationLabel from './../helper/pagenationLabel'
+import paginationLabel from './../helper/paginationLabel'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Table, TableHeader, TablePagination, TableRow } from 'ui/table'
@@ -32,7 +32,7 @@ const ManagementTable = ({
 
     useEffect(() => {
         if (pageRef.current && !hidePagination) {
-            pagenationLabel(pageRef.current)
+            paginationLabel(pageRef.current)
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
     }, [children, pageRef.current, hidePagination])

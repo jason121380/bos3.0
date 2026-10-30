@@ -1,4 +1,4 @@
-// 保護「帳單詳細」的預收卡販賣（PannelCouponSells／CouponSells）與使用預收卡（PannelCouponUse／CouponUse）：
+// 保護「帳單詳細」的預收卡販賣（PanelCouponSells／CouponSells）與使用預收卡（PanelCouponUse／CouponUse）：
 // - 預收卡販賣：既有帳單的卡券（可使用次數、價格、張數、備註）原樣帶回並展開；改可使用次數／價格／張數（非數字時次數與張數視為 1、
 //   價格視為 0）、備註後送出；清除此列、刪除此列、新增項目、從清單選擇卡券；鎖價卡券不能改次數與價格；
 //   帳單不允許改卡券販賣（例如已有人用過這張卡）時不能改、也沒有清除／刪除／新增

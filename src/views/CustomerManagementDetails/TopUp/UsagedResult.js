@@ -1,4 +1,4 @@
-// 分頁使用 ui/table TablePagination（pagenationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
+// 分頁使用 ui/table TablePagination（paginationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
 import TableEditBar from 'components/TableEditBar'
 import idx from 'idx'
 import format from 'date-fns/format'
@@ -10,14 +10,14 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
-function UsagedResult({ className, walletUseRecord, resultSetting, onChange, date, pagenationLabel, ...rest }) {
+function UsagedResult({ className, walletUseRecord, resultSetting, onChange, date, paginationLabel, ...rest }) {
   const pageRef = useRef(null)
 
   useEffect(() => {
     if (pageRef.current) {
-      pagenationLabel(pageRef.current)
+      paginationLabel(pageRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（pagenationLabel）；只在 [pageRef.current, walletUseRecord] 變動時呼叫，補上會每次 render 重跑
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（paginationLabel）；只在 [pageRef.current, walletUseRecord] 變動時呼叫，補上會每次 render 重跑
   }, [pageRef.current, walletUseRecord])
 
   return (

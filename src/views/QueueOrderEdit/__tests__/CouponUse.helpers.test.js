@@ -36,7 +36,7 @@ function Harness({ onBillChange }) {
       onClear={() => {}}
       onChange={change => {
         onBillChange(change)
-        // 與 PannelCouponUse 相同：收到變更後換一個新的列物件傳回來
+        // 與 PanelCouponUse 相同：收到變更後換一個新的列物件傳回來
         setUsage(prev => ({ ...prev, [change.key]: change.value }))
       }}
     />

@@ -15,7 +15,7 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
 import ProgressBar from 'components/ProgressBar'
-import pagenationLabel from './../../helper/pagenationLabel'
+import paginationLabel from './../../helper/paginationLabel'
 import { CreditCard, Gift, MessageSquare, Receipt, Star, Ticket, User, UserCheck, Wallet } from 'lucide-react'
 import { Breadcrumb, PageHeader } from 'ui/page-header'
 import { EmptyState } from 'ui/empty-state'
@@ -327,11 +327,11 @@ function CustomerManagementDetails({ match, history }) {
               pageSetting={pageSetting}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
-              pagenationLabel={pagenationLabel}
+              paginationLabel={paginationLabel}
             />
           }
-          {currentTab === 'coupon' && <Coupon customer={{ id }} pagenationLabel={pagenationLabel} />}
-          {currentTab === 'topup' && <TopUp customer={{ id }} pagenationLabel={pagenationLabel} />}
+          {currentTab === 'coupon' && <Coupon customer={{ id }} paginationLabel={paginationLabel} />}
+          {currentTab === 'topup' && <TopUp customer={{ id }} paginationLabel={paginationLabel} />}
           {currentTab === 'bonus' && <Bonus customer={{ id }} customerBonusRecords={customerBonusRecords} />}
           {currentTab === 'customerTracking' &&
             <CustomerTracking

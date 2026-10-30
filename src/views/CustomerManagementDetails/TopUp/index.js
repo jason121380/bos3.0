@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react'
 import RecordResults from './RecordResults'
 import UsagedResult from './UsagedResult'
 
-export default function TopUp({ customer, pagenationLabel }) {
+export default function TopUp({ customer, paginationLabel }) {
   const [resultSetting, setResultSetting] = useState({
     record: {
       pageLimit: 50,
@@ -62,14 +62,14 @@ export default function TopUp({ customer, pagenationLabel }) {
         walletDepositRecord={walletDepositRecord}
         onChange={event => handleChangeResult({ ...event, name: 'record' })}
         walletBalance={walletBalance}
-        pagenationLabel={pagenationLabel}
+        paginationLabel={paginationLabel}
       />
       <UsagedResult
         date={{ start: resultSetting.usaged.start, end: resultSetting.usaged.end }}
         resultSetting={resultSetting}
         walletUseRecord={walletUseRecord}
         onChange={event => handleChangeResult({ ...event, name: 'usaged' })}
-        pagenationLabel={pagenationLabel}
+        paginationLabel={paginationLabel}
       />
     </div>
   )

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
 import { CSVLink } from "react-csv";
 import { maskCustomerName } from 'helper/exportCustomerMask'
-import pagenationLabel from './../../helper/pagenationLabel'
+import paginationLabel from './../../helper/paginationLabel'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
@@ -73,7 +73,7 @@ function Results({
     })
     setExcelData(excelData)
     if (pageRef.current) {
-      pagenationLabel(pageRef.current)
+      paginationLabel(pageRef.current)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
   }, [results, pageRef.current])
@@ -185,7 +185,7 @@ function Results({
               </TableRow>
             </TableBody>
           </Table>
-          {/* pageRef 原供 pagenationLabel 改寫 MUI 分頁文字；ui 分頁本身即為中文，保留 ref 於外框 */}
+          {/* pageRef 原供 paginationLabel 改寫 MUI 分頁文字；ui 分頁本身即為中文，保留 ref 於外框 */}
           <div ref={pageRef}>
             <TablePagination
               count={results.totalCount}

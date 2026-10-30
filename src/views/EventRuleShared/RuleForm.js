@@ -5,7 +5,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { MobileDatePicker } from 'ui/date-picker'
 import { isBefore, format } from 'date-fns'
-import MerchantListAutocpmpleteForManagement from 'components/MerchantListAutocpmpleteForManagement'
+import MerchantListAutocompleteForManagement from 'components/MerchantListAutocompleteForManagement'
 import BelongAutocomplete from 'components/BelongAutocomplete'
 import PaywayAutocomplete from 'components/PaywayAutocomplete'
 import produce from 'immer'
@@ -114,7 +114,7 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
           </div>
           <div>
             <p className="mb-3 text-label text-text">適用店家：</p>
-            <MerchantListAutocpmpleteForManagement
+            <MerchantListAutocompleteForManagement
               onEdit
               onValueChange={value => handleValueChange('merchants', value)}
               selectIds={inputValue.merchants}

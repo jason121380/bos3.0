@@ -20,7 +20,7 @@ import useFetchSettingMerchantBankSettings from 'hooks/useFetchSettingMerchantBa
 import useFetchSetLockDateSettings from 'hooks/useFetchSetLockDateSettings'
 import useFetchGetIsLockDateSetting from 'hooks/useFetchGetIsLockDateSetting'
 import useFetchGetMerchantClockInSetting from 'hooks/useFetchGetMerchantClockInSetting'
-import useFetchsSetMerchantClockInSetting from 'hooks/useFetchsSetMerchantClockInSetting'
+import useFetchSetMerchantClockInSetting from 'hooks/useFetchSetMerchantClockInSetting'
 import useFetchGetIsDisplayNonBankAccountInBankTransferReport from 'hooks/useFetchGetIsDisplayNonBankAccountInBankTransferReport'
 import useFetchSetIsDisplayNonBankAccountInBankTransferReport from 'hooks/useFetchSetIsDisplayNonBankAccountInBankTransferReport'
 import useFetchGetMerchantBookingNotificationSetting from 'hooks/useFetchGetMerchantBookingNotificationSetting'
@@ -187,7 +187,7 @@ function Parameter() {
   const { settingMerchantFakePerformanceRefer } = useFetchSettingMerchantFakePerformanceRefer()
   const { setMerchantBankSetting } = useFetchSettingMerchantBankSettings()
   const { setLockDate } = useFetchSetLockDateSettings()
-  const { setMerchantClockInSetting } = useFetchsSetMerchantClockInSetting()
+  const { setMerchantClockInSetting } = useFetchSetMerchantClockInSetting()
   const { setIsDisplayNonBankAccountInBankTransferReport } = useFetchSetIsDisplayNonBankAccountInBankTransferReport()
   const { setMerchantBookingNotificationSetting } = useFetchSetMerchantBookingNotificationSetting()
   const { setBookingLineNotifySettings } = useFetchSetBookingLineNotifySettings()

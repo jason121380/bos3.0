@@ -4,7 +4,7 @@ import useFetchMerchantSalaryIncreaseItems from 'hooks/useFetchMerchantSalaryInc
 import useFetchMerchantSalaryDecreaseItems from 'hooks/useFetchMerchantSalaryDecreaseItems'
 import { useFetchUserSalary, useFetchIsUserSalaryChecked } from 'hooks/useFetchUser'
 import { useFetchUsersMonthCheckout, useFetchUsersSalaryItems } from 'hooks/useFetchUsers'
-import useFetchSettingUserSaleryItem from 'hooks/useFetchSettingUserSaleryItem'
+import useFetchSettingUserSalaryItem from 'hooks/useFetchSettingUserSalaryItem'
 import useFetchUserSalaryItem from 'hooks/useFetchUserSalaryItemRecord'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import { useFetchGetAttendanceStatistics }  from 'hooks/useFetchGetParameterCheckoutAndSalaryItemsSetting'
@@ -71,7 +71,7 @@ export default React.memo(function SalaryEdit(props) {
   })
   const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
 
-  const { setUserSalaryItem } = useFetchSettingUserSaleryItem()
+  const { setUserSalaryItem } = useFetchSettingUserSalaryItem()
 
   const merchantSalaryIncreaseItems = useFetchMerchantSalaryIncreaseItems()
   const increaseReformatted = idx(merchantSalaryIncreaseItems, _ =>

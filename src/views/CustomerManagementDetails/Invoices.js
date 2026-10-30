@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-// 分頁使用 ui/table TablePagination（pagenationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
+// 分頁使用 ui/table TablePagination（paginationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
@@ -21,7 +21,7 @@ function Invoices({
   onRowsPerPageChange,
   bonusDisplay,
   membershipDisplay,
-  pagenationLabel,
+  paginationLabel,
   isLoading,
   ...rest
 }) {
@@ -34,9 +34,9 @@ function Invoices({
 
   useEffect(() => {
     if (pageRef.current) {
-      pagenationLabel(pageRef.current)
+      paginationLabel(pageRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（pagenationLabel）；只在 [pageRef.current, orders] 變動時呼叫，補上會每次 render 重跑
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（paginationLabel）；只在 [pageRef.current, orders] 變動時呼叫，補上會每次 render 重跑
   }, [pageRef.current, orders])
 
   const [orderExtendArr, setOrderExtendArr] = useState([])

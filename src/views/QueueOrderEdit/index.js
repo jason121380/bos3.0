@@ -15,7 +15,7 @@ import idx from 'idx'
 import Footer from './Footer'
 import Head from './Head'
 import Header from './Header'
-import Pannel from './Pannel'
+import Panel from './Panel'
 import { useClearWalletPayOnCustomerChange } from './PaymentCustomerWallet'
 import QueryFailed from 'components/QueryFailed'
 
@@ -187,7 +187,7 @@ export default function KeyIn({ match }) {
   const [paymentAlready, setPaymentAlready] = useState(false) // 其他付款方式
   const [membershipAlready, setMembershipAlready] = useState(false) // 會員卡販賣
 
-  // 沒有要收的金額（服務、店販、預收卡、會員卡合計為 0，例如只有使用預收卡）時不顯示「其他付款方式」（Pannel 同一算式），
+  // 沒有要收的金額（服務、店販、預收卡、會員卡合計為 0，例如只有使用預收卡）時不顯示「其他付款方式」（Panel 同一算式），
   // 付款方式清單不會載入、paymentAlready 不會變成 true；這時不必等付款方式清單，視為已載入。
   // 以目前帳單即時判斷、不寫入 paymentAlready：帳單從空白載入成有金額時，仍要等付款方式清單載入（2026/10/22）
   const otherPayLimit =
@@ -263,10 +263,10 @@ export default function KeyIn({ match }) {
       >
         <Header />
         <Head />
-        {/* 版面比照打帳單：金額彙總卡與動作按鈕（Footer）放在 Pannel 下方的右欄；Footer 仍在這裡建立、props 不變 */}
-        <Pannel>
+        {/* 版面比照打帳單：金額彙總卡與動作按鈕（Footer）放在 Panel 下方的右欄；Footer 仍在這裡建立、props 不變 */}
+        <Panel>
           <Footer enable={enable} />
-        </Pannel>
+        </Panel>
       </Provider>
       </>
     </Page>

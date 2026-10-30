@@ -1,5 +1,5 @@
 import { Fragment, useRef, useEffect } from 'react'
-import pagenationLabel from '../../helper/pagenationLabel'
+import paginationLabel from '../../helper/paginationLabel'
 import { format } from 'date-fns'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
@@ -10,7 +10,7 @@ function Results({ recordData, pageSetting, onPageChange, onRowsPerPageChange })
 
   useEffect(() => {
     if (pageRef1.current) {
-      pagenationLabel(pageRef1.current)
+      paginationLabel(pageRef1.current)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
   }, [pageRef1.current, pageSetting])

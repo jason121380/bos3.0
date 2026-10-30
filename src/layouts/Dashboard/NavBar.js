@@ -222,7 +222,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       { title: '營業項目月分析表', href: '/business-items-monthly-analyze-report' },
       { title: '設計師業績表', href: '/designer-performance-report' },
       { title: '設計師日報表', href: '/employee-daily-report' },
-      { title: '設計師業績分析表', href: '/designer-perforamnce-analyze-report' },
+      { title: '設計師業績分析表', href: '/designer-performance-analyze-report' },
       { title: '設計師業績月報表', href: '/designer-monthly-report' },
       { title: '設計師抽成報表', href: '/designer-rake-report' },
       { title: '設計師排行榜', href: '/designer-perform-basic' },

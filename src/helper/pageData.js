@@ -31,7 +31,7 @@ export default [
   { groupTitle: '報表及分析', title: '營業項目月分析表', href: '/business-items-monthly-analyze-report' },
   { groupTitle: '報表及分析', title: '設計師業績表', href: '/designer-performance-report' },
   { groupTitle: '報表及分析', title: '設計師日報表', href: '/employee-daily-report' },
-  { groupTitle: '報表及分析', title: '設計師業績分析表', href: '/designer-perforamnce-analyze-report' },
+  { groupTitle: '報表及分析', title: '設計師業績分析表', href: '/designer-performance-analyze-report' },
   { groupTitle: '報表及分析', title: '設計師業績月報表', href: '/designer-monthly-report' },
   { groupTitle: '報表及分析', title: '設計師抽成報表', href: '/designer-rake-report' },
   { groupTitle: '報表及分析', title: '設計師排行榜', href: '/designer-perform-basic' },

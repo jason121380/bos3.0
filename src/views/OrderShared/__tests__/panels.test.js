@@ -1,8 +1,8 @@
 import React from 'react'
 import { cleanup, fireEvent, render, screen, wait, within } from '@testing-library/react'
 import { Provider as BillProvider } from 'context/keyInContext'
-import PannelPayment from '../PannelPayment'
-import PannelRemark from '../PannelRemark'
+import PanelPayment from '../PanelPayment'
+import PanelRemark from '../PanelRemark'
 import Remark from '../Remark'
 import useInvoiceDecorations from '../useInvoiceDecorations'
 import { renderPage, networkRequests } from '../../../__tests__/testkit.test'
@@ -34,7 +34,7 @@ describe('其他付款方式卡片', () => {
     ['有其他付款金額', { amountByOtherPay: 500 }, 'open'],
     ['有扣入金', { walletPay: 300 }, 'open'],
   ])('%s → %s', (_name, bill, state) => {
-    renderWithBill(<PannelPayment Payment={Content} />, bill)
+    renderWithBill(<PanelPayment Payment={Content} />, bill)
     expect(screen.getByText('其他付款方式')).toBeInTheDocument()
     expect(cardState()).toBe(state)
   })
@@ -46,7 +46,7 @@ describe('備註及來源卡片', () => {
     ['有備註', { remark: '下次預約 11/1' }, 'open'],
     ['有來源', { source: '網路' }, 'open'],
   ])('%s → %s', (_name, bill, state) => {
-    renderWithBill(<PannelRemark Remark={Content} />, bill)
+    renderWithBill(<PanelRemark Remark={Content} />, bill)
     expect(screen.getByText('備註及來源')).toBeInTheDocument()
     expect(cardState()).toBe(state)
   })

@@ -2,7 +2,7 @@ import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { Fragment } from 'react'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { MobileDatePicker } from 'ui/date-picker'
-import MLAutocpmplete from 'components/MerchantListAutocpmpleteForManagement'
+import MLAutocomplete from 'components/MerchantListAutocompleteForManagement'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
@@ -73,7 +73,7 @@ function General({ dateChange, inputValue, valueChange, isClick, submit, isEdit 
           </Field>
           {isEdit ? (
             <div style={{ display: inputValue.isPublic ? 'none' : '' }}>
-              <MLAutocpmplete
+              <MLAutocomplete
                 onEdit
                 selectIds={inputValue.merchantIds}
                 onValueChange={v => valueChange('merchantIds', v)}
@@ -81,7 +81,7 @@ function General({ dateChange, inputValue, valueChange, isClick, submit, isEdit 
             </div>
           ) : (
             !inputValue.isPublic && (
-              <MLAutocpmplete
+              <MLAutocomplete
                 selectIds={inputValue.merchantIds}
                 onValueChange={v => valueChange('merchantIds', v)}
               />

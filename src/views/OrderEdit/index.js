@@ -18,7 +18,7 @@ import addDays from 'date-fns/addDays'
 import Footer from './Footer'
 import Head from './Head'
 import Header from './Header'
-import Pannel from './Pannel'
+import Panel from './Panel'
 import useOncePerOrder from './useOncePerOrder'
 
 export default function KeyIn({ match }) {
@@ -516,10 +516,10 @@ export default function KeyIn({ match }) {
       >
         <Header />
         <Head />
-        {/* 版面比照打帳單：金額彙總卡與動作按鈕（Footer）放在 Pannel 下方的右欄；Footer 仍在這裡建立、props 不變 */}
-        <Pannel>
+        {/* 版面比照打帳單：金額彙總卡與動作按鈕（Footer）放在 Panel 下方的右欄；Footer 仍在這裡建立、props 不變 */}
+        <Panel>
           <Footer enable={enable} />
-        </Pannel>
+        </Panel>
       </Provider>
       </>
     </Page>

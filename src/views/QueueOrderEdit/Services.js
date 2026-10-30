@@ -268,7 +268,7 @@ export default function Services({
         <Field
           label="服務項目"
           required
-          // 佇列帳單的服務已不在服務清單（PannelService 標示）：欄位顯示不出名稱，說明重試會沿用佇列內容
+          // 佇列帳單的服務已不在服務清單（PanelService 標示）：欄位顯示不出名稱，說明重試會沿用佇列內容
           hint={service.missingServiceId && service.missingServiceId === service.serviceId
             ? '此服務已不在服務清單，重試時沿用佇列帳單的服務與價格'
             : undefined}

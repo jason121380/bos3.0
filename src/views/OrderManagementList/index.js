@@ -7,7 +7,7 @@ import useFetchGetOrderStaticDetail from 'hooks/useFetchGetOrderStaticDetail'
 import idx from 'idx'
 import { Fragment, useEffect, useState } from 'react'
 import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
-import useFetchGetIsOpenDateRangeInOrderMangement from 'hooks/useFetchGetIsOpenDateRangeInOrderMangement'
+import useFetchGetIsOpenDateRangeInOrderManagement from 'hooks/useFetchGetIsOpenDateRangeInOrderManagement'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusActive'
 import useFetchGetLogoDisplayOnInvoice from 'hooks/useFetchGetLogoDisplayOnInvoice'
@@ -82,7 +82,7 @@ function OrderManagementList() {
     source: pageSetting.source
   })
   const orderStaticDetail = useFetchGetOrderStaticDetail(orderIds)
-  const getIsOpenDateRangeInOrderMangement = useFetchGetIsOpenDateRangeInOrderMangement()
+  const getIsOpenDateRangeInOrderMangement = useFetchGetIsOpenDateRangeInOrderManagement()
   const [qrcodeUrl, setQrcodeUrl] = useState('')
   const [imgUrl, setImgUrl] = useState('')
   const [closureDelayed, setClosureDelayed] = useState(false)

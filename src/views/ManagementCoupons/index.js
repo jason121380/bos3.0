@@ -1,7 +1,7 @@
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
-import TicketsAutocpmplete from 'components/TicketsAutocpmplete'
+import TicketsAutocomplete from 'components/TicketsAutocomplete'
 import { endOfDay, startOfMonth } from 'date-fns'
 import { useFetchTicketSellOverviewLazy } from 'hooks/useFetchTicketSellOverview'
 import { useFetchUsedTicketRecordsLazy } from 'hooks/useFetchUsedTicketRecords.js'
@@ -154,7 +154,7 @@ export default function ManagementCoupons() {
             />
             <div className="flex items-center gap-2.5">
               <div className="min-w-0 flex-1">
-                <TicketsAutocpmplete
+                <TicketsAutocomplete
                   value={pageSetting.ticketIds}
                   onChange={value => {
                     setPageSetting(

@@ -5,7 +5,7 @@ import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
 import { useFethcMonthlyCloseStatus } from 'hooks/useFetchMerchant'
 import { useFetchUsersSalaryItems, useFetchUsersMonthCheckout } from 'hooks/useFetchUsers'
-import useFetchIsSalaryChacked from 'hooks/useFetchIsSalaryChacked'
+import useFetchIsSalaryChecked from 'hooks/useFetchIsSalaryChecked'
 import useFetchSettingUserSalaryItemUnlock from 'hooks/useFetchSetUnlockUserSalaryItem'
 import useFetchSalaryItemLock from 'hooks/useFetchIsSalaryitemLocked'
 import useFetchMerchantLatestMonthlyCheckoutTime from 'hooks/useFetchMerchantLatestMonthlyCheckoutTime'
@@ -110,7 +110,7 @@ export default function SalaryOverview() {
     date: setting.date,
     input: userInput,
   })
-  const isSalaryChackedData = useFetchIsSalaryChacked({
+  const isSalaryChackedData = useFetchIsSalaryChecked({
     date: setting.date,
   })
   // 列表input----------------------------------------------------

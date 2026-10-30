@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Page from 'components/Page'
-import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
+import MerchantListAutocomplete from 'components/MerchantListAutocomplete'
 import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
 import { endOfDay, startOfMonth, format } from 'date-fns'
@@ -364,7 +364,7 @@ const MerchantLeaderBoard = () => {
                 </div>
               </div>
               <div className="min-w-0 flex-1">
-                <MerchantListAutocpmplete
+                <MerchantListAutocomplete
                   onValueChange={value => {
                     handleChecked(value)
                   }}

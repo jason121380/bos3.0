@@ -61,7 +61,7 @@ const ProductListTreeView = ({ onValueChange = () => { } }) => {
           style={{ cursor: 'pointer' }}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           popupIcon={
-            // 全選：比照店家挑選（MerchantListAutocpmplete）用 ui Button；popupIcon 外層可點，故以 asChild 落在 div 上避免巢狀 button，onClick 原樣
+            // 全選：比照店家挑選（MerchantListAutocomplete）用 ui Button；popupIcon 外層可點，故以 asChild 落在 div 上避免巢狀 button，onClick 原樣
             <Button asChild variant="primary" size="sm" onClick={handleSelectAll}><div>全選</div></Button>
           }
           value={values}

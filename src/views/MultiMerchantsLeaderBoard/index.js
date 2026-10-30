@@ -1,7 +1,7 @@
 import { TextField } from 'ui/text-field'
 import Page from 'components/Page'
 import { useState, useEffect } from 'react'
-import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
+import MerchantListAutocomplete from 'components/MerchantListAutocomplete'
 import DateSelector from 'components/DateSelector'
 import { startOfDay, endOfDay, format } from 'date-fns'
 import useFetchGetVendor from 'hooks/useFetchGetVendor'
@@ -200,7 +200,7 @@ const MultiMerchantsLeaderBoard = () => {
 								</ToggleGroup>
 							</div>
 							<div className="min-w-0 flex-1">
-								<MerchantListAutocpmplete
+								<MerchantListAutocomplete
 									onValueChange={value => {
 										setSubmitValue({ ...submitValue, merchantId: value })
 										value.length === 0 && handleSearch(date, undefined, [])

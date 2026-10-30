@@ -72,7 +72,7 @@ const TableCell = React.forwardRef(({ className, numeric, ...props }, ref) => (
 TableCell.displayName = 'TableCell'
 
 // 分頁：手機上換頁按鈕 40px（觸控目標），桌機 32px；props 名稱與 MUI TablePagination 相同，遷移時可直接沿用原本的 state 與 handler
-// - ref 掛在外框 div（原本傳給 MUI 分頁的 ref 可直接沿用；helper/pagenationLabel 找不到 MUI 元素時不會動作）
+// - ref 掛在外框 div（原本傳給 MUI 分頁的 ref 可直接沿用；helper/paginationLabel 找不到 MUI 元素時不會動作）
 // - rowsPerPageOptions 可為數字或 { value, label }（與 MUI 相同）；每頁筆數用自家下拉，可放在 ui/dialog 內
 // - onRowsPerPageChange(event)：event.target.value 為數字
 const TablePagination = React.forwardRef(function TablePagination(

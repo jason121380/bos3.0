@@ -361,7 +361,7 @@ export default function Footer({ enable }) {
   ])
 
   // 業績合計、現金應收：只顯示在金額彙總（彙總卡與底部固定列共用），不送後端（後端依品項明細自己算業績）。
-  // 四頁預覽以打帳單（PannelPerformance）為準（Jason 2026/10/22）：
+  // 四頁預覽以打帳單（PanelPerformance）為準（Jason 2026/10/22）：
   // - 業績合計：會員卡用第三方卡券時照樣計入售價全額（原本排除，與打帳單、掛單詳細不一致）
   // - 現金應收：與打帳單、明細、收據共用 billPaymentSummary（未選商品的店販列價格是 0，與舊式排除 productId 空白列的結果相同）
   // 上方「付款超過應付時歸零」與紅利給點的 effect 用的是各自的運算式，不受影響
@@ -415,7 +415,7 @@ export default function Footer({ enable }) {
   )
   return (
     <React.Fragment>
-      {/* 金額彙總卡（放在 Pannel 下方右欄，比照打帳單 PannelPerformance）：桌機顯示明細、合計，按鈕列在合計下方；
+      {/* 金額彙總卡（放在 Panel 下方右欄，比照打帳單 PanelPerformance）：桌機顯示明細、合計，按鈕列在合計下方；
           手機（< 640px）只留操作按鈕，明細與合計收進底部固定列 */}
       <EditSummaryCard
         details={details}

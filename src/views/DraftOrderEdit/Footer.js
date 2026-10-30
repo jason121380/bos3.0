@@ -50,7 +50,7 @@ export default function Footer() {
   )
   return (
     <Fragment>
-    {/* 金額彙總卡（放在 Pannel 下方右欄，比照打帳單 PannelPerformance）：按鈕列在合計下方。
+    {/* 金額彙總卡（放在 Panel 下方右欄，比照打帳單 PanelPerformance）：按鈕列在合計下方。
         手機版（< 640px）卡片只留動作鈕，金額改由底部固定列顯示與展開，同一份數字不重複出現 */}
     <EditSummaryCard
       details={details}
@@ -439,7 +439,7 @@ export default function Footer() {
           onConfirm={handleReCheckoutOrder}
         />
     </EditSummaryCard>
-    {/* 底部固定列（比照打帳單 PannelPerformance）：長帳單捲動時，業績合計與現金應收隨時看得到 */}
+    {/* 底部固定列（比照打帳單 PanelPerformance）：長帳單捲動時，業績合計與現金應收隨時看得到 */}
     <StickySummaryBar
       detailsId="draft-order-summary-details"
       details={details}

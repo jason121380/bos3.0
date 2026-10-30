@@ -10,7 +10,7 @@ import idx from 'idx'
 import produce from 'immer'
 import React from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import pagenationLabel from './../../helper/pagenationLabel'
+import paginationLabel from './../../helper/paginationLabel'
 
 import RecordResults from './RecordResults'
 import UsagedResult from './UsagedResult'
@@ -120,7 +120,7 @@ function CustomerManagementList() {
           />
         )}
         <RecordResults
-          pagenationLabel={pagenationLabel}
+          paginationLabel={paginationLabel}
           date={{ start: resultSetting.record.start, end: resultSetting.record.end }}
           resultSetting={resultSetting}
           walletDepositRecord={walletDepositRecord}
@@ -128,7 +128,7 @@ function CustomerManagementList() {
           onChange={event => handleChangeResult({ ...event, name: 'record' })}
         />
         <UsagedResult
-          pagenationLabel={pagenationLabel}
+          paginationLabel={paginationLabel}
           date={{ start: resultSetting.usaged.start, end: resultSetting.usaged.end }}
           resultSetting={resultSetting}
           walletUseRecord={walletUseRecord}

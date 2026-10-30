@@ -120,6 +120,15 @@ module.exports = [
       "crash",
       "console"
     ],
+    "reason": "假資料不足：自動補齊的回應形狀與頁面預期不符（舊拼字網址，導向 /designer-performance-analyze-report）"
+  },
+  {
+    "route": "/designer-performance-analyze-report",
+    "viewports": "all",
+    "skip": [
+      "crash",
+      "console"
+    ],
     "reason": "假資料不足：自動補齊的回應形狀與頁面預期不符"
   },
   {

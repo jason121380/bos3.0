@@ -4,7 +4,7 @@ import { Button } from 'ui/button'
 import { ToggleGroupItem } from 'ui/toggle-group'
 import { X } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
-import pagenationLabel from 'helper/pagenationLabel'
+import paginationLabel from 'helper/paginationLabel'
 
 // 帳單四兄弟「選服務／商品／卡券／會員卡」彈窗的共用畫面（2026/10/21 合併，原本四頁各一份、逐行相同）。
 // 只負責畫面與純顯示的 state（分類標題、分頁文字）；選取後要送什麼、分類條件怎麼寫入查詢設定，
@@ -64,7 +64,7 @@ function ItemPickerModal({
     if (!paging) return
     const timer = setInterval(() => {
       if (pageRef.current) {
-        pagenationLabel(pageRef.current)
+        paginationLabel(pageRef.current)
         clearInterval(timer)
       }
     }, 100);

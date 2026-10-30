@@ -70,7 +70,7 @@ function StubDatePicker({ label, value, onChange, readOnly, minDate, maxDate }) 
 export const datePickerModule = { MobileDatePicker: StubDatePicker, DatePicker: StubDatePicker }
 export const pickDate = (label, date) => fireEvent.change(document.querySelector(`input[aria-label="${label}"]`), { target: { value: String(date.getTime()) } })
 
-// components/MerchantListAutocpmpleteForManagement（店家選擇器，另有自己的查詢與彈窗）的替身：
+// components/MerchantListAutocompleteForManagement（店家選擇器，另有自己的查詢與彈窗）的替身：
 // 按「選擇店家（測試）」回傳 m1、m2；目前選取、是否唯讀、是否用於規則與活動 id 放在屬性上
 function StubMerchantPicker({ selectIds = [], onValueChange, isReadOnly = false, inRule = false, eventId = null }) {
   return (

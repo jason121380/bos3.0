@@ -11,17 +11,18 @@ const displayDate = record => format(record.updateTime, 'yyyy/MM/dd')
 
 describe('靜態清單', () => {
   it('新紀錄在最前面，接著是匯出的 18 筆，日期不改寫到 2026', () => {
-    expect(systemUpdateRecordSource).toHaveLength(32)
-    expect(systemUpdateRecords).toHaveLength(32)
+    expect(systemUpdateRecordSource).toHaveLength(33)
+    expect(systemUpdateRecords).toHaveLength(33)
 
-    const head = systemUpdateRecordSource.slice(0, 15).map(record => [
+    const head = systemUpdateRecordSource.slice(0, 16).map(record => [
       record.title,
       record.versionNo,
       record.updateTime,
     ])
     expect(systemUpdateRecordSource[0].versionNo).toBe(APP_VERSION)
     expect(head).toEqual([
-      ['2026/10/30 下拉選單統一', APP_VERSION, '2026-10-30'],
+      ['2026/10/30 檔名修正', APP_VERSION, '2026-10-30'],
+      ['2026/10/30 下拉選單統一', 'v3.10301821', '2026-10-30'],
       ['2026/10/30 按鈕說明與畫面一致', 'v3.10301706', '2026-10-30'],
       ['2026/10/30 查詢失敗不再整頁錯誤（第二批）', 'v3.10301644', '2026-10-30'],
       ['2026/10/30 程式檢查', 'v3.10301600', '2026-10-30'],
@@ -38,7 +39,7 @@ describe('靜態清單', () => {
       ['更新統整', '23.053~23.061', '2023-06-07'],
     ])
 
-    expect(systemUpdateRecordSource.slice(14)).toEqual(historicalRecords)
+    expect(systemUpdateRecordSource.slice(15)).toEqual(historicalRecords)
     expect(historicalRecords.map(record => record.updateTime)).toEqual([
       '2023-06-07',
       '2023-04-21',
@@ -62,7 +63,8 @@ describe('靜態清單', () => {
     expect(historicalRecords.find(record => record.versionNo === '22.399').title).toBe('10/04 - 10/21 更新')
     expect(historicalRecords.find(record => record.versionNo === '22.386').content).toContain('```mermaid')
 
-    expect(systemUpdateRecords.slice(0, 15).map(record => [record.title, displayDate(record)])).toEqual([
+    expect(systemUpdateRecords.slice(0, 16).map(record => [record.title, displayDate(record)])).toEqual([
+      ['2026/10/30 檔名修正', '2026/10/30'],
       ['2026/10/30 下拉選單統一', '2026/10/30'],
       ['2026/10/30 按鈕說明與畫面一致', '2026/10/30'],
       ['2026/10/30 查詢失敗不再整頁錯誤（第二批）', '2026/10/30'],
@@ -96,8 +98,9 @@ describe('清單頁', () => {
 
     expect(screen.getByRole('heading', { name: '版本更新紀錄' })).toBeInTheDocument()
     const titles = Array.from(container.querySelectorAll('h2')).map(node => node.textContent)
-    expect(titles).toHaveLength(32)
-    expect(titles.slice(0, 15)).toEqual([
+    expect(titles).toHaveLength(33)
+    expect(titles.slice(0, 16)).toEqual([
+      '2026/10/30 檔名修正',
       '2026/10/30 下拉選單統一',
       '2026/10/30 按鈕說明與畫面一致',
       '2026/10/30 查詢失敗不再整頁錯誤（第二批）',

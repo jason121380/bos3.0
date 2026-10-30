@@ -1,4 +1,4 @@
-// 分頁使用 ui/table TablePagination（pagenationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
+// 分頁使用 ui/table TablePagination（paginationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
 import { Link } from 'react-router-dom';
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteProducts from 'hooks/useFetchDeleteProducts'
@@ -14,7 +14,7 @@ import useFetchGetProductCostIsDisplayInProductReport from 'hooks/useFetchGetPro
 import useFetchSetMultipleUpdateProductIsPublished from 'hooks/useFetchSetMultipleUpdateProductIsPublished'
 import useFetchSetMultipleUpdateProductVendor from 'hooks/useFetchSetMultipleUpdateProductVendor'
 import { useFetchGetMerchantVendorList } from 'hooks/useFetchGetVendor'
-import pagenationLabel from './../../helper/pagenationLabel'
+import paginationLabel from './../../helper/paginationLabel'
 import { Copy, Download, Pencil } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
@@ -211,7 +211,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
   useEffect(() => {
     refetchProducts()
     if (pageRef.current) {
-      pagenationLabel(pageRef.current)
+      paginationLabel(pageRef.current)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（refetchProducts）；只在 [products, pageRef.current] 變動時呼叫，補上會每次 render 重跑
   }, [products, pageRef.current])

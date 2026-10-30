@@ -78,8 +78,8 @@ import * as useFetchDeleteWalletDeposit from 'hooks/useFetchDeleteWalletDeposit'
 import * as useFetchDesignerBookingTimes from 'hooks/useFetchDesignerBookingTimes'
 import * as useFetchDesignerDailyReport from 'hooks/useFetchDesignerDailyReport'
 import * as useFetchDesignerMonthlyReport from 'hooks/useFetchDesignerMonthlyReport'
-import * as useFetchDesignerPerforamnceAnalyzeExcel from 'hooks/useFetchDesignerPerforamnceAnalyzeExcel'
-import * as useFetchDesignerPerforamnceAnalyzeReport from 'hooks/useFetchDesignerPerforamnceAnalyzeReport'
+import * as useFetchDesignerPerformanceAnalyzeExcel from 'hooks/useFetchDesignerPerformanceAnalyzeExcel'
+import * as useFetchDesignerPerformanceAnalyzeReport from 'hooks/useFetchDesignerPerformanceAnalyzeReport'
 import * as useFetchDesignersLeaderboard from 'hooks/useFetchDesignersLeaderboard'
 import * as useFetchDesignersRakeReport from 'hooks/useFetchDesignersRakeReport'
 
@@ -1483,8 +1483,8 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchDesignerPerforamnceAnalyzeExcel.useFetchDesignerPerforamnceAnalyzeExcelLazy',
-    hook: useFetchDesignerPerforamnceAnalyzeExcel.useFetchDesignerPerforamnceAnalyzeExcelLazy,
+    id: 'useFetchDesignerPerformanceAnalyzeExcel.useFetchDesignerPerformanceAnalyzeExcelLazy',
+    hook: useFetchDesignerPerformanceAnalyzeExcel.useFetchDesignerPerformanceAnalyzeExcelLazy,
     args: [],
     invoke: [
       {
@@ -1523,8 +1523,8 @@ const ROWS = [
     },
   },
   {
-    id: 'useFetchDesignerPerforamnceAnalyzeReport',
-    hook: useFetchDesignerPerforamnceAnalyzeReport.default,
+    id: 'useFetchDesignerPerformanceAnalyzeReport',
+    hook: useFetchDesignerPerformanceAnalyzeReport.default,
     args: [],
     invoke: [
       {
@@ -1563,8 +1563,8 @@ const ROWS = [
     },
   },
   {
-    id: 'useFetchDesignerPerforamnceAnalyzeReport.useFetchDesignerPerforamnceAnalyzeCompareReport',
-    hook: useFetchDesignerPerforamnceAnalyzeReport.useFetchDesignerPerforamnceAnalyzeCompareReport,
+    id: 'useFetchDesignerPerformanceAnalyzeReport.useFetchDesignerPerformanceAnalyzeCompareReport',
+    hook: useFetchDesignerPerformanceAnalyzeReport.useFetchDesignerPerformanceAnalyzeCompareReport,
     args: [],
     invoke: [{ fn: 0, args: [{ variables: { input: { probe: 'input' } } }] }],
     expect: {
