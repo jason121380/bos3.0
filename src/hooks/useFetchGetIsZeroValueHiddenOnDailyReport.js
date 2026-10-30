@@ -13,11 +13,11 @@ export default function useFetchGetIsZeroValueHiddenOnDailyReport() {
   })
 }
 export function useFetchGetIsZeroValueHiddenOnDailyReportLazy() {
-  const [
-    fetchGetIsZeroValueHiddenOnDailyReportLazy,
-    getIsZeroValueHiddenOnDailyReportLazyData,
-  ] = useLazyQuery(GET_IS_ZERO_VALUE_HIDDEN_ON_DAILY_REPORT, {
-    fetchPolicy: SETTINGS_FETCH_POLICY,
-  })
+  const [fetchGetIsZeroValueHiddenOnDailyReportLazy, getIsZeroValueHiddenOnDailyReportLazyData] = useLazyQuery(
+    GET_IS_ZERO_VALUE_HIDDEN_ON_DAILY_REPORT,
+    {
+      fetchPolicy: SETTINGS_FETCH_POLICY,
+    }
+  )
   return { fetchGetIsZeroValueHiddenOnDailyReportLazy, getIsZeroValueHiddenOnDailyReportLazyData }
 }

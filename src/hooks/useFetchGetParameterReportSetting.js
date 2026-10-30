@@ -48,7 +48,6 @@ const GET_CARPTDISPLAY = settingsQuery(gql`
   }
 `)
 
-
 export function useFetchGetCARPTDISPLAY() {
   return useQuery(GET_CARPTDISPLAY, {
     fetchPolicy: SETTINGS_FETCH_POLICY,

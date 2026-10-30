@@ -67,7 +67,7 @@ test('手機遮罩：留前 4 碼與第 8～10 碼；沒有手機為空字串', 
 
 // Codex review PR #270 P1：4 字以上原本只插入 * 而不遮任何字（歐陽小美→歐陽*小美），去掉 * 就是完整姓名
 test('遮罩後一定有字被遮掉：去掉 * 不會還原出完整姓名', () => {
-  ['王美', '陳小姐', '歐陽小美', '歐陽小美美', '司馬小美美美'].forEach(name => {
+  ;['王美', '陳小姐', '歐陽小美', '歐陽小美美', '司馬小美美美'].forEach(name => {
     expect(maskCustomerName(name).replace(/\*/g, '')).not.toBe(name)
     expect(maskCustomerForExport(name, '0912345678').split(' ')[0].replace(/\*/g, '')).not.toBe(name)
   })

@@ -6,8 +6,15 @@ const path = require('path')
 const BUILD = path.resolve(process.env.E2E_BUILD_DIR || path.join(__dirname, '..', 'build'))
 const PORT = Number(process.env.E2E_PORT || 4173)
 const TYPES = {
-  '.js': 'application/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json',
-  '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.woff2': 'font/woff2', '.webmanifest': 'application/manifest+json',
+  '.js': 'application/javascript',
+  '.css': 'text/css',
+  '.html': 'text/html',
+  '.json': 'application/json',
+  '.png': 'image/png',
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
+  '.woff2': 'font/woff2',
+  '.webmanifest': 'application/manifest+json',
 }
 
 if (!fs.existsSync(path.join(BUILD, 'index.html'))) {

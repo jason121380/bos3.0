@@ -289,16 +289,27 @@ describe('新增卡券項目：扣項與互助編輯', () => {
     fireEvent.click(checkboxByLabel('互助均分', helperRow(2)))
     expect(checkboxByLabel('互助均分', helperRow(1))).not.toBeChecked()
     fireEvent.click(checkboxByLabel('互助均分', helperRow(2)))
-    ;[controlByLabel('點數', helperRow(0)), controlByLabel('指定固定金額', helperRow(1)), controlByLabel('不指定固定金額', helperRow(1))].forEach(field => {
-      field.focus()
-      fireEvent.wheel(field)
-      expect(document.activeElement).not.toBe(field)
-    })
+    ;[controlByLabel('點數', helperRow(0)), controlByLabel('指定固定金額', helperRow(1)), controlByLabel('不指定固定金額', helperRow(1))].forEach(
+      field => {
+        field.focus()
+        fireEvent.wheel(field)
+        expect(document.activeElement).not.toBe(field)
+      }
+    )
     fireEvent.click(submitButton())
     await wait(() => expect(callsOf(calls, 'CREATE_COUPON')).toHaveLength(1))
     expect(callsOf(calls, 'CREATE_COUPON')[0].variables.input.helperDeductionSetting).toEqual([
       { ...ZERO, helperDeductionType: 'onSales', type: '洗髮', nameList: ['1', '2'], peopleCount: 2, point: 1.5, isSplitted: true },
-      { ...ZERO, helperDeductionType: 'onSalary', type: '吹整', nameList: [], peopleCount: 0, designateCash: 50, nonDesignateCash: 30, isSplitted: false },
+      {
+        ...ZERO,
+        helperDeductionType: 'onSalary',
+        type: '吹整',
+        nameList: [],
+        peopleCount: 0,
+        designateCash: 50,
+        nonDesignateCash: 30,
+        isSplitted: false,
+      },
       { ...ZERO, helperDeductionType: 'onSales', type: '', nameList: [], peopleCount: 0, cash: 70, isSplitted: false },
     ])
   })

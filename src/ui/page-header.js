@@ -17,7 +17,13 @@ function PageHeader({ title, description, actions, breadcrumb, back, className, 
     </div>
   )
   return (
-    <div className={cn('ui-root noprint flex flex-wrap justify-between gap-4 pb-6', description || breadcrumb ? 'items-start' : 'items-center', className)}>
+    <div
+      className={cn(
+        'ui-root noprint flex flex-wrap justify-between gap-4 pb-6',
+        description || breadcrumb ? 'items-start' : 'items-center',
+        className
+      )}
+    >
       {back ? (
         <div className="flex min-w-0 items-start gap-3">
           <Button variant="secondary" size="icon" className="mt-1 shrink-0" aria-label={back.label} title={back.label} onClick={back.onClick}>
@@ -108,7 +114,10 @@ function ReportToolbar({ date, filters, actions, className }) {
       </Toolbar>
       {/* 卡片是直排，子元素預設撐滿（挑選欄要撐滿）；切換鈕群組（role=group）改依內容寬度，避免灰底拉滿整張卡 */}
       {filters && (
-        <Card className="noprint mb-6 flex flex-col gap-4 p-4 [&_[role=group]]:w-fit [&_[role=group]]:max-w-full" style={open ? undefined : { display: 'none' }}>
+        <Card
+          className="noprint mb-6 flex flex-col gap-4 p-4 [&_[role=group]]:w-fit [&_[role=group]]:max-w-full"
+          style={open ? undefined : { display: 'none' }}
+        >
           {filters}
         </Card>
       )}

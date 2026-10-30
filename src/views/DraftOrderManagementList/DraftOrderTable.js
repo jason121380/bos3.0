@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import { ChevronsDownUp, ChevronsUpDown, Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
@@ -45,7 +45,7 @@ export default function DraftOrderTable({
               {allExtend ? '全部收合' : '全部展開'}
             </Button>
             <Button asChild size="sm" variant="secondary">
-              <CSVLink data={excelData} filename="掛單列表.csv" >
+              <CSVLink data={excelData} filename="掛單列表.csv">
                 <Download strokeWidth={1.75} />
                 報表匯出
               </CSVLink>
@@ -68,9 +68,7 @@ export default function DraftOrderTable({
                 <Checkbox
                   aria-label="全選"
                   checked={selectedOrders.length === orders.length && orders.length > 0}
-                  indeterminate={
-                    selectedOrders.length > 0 && selectedOrders.length < orders.length
-                  }
+                  indeterminate={selectedOrders.length > 0 && selectedOrders.length < orders.length}
                   onChange={handleSelectAll}
                   disabled={orders.length === 0}
                 />
@@ -79,7 +77,9 @@ export default function DraftOrderTable({
               <TableHead className="min-w-[150px]">客戶</TableHead>
               <TableHead>設計師</TableHead>
               <TableHead>指定/不指定</TableHead>
-              <TableHead numeric className="text-text">營業現金應收</TableHead>
+              <TableHead numeric className="text-text">
+                營業現金應收
+              </TableHead>
               <TableHead numeric>服務消費</TableHead>
               <TableHead numeric>店販消費</TableHead>
               {membershipDisplay && <TableHead numeric>會員卡販賣</TableHead>}
@@ -98,26 +98,26 @@ export default function DraftOrderTable({
           </TableHeader>
           <TableBody>
             {orders.length > 0 &&
-                orders.map((order, index) => (
-                  <DraftOrderRow
-                    key={index}
-                    order={order}
-                    index={index}
-                    selectedOrderSet={selectedOrderSet}
-                    handleSelectOne={handleSelectOne}
-                    orderExtendArr={orderExtendArr}
-                    handleOrderExtend={handleOrderExtend}
-                    disabled={disabled}
-                    handlePrintOrderDetail={handlePrintOrderDetail}
-                    location={location}
-                    isClick={isClick}
-                    passwordEnabled={passwordEnabled}
-                    handleCheckout={handleCheckout}
-                    handleCheckoutOrder={handleCheckoutOrder}
-                    membershipDisplay={membershipDisplay}
-                    bonusDisplay={bonusDisplay}
-                  />
-                ))}
+              orders.map((order, index) => (
+                <DraftOrderRow
+                  key={index}
+                  order={order}
+                  index={index}
+                  selectedOrderSet={selectedOrderSet}
+                  handleSelectOne={handleSelectOne}
+                  orderExtendArr={orderExtendArr}
+                  handleOrderExtend={handleOrderExtend}
+                  disabled={disabled}
+                  handlePrintOrderDetail={handlePrintOrderDetail}
+                  location={location}
+                  isClick={isClick}
+                  passwordEnabled={passwordEnabled}
+                  handleCheckout={handleCheckout}
+                  handleCheckoutOrder={handleCheckoutOrder}
+                  membershipDisplay={membershipDisplay}
+                  bonusDisplay={bonusDisplay}
+                />
+              ))}
           </TableBody>
         </Table>
         {orders.length === 0 && <EmptyState title="此區間沒有掛單" description="調整日期或篩選條件後再試一次。" />}

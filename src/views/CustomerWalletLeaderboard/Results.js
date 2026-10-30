@@ -33,7 +33,6 @@ function Results({ reportData }) {
       ) : (
         <EmptyState title="無資料" className="mt-[100px]" />
       )}
-
     </>
   )
 }

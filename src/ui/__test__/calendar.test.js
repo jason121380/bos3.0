@@ -159,7 +159,9 @@ describe('DayView', () => {
 
   it('點日期呼叫 onSelect；autoFocus 時開啟就聚焦在焦點日', () => {
     const onSelect = jest.fn()
-    render(<DayView value={new Date(2026, 9, 3)} month={new Date(2026, 9, 1)} onMonthChange={() => {}} onSelect={onSelect} constraints={{}} autoFocus />)
+    render(
+      <DayView value={new Date(2026, 9, 3)} month={new Date(2026, 9, 1)} onMonthChange={() => {}} onSelect={onSelect} constraints={{}} autoFocus />
+    )
     expect(document.activeElement).toBe(cell('2026年10月3日'))
     expect(cell('2026年10月3日')).toHaveAttribute('aria-selected', 'true')
     fireEvent.click(cell('2026年10月9日'))
@@ -184,7 +186,14 @@ describe('YearView', () => {
     const real = Element.prototype.scrollIntoView
     Element.prototype.scrollIntoView = scrollIntoView
     const onSelect = jest.fn()
-    render(<YearView value={new Date(2024, 1, 29)} month={new Date(2024, 1, 1)} onSelect={onSelect} constraints={{ minDate: new Date(2020, 0, 1), maxDate: new Date(2030, 0, 1) }} />)
+    render(
+      <YearView
+        value={new Date(2024, 1, 29)}
+        month={new Date(2024, 1, 1)}
+        onSelect={onSelect}
+        constraints={{ minDate: new Date(2020, 0, 1), maxDate: new Date(2030, 0, 1) }}
+      />
+    )
     Element.prototype.scrollIntoView = real
     const y2024 = screen.getByText('2024')
     expect(scrollIntoView).toHaveBeenCalledWith({ block: 'center' })
@@ -255,7 +264,13 @@ describe('TimeView', () => {
     const onSelectHour = jest.fn()
     const onSelectMinute = jest.fn()
     const { unmount } = render(
-      <TimeView value={null} onSelectHour={onSelectHour} onSelectMinute={onSelectMinute} maxDateTime={new Date(2026, 9, 22, 10, 30)} minutesStep={15} />
+      <TimeView
+        value={null}
+        onSelectHour={onSelectHour}
+        onSelectMinute={onSelectMinute}
+        maxDateTime={new Date(2026, 9, 22, 10, 30)}
+        minutesStep={15}
+      />
     )
     Element.prototype.scrollIntoView = real
     expect(scrollIntoView).toHaveBeenCalledTimes(2)

@@ -23,7 +23,7 @@ const CustomerSendEventTicket = () => {
     cellphone: '',
     count: 1,
     merchantName: '',
-    isExist: false
+    isExist: false,
   })
   const [isClick, setIsClick] = useState(false)
   const submitRef = useRef(null)
@@ -43,7 +43,7 @@ const CustomerSendEventTicket = () => {
       cellphone: '',
       count: 1,
       merchantName: prev.merchantName,
-      isExist: false
+      isExist: false,
     }))
   }
 
@@ -66,8 +66,10 @@ const CustomerSendEventTicket = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name, cellphone, count,
-          merchantId: id
+          name,
+          cellphone,
+          count,
+          merchantId: id,
         }),
       })
       // 以 res.ok 判斷成功（原本只把 400 當失敗，500／403 也顯示發券成功；Jason 2026/10/22 fix all）
@@ -99,7 +101,7 @@ const CustomerSendEventTicket = () => {
         })
       )
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [checkExistData.loading])
 
   useEffect(() => {
@@ -108,7 +110,7 @@ const CustomerSendEventTicket = () => {
       const data = idx(getMerchantName, _ => _.data.getMerchantName) || ''
       handleSetInputValue(data, 'merchantName')
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantName.loading])
 
   return (
@@ -127,9 +129,9 @@ const CustomerSendEventTicket = () => {
                   variables: {
                     input: {
                       cellphone: data.cellphone,
-                      storeId: id
-                    }
-                  }
+                      storeId: id,
+                    },
+                  },
                 })
               }}
               onChange={e => {
@@ -144,7 +146,7 @@ const CustomerSendEventTicket = () => {
               id="send-ticket-count"
               className="h-11 tabular-nums"
               value={data.count}
-              placeholder='張數範圍1~500'
+              placeholder="張數範圍1~500"
               type="tel"
               onChange={e => {
                 if (e.target.value.match(/^[0-9]+$/) || e.target.value === '') {
@@ -173,7 +175,9 @@ const CustomerSendEventTicket = () => {
         disabled={checkExistData.loading || !data.name.trim()}
         aria-describedby={!checkExistData.loading && !data.name.trim() ? 'send-ticket-missing' : undefined}
         onClick={handleSubmit}
-      >{isClick ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : '提交'}</Button>
+      >
+        {isClick ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : '提交'}
+      </Button>
       {/* 停用原因（STYLE.md §6）：姓名空白時不能提交；查詢顧客中不列原因 */}
       {!checkExistData.loading && !data.name.trim() && (
         <p id="send-ticket-missing" role="status" className="mt-2 text-center text-caption text-text-secondary">

@@ -5,8 +5,18 @@
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { loginAs } from '../../../__tests__/testkit.test'
 import {
-  setupDraft, pageReady, pick, clearField, inputOf, saveDraft, summaryValue, makeOrder, serviceOrder,
-  SERVICE, SERVICE2, HELPER,
+  setupDraft,
+  pageReady,
+  pick,
+  clearField,
+  inputOf,
+  saveDraft,
+  summaryValue,
+  makeOrder,
+  serviceOrder,
+  SERVICE,
+  SERVICE2,
+  HELPER,
 } from './draftPageKit.test'
 
 jest.setTimeout(20000)
@@ -102,9 +112,7 @@ describe('掛單詳細：服務帶回與修改', () => {
     // 街口券手續費 10%：扣完後業績 1,800
     expect(screen.getByText('扣完後業績:1,800')).toBeInTheDocument()
     const input = await saveDraft(page.calls)
-    expect(input.serviceOrders).toEqual([
-      expect.objectContaining({ serviceId: SERVICE2.id, price: 2000, thirdPartyCouponMerchantId: 'tp-1' }),
-    ])
+    expect(input.serviceOrders).toEqual([expect.objectContaining({ serviceId: SERVICE2.id, price: 2000, thirdPartyCouponMerchantId: 'tp-1' })])
   })
 
   it('服務的卡券鎖定為「依店家設定」、店家設定鎖定：設定比服務晚回來時，第三方卡券欄仍停用', async () => {

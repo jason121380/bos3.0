@@ -57,19 +57,20 @@ function Results({
   const [printOrderId, setPrintOrderId] = useState('')
   // const [clickedOrderCustomerId, setClickedOrderCustomerId] = useState(null)
 
-
   const [editBarOnClick, setEditBarOnClick] = useState(false)
 
   const location = useLocation()
   const [isClick, setIcClick] = useState(false)
   const [isPrint, setIsPrint] = useState(false)
   const [raffleDisplay, setRaffleDisplay] = useState(false)
-  const noCloseOrder = orders.filter(d => {
-    if (!d.isCloseAccount && d.status === '已完成') {
-      return d.id
-    }
-    return false
-  }).map(d => d.id)
+  const noCloseOrder = orders
+    .filter(d => {
+      if (!d.isCloseAccount && d.status === '已完成') {
+        return d.id
+      }
+      return false
+    })
+    .map(d => d.id)
 
   const { deleteOrders } = useFetchDeleteOrder()
   const handleSelectAll = () => {
@@ -80,7 +81,8 @@ function Results({
     }
   }
   const handleSelectOne = id => {
-    const newSelect = [...selectedOrders], index = newSelect.indexOf(id)
+    const newSelect = [...selectedOrders],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -89,7 +91,8 @@ function Results({
     setSelectedOrders(newSelect)
   }
   const handleOrderExtend = id => {
-    const newSelect = [...orderExtendArr], index = newSelect.indexOf(id)
+    const newSelect = [...orderExtendArr],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -147,15 +150,12 @@ function Results({
     setIcClick(false)
   }
 
-
   useEffect(() => {
     const excelData = []
     orders.forEach(order => {
       const currentOrder = {
         帳單編號: `#${order.orderNo}${serialNumberUsing && order.serialNumber ? ` (${order.serialNumber})` : ''}`,
-        時間: `${format(new Date(order.date), 'yyyy/MM/dd')}/${weekDisplay(
-          format(new Date(order.date), 'eeee')
-        )}`,
+        時間: `${format(new Date(order.date), 'yyyy/MM/dd')}/${weekDisplay(format(new Date(order.date), 'eeee'))}`,
         客戶: isCustomerDataMarked
           ? maskCustomerForExport(order.customerName, order.customerCellphone)
           : `${order.customerName} ${order.customerCellphone}`,
@@ -176,7 +176,7 @@ function Results({
         '入金使用(-)': order.walletUsedForDecount,
         '點數折抵金額(-)': order.bonusDecountForReport,
         備註: order.remark,
-        帳單來源: order.source
+        帳單來源: order.source,
       }
       !membershipDisplay && delete currentOrder['會員卡販賣']
       !bonusDisplay && delete currentOrder['點數折抵金額(-)']
@@ -199,29 +199,21 @@ function Results({
     }
 
     if (orderDetailPrintLayout === 'A4') {
-      newWin.document.write(
-        '<html><body onload="window.print()" style="margin: 0mm 5mm;">' +
-        printMain.innerHTML +
-        '</body></html>'
-      )
+      newWin.document.write('<html><body onload="window.print()" style="margin: 0mm 5mm;">' + printMain.innerHTML + '</body></html>')
     } else if (orderDetailPrintLayout === '感熱紙(80mm)') {
       newWin.document.write(
         '<html><style>@page {margin: 1mm; width:78mm;}</style><body onload="window.print()" style="width:78mm">' +
-        printThermal.innerHTML +
-        '</body></html>'
+          printThermal.innerHTML +
+          '</body></html>'
       )
     } else if (orderDetailPrintLayout === '感熱紙(57mm)') {
       newWin.document.write(
         '<html><style>@page {margin: 1mm; width:56mm;}</style><body onload="window.print()" style="width:56mm">' +
-        printThermal.innerHTML +
-        '</body></html>'
+          printThermal.innerHTML +
+          '</body></html>'
       )
     } else {
-      newWin.document.write(
-        '<html><style>@page {margin: 1mm;}</style><body onload="window.print()">' +
-        printThermal.innerHTML +
-        '</body></html>'
-      )
+      newWin.document.write('<html><style>@page {margin: 1mm;}</style><body onload="window.print()">' + printThermal.innerHTML + '</body></html>')
     }
 
     if (closureDelayed) {
@@ -230,21 +222,20 @@ function Results({
       }, 100)
       setTimeout(() => {
         newWin.close()
-      }, 10000);
+      }, 10000)
     } else {
       newWin.print()
       setTimeout(() => {
         newWin.close()
-      }, 1000);
+      }, 1000)
     }
   }
-
 
   useEffect(() => {
     if (printOrderDetail.length !== 0) {
       printDiv()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（printDiv）；只在 [printOrderDetail] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（printDiv）；只在 [printOrderDetail] 變動時呼叫，補上會每次 render 重跑
   }, [printOrderDetail])
 
   useEffect(() => {
@@ -268,31 +259,27 @@ function Results({
         .map(d => d.price * d.count)
         .reduce((accu, curVal) => (accu += curVal), 0)
 
-
       setOrderDetailPaymentShouldPay(
-        servicePriceWithoutThirdPartyCoupon +
-        productPriceWithoutThirdPartyCoupon +
-        membershipWithoutThirdPartyCoupon +
-        couponSellPrice
+        servicePriceWithoutThirdPartyCoupon + productPriceWithoutThirdPartyCoupon + membershipWithoutThirdPartyCoupon + couponSellPrice
       )
 
       setCashPayment(
         servicePriceWithoutThirdPartyCoupon +
-        productPriceWithoutThirdPartyCoupon +
-        membershipWithoutThirdPartyCoupon +
-        couponSellPrice -
-        Math.abs(order.walletUsedForDecount) -
-        Math.abs(order.otherPayWayForDecount)
+          productPriceWithoutThirdPartyCoupon +
+          membershipWithoutThirdPartyCoupon +
+          couponSellPrice -
+          Math.abs(order.walletUsedForDecount) -
+          Math.abs(order.otherPayWayForDecount)
       )
       setCouponSellPrice(couponSellPrice)
       setPrintOrderDetail({ ...order })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [orderDataLazy.loading])
 
   useEffect(() => {
     setPageSetting({ ...pageSetting, pageOffset: 0 })
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [setPageSetting] 變動時執行；pageSetting 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [setPageSetting] 變動時執行；pageSetting 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [setPageSetting])
 
   useEffect(() => {
@@ -306,24 +293,24 @@ function Results({
       const { bonusDeposit, bonusUsed, bonusDecountForReport, customerLeftBonus } = printOrderDetail
       const bonus = bonusDeposit !== 0 || bonusUsed !== 0 || bonusDecountForReport !== 0
       if (bonusActive || bonus) {
-        return (
-          isPrintMain ?
-            <>
+        return isPrintMain ? (
+          <>
+            <div>增點：{bonusDeposit}</div>
+            <div>扣點：{bonusUsed}</div>
+            <div>折抵：{Math.abs(bonusDecountForReport)}</div>
+            <div>點數餘額：{customerLeftBonus}</div>
+          </>
+        ) : (
+          <>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>增點：{bonusDeposit}</div>
               <div>扣點：{bonusUsed}</div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>折抵：{Math.abs(bonusDecountForReport)}</div>
               <div>點數餘額：{customerLeftBonus}</div>
-            </> :
-            <>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div>增點：{bonusDeposit}</div>
-                <div>扣點：{bonusUsed}</div>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div>折抵：{Math.abs(bonusDecountForReport)}</div>
-                <div>點數餘額：{customerLeftBonus}</div>
-              </div>
-            </>
+            </div>
+          </>
         )
       }
     }
@@ -358,11 +345,7 @@ function Results({
         location={location}
         serialNumberUsing={serialNumberUsing}
       />
-      <TableEditBar
-        editBarOnClick={editBarOnClick}
-        selected={selectedOrders}
-        onCancel={disableDeleteOrders ? handleCancel : handleConfirmCancel}
-      />
+      <TableEditBar editBarOnClick={editBarOnClick} selected={selectedOrders} onCancel={disableDeleteOrders ? handleCancel : handleConfirmCancel} />
 
       <DeleteOrderDialog
         openDialog={openDialog}
@@ -373,18 +356,179 @@ function Results({
         handleConfirmCancel={handleConfirmCancel}
       />
       <div style={{ display: 'none' }} id="printMain">
-        {
-          (!detailInfo.logo.isDisplay || !detailInfo.logo.imageUrl) &&
-            (!detailInfo.qrcode.isDisplay || !detailInfo.qrcode.imageUrl) &&
-            (!detailInfo.message.isDisplay || !detailInfo.message.message) ? '' :
+        {(!detailInfo.logo.isDisplay || !detailInfo.logo.imageUrl) &&
+        (!detailInfo.qrcode.isDisplay || !detailInfo.qrcode.imageUrl) &&
+        (!detailInfo.message.isDisplay || !detailInfo.message.message) ? (
+          ''
+        ) : (
+          <div style={{ width: '100%', height: 50, display: 'flex', gap: 5, marginBottom: 5 }}>
+            <div style={{ width: 50, height: 50, flexShrink: 0 }}>
+              {detailInfo.logo.isDisplay && detailInfo.logo.imageUrl ? <img style={{ width: '100%', height: '100%' }} src={imgUrl} /> : ''}
+            </div>
+            <div style={{ width: 50, height: 50, overFlow: 'hidden', flexShrink: 0, overflow: 'hidden' }}>
+              {detailInfo.qrcode.isDisplay && detailInfo.qrcode.imageUrl ? <img style={{ width: '100%', height: '100%' }} src={qrcodeUrl} /> : ''}
+            </div>
+            <div
+              style={{
+                flexGrow: 1,
+                overflow: 'hidden',
+                display: 'flex',
+              }}
+            >
+              <textarea
+                disabled
+                style={{
+                  height: 50,
+                  resize: 'none',
+                  overflow: 'hidden',
+                  border: 'none',
+                  fontSize: 7,
+                  fontFamily: 'auto',
+                  flexGrow: 1,
+                  whiteSpace: 'nowrap',
+                }}
+                onChange={() => {}}
+                value={detailInfo.message.isDisplay && detailInfo.message.message ? detailInfo.message.message : ''}
+              />
+            </div>
+          </div>
+        )}
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '10px' }}>{merchantName}</div>
+          <div style={{ color: '#009999' }}>結帳單</div>
+        </div>
+        <div>
+          日期：
+          {}
+          {printOrderDetail.length !== 0 && format(new Date(printOrderDetail.date), 'yyyy/MM/dd HH:mm')}
+        </div>
+        <div>帳單編號：{printOrderDetail.length !== 0 && printOrderDetail.no}</div>
+        <div>
+          客戶：
+          {printOrderDetail.length !== 0 && printOrderDetail.customer.name}
+        </div>
+        <div>設計師：{printOrderDetail.length !== 0 && designerNameType(printOrderDetail.designer, nameDisplayOnInvoice)}</div>
+        <div>
+          <div>
+            {printOrderDetail.length !== 0 &&
+              printOrderDetail.staticDetail.map((d, index) => {
+                if (d.serviceType === '項目消費') {
+                  return (
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', alignItems: 'center' }}>
+                        <div>{d.itemName}</div>
+                        {d.helperList.length > 0 &&
+                          d.helperList.map((d, index) => (
+                            <div style={{ fontSize: '8px' }} key={`helperList-${index}`}>
+                              助理:{d.helperNo || d.helperName}
+                            </div>
+                          ))}
+                      </div>
+                      <div>{d.price}x1</div>
+                    </div>
+                  )
+                }
+                return undefined
+              })}
+          </div>
+          <div>
+            {printOrderDetail.length !== 0 &&
+              printOrderDetail.staticDetail.map((d, index) => {
+                if (d.serviceType === '店販銷售') {
+                  return (
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}>
+                      <div>{d.itemName}</div>
+                      <div>{d.price}</div>
+                    </div>
+                  )
+                }
+                return undefined
+              })}
+          </div>
+          <div>
+            {printOrderDetail.length !== 0 &&
+              printOrderDetail.staticDetail.map((d, index) => {
+                if (d.serviceType === '會員卡銷售') {
+                  return (
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}>
+                      <div>{d.itemName}</div>
+                      <div>{d.price}</div>
+                    </div>
+                  )
+                }
+                return undefined
+              })}
+          </div>
+          <div>
+            {printOrderDetail.length !== 0 &&
+              printOrderDetail.staticDetail.map((d, index) => {
+                if (d.serviceType === '卡券販賣(不入業績)') {
+                  return (
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}>
+                      <div>{d.itemName}</div>
+                      <div>{d.price}</div>
+                    </div>
+                  )
+                }
+                return undefined
+              })}
+          </div>
+          <div>
+            {printOrderDetail.length !== 0 &&
+              printOrderDetail.staticDetail.map((d, index) => {
+                if (d.serviceType === '卡券販賣(入業績)') {
+                  return (
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}>
+                      <div>{d.itemName}</div>
+                      <div>{d.price}</div>
+                    </div>
+                  )
+                }
+                return undefined
+              })}
+          </div>
+          <div>
+            {printOrderDetail.length !== 0 &&
+              printOrderDetail.staticDetail.map((d, index) => {
+                if (d.serviceType === '卡券使用') {
+                  return (
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}>
+                      <div>{d.itemName}</div>
+                      <div>{d.price}</div>
+                    </div>
+                  )
+                }
+                return undefined
+              })}
+          </div>
+          <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
+          <div>合計：{orderDetailPaymentShouldPay}</div>
+          <div>結帳：</div>
+          <div style={{ display: 'flex', margin: '0 15px', justifyContent: 'space-between' }}>
+            <div>
+              扣入金：
+              {printOrderDetail.length !== 0 && Math.abs(printOrderDetail.walletUsedForDecount)}
+            </div>
+            <div>入金餘額：{printOrderDetail.length !== 0 && printOrderDetail.customerLeftWallet}</div>
+            {renderPrintDetail(true)}
+            <div>卡券金額：{couponSellPrice}</div>
+            <div style={{ color: '#EE0000' }}>付現金額：{cashPayment}</div>
+          </div>
+        </div>
+      </div>
+      <div style={{ display: 'none' }} id="printThermal">
+        <div>
+          {(!detailInfo.logo.isDisplay || !detailInfo.logo.imageUrl) &&
+          (!detailInfo.qrcode.isDisplay || !detailInfo.qrcode.imageUrl) &&
+          (!detailInfo.message.isDisplay || !detailInfo.message.message) ? (
+            ''
+          ) : (
             <div style={{ width: '100%', height: 50, display: 'flex', gap: 5, marginBottom: 5 }}>
               <div style={{ width: 50, height: 50, flexShrink: 0 }}>
-                {(detailInfo.logo.isDisplay && detailInfo.logo.imageUrl) ?
-                  <img style={{ width: '100%', height: '100%' }} src={imgUrl} /> : ""}
+                {detailInfo.logo.isDisplay && detailInfo.logo.imageUrl ? <img style={{ width: '100%', height: '100%' }} src={imgUrl} /> : ''}
               </div>
               <div style={{ width: 50, height: 50, overFlow: 'hidden', flexShrink: 0, overflow: 'hidden' }}>
-                {detailInfo.qrcode.isDisplay && detailInfo.qrcode.imageUrl ?
-                  <img style={{ width: '100%', height: '100%' }} src={qrcodeUrl} /> : ""}
+                {detailInfo.qrcode.isDisplay && detailInfo.qrcode.imageUrl ? <img style={{ width: '100%', height: '100%' }} src={qrcodeUrl} /> : ''}
               </div>
               <div
                 style={{
@@ -403,209 +547,21 @@ function Results({
                     fontSize: 7,
                     fontFamily: 'auto',
                     flexGrow: 1,
-                    whiteSpace: 'nowrap'
+                    whiteSpace: 'nowrap',
                   }}
-                  onChange={() => { }}
+                  onChange={() => {}}
                   value={detailInfo.message.isDisplay && detailInfo.message.message ? detailInfo.message.message : ''}
                 />
               </div>
             </div>
-        }
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '10px' }}>{merchantName}</div>
-          <div style={{ color: '#009999' }}>結帳單</div>
-        </div>
-        <div>
-          日期：
-          { }
-          {printOrderDetail.length !== 0 &&
-            format(new Date(printOrderDetail.date), 'yyyy/MM/dd HH:mm')}
-        </div>
-        <div>帳單編號：{printOrderDetail.length !== 0 && printOrderDetail.no}</div>
-        <div>
-          客戶：
-          {printOrderDetail.length !== 0 && printOrderDetail.customer.name}
-        </div>
-        <div>
-          設計師：{printOrderDetail.length !== 0 && designerNameType(printOrderDetail.designer, nameDisplayOnInvoice)}
-        </div>
-        <div>
-          <div>
-            {printOrderDetail.length !== 0 &&
-              printOrderDetail.staticDetail.map((d, index) => {
-                if (d.serviceType === '項目消費') {
-                  return (
-                    <div
-                      key={index}
-                      style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}
-                    >
-                      <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', alignItems: 'center' }}>
-                        <div>{d.itemName}</div>
-                        {d.helperList.length > 0 &&
-                          d.helperList.map((d, index) => (
-                            <div
-                              style={{ fontSize: '8px' }}
-                              key={`helperList-${index}`}
-                            >助理:{d.helperNo || d.helperName}</div>
-                          ))}
-                      </div>
-                      <div>{d.price}x1</div>
-                    </div>
-                  )
-                }
-                return undefined
-              })}
-          </div>
-          <div>
-            {printOrderDetail.length !== 0 &&
-              printOrderDetail.staticDetail.map((d, index) => {
-                if (d.serviceType === '店販銷售') {
-                  return (
-                    <div
-                      key={index}
-                      style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}
-                    >
-                      <div>{d.itemName}</div>
-                      <div>{d.price}</div>
-                    </div>
-                  )
-                }
-                return undefined
-              })}
-          </div>
-          <div>
-            {printOrderDetail.length !== 0 &&
-              printOrderDetail.staticDetail.map((d, index) => {
-                if (d.serviceType === "會員卡銷售") {
-                  return (
-                    <div
-                      key={index}
-                      style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}
-                    >
-                      <div>{d.itemName}</div>
-                      <div>{d.price}</div>
-                    </div>
-                  )
-                }
-                return undefined
-              })}
-          </div>
-          <div>
-            {printOrderDetail.length !== 0 &&
-              printOrderDetail.staticDetail.map((d, index) => {
-                if (d.serviceType === '卡券販賣(不入業績)') {
-                  return (
-                    <div
-                      key={index}
-                      style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}
-                    >
-                      <div>{d.itemName}</div>
-                      <div>{d.price}</div>
-                    </div>
-                  )
-                }
-                return undefined
-              })}
-          </div>
-          <div>
-            {printOrderDetail.length !== 0 &&
-              printOrderDetail.staticDetail.map((d, index) => {
-                if (d.serviceType === '卡券販賣(入業績)') {
-                  return (
-                    <div
-                      key={index}
-                      style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}
-                    >
-                      <div>{d.itemName}</div>
-                      <div>{d.price}</div>
-                    </div>
-                  )
-                }
-                return undefined
-              })}
-          </div>
-          <div>
-            {printOrderDetail.length !== 0 &&
-              printOrderDetail.staticDetail.map((d, index) => {
-                if (d.serviceType === '卡券使用') {
-                  return (
-                    <div
-                      key={index}
-                      style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}
-                    >
-                      <div>{d.itemName}</div>
-                      <div>{d.price}</div>
-                    </div>
-                  )
-                }
-                return undefined
-              })}
-          </div>
-          <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
-          <div>合計：{orderDetailPaymentShouldPay}</div>
-          <div>結帳：</div>
-          <div style={{ display: 'flex', margin: '0 15px', justifyContent: 'space-between' }}>
-            <div>
-              扣入金：
-              {printOrderDetail.length !== 0 && Math.abs(printOrderDetail.walletUsedForDecount)}
-            </div>
-            <div>
-              入金餘額：{printOrderDetail.length !== 0 && printOrderDetail.customerLeftWallet}
-            </div>
-            {renderPrintDetail(true)}
-            <div>卡券金額：{couponSellPrice}</div>
-            <div style={{ color: '#EE0000' }}>付現金額：{cashPayment}</div>
-          </div>
-        </div>
-      </div>
-      <div style={{ display: 'none' }} id="printThermal">
-        <div>
-          {
-            (!detailInfo.logo.isDisplay || !detailInfo.logo.imageUrl) &&
-              (!detailInfo.qrcode.isDisplay || !detailInfo.qrcode.imageUrl) &&
-              (!detailInfo.message.isDisplay || !detailInfo.message.message) ? '' :
-              <div style={{ width: '100%', height: 50, display: 'flex', gap: 5, marginBottom: 5 }}>
-                <div style={{ width: 50, height: 50, flexShrink: 0 }}>
-                  {(detailInfo.logo.isDisplay && detailInfo.logo.imageUrl) ?
-                    <img style={{ width: '100%', height: '100%' }} src={imgUrl} /> : ""}
-                </div>
-                <div style={{ width: 50, height: 50, overFlow: 'hidden', flexShrink: 0, overflow: 'hidden' }}>
-                  {detailInfo.qrcode.isDisplay && detailInfo.qrcode.imageUrl ?
-                    <img style={{ width: '100%', height: '100%' }} src={qrcodeUrl} /> : ""}
-                </div>
-                <div
-                  style={{
-                    flexGrow: 1,
-                    overflow: 'hidden',
-                    display: 'flex',
-                  }}
-                >
-                  <textarea
-                    disabled
-                    style={{
-                      height: 50,
-                      resize: 'none',
-                      overflow: 'hidden',
-                      border: 'none',
-                      fontSize: 7,
-                      fontFamily: 'auto',
-                      flexGrow: 1,
-                      whiteSpace: 'nowrap'
-                    }}
-                    onChange={() => { }}
-                    value={detailInfo.message.isDisplay && detailInfo.message.message ? detailInfo.message.message : ''}
-                  />
-                </div>
-              </div>
-          }
+          )}
           <div>
             <span>{merchantName}</span>
             <span style={{ marginLeft: '20px' }}>結帳單</span>
           </div>
           <div>
             日期：
-            {printOrderDetail.length !== 0 &&
-              format(new Date(printOrderDetail.date), 'yyyy/MM/dd HH:mm')}
+            {printOrderDetail.length !== 0 && format(new Date(printOrderDetail.date), 'yyyy/MM/dd HH:mm')}
           </div>
           <div>帳單編號：{printOrderDetail.length !== 0 && printOrderDetail.no}</div>
           <div>
@@ -718,9 +674,7 @@ function Results({
               扣入金：
               {printOrderDetail.length !== 0 && Math.abs(printOrderDetail.walletUsedForDecount)}
             </div>
-            <div>
-              入金餘額：{printOrderDetail.length !== 0 && printOrderDetail.customerLeftWallet}
-            </div>
+            <div>入金餘額：{printOrderDetail.length !== 0 && printOrderDetail.customerLeftWallet}</div>
           </div>
           {renderPrintDetail(false)}
           <div>卡券金額：{couponSellPrice}</div>

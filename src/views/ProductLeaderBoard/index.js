@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import Page from 'components/Page'
 import { endOfDay, startOfMonth } from 'date-fns'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import useFetchGetProductLeaderBoardV2 from 'hooks/useFetchGetProductLeaderBoardV2'
 import DateSelector from 'components/DateSelector'
 import { Download } from 'lucide-react'
@@ -21,15 +21,15 @@ const ProductLeaderBoard = () => {
     startDay: startOfMonth(new Date()).getTime(),
     endDay: endOfDay(new Date()).getTime(),
     productIds: [],
-    types: ['SELLING']    // SELLING PICKING
+    types: ['SELLING'], // SELLING PICKING
   })
   const [getProductLeaderBoardV2, productLeaderBoardV2Data] = useFetchGetProductLeaderBoardV2()
 
   const handleSearch = () => {
     getProductLeaderBoardV2({
       variables: {
-        input: inputData
-      }
+        input: inputData,
+      },
     })
   }
 
@@ -53,27 +53,24 @@ const ProductLeaderBoard = () => {
       })
       setExcelData(excelData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productLeaderBoardV2Data.loading])
 
   useEffect(() => {
     handleSearch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [inputData.startDay, inputData.endDay] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [inputData.startDay, inputData.endDay] 變動時呼叫，補上會每次 render 重跑
   }, [inputData.startDay, inputData.endDay])
-  
+
   return (
     <Page className="ui-root" title="商品銷售排行榜">
       <div>
         <PageHeader
-          title='商品銷售排行榜'
+          title="商品銷售排行榜"
           actions={
             <>
               {excelData.length !== 0 && (
                 <Button asChild variant="secondary" className="shrink-0">
-                  <CSVLink
-                    data={excelData}
-                    filename="商品銷售排行榜.csv"
-                  >
+                  <CSVLink data={excelData} filename="商品銷售排行榜.csv">
                     <Download strokeWidth={1.75} />
                     報表匯出
                   </CSVLink>
@@ -87,10 +84,10 @@ const ProductLeaderBoard = () => {
             <DateSelector
               date={{
                 startDate: inputData.startDay,
-                endDate: inputData.endDay
+                endDate: inputData.endDay,
               }}
               attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-              dateChange={({ startDate, endDate }) => setInputData({...inputData, startDay: startDate, endDay: endDate})}
+              dateChange={({ startDate, endDate }) => setInputData({ ...inputData, startDay: startDate, endDay: endDate })}
             />
           }
           filters={
@@ -98,26 +95,20 @@ const ProductLeaderBoard = () => {
               {excelData.length !== 0 && (
                 <div className="flex flex-col gap-1.5">
                   <span className="text-label text-text-secondary">類型</span>
-                  <ToggleGroup
-                    size="small"
-                    value={inputData.types}
-                    onChange={(e, v) => setInputData({...inputData, types: v})}
-                  >
-                    <ToggleGroupItem value='SELLING'>店販</ToggleGroupItem>
-                    <ToggleGroupItem value='PICKING'>自購</ToggleGroupItem>
+                  <ToggleGroup size="small" value={inputData.types} onChange={(e, v) => setInputData({ ...inputData, types: v })}>
+                    <ToggleGroupItem value="SELLING">店販</ToggleGroupItem>
+                    <ToggleGroupItem value="PICKING">自購</ToggleGroupItem>
                   </ToggleGroup>
                 </div>
               )}
               <div className="w-full min-w-0 sm:w-auto sm:flex-1">
-                <ProductListTreeView
-                  onValueChange={v => setInputData({...inputData, productIds: v})}
-                />
+                <ProductListTreeView onValueChange={v => setInputData({ ...inputData, productIds: v })} />
               </div>
             </>
           }
           actions={
             <Button
-              variant='primary'
+              variant="primary"
               className="w-[100px] shrink-0"
               onClick={handleSearch}
               disabled={productLeaderBoardV2Data.loading || !productLeaderBoardV2Data.data}

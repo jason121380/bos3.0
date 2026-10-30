@@ -44,7 +44,7 @@ const GET_HELPER_DAILY_REPORT = gql`
   }
 `
 
-const useFetchGetHelperDailyReport = ({input}) =>
+const useFetchGetHelperDailyReport = ({ input }) =>
   useQuery(GET_HELPER_DAILY_REPORT, {
     variables: {
       input,

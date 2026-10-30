@@ -20,9 +20,7 @@ function Results({ inventorys }) {
           <CardHeader className="pb-4">
             <div className="flex items-baseline gap-3">
               <CardTitle>歷史盤點單</CardTitle>
-              <span className="text-label tabular-nums text-text-secondary">
-                共 {inventorys.length} 筆資料
-              </span>
+              <span className="text-label tabular-nums text-text-secondary">共 {inventorys.length} 筆資料</span>
             </div>
           </CardHeader>
           <div className="px-5 pb-5">
@@ -40,9 +38,7 @@ function Results({ inventorys }) {
                   <TableRow key={d.id}>
                     <TableCell className="font-medium tabular-nums">{format(d.date, 'yyyy/MM/dd HH:mm')}</TableCell>
                     <TableCell>
-                      <Badge variant={d.isDraft ? 'warning' : 'success'}>
-                        {d.isDraft ? '未完成' : '已完成'}
-                      </Badge>
+                      <Badge variant={d.isDraft ? 'warning' : 'success'}>{d.isDraft ? '未完成' : '已完成'}</Badge>
                     </TableCell>
                     <TableCell>{d.creatorName}</TableCell>
                     <TableCell className="text-right">

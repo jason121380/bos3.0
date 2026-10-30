@@ -20,16 +20,7 @@ import { Autocomplete } from 'ui/combobox'
 const FIELD = 'min-w-[180px] max-w-[270px]'
 const FIELD_SOURCES = 'min-w-[180px]'
 
-export default function ({
-  outside,
-  values,
-  onChange,
-  visible,
-  multiple,
-  relationUserId,
-  useInDecreaseDetailReport,
-  getThirdPartyName
-}) {
+export default function ({ outside, values, onChange, visible, multiple, relationUserId, useInDecreaseDetailReport, getThirdPartyName }) {
   // outside：每個條件各包一層 div（原格線 item，無欄寬、無間距）；否則直接放進 MerchantSearchBar 的 flex 列
   const Outter = outside ? 'div' : React.Fragment
   const [payType, setPayType] = useState([])
@@ -41,7 +32,7 @@ export default function ({
     if (visible.includes('source') && sourceOption.length === 0) {
       getReferenceLazy()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [visible] 變動時執行；getReferenceLazy、sourceOption.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [visible] 變動時執行；getReferenceLazy、sourceOption.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [visible])
 
   useEffect(() => {
@@ -50,7 +41,7 @@ export default function ({
       const data = idx(referenceLazyData, _ => _.data.getCustomerReference) || []
       setSourceOption(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [referenceLazyData.loading])
 
   useEffect(() => {
@@ -59,26 +50,18 @@ export default function ({
       const payType = idx(accountingTypeData, _ => _.data.getAccountingType) || []
       setPayType(payType)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [accountingTypeData.loading])
 
   const input = {
     employee: function () {
       return (
         <EmployeeAutoComplete
-          label={
-            relationUserId
-              ? '關係人編號/姓名'
-              : useInDecreaseDetailReport
-                ? '互助人編號/姓名'
-                : '設計師編號/姓名'
-          }
+          label={relationUserId ? '關係人編號/姓名' : useInDecreaseDetailReport ? '互助人編號/姓名' : '設計師編號/姓名'}
           value={multiple.employee ? values.designers : values.employeeId || values.relationUserId}
           onChange={value =>
             onChange({
-              target: multiple.employee
-                ? 'designers'
-                : `${relationUserId ? 'relationUserId' : 'employeeId'}`,
+              target: multiple.employee ? 'designers' : `${relationUserId ? 'relationUserId' : 'employeeId'}`,
               value: multiple.employee ? value : idx(value, _ => _.userId) || '',
             })
           }
@@ -163,11 +146,7 @@ export default function ({
           options={payType}
           autoHighlight
           getOptionLabel={option => option}
-          renderOption={(props, option) => (
-            <li {...props}>
-              {option}
-            </li>
-          )}
+          renderOption={(props, option) => <li {...props}>{option}</li>}
           renderInput={params => (
             <TextField
               {...params}
@@ -178,9 +157,7 @@ export default function ({
                 ...params.InputProps,
                 endAdornment: (
                   <Fragment>
-                    {accountingTypeData.loading ? (
-                      <LoaderCircle className="h-5 w-5 animate-spin" strokeWidth={1.75} />
-                    ) : null}
+                    {accountingTypeData.loading ? <LoaderCircle className="h-5 w-5 animate-spin" strokeWidth={1.75} /> : null}
                     {params.InputProps.endAdornment}
                   </Fragment>
                 ),
@@ -198,10 +175,11 @@ export default function ({
           value={values.thirdPartTicketId}
           name="thirdPartyCoupon"
           onChange={value => {
-            getThirdPartyName && onChange({
-              target: 'thirdPartTicketName',
-              value: idx(value, _ => _.name),
-            })
+            getThirdPartyName &&
+              onChange({
+                target: 'thirdPartTicketName',
+                value: idx(value, _ => _.name),
+              })
             onChange({
               target: 'thirdPartTicketId',
               value: idx(value, _ => _.id),
@@ -294,11 +272,7 @@ export default function ({
               variant="outlined"
               InputProps={{
                 ...params.InputProps,
-                endAdornment: (
-                  <Fragment>
-                    {params.InputProps.endAdornment}
-                  </Fragment>
-                ),
+                endAdornment: <Fragment>{params.InputProps.endAdornment}</Fragment>,
               }}
             />
           )}
@@ -338,10 +312,6 @@ export default function ({
 
   return visible.map((item, index) => {
     if (item === 'datePicker') return null
-    return (
-      <Outter key={'component' + index}>
-        {input[item]()}
-      </Outter>
-    )
+    return <Outter key={'component' + index}>{input[item]()}</Outter>
   })
 }

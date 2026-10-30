@@ -17,19 +17,11 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import ProductsModalV3 from './ProductsModalV3'
 import { Autocomplete } from 'ui/combobox'
 
-export default function General({
-  className,
-  picking,
-  setPicking,
-  setPageLoading,
-  onChange,
-  setIsClick,
-  purpose
-}) {
+export default function General({ className, picking, setPicking, setPageLoading, onChange, setIsClick, purpose }) {
   const [setting, setSetting] = useState({
     keyword: '',
     categoryIds: [],
-    isPublished: true
+    isPublished: true,
   })
   const [pickerKeyword, setPickerKeyword] = useState('')
 
@@ -65,7 +57,7 @@ export default function General({
 
       setProductCategories(productCategories)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productCategoriesData.loading])
 
   const handleOpenProductsModal = () => {
@@ -106,7 +98,7 @@ export default function General({
       })
       setProductList(productsAddCount)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading, picking, setting])
 
   useEffect(() => {
@@ -114,7 +106,7 @@ export default function General({
       setPageLoading(users.loading)
       setPickerOption(idx(users, _ => _.data.users.users) || [])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [users.loading, setPageLoading])
 
   const productLabel = option => `${option.no === null ? '無代號' : option.no} ${option.name}`
@@ -226,7 +218,7 @@ export default function General({
   }
 
   const productTotal = () => {
-    return  picking.productList.reduce((accu, curVal) => accu + curVal.total, 0)
+    return picking.productList.reduce((accu, curVal) => accu + curVal.total, 0)
   }
 
   const handleChangeFocusRow = index => {
@@ -290,23 +282,23 @@ export default function General({
       <CardContent className="border-0 border-t border-solid border-border">
         <DatePicker
           disableFuture
-          format='yyyy/MM/dd'
-          label='日期'
+          format="yyyy/MM/dd"
+          label="日期"
           className="w-full !mb-[24px]"
           value={picking.date}
-          onError={(e) => e ? setErrorText('時間有誤') : setErrorText('')}
+          onError={e => (e ? setErrorText('時間有誤') : setErrorText(''))}
           localeText={{
-            toolbarTitle: '選擇日期'
+            toolbarTitle: '選擇日期',
           }}
           slotProps={{
             toolbar: {
-              toolbarFormat: 'yyyy年M月d日'
+              toolbarFormat: 'yyyy年M月d日',
             },
             textField: {
               variant: 'standard',
               fullWidth: true,
-              helperText: errorText
-            }
+              helperText: errorText,
+            },
           }}
           onChange={event => {
             return onChange({
@@ -326,9 +318,7 @@ export default function General({
                 </Button>
               </div>
             ) : (
-              <div className="col-span-1">
-
-              </div>
+              <div className="col-span-1"></div>
             )}
             <div className="col-span-11 sm:col-span-4">
               <Autocomplete
@@ -341,9 +331,11 @@ export default function General({
                 autoHighlight
                 // 原本以關鍵字分兩支，但兩支組出的文字相同；選項顯示也與此相同
                 getOptionLabel={productLabel}
-                renderOption={(props, option) =>
-                  <li {...props} key={option.id}>{productLabel(option)}</li>
-                }
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {productLabel(option)}
+                  </li>
+                )}
                 onKeyDown={event => {
                   if (event.key === 'Enter' && picking.productList[index].productName !== '') {
                     priceRef.current.focus()
@@ -413,9 +405,7 @@ export default function General({
                 onWheel={() => document.activeElement.blur()}
               />
             </div>
-            <div className="col-span-2 sm:col-span-1 text-center text-body tabular-nums text-text">
-              {data.total !== 0 && data.total}
-            </div>
+            <div className="col-span-2 sm:col-span-1 text-center text-body tabular-nums text-text">{data.total !== 0 && data.total}</div>
             {index !== 0 ? (
               <div className="col-span-1">
                 <Button variant="ghost" size="icon" aria-label="刪除此列" onClick={() => handleDeleteProduct(index)}>
@@ -423,9 +413,7 @@ export default function General({
                 </Button>
               </div>
             ) : (
-              <div className="col-span-1">
-
-              </div>
+              <div className="col-span-1"></div>
             )}
             {index === picking.productList.length - 1 ? (
               <div className="col-span-1">
@@ -434,9 +422,7 @@ export default function General({
                 </Button>
               </div>
             ) : (
-              <div className="col-span-1">
-
-              </div>
+              <div className="col-span-1"></div>
             )}
           </div>
         ))}
@@ -445,19 +431,14 @@ export default function General({
           options={pickerOption}
           disabled={!inputEnabled}
           autoHighlight
-          getOptionLabel={option =>
-            option.designerNo === pickerKeyword
-              ? `${option.designerNo} ${option.name}`
-              : option.name
-          }
+          getOptionLabel={option => (option.designerNo === pickerKeyword ? `${option.designerNo} ${option.name}` : option.name)}
           renderOption={(props, option) => <li {...props} key={option.id}>{`${option.designerNo || ''} ${option.name}`}</li>}
           onFocus={() => setFocus('designer')}
           onChange={(_event, value) => {
             onChange({ event: { target: { value: value ? value.id : '' } }, key: 'PickerId' })
             setFocus('purpose')
             purposeRef.current.focus()
-          }
-          }
+          }}
           onKeyDown={event => {
             if (event.key === 'Enter') {
               setFocus('purpose')
@@ -508,7 +489,9 @@ export default function General({
             label="用途"
           >
             {purpose.map(data => (
-              <NativeSelectOption key={data} value={data}>{data}</NativeSelectOption>
+              <NativeSelectOption key={data} value={data}>
+                {data}
+              </NativeSelectOption>
             ))}
           </NativeSelect>
         </FormControl>

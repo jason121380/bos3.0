@@ -72,12 +72,7 @@ const nameDisplay = [
   },
 ]
 
-function AboutOrderCreate({
-  className,
-  orderCreateSetting,
-  setOrderCreateSetting,
-  inputEnable,
-}) {
+function AboutOrderCreate({ className, orderCreateSetting, setOrderCreateSetting, inputEnable }) {
   const settingArr = [
     { label: '指定互助人功能', key: 'isHelperDesignationDisplay' },
     { label: '顯示第三方卡券欄位', key: 'isThirdPartTicketDisplay' },
@@ -85,11 +80,14 @@ function AboutOrderCreate({
     {
       label: '顯示鎖定時間選項',
       key: 'isDateLockDisplay',
-      lockDate: () => JSON.parse(localStorage.getItem('lockDate')) === true ? (
-        <p className="text-caption text-text-secondary" style={{ margin: '-30px 31px 24px' }}>
-          請至打帳單解除鎖定日期
-        </p>
-      ) : ''
+      lockDate: () =>
+        JSON.parse(localStorage.getItem('lockDate')) === true ? (
+          <p className="text-caption text-text-secondary" style={{ margin: '-30px 31px 24px' }}>
+            請至打帳單解除鎖定日期
+          </p>
+        ) : (
+          ''
+        ),
     },
     { label: '固定業績明細於視窗下方', key: 'isDetailBottomed' },
     { label: '帳單可不留顧客客資', key: 'orderWithoutCustomerDefault' },
@@ -128,7 +126,9 @@ function AboutOrderCreate({
                   checked={orderCreateSetting[key]}
                   onChange={(e, v) => {
                     setOrderCreateSetting(
-                      produce(draft => { draft[key] = v })
+                      produce(draft => {
+                        draft[key] = v
+                      })
                     )
                   }}
                 />
@@ -137,7 +137,7 @@ function AboutOrderCreate({
             </Fragment>
           )
         })}
-        {optionArr.map(({label, key, options}) => (
+        {optionArr.map(({ label, key, options }) => (
           <div key={label} className="flex items-center mb-[24px]">
             <div className="flex flex-wrap items-center gap-2 p-2">
               <Field label={label}>
@@ -148,7 +148,9 @@ function AboutOrderCreate({
                   value={orderCreateSetting[key]}
                   onChange={e => {
                     setOrderCreateSetting(
-                      produce(draft => { draft[key] = e.target.value })
+                      produce(draft => {
+                        draft[key] = e.target.value
+                      })
                     )
                   }}
                 >

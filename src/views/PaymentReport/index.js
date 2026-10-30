@@ -23,18 +23,12 @@ const PaymentReport = () => {
   })
   useEffect(() => {
     if (!merchantOtherPayWayDetailReportData.loading) {
-      const report = idx(
-        merchantOtherPayWayDetailReportData,
-        _ => _.data.merchantOtherPayWayDetailReport.merchantOtherPayWayDetailReport
-      )
-      const paymentsName = idx(
-        merchantOtherPayWayDetailReportData,
-        _ => _.data.merchantOtherPayWayDetailReport.usedPayType
-      )
+      const report = idx(merchantOtherPayWayDetailReportData, _ => _.data.merchantOtherPayWayDetailReport.merchantOtherPayWayDetailReport)
+      const paymentsName = idx(merchantOtherPayWayDetailReportData, _ => _.data.merchantOtherPayWayDetailReport.usedPayType)
       setPaymentsName(paymentsName)
       setReportForDisplay(report)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantOtherPayWayDetailReportData.loading])
 
   return (
@@ -50,9 +44,8 @@ const PaymentReport = () => {
         }
       />
       {merchantOtherPayWayDetailReportData.error ? (
-          <QueryFailed onRetry={() => merchantOtherPayWayDetailReportData.refetch()} />
-        ) : !merchantOtherPayWayDetailReportData.loading &&
-        reportForDisplay !== null ? (
+        <QueryFailed onRetry={() => merchantOtherPayWayDetailReportData.refetch()} />
+      ) : !merchantOtherPayWayDetailReportData.loading && reportForDisplay !== null ? (
         <Results report={reportForDisplay} paymentsName={paymentsName} />
       ) : (
         <Skeleton className="h-96" aria-busy="true" />

@@ -51,13 +51,13 @@ const EmployeeClockIn = () => {
       const clockInRecord = idx(dailyClockInRecordLazyData, _ => _.data.dailyClockInRecord)
       setClockInRecord(clockInRecord)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [dailyClockInRecordLazyData.loading, clockInDataForBtnStatus.loading])
 
   useEffect(() => {
     setIsToday(format(new Date(date.startDate), 'yyyy/MM/dd') === format(new Date(), 'yyyy/MM/dd'))
     handleSearch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [date] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [date] 變動時呼叫，補上會每次 render 重跑
   }, [date])
 
   useEffect(() => {
@@ -65,9 +65,8 @@ const EmployeeClockIn = () => {
       const data = idx(getEmployeeClockInDisplay, _ => _.data.getParameterReportSetting.isEDCIFilterDisplay)
       setFilterDiaply(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getEmployeeClockInDisplay.loading])
-
 
   const handleClockIn = (id, status) => {
     setUserClockIn({
@@ -105,7 +104,7 @@ const EmployeeClockIn = () => {
       variables: {
         date: date.startDate,
         distanceFilter: filterArr,
-      }
+      },
     }
     dailyClockInRecordLazy(submitData)
   }
@@ -113,7 +112,7 @@ const EmployeeClockIn = () => {
   return (
     <Page className="ui-root" title="現場電腦打卡">
       <PageHeader
-        title='現場電腦打卡'
+        title="現場電腦打卡"
         actions={
           <>
             <DateSelector
@@ -158,14 +157,7 @@ const EmployeeClockIn = () => {
                 {option.label}
               </li>
             )}
-            renderInput={params => (
-              <TextField
-                {...params}
-                variant="outlined"
-                label="篩選打卡記錄"
-                placeholder="篩選條件"
-              />
-            )}
+            renderInput={params => <TextField {...params} variant="outlined" label="篩選打卡記錄" placeholder="篩選條件" />}
           />
           <Button
             variant="primary"
@@ -180,13 +172,7 @@ const EmployeeClockIn = () => {
       {dailyClockInRecordLazyData.error ? (
         <QueryFailed onRetry={() => dailyClockInRecordLazyData.refetch()} />
       ) : (
-        <Results
-          handleSearch={handleSearch}
-          clockInRecord={clockInRecord}
-          handleClockIn={handleClockIn}
-          isToday={isToday}
-          btnStatus={btnStatus}
-        />
+        <Results handleSearch={handleSearch} clockInRecord={clockInRecord} handleClockIn={handleClockIn} isToday={isToday} btnStatus={btnStatus} />
       )}
     </Page>
   )

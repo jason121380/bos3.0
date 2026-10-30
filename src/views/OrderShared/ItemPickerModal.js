@@ -67,17 +67,17 @@ function ItemPickerModal({
         paginationLabel(pageRef.current)
         clearInterval(timer)
       }
-    }, 100);
+    }, 100)
 
     const clearTimer = setTimeout(() => {
       clearInterval(timer)
-    }, 1000);
+    }, 1000)
 
     return () => {
       clearInterval(timer)
       clearTimeout(clearTimer)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [pagingSource, open] 變動時執行；paging 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [pagingSource, open] 變動時執行；paging 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [pagingSource, open])
 
   // 以點選為主的選擇窗：開啟時焦點放在彈窗本身，不自動聚焦第一顆分類鈕（STYLE §6 Dialog「開啟時的焦點」）
@@ -91,18 +91,10 @@ function ItemPickerModal({
   // 原相容層 Modal 沒有 onClose（Esc、點背景都不會關），這裡同樣不傳 onOpenChange、隱藏內建 X，只留原本兩個「關閉」（closeModal）
   return (
     <Dialog open={open}>
-      <DialogContent
-        ref={contentRef}
-        size="lg"
-        hideClose
-        aria-describedby={undefined}
-        onOpenAutoFocus={handleOpenAutoFocus}
-      >
+      <DialogContent ref={contentRef} size="lg" hideClose aria-describedby={undefined} onOpenAutoFocus={handleOpenAutoFocus}>
         <DialogHeader className="flex-row items-center gap-3 pb-3 pr-4 max-sm:pr-3">
           <DialogTitle className="mr-auto min-w-0">
-            {!titleByCategory || selectedCategorieName.length === 0
-              ? `所有${noun}`
-              : `${categoryNameForDisplay}類${noun}`}
+            {!titleByCategory || selectedCategorieName.length === 0 ? `所有${noun}` : `${categoryNameForDisplay}類${noun}`}
           </DialogTitle>
           <Button variant="ghost" size="icon" aria-label="關閉" title="關閉" onClick={closeModal}>
             <X aria-hidden="true" strokeWidth={1.75} />
@@ -124,15 +116,15 @@ function ItemPickerModal({
               清除
             </Button>
           </div>
-          <p className="mb-2 mt-0 text-caption text-text-secondary">
-            {caption}
-          </p>
+          <p className="mb-2 mt-0 text-caption text-text-secondary">{caption}</p>
           <Table dense>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-px" />
                 {columns.map(column => (
-                  <TableHead key={column.header} numeric={column.numeric}>{column.header}</TableHead>
+                  <TableHead key={column.header} numeric={column.numeric}>
+                    {column.header}
+                  </TableHead>
                 ))}
               </TableRow>
             </TableHeader>
@@ -145,7 +137,9 @@ function ItemPickerModal({
                     </Button>
                   </TableCell>
                   {columns.map(column => (
-                    <TableCell key={column.header} numeric={column.numeric}>{column.cell(row)}</TableCell>
+                    <TableCell key={column.header} numeric={column.numeric}>
+                      {column.cell(row)}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))}
@@ -157,7 +151,7 @@ function ItemPickerModal({
             <TablePagination
               ref={pageRef}
               className="mr-auto pt-0"
-              labelRowsPerPage='每頁顯示數量'
+              labelRowsPerPage="每頁顯示數量"
               count={paging.count}
               onPageChange={handleOnChangePage}
               onRowsPerPageChange={handleOnChangeRowsPerPage}

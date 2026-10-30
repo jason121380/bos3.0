@@ -16,14 +16,23 @@ jest.mock('elements/snackbars', () => ({
   openSnackbar: jest.fn(),
 }))
 jest.mock('components/EmployeeAutoComplete', () => ({ label, onChange }) => (
-  <button type="button" onClick={() => onChange({ userId: `${label}-id` })}>選{label}</button>
+  <button type="button" onClick={() => onChange({ userId: `${label}-id` })}>
+    選{label}
+  </button>
 ))
 jest.mock('components/BelongAutocomplete', () => ({ value, onChange }) => (
-  <button type="button" data-testid="belong" data-value={JSON.stringify(value)} onClick={() => onChange(['信義店'])}>選所屬店家</button>
+  <button type="button" data-testid="belong" data-value={JSON.stringify(value)} onClick={() => onChange(['信義店'])}>
+    選所屬店家
+  </button>
 ))
 jest.mock('ui/date-picker', () => ({
   DatePicker: ({ label, value, onChange, disabled }) => (
-    <input aria-label={label} disabled={disabled} data-value={value === null ? '' : String(value)} onChange={e => onChange(new Date(e.target.value))} />
+    <input
+      aria-label={label}
+      disabled={disabled}
+      data-value={value === null ? '' : String(value)}
+      onChange={e => onChange(new Date(e.target.value))}
+    />
   ),
 }))
 
@@ -240,7 +249,11 @@ describe('客資篩選匯出：查詢條件', () => {
     )
     await utils.settle()
     openDialog()
-    fireEvent.click(within(screen.getByText('更多篩選').closest('[role="dialog"]') || document.body).getAllByText('清除').pop())
+    fireEvent.click(
+      within(screen.getByText('更多篩選').closest('[role="dialog"]') || document.body)
+        .getAllByText('清除')
+        .pop()
+    )
     await wait(() => expect(lastInput(utils.calls)).toMatchObject({ baseDateRange: null, consumptionRange: null }))
     expect(currentLocation()).toMatch(/^\/management\/customer-filter-export/)
   })
@@ -258,7 +271,11 @@ describe('客資篩選匯出：查詢條件', () => {
   })
 
   it('網址同時帶區間與基準日時，確認不改日期條件', async () => {
-    const both = { ...DEFAULT, consumptionRange: { startDate: 1000, endDate: 2000 }, baseDateRange: { baseDate: 5000, dayNumber: 3, toDate: 'LESSTHAN' } }
+    const both = {
+      ...DEFAULT,
+      consumptionRange: { startDate: 1000, endDate: 2000 },
+      baseDateRange: { baseDate: 5000, dayNumber: 3, toDate: 'LESSTHAN' },
+    }
     const utils = setup({ route: `/management/customer-filter-export?pageSetting=${encodeURIComponent(JSON.stringify(both))}` })
     await utils.settle()
     const before = callsOf(utils.calls, 'FETCH_CUSTOMER_WITHOUT_SORTING').length

@@ -14,10 +14,7 @@ function Register() {
           <RegisterForm />
           <div className="my-6 h-px bg-border" />
           <div className="flex justify-center">
-            <RouterLink
-              to="/auth/login"
-              className={cn('rounded-md text-label text-accent underline', focusRing)}
-            >
+            <RouterLink to="/auth/login" className={cn('rounded-md text-label text-accent underline', focusRing)}>
               已經有帳號了嗎?
             </RouterLink>
           </div>

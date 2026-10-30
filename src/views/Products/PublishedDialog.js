@@ -3,22 +3,16 @@ import { FormControl } from 'ui/form-control'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Button } from 'ui/button'
 
-const PublishedDialog = ({
-  open, isPublished, setIsPublished, handleClosePublishDialog,
-  handleSetPublished, isClick
-}) => {
+const PublishedDialog = ({ open, isPublished, setIsPublished, handleClosePublishDialog, handleSetPublished, isClick }) => {
   return (
     <Dialog open={open}>
       <DialogContent size="sm" hideClose aria-describedby={undefined}>
-        <DialogHeader><DialogTitle id="alert-dialog-title">編輯上下架</DialogTitle></DialogHeader>
+        <DialogHeader>
+          <DialogTitle id="alert-dialog-title">編輯上下架</DialogTitle>
+        </DialogHeader>
         <DialogBody style={{ overflow: 'visible' }}>
           <FormControl variant="outlined" style={{ width: 200 }}>
-            <NativeSelect
-              value={isPublished}
-              onChange={({ target: { value } }) => setIsPublished(value)}
-              displayEmpty={false}
-              placeholder="請選擇…"
-            >
+            <NativeSelect value={isPublished} onChange={({ target: { value } }) => setIsPublished(value)} displayEmpty={false} placeholder="請選擇…">
               <NativeSelectOption value={true}>上架</NativeSelectOption>
               <NativeSelectOption value={false}>下架</NativeSelectOption>
             </NativeSelect>

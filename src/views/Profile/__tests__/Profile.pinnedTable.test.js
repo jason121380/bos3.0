@@ -65,7 +65,12 @@ describe('功能釘選', () => {
       ],
     })
     expect(store.getState().pinnedTable).toEqual(
-      expect.objectContaining({ table: [{ title: '掛單列表', href: '/management/draft-orders' }, { title: '帳單列表', href: '/management/orders' }] })
+      expect.objectContaining({
+        table: [
+          { title: '掛單列表', href: '/management/draft-orders' },
+          { title: '帳單列表', href: '/management/orders' },
+        ],
+      })
     )
   })
 
@@ -143,8 +148,6 @@ describe('功能釘選', () => {
   })
 })
 
-
-
 it('樹鍵盤展開與選取後，儲存保留原釘選值與店家', async () => {
   const { calls } = setup()
   await ready()
@@ -161,7 +164,10 @@ it('樹鍵盤展開與選取後，儲存保留原釘選值與店家', async () =
   await wait(() => expect(callsOf(calls, 'SET_PINNED_TABLE')).toHaveLength(1))
   expect(sent(calls)).toEqual({
     otherAppliedStoreIds: ['merchant-2'],
-    pinnedTables: [{ title: '櫃檯作業', name: '帳單列表' }, { title: '櫃檯作業', name: '打帳單' }],
+    pinnedTables: [
+      { title: '櫃檯作業', name: '帳單列表' },
+      { title: '櫃檯作業', name: '打帳單' },
+    ],
   })
 })
 
@@ -175,4 +181,3 @@ describe('功能釘選：尚未設定過', () => {
     expect(pinnedList()).toEqual([])
   })
 })
-

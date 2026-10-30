@@ -5,8 +5,8 @@ import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { useState, useEffect } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { format } from 'date-fns'
-import MdEditor from 'md-editor-rt';
-import 'md-editor-rt/lib/style.css';
+import MdEditor from 'md-editor-rt'
+import 'md-editor-rt/lib/style.css'
 
 const Results = ({ data }) => {
   const [open, setOpen] = useState(0)
@@ -26,11 +26,11 @@ const Results = ({ data }) => {
   MdEditor.config({
     markedRenderer(renderer) {
       renderer.link = (href, title, text) => {
-        return `<a href="${href}" title="${title}" target="_blank">${text}</a>`;
-      };
-      return renderer;
-    }
-  });
+        return `<a href="${href}" title="${title}" target="_blank">${text}</a>`
+      }
+      return renderer
+    },
+  })
 
   return (
     <div className="flex flex-col gap-3">
@@ -56,11 +56,9 @@ const Results = ({ data }) => {
                 </div>
               </AccordionSummary>
               <AccordionDetails className="flex flex-col overflow-x-auto">
-                <MdEditor theme={theme} modelValue={d.content} previewOnly language='en-US' />
+                <MdEditor theme={theme} modelValue={d.content} previewOnly language="en-US" />
                 <div className="ui-root flex w-full items-center justify-end gap-1 pt-3 text-caption text-text-secondary">
-                  <div className="mr-2 tabular-nums">
-                    更新日期:{format(d.updateTime, 'yyyy/MM/dd')}
-                  </div>
+                  <div className="mr-2 tabular-nums">更新日期:{format(d.updateTime, 'yyyy/MM/dd')}</div>
                 </div>
               </AccordionDetails>
             </Accordion>

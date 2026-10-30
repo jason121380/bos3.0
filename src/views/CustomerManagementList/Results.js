@@ -19,17 +19,7 @@ import { Checkbox } from 'ui/checkbox'
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Field, Input } from 'ui/input'
 
-function Results({
-  className = '',
-  customers,
-  pageLimit,
-  pageOffset,
-  refetch,
-  totalCount,
-  onPageChange,
-  isMemberShipCardActive,
-  ...rest
-}) {
+function Results({ className = '', customers, pageLimit, pageOffset, refetch, totalCount, onPageChange, isMemberShipCardActive, ...rest }) {
   const [selectedCustomers, setSelectedCustomers] = useState([])
   const [openDialog, setOpenDialog] = useState(false)
   const [deletePwd, setDeletePwd] = useState('')
@@ -44,7 +34,7 @@ function Results({
       const isUsing = idx(merchantPassword, _ => _.data.merchantPassword.deleteCustomer.isUsing)
       setDeleteCustomerIsUsing(isUsing)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantPassword.loading])
 
   const handleSelectAll = event => {
@@ -53,7 +43,8 @@ function Results({
   }
 
   const handleSelectOne = id => {
-    const newSelect = [...selectedCustomers], index = newSelect.indexOf(id)
+    const newSelect = [...selectedCustomers],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -138,7 +129,7 @@ function Results({
             <TableRow
               className="!bg-background hover:!bg-background"
               key={`customer-${data.id}`}
-              data-state={(selectedCustomers.indexOf(data.id) > -1) ? 'selected' : undefined}
+              data-state={selectedCustomers.indexOf(data.id) > -1 ? 'selected' : undefined}
             >
               <TableCell className="w-12 whitespace-nowrap">
                 <Checkbox
@@ -149,43 +140,49 @@ function Results({
               </TableCell>
               <TableCell className="whitespace-nowrap">
                 <Button asChild variant="ghost" size="icon" className="text-text-secondary">
-                  <RouterLink
-                    aria-label="編輯客戶"
-                    to={`/management/customers/${data.id}`}
-                  >
+                  <RouterLink aria-label="編輯客戶" to={`/management/customers/${data.id}`}>
                     <Pencil strokeWidth={1.75} />
                   </RouterLink>
                 </Button>
               </TableCell>
               <TableCell className="whitespace-nowrap">
                 <div className="flex items-center">
-                  <span aria-hidden="true" className="mr-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-hover text-label text-text-secondary">
+                  <span
+                    aria-hidden="true"
+                    className="mr-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-hover text-label text-text-secondary"
+                  >
                     {data.name.charAt(0).toUpperCase()}
                   </span>
-                  <RouterLink
-                    className="font-medium text-text no-underline"
-                    to={`/management/customers/${data.id}`}
-                  >
+                  <RouterLink className="font-medium text-text no-underline" to={`/management/customers/${data.id}`}>
                     {data.name}
                   </RouterLink>
                   {/* 黑名單：原本整列紅字（只靠顏色、寫死 red），改姓名旁 danger 徽章 */}
-                  {data.isUnwelcome && <Badge variant="danger" className="ml-2">黑名單</Badge>}
+                  {data.isUnwelcome && (
+                    <Badge variant="danger" className="ml-2">
+                      黑名單
+                    </Badge>
+                  )}
                 </div>
               </TableCell>
               <TableCell className="whitespace-nowrap">{data.cellphone}</TableCell>
               <TableCell className="whitespace-nowrap">{data.no ? data.no : ''}</TableCell>
               <TableCell className="whitespace-nowrap">{idx(data, _ => _.latestDesigner.name)}</TableCell>
               <TableCell className="whitespace-nowrap">{idx(data, _ => _.preferDesigner.name)}</TableCell>
-              <TableCell className="whitespace-nowrap">
-                {data.lastTime ? format(data.lastTime, 'yyyy/MM/dd') : ''}
-              </TableCell>
+              <TableCell className="whitespace-nowrap">{data.lastTime ? format(data.lastTime, 'yyyy/MM/dd') : ''}</TableCell>
               {isMemberShipCardActive && (
                 <TableCell className="min-w-[180px] text-caption">
                   {data.membershipPurchaseRecord && data.membershipPurchaseRecord.length > 0 && (
                     <div key={data.membershipPurchaseRecord.length - 1}>
                       <div>{data.membershipPurchaseRecord[data.membershipPurchaseRecord.length - 1].membershipName}</div>
-                      <div>效期： {data.membershipPurchaseRecord[data.membershipPurchaseRecord.length - 1].expiryDay ? format(data.membershipPurchaseRecord[data.membershipPurchaseRecord.length - 1].expiryDay, 'yyyy/MM/dd') : "永久"}</div>
-                      {data.membershipPurchaseRecord[data.membershipPurchaseRecord.length - 1].remark && <div>備註： {data.membershipPurchaseRecord[data.membershipPurchaseRecord.length - 1].remark}</div>}
+                      <div>
+                        效期：{' '}
+                        {data.membershipPurchaseRecord[data.membershipPurchaseRecord.length - 1].expiryDay
+                          ? format(data.membershipPurchaseRecord[data.membershipPurchaseRecord.length - 1].expiryDay, 'yyyy/MM/dd')
+                          : '永久'}
+                      </div>
+                      {data.membershipPurchaseRecord[data.membershipPurchaseRecord.length - 1].remark && (
+                        <div>備註： {data.membershipPurchaseRecord[data.membershipPurchaseRecord.length - 1].remark}</div>
+                      )}
                     </div>
                   )}
                 </TableCell>
@@ -200,10 +197,7 @@ function Results({
         </TableBody>
       </ManagementTable>
 
-      <TableEditBar
-        selected={selectedCustomers}
-        onDeleteCustomer={deleteCustomerIsUsing ? handleOpenDialog : handeleteCustomer}
-      />
+      <TableEditBar selected={selectedCustomers} onDeleteCustomer={deleteCustomerIsUsing ? handleOpenDialog : handeleteCustomer} />
 
       <Dialog open={openDialog}>
         <DialogContent size="sm" hideClose aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
@@ -223,8 +217,12 @@ function Results({
             </Field>
           </DialogBody>
           <DialogFooter>
-            <Button variant="secondary" onClick={handleCloseDialog} disabled={clickComfirmBtn}>取消</Button>
-            <Button variant="danger" autoFocus onClick={handeleteCustomer} disabled={clickComfirmBtn}>確認</Button>
+            <Button variant="secondary" onClick={handleCloseDialog} disabled={clickComfirmBtn}>
+              取消
+            </Button>
+            <Button variant="danger" autoFocus onClick={handeleteCustomer} disabled={clickComfirmBtn}>
+              確認
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

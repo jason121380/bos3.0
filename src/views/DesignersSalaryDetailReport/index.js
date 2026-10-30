@@ -26,38 +26,29 @@ const DesignersSalaryDetailReport = () => {
       const url = idx(getUserSalaryDetailExceLazyData, _ => _.data.getUserSalaryDetailExcel)
       window.open(url)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getUserSalaryDetailExceLazyData.loading])
 
   const handleExportExcel = () => {
     getUserSalaryDetailExceLazy({
       variables: {
         date: date.startDate,
-      }
+      },
     })
   }
 
   return (
-    <Page className='DesignersSalaryDetailReport' title="薪資明細表">
+    <Page className="DesignersSalaryDetailReport" title="薪資明細表">
       <div>
         <PageHeader
           title="薪資明細表"
           actions={
             <>
-              <Button
-                variant="secondary"
-                className="noprint"
-                onClick={handleExportExcel}
-                disabled={getUserSalaryDetailExceLazyData.loading}
-              >
+              <Button variant="secondary" className="noprint" onClick={handleExportExcel} disabled={getUserSalaryDetailExceLazyData.loading}>
                 <Download strokeWidth={1.75} />
                 報表匯出
               </Button>
-              <Button
-                variant="secondary"
-                className="noprint"
-                onClick={() => window.print()}
-              >
+              <Button variant="secondary" className="noprint" onClick={() => window.print()}>
                 <Printer strokeWidth={1.75} />
                 列印
               </Button>
@@ -70,9 +61,9 @@ const DesignersSalaryDetailReport = () => {
             attributes={['lastmonth', 'thismonth', 'startDate']}
             dateChange={value => setDate(value)}
             onlyStart
-            inputFormat='yyyy/MM'
+            inputFormat="yyyy/MM"
             pickerOption={{
-              views: ['month', 'year']
+              views: ['month', 'year'],
             }}
           />
         </Toolbar>

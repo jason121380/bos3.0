@@ -53,11 +53,7 @@ describe('getMissingForOrder', () => {
 
   it('依序列出缺少的項目，並說明不留客資也可以', () => {
     const bill = { ...base(), designerId: '', customerId: undefined, serviceOrders: [] }
-    expect(getMissingForOrder(bill)).toEqual([
-      '服務人員',
-      '顧客（或勾選「不留客資」）',
-      '至少一項消費（服務、店販、預收卡、使用預收卡或會員卡）',
-    ])
+    expect(getMissingForOrder(bill)).toEqual(['服務人員', '顧客（或勾選「不留客資」）', '至少一項消費（服務、店販、預收卡、使用預收卡或會員卡）'])
   })
 
   it('條件都滿足時沒有缺項', () => {

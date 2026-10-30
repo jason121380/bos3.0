@@ -8,8 +8,19 @@ import { addDays } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import { loginAs } from '../../../__tests__/testkit.test'
 import {
-  setupDraft, pageReady, pick, clearField, saveDraft, summaryValue, makeOrder, panel, panelHeader,
-  DESIGNER, HELPER, YEAR_CARD, FOREVER_CARD,
+  setupDraft,
+  pageReady,
+  pick,
+  clearField,
+  saveDraft,
+  summaryValue,
+  makeOrder,
+  panel,
+  panelHeader,
+  DESIGNER,
+  HELPER,
+  YEAR_CARD,
+  FOREVER_CARD,
 } from './draftPageKit.test'
 
 jest.setTimeout(20000)
@@ -28,7 +39,15 @@ const BILL_DATE = new Date(2026, 9, 21, 10, 30)
 const PURCHASE = new Date(2026, 8, 1, 9, 0).getTime()
 const EXPIRY = new Date(2027, 8, 1, 9, 0).getTime()
 // 鎖價、有期限的會員卡
-const LOCKED_CARD = { uuid: 'card-3', no: 'M03', name: '季卡', sellPrice: 3000, effecitveDay: 90, isLocked: 'TRUE', membershipCategory: YEAR_CARD.membershipCategory }
+const LOCKED_CARD = {
+  uuid: 'card-3',
+  no: 'M03',
+  name: '季卡',
+  sellPrice: 3000,
+  effecitveDay: 90,
+  isLocked: 'TRUE',
+  membershipCategory: YEAR_CARD.membershipCategory,
+}
 
 const membershipOrder = (overrides = {}) => ({
   purchaseDate: PURCHASE,
@@ -71,7 +90,14 @@ describe('掛單詳細：會員卡帶回與修改', () => {
     expect(summaryValue('會員卡銷售')).toHaveTextContent('12,000')
     const input = await saveDraft(page.calls)
     expect(input.membershipOrders).toEqual([
-      { sellerId: DESIGNER.userId, membershipUUID: YEAR_CARD.uuid, price: 12000, expiryDate: EXPIRY, thirdPartyCouponMerchantId: null, remark: '續卡' },
+      {
+        sellerId: DESIGNER.userId,
+        membershipUUID: YEAR_CARD.uuid,
+        price: 12000,
+        expiryDate: EXPIRY,
+        thirdPartyCouponMerchantId: null,
+        remark: '續卡',
+      },
     ])
   })
 
@@ -105,7 +131,11 @@ describe('掛單詳細：會員卡帶回與修改', () => {
 
   it('原有效天數未記錄（舊資料）的永久卡取消勾選：到期日＝原購買日＋卡片有效天數', async () => {
     const page = await setup({
-      order: makeOrder({ membershipOrders: [membershipOrder({ validDayCount: null, expiryDate: null, membership: { uuid: YEAR_CARD.uuid, isLocked: 'FALSE', effecitveDay: 400 } })] }),
+      order: makeOrder({
+        membershipOrders: [
+          membershipOrder({ validDayCount: null, expiryDate: null, membership: { uuid: YEAR_CARD.uuid, isLocked: 'FALSE', effecitveDay: 400 } }),
+        ],
+      }),
     })
     expect(foreverBox()).toBeChecked()
     fireEvent.click(foreverBox())
@@ -143,10 +173,15 @@ describe('掛單詳細：會員卡帶回與修改', () => {
   it('掛單帶回的終身卡（沒存有效天數）取消「永久會籍」：到期日留空、不帶購買日，儲存提示「會員卡到期日有誤」不送出', async () => {
     const page = await setup({
       order: makeOrder({
-        membershipOrders: [membershipOrder({
-          price: 30000, purchaseDate: new Date(2026, 9, 25, 9, 0).getTime(), validDayCount: null, expiryDate: null,
-          membership: { uuid: FOREVER_CARD.uuid, isLocked: 'TRUE', effecitveDay: 0 },
-        })],
+        membershipOrders: [
+          membershipOrder({
+            price: 30000,
+            purchaseDate: new Date(2026, 9, 25, 9, 0).getTime(),
+            validDayCount: null,
+            expiryDate: null,
+            membership: { uuid: FOREVER_CARD.uuid, isLocked: 'TRUE', effecitveDay: 0 },
+          }),
+        ],
       }),
     })
     expect(foreverBox()).toBeChecked()
@@ -286,7 +321,10 @@ describe('掛單詳細：會員卡列的新增、清除與刪除', () => {
   it('兩列時清除第一列：第二列照送', async () => {
     const page = await setup({
       order: makeOrder({
-        membershipOrders: [membershipOrder(), membershipOrder({ price: 30000, expiryDate: null, membership: { uuid: FOREVER_CARD.uuid, isLocked: 'TRUE', effecitveDay: 0 } })],
+        membershipOrders: [
+          membershipOrder(),
+          membershipOrder({ price: 30000, expiryDate: null, membership: { uuid: FOREVER_CARD.uuid, isLocked: 'TRUE', effecitveDay: 0 } }),
+        ],
       }),
     })
     fireEvent.click(cards().getByTestId('merchantSsell-0-clear'))
@@ -374,7 +412,9 @@ describe('掛單詳細：會員卡列 Enter 跳欄', () => {
 
   it('鎖價、有期限的卡：會員卡 Enter 跳到到期日', async () => {
     await setup({
-      order: makeOrder({ membershipOrders: [membershipOrder({ price: 3000, membership: { uuid: LOCKED_CARD.uuid, isLocked: 'TRUE', effecitveDay: 90 } })] }),
+      order: makeOrder({
+        membershipOrders: [membershipOrder({ price: 3000, membership: { uuid: LOCKED_CARD.uuid, isLocked: 'TRUE', effecitveDay: 90 } })],
+      }),
       FETCH_MEMBERSHIPS_FOR_AUTOCOMPLETE: { memberships: { data: [YEAR_CARD, FOREVER_CARD, LOCKED_CARD] } },
     })
     focusOn(cardInput(0))

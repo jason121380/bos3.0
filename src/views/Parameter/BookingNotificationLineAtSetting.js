@@ -14,34 +14,43 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
 
 const bookingLineNotificationArr = [
-  {label: '顧客新增預約', key: 'cusCreateBooking'},
-  {label: '顧客取消預約', key: 'cusCancelBooking'},
-  {label: '設計師新增預約', key: 'designerCreateBooking'},
-  {label: '設計師取消預約', key: 'designerCancelBooking'},
-  {label: '預約有變動', key: 'bookingUpdated'},
+  { label: '顧客新增預約', key: 'cusCreateBooking' },
+  { label: '顧客取消預約', key: 'cusCancelBooking' },
+  { label: '設計師新增預約', key: 'designerCreateBooking' },
+  { label: '設計師取消預約', key: 'designerCancelBooking' },
+  { label: '預約有變動', key: 'bookingUpdated' },
 ]
 
 const settingOptions = [
-  {label: '顧客', key: 'customer'},
-  {label: '設計師', key: 'designer'},
-  {label: '店家', key: 'merchant'},
+  { label: '顧客', key: 'customer' },
+  { label: '設計師', key: 'designer' },
+  { label: '店家', key: 'merchant' },
 ]
 
 const designerStatus = [
-  {label: '未指定設計師', value: 'NODESIGNER'},
-  {label: '已指定設計師', value: 'HASDESIGNER'},
+  { label: '未指定設計師', value: 'NODESIGNER' },
+  { label: '已指定設計師', value: 'HASDESIGNER' },
 ]
 
 function NonDesignationBookingLimitSetting({
-  className, inputEnable, aboutBooking, setAboutBooking,
-  lineConnectedUser, NDBRecipients, setNDBRecipients, notificationDayCount, setNotificationDayCount,
-  BookingLineNotify, setBookingLineNotify
+  className,
+  inputEnable,
+  aboutBooking,
+  setAboutBooking,
+  lineConnectedUser,
+  NDBRecipients,
+  setNDBRecipients,
+  notificationDayCount,
+  setNotificationDayCount,
+  BookingLineNotify,
+  setBookingLineNotify,
 }) {
   const handleChangeNotification = (key, optionKey, value) => {
     setBookingLineNotify(
       produce(draft => {
-      draft[key][optionKey] = value.map(item => item.value);
-    }))
+        draft[key][optionKey] = value.map(item => item.value)
+      })
+    )
   }
   const handleNotificationLineSetting = (key, value) => {
     setAboutBooking(
@@ -62,8 +71,8 @@ function NonDesignationBookingLimitSetting({
       <CardHeader>
         <CardTitle>預約通知LINE@設定</CardTitle>
       </CardHeader>
-      {bookingLineNotificationArr.map(({label, key}, index) => (
-        <CardContent key={label} style={{ padding: (index === 0 || index === 4) ? '24px 24px 12px 24px' : '8px 24px' }}>
+      {bookingLineNotificationArr.map(({ label, key }, index) => (
+        <CardContent key={label} style={{ padding: index === 0 || index === 4 ? '24px 24px 12px 24px' : '8px 24px' }}>
           <div style={{ marginBottom: '15px' }}>{label}</div>
           <div className="flex flex-wrap gap-6">
             {settingOptions.map(option => (
@@ -76,22 +85,16 @@ function NonDesignationBookingLimitSetting({
                     value={designerStatus.filter(({ value }) => BookingLineNotify[key][option.key].includes(value))}
                     disableCloseOnSelect
                     renderOption={(props, option, { selected }) => {
-                      const { key, ...optionProps } = props;
+                      const { key, ...optionProps } = props
                       return (
                         <li key={key} {...optionProps}>
-                          <Checkbox
-                            icon={icon}
-                            checkedIcon={checkedIcon}
-                            checked={selected}   
-                          />
+                          <Checkbox icon={icon} checkedIcon={checkedIcon} checked={selected} />
                           {option.label}
                         </li>
-                      );
+                      )
                     }}
                     style={{ width: 250 }}
-                    renderInput={(params) => (
-                      <TextField {...params} placeholder="" />
-                    )}
+                    renderInput={params => <TextField {...params} placeholder="" />}
                   />
                 </Field>
               </div>
@@ -110,7 +113,7 @@ function NonDesignationBookingLimitSetting({
               type="number"
               value={notificationDayCount || ''}
               onChange={e => {
-                const value = Number(e.target.value) < 1 ? null : Number(e.target.value) 
+                const value = Number(e.target.value) < 1 ? null : Number(e.target.value)
                 setNotificationDayCount(value)
               }}
               onFocus={e => e.target.select()}
@@ -128,9 +131,9 @@ function NonDesignationBookingLimitSetting({
           />
           {aboutBooking.bookingNotificationLine.isUsing && (
             <TextField
-              type='number'
-              variant='outlined'
-              label='幾天前通知'
+              type="number"
+              variant="outlined"
+              label="幾天前通知"
               disabled={!inputEnable}
               style={{ width: 100 }}
               value={aboutBooking.bookingNotificationLine.notifyDayCount}
@@ -151,9 +154,9 @@ function NonDesignationBookingLimitSetting({
           {aboutBooking.inviteRatingDayCount !== null && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
               <TextField
-                type='number'
-                variant='outlined'
-                label='幾天後發送邀請'
+                type="number"
+                variant="outlined"
+                label="幾天後發送邀請"
                 disabled={!inputEnable}
                 style={{ width: 100 }}
                 InputProps={{ inputProps: { min: 0 } }}
@@ -162,9 +165,9 @@ function NonDesignationBookingLimitSetting({
                 onWheel={() => document.activeElement.blur()}
               />
               <TextField
-                type='number'
-                variant='outlined'
-                label='評論有效天數'
+                type="number"
+                variant="outlined"
+                label="評論有效天數"
                 disabled={!inputEnable}
                 style={{ width: 100 }}
                 InputProps={{ inputProps: { min: 0 } }}
@@ -187,18 +190,11 @@ function NonDesignationBookingLimitSetting({
             onChange={(e, v) => setNDBRecipients(v)}
             renderOption={(props, option, { selected }) => (
               <li {...props}>
-                <Checkbox
-                  style={{ marginRight: 8 }}
-                  icon={icon}
-                  checkedIcon={checkedIcon}
-                  checked={selected}
-                />
+                <Checkbox style={{ marginRight: 8 }} icon={icon} checkedIcon={checkedIcon} checked={selected} />
                 {option.name}
               </li>
             )}
-            renderInput={params => (
-              <TextField {...params} variant="outlined" label="設計師" placeholder="選擇設計師" />
-            )}
+            renderInput={params => <TextField {...params} variant="outlined" label="設計師" placeholder="選擇設計師" />}
           />
         </Field>
       </CardContent>

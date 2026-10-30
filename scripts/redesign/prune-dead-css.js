@@ -6,14 +6,19 @@ const postcss = require('postcss')
 const scss = require('postcss-scss')
 const [file, deadFile, write] = process.argv.slice(2)
 const dead = fs.readFileSync(deadFile, 'utf8').split(/\s+/).filter(Boolean)
-const deadFull = fs.readFileSync(process.env.DEAD_FULL || '/dev/null', 'utf8').split(/\s+/).filter(Boolean)
-const isDead = sel => dead.some(p => new RegExp(`\\.${p}(?![A-Za-z])`).test(sel)) || deadFull.some(c => new RegExp(`\\.${c}(?![A-Za-z0-9-])`).test(sel))
+const deadFull = fs
+  .readFileSync(process.env.DEAD_FULL || '/dev/null', 'utf8')
+  .split(/\s+/)
+  .filter(Boolean)
+const isDead = sel =>
+  dead.some(p => new RegExp(`\\.${p}(?![A-Za-z])`).test(sel)) || deadFull.some(c => new RegExp(`\\.${c}(?![A-Za-z0-9-])`).test(sel))
 const root = scss.parse(fs.readFileSync(file, 'utf8'))
 const resolve = (parentSels, sel) => {
   if (!parentSels) return [sel]
   return parentSels.map(p => (sel.includes('&') ? sel.replace(/&/g, p) : `${p} ${sel}`))
 }
-let removedSel = 0, removedRules = 0
+let removedSel = 0,
+  removedRules = 0
 const log = []
 function walk(node, parentSels) {
   node.each(child => {
@@ -23,9 +28,19 @@ function walk(node, parentSels) {
       const full = []
       for (const s of own) {
         const r = resolve(parentSels, s)
-        if (r.every(isDead)) { removedSel++; log.push(r.join(' | ')) } else { keep.push(s); full.push(...r) }
+        if (r.every(isDead)) {
+          removedSel++
+          log.push(r.join(' | '))
+        } else {
+          keep.push(s)
+          full.push(...r)
+        }
       }
-      if (keep.length === 0) { removedRules++; child.remove(); return }
+      if (keep.length === 0) {
+        removedRules++
+        child.remove()
+        return
+      }
       if (keep.length !== own.length) child.selectors = keep
       walk(child, full)
     } else if (child.type === 'atrule' && child.nodes) {

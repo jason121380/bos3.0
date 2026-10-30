@@ -1,11 +1,11 @@
 // 分頁使用 ui/table TablePagination（paginationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteProducts from 'hooks/useFetchDeleteProducts'
 import format from 'date-fns/format'
 import { useState, useEffect, useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import useFetchMerchantPassword from 'hooks/useFetchMerchantPassword'
 import idx from 'idx'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
@@ -24,10 +24,10 @@ import { formatNumber } from 'ui/format'
 import { Field, Input } from 'ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
-import ProdudctDrawer from './ProdudctDrawer';
+import ProdudctDrawer from './ProdudctDrawer'
 
 import EditProductsCategoryModal from './EditProductsCategoryModal'
-import PublishedDialog from './PublishedDialog';
+import PublishedDialog from './PublishedDialog'
 import VendorDialog from './VendorDialog'
 function Results({ className = '', products, refetchProducts, onPageChange, ...rest }) {
   const pageRef = useRef(null)
@@ -55,14 +55,13 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
   const [isClick, setIsClick] = useState(false)
 
   const handleSelectAll = event => {
-    const newSelectedPayment = event.target.checked
-      ? products.data.filter(d => d.isUsing).map(payment => payment.id)
-      : []
+    const newSelectedPayment = event.target.checked ? products.data.filter(d => d.isUsing).map(payment => payment.id) : []
     setSelectedProducts(newSelectedPayment)
   }
 
   const handleSelectOne = id => {
-    const newSelect = [...selectedProducts], index = newSelect.indexOf(id)
+    const newSelect = [...selectedProducts],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -77,11 +76,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
   }
 
   const handleConfirmCancel = () => {
-    delProducts(
-      disableDeleteProduct
-        ? { itemIds: selectedProducts, password: deleteOrderPwd }
-        : { itemIds: selectedProducts }
-    )
+    delProducts(disableDeleteProduct ? { itemIds: selectedProducts, password: deleteOrderPwd } : { itemIds: selectedProducts })
       .then(() => {
         setSelectedProducts([])
         setOpenDialog(false)
@@ -148,18 +143,18 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
       await setPublished({
         input: {
           productIds: selectedProducts,
-          isPublished
-        }
+          isPublished,
+        },
       })
       openSnackbar({
         variant: 'success',
-        message: '設定成功'
+        message: '設定成功',
       })
       handleClosePublishDialog()
     } catch (error) {
       openSnackbar({
         variant: 'error',
-        message: error.message
+        message: error.message,
       })
     } finally {
       setIsClick(false)
@@ -171,18 +166,18 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
       await setVendor({
         input: {
           productIds: selectedProducts,
-          MerchantVendorId: merchantVendorId
-        }
+          MerchantVendorId: merchantVendorId,
+        },
       })
       openSnackbar({
         variant: 'success',
-        message: '設定成功'
+        message: '設定成功',
       })
       handleClosePublishDialog()
     } catch (error) {
       openSnackbar({
         variant: 'error',
-        message: error.message
+        message: error.message,
       })
     } finally {
       setIsClick(false)
@@ -191,13 +186,10 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
 
   useEffect(() => {
     if (!passwordData.loading) {
-      const disableDeleteProduct = idx(
-        passwordData,
-        _ => _.data.merchantPassword.deleteProduct.isUsing
-      )
+      const disableDeleteProduct = idx(passwordData, _ => _.data.merchantPassword.deleteProduct.isUsing)
       setDisableDeleteProduct(disableDeleteProduct)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [passwordData.loading])
 
   useEffect(() => {
@@ -205,7 +197,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
       const productCategories = idx(productCategoriesData, _ => _.data.productCategories) || []
       setProductCategories(productCategories)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productCategoriesData.loading])
 
   useEffect(() => {
@@ -213,7 +205,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
     if (pageRef.current) {
       paginationLabel(pageRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（refetchProducts）；只在 [products, pageRef.current] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（refetchProducts）；只在 [products, pageRef.current] 變動時呼叫，補上會每次 render 重跑
   }, [products, pageRef.current])
 
   useEffect(() => {
@@ -267,9 +259,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
         >
           <div className="flex items-baseline gap-3">
             <CardTitle>所有商品</CardTitle>
-            <span className="text-label tabular-nums text-text-secondary">
-              共 {products.totalCount} 筆資料
-            </span>
+            <span className="text-label tabular-nums text-text-secondary">共 {products.totalCount} 筆資料</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-2">
@@ -283,10 +273,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
                     checked={selectedProducts.length === usingCount && usingCount > 0}
                     indeterminate={selectedProducts.length > 0 && selectedProducts.length < usingCount}
                     onChange={handleSelectAll}
-                    disabled={
-                      products.data.length === 0 ||
-                      products.data.filter(d => !d.isUsing).length === products.data.length
-                    }
+                    disabled={products.data.length === 0 || products.data.filter(d => !d.isUsing).length === products.data.length}
                   />
                 </TableHead>
                 <TableHead>代號</TableHead>
@@ -319,9 +306,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
                     />
                   </TableCell>
                   <TableCell className="tabular-nums">{data.no === null ? '無代號' : data.no}</TableCell>
-                  <TableCell>
-                    {data.productCategory === null ? '未分類' : data.productCategory.name}
-                  </TableCell>
+                  <TableCell>{data.productCategory === null ? '未分類' : data.productCategory.name}</TableCell>
                   <TableCell className="font-medium">{data.name}</TableCell>
                   {/* 成本顯示判斷 */}
                   {isDisplayCost && <TableCell numeric>{formatNumber(data.cost)}</TableCell>}
@@ -339,11 +324,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
                   </TableCell>
                   <TableCell className="text-right">
                     <Button asChild variant="ghost" size="icon" className="text-text-secondary">
-                      <RouterLink
-                        aria-label="編輯商品"
-                        to={`/product/edit/${data.id}`}
-                        {...linkDisabled(!data.isUsing)}
-                      >
+                      <RouterLink aria-label="編輯商品" to={`/product/edit/${data.id}`} {...linkDisabled(!data.isUsing)}>
                         <Pencil strokeWidth={1.75} />
                       </RouterLink>
                     </Button>
@@ -356,7 +337,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
         <div className="flex justify-end px-3 pb-2">
           <TablePagination
             ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
+            labelRowsPerPage="每頁顯示數量"
             count={products.totalCount}
             onPageChange={handleOnChangePage}
             onRowsPerPageChange={handleOnChangeRowsPerPage}
@@ -392,10 +373,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
         setMerchantVendorId={setMerchantVendorId}
         option={idx(merchantVendorList, _ => _.data.getMerchantVendorList) || []}
       />
-      <Dialog
-        open={openDialog}
-        onOpenChange={o => !o && handleCloseDialog()}
-      >
+      <Dialog open={openDialog} onOpenChange={o => !o && handleCloseDialog()}>
         <DialogContent size="sm" aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
           <DialogHeader>
             <DialogTitle id="alert-dialog-title">{'刪除商品'}</DialogTitle>

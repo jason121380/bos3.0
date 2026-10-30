@@ -7,8 +7,23 @@ import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/
 import { openSnackbar } from 'elements/snackbars'
 import { loginAs, callsOf, currentLocation } from '../../../__tests__/testkit.test'
 import {
-  setupPage, waitPageReady, pickEmployee, pickService, pickCustomer, checkoutButton, sentOrder, fieldInput,
-  DESIGNER, HELPER, PRODUCT, TICKET, MEMBERSHIP, button, buttons, queryButton, findButton,
+  setupPage,
+  waitPageReady,
+  pickEmployee,
+  pickService,
+  pickCustomer,
+  checkoutButton,
+  sentOrder,
+  fieldInput,
+  DESIGNER,
+  HELPER,
+  PRODUCT,
+  TICKET,
+  MEMBERSHIP,
+  button,
+  buttons,
+  queryButton,
+  findButton,
 } from './orderCreateKit.test'
 
 jest.setTimeout(30000)
@@ -36,7 +51,9 @@ afterEach(cleanup)
 const HELPER_NO_NUMBER = { userId: 'helper-2', userName: '張學徒', userNickName: null, userNo: '' }
 const RECORDS = [
   {
-    ticketName: '護髮五次卡', remark: '', price: 1000,
+    ticketName: '護髮五次卡',
+    remark: '',
+    price: 1000,
     ticketRecordForOrder: [{ id: 'tr-3', no: '3', name: '護髮五次卡', price: 1000, remark: '', helperSetting: [] }],
   },
 ]
@@ -212,7 +229,9 @@ describe('消費明細：收據格式與裝飾', () => {
   it('收據顯示 Logo、QR code 與訊息（A4 與感熱紙相同）', async () => {
     await simple({
       GET_LOGO_DISPLAY_INVOICE: { getLogoDisplayOnInvoice: { isDisplay: true, imageUrl: 'https://example.com/logo.png' } },
-      GET_QRCODE_DISPLAY_ON_INVOICE: { getQrcodeDisplayOnInvoice: { isDisplay: true, url: 'https://example.com', imageUrl: 'https://example.com/qr.png' } },
+      GET_QRCODE_DISPLAY_ON_INVOICE: {
+        getQrcodeDisplayOnInvoice: { isDisplay: true, url: 'https://example.com', imageUrl: 'https://example.com/qr.png' },
+      },
       GET_MESSAGE_DISPLAY_ON_INVOICE: { getMessageDisplayOnInvoice: { isDisplay: true, message: '歡迎再度光臨' } },
     })
     await openDetail()
@@ -279,7 +298,9 @@ describe('消費明細：送出', () => {
     await openDetail()
     const inDetail = buttons('結帳')
     fireEvent.click(inDetail[inDetail.length - 1])
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('庫存不足') })))
+    await wait(() =>
+      expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('庫存不足') }))
+    )
     expect(callsOf(calls2, 'FETCH_CREATE_ORDER')).toHaveLength(1)
     // 失敗後按鈕恢復，可直接再按（不必返回重開明細）
     await wait(() => expect(buttons('結帳').slice(-1)[0]).not.toBeDisabled())
@@ -353,7 +374,9 @@ describe('消費明細：送出', () => {
       pending = buttons('掛單')
       fireEvent.click(pending[pending.length - 1])
       act(() => pendingConfirm().usehandleCreateDraftOrder())
-      await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('網路暫斷') })))
+      await wait(() =>
+        expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('網路暫斷') }))
+      )
     } finally {
       window.location = location
     }
@@ -499,7 +522,9 @@ describe('消費明細：其他', () => {
     await wait(() => expect(checkoutButton()).not.toBeDisabled())
     await openDetail()
     fireEvent.click(button('結帳並列印'))
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('庫存不足') })))
+    await wait(() =>
+      expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('庫存不足') }))
+    )
     expect(window.open).not.toHaveBeenCalled()
     await wait(() => expect(button('結帳並列印')).not.toBeDisabled())
   })
@@ -587,14 +612,16 @@ describe('消費明細：載入中與收據邊界', () => {
   })
 
   it('顧客有其他預收卡紀錄：明細只列出這張帳單使用的那一張', async () => {
-    const { calls } = setupPage(richFixtures({
-      GET_TICKET_RECORDS_FOR_ORDERS: {
-        ticketRecordsForOrder: [
-          { id: 'tr-8', name: '其他卡', price: 500, remark: '' },
-          { id: 'tr-3', name: '護髮五次卡', price: 1000, remark: '' },
-        ],
-      },
-    }))
+    const { calls } = setupPage(
+      richFixtures({
+        GET_TICKET_RECORDS_FOR_ORDERS: {
+          ticketRecordsForOrder: [
+            { id: 'tr-8', name: '其他卡', price: 500, remark: '' },
+            { id: 'tr-3', name: '護髮五次卡', price: 1000, remark: '' },
+          ],
+        },
+      })
+    )
     await waitPageReady()
     await pickCustomer(calls)
     await pickEmployee()

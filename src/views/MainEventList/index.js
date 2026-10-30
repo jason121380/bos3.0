@@ -30,7 +30,7 @@ function MainEventList() {
   const [clickData, setClickData] = useState({
     name: '',
     id: '',
-    type: ''
+    type: '',
   })
 
   const handleCloseDialog = () => {
@@ -44,19 +44,19 @@ function MainEventList() {
       if (res.data.setMainEventUsing) {
         openSnackbar({
           message: '修改成功',
-          variant: 'success'
+          variant: 'success',
         })
         getMainEvents.refetch()
       } else {
         openSnackbar({
           message: '修改失敗',
-          variant: 'warning'
+          variant: 'warning',
         })
       }
     } catch (error) {
       openSnackbar({
         message: error.message,
-        variant: 'error'
+        variant: 'error',
       })
     }
   }
@@ -68,19 +68,19 @@ function MainEventList() {
       if (res.data.setEventRuleGroupUsing) {
         openSnackbar({
           message: '修改成功',
-          variant: 'success'
+          variant: 'success',
         })
         getMainEvents.refetch()
       } else {
         openSnackbar({
           message: '修改失敗',
-          variant: 'warning'
+          variant: 'warning',
         })
       }
     } catch (error) {
       openSnackbar({
         message: error.message,
-        variant: 'error'
+        variant: 'error',
       })
     }
   }
@@ -92,25 +92,25 @@ function MainEventList() {
       if (res.data.endMainEvent) {
         openSnackbar({
           message: '修改成功',
-          variant: 'success'
+          variant: 'success',
         })
         getMainEvents.refetch()
         setClickData({
           name: '',
-          id: ''
+          id: '',
         })
         handleCloseDialog()
       } else {
         openSnackbar({
           message: '修改失敗',
-          variant: 'warning'
+          variant: 'warning',
         })
       }
       setIsClick(false)
     } catch (error) {
       openSnackbar({
         message: error.message,
-        variant: 'error'
+        variant: 'error',
       })
       setIsClick(false)
     }
@@ -123,25 +123,25 @@ function MainEventList() {
       if (res.data.endEventRuleGroup) {
         openSnackbar({
           message: '修改成功',
-          variant: 'success'
+          variant: 'success',
         })
         getMainEvents.refetch()
         setClickData({
           name: '',
-          id: ''
+          id: '',
         })
         handleCloseDialog()
       } else {
         openSnackbar({
           message: '修改失敗',
-          variant: 'warning'
+          variant: 'warning',
         })
       }
       setIsClick(false)
     } catch (error) {
       openSnackbar({
         message: error.message,
-        variant: 'error'
+        variant: 'error',
       })
       setIsClick(false)
     }
@@ -178,7 +178,7 @@ function MainEventList() {
       const data = idx(getMainEvents, _ => _.data.mainEvents) || []
       setEvents(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMainEvents.loading])
 
   return (
@@ -196,10 +196,16 @@ function MainEventList() {
             }
           />
           {getMainEvents.error ? (
-          <QueryFailed onRetry={() => getMainEvents.refetch()} />
-        ) : getMainEvents.loading ?
-            <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
-            : <Results
+            <QueryFailed onRetry={() => getMainEvents.refetch()} />
+          ) : getMainEvents.loading ? (
+            <div className="flex flex-col gap-3">
+              <Skeleton className="h-14 w-full" />
+              <Skeleton className="h-11 w-full" />
+              <Skeleton className="h-11 w-full" />
+              <Skeleton className="h-11 w-full" />
+            </div>
+          ) : (
+            <Results
               events={events}
               setEventUsing={handleSetMainEventUsing}
               setEventRuleUsing={handleSetEventRuleGroupUsing}
@@ -211,16 +217,10 @@ function MainEventList() {
               selectIds={selectIds}
               clickData={clickData}
             />
-          }
+          )}
         </div>
       </Page>
-      <ComfirmDialog
-        clickData={clickData}
-        isClick={isClick}
-        dialogOpen={dialogOpen}
-        close={handleCloseDialog}
-        confirmFunc={handleChooseFunc}
-      />
+      <ComfirmDialog clickData={clickData} isClick={isClick} dialogOpen={dialogOpen} close={handleCloseDialog} confirmFunc={handleChooseFunc} />
     </Fragment>
   )
 }

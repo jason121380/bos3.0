@@ -55,7 +55,7 @@ export function useProductPicker() {
       })
       setProductCategories(productCategories)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [products.loading, products.data, productCategoriesData.l…] 變動時執行；productCategoriesData、products、setting 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [products.loading, products.data, productCategoriesData.l…] 變動時執行；productCategoriesData、products、setting 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [products.loading, products.data, productCategoriesData.loading])
 
   const handleOpenProductsModal = () => {
@@ -100,48 +100,48 @@ export function useProductPicker() {
 
 // 會員卡
 export function useMembershipPicker() {
-  const [productsModalOpen, setProductsModalOpen] = useState(false);
-  const [selectedCategorie, setSelectedCategorie] = useState([]);
-  const [selectedCategorieName, setSelectedCategorieName] = useState([]);
-  const [productList, setProductList] = useState([]);
-  const [productCategories, setProductCategories] = useState([]);
-  const [setting, setSetting] = useState(MEMBERSHIP_PICKER_SETTING);
-  const products = useFetchGetMembershipsForModal(setting);
-  const productCategoriesData = useFetchGetMembershipCategories({});
+  const [productsModalOpen, setProductsModalOpen] = useState(false)
+  const [selectedCategorie, setSelectedCategorie] = useState([])
+  const [selectedCategorieName, setSelectedCategorieName] = useState([])
+  const [productList, setProductList] = useState([])
+  const [productCategories, setProductCategories] = useState([])
+  const [setting, setSetting] = useState(MEMBERSHIP_PICKER_SETTING)
+  const products = useFetchGetMembershipsForModal(setting)
+  const productCategoriesData = useFetchGetMembershipCategories({})
 
   useEffect(() => {
     if (!products.loading && !productCategoriesData.loading) {
       // 查詢失敗時同店販：清單與分類當作空的（彈窗以 productList.data.length 計筆數）
-      const productList = idx(products, (_) => _.data.memberships) || emptyPage(setting);
-      const productCategories = idx(productCategoriesData, (_) => _.data.membershipCategories) || [];
+      const productList = idx(products, _ => _.data.memberships) || emptyPage(setting)
+      const productCategories = idx(productCategoriesData, _ => _.data.membershipCategories) || []
       setProductList({
         ...productList,
-      });
-      setProductCategories(productCategories);
+      })
+      setProductCategories(productCategories)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [products.loading, products.data, productCategoriesData.l…] 變動時執行；productCategoriesData、products、setting 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
-  }, [products.loading, products.data, productCategoriesData.loading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [products.loading, products.data, productCategoriesData.l…] 變動時執行；productCategoriesData、products、setting 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+  }, [products.loading, products.data, productCategoriesData.loading])
 
   const handleOpenProductsModal = () => {
     if (!products.loading) {
-      setProductsModalOpen(!productsModalOpen);
+      setProductsModalOpen(!productsModalOpen)
     }
-  };
+  }
 
   const handleCloseProductsModal = () => {
-    setProductsModalOpen(false);
-    setSelectedCategorie([]);
-    setSelectedCategorieName([]);
-    setSetting(MEMBERSHIP_PICKER_SETTING);
-  };
+    setProductsModalOpen(false)
+    setSelectedCategorie([])
+    setSelectedCategorieName([])
+    setSetting(MEMBERSHIP_PICKER_SETTING)
+  }
 
   const handlePageChange = ({ value, key }) => {
     setSetting(
-      produce((draft) => {
-        draft[key] = value;
+      produce(draft => {
+        draft[key] = value
       })
-    );
-  };
+    )
+  }
 
   return {
     productsModalOpen,

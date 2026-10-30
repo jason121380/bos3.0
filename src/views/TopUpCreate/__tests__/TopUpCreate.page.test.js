@@ -25,18 +25,27 @@ jest.mock('ui/date-picker', () => ({
 }))
 jest.mock('components/EmployeeAutoComplete', () => ({ value, onChange, fieldProps }) => (
   <div data-testid="designer" data-value={value || ''}>
-    <button type="button" onClick={() => onChange({ userId: 'designer-1' })}>選{fieldProps.label}</button>
+    <button type="button" onClick={() => onChange({ userId: 'designer-1' })}>
+      選{fieldProps.label}
+    </button>
     {fieldProps.error && <span>{fieldProps.helperText}</span>}
   </div>
 ))
 jest.mock('components/CustomerAutoComplete', () => ({ value, onChange, fieldProps }) => (
   <div data-testid="customer" data-value={value || ''}>
-    <button type="button" onClick={() => onChange({ id: 'customer-1' })}>選{fieldProps.label}</button>
+    <button type="button" onClick={() => onChange({ id: 'customer-1' })}>
+      選{fieldProps.label}
+    </button>
     {fieldProps.error && <span>{fieldProps.helperText}</span>}
   </div>
 ))
 
-const PAYMENTS = { merchantPayWays: [{ id: 'pay-1', name: '信用卡' }, { id: 'pay-2', name: 'LINE Pay' }] }
+const PAYMENTS = {
+  merchantPayWays: [
+    { id: 'pay-1', name: '信用卡' },
+    { id: 'pay-2', name: 'LINE Pay' },
+  ],
+}
 
 const setup = (fixtures = {}, options = {}) =>
   renderPage(<TopUpCreate />, {
@@ -64,7 +73,9 @@ describe('新增入金', () => {
     const utils = setup()
     await utils.settle()
     expect(screen.getByLabelText('日期').value).toBe(format(new Date(), 'yyyy/MM/dd HH:mm'))
-    const options = Array.from(payType().querySelectorAll('option')).map(o => o.textContent).filter(Boolean)
+    const options = Array.from(payType().querySelectorAll('option'))
+      .map(o => o.textContent)
+      .filter(Boolean)
     expect(options).toEqual(['現金', '信用卡', 'LINE Pay'])
     expect(screen.getByLabelText('選擇入金儲值手續費負擔方')).toBeInTheDocument()
     choose(payType(), '現金')
@@ -73,7 +84,9 @@ describe('新增入金', () => {
 
   it('支付方式載入中只有現金與 None 選項', async () => {
     setup({}, { delays: { PAYMENTS: 300 } })
-    const options = Array.from(payType().querySelectorAll('option')).map(o => o.textContent).filter(Boolean)
+    const options = Array.from(payType().querySelectorAll('option'))
+      .map(o => o.textContent)
+      .filter(Boolean)
     expect(options).toEqual(['現金', 'None'])
   })
 
@@ -157,7 +170,9 @@ describe('新增入金', () => {
     const utils = setup({ PAYMENTS: new Error('查詢失敗') })
     await utils.settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
-    const options = Array.from(payType().querySelectorAll('option')).map(o => o.textContent).filter(Boolean)
+    const options = Array.from(payType().querySelectorAll('option'))
+      .map(o => o.textContent)
+      .filter(Boolean)
     expect(options).toEqual(['現金'])
   })
 

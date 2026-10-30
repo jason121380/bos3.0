@@ -25,9 +25,7 @@ export const mockedMerchantCustomerCategory = {
 export default function useFetchMerchantCustomerCategory() {
   return useQuery(GET_CUSTOMER_CATEGORY, {
     variables: {
-      merchantId: localStorage.getItem('userMerchant')
-        ? JSON.parse(localStorage.getItem('userMerchant')).id
-        : null,
+      merchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
     },
     fetchPolicy: SETTINGS_FETCH_POLICY,
   })

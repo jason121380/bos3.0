@@ -12,17 +12,17 @@ export default function useInvoiceDecorations() {
   const [detailInfo, setDetailInfo] = useState({
     logo: {
       isDisplay: false,
-      imageUrl: null
+      imageUrl: null,
     },
     qrcode: {
       isDisplay: false,
       url: null,
-      imageUrl: null
+      imageUrl: null,
     },
     message: {
       isDisplay: false,
       message: null,
-    }
+    },
   })
   const [qrcodeUrl, setQrcodeUrl] = useState('')
   const [imgUrl, setImgUrl] = useState('')
@@ -31,18 +31,14 @@ export default function useInvoiceDecorations() {
   const getMessageDisplayOnInvoice = useFetchGetMessageDisplayOnInvoice()
 
   useEffect(() => {
-    if (
-      !getLogoDisplayOnInvoice.loading &&
-      !getQrcodeDisplayOnInvoice.loading &&
-      !getMessageDisplayOnInvoice.loading
-    ) {
+    if (!getLogoDisplayOnInvoice.loading && !getQrcodeDisplayOnInvoice.loading && !getMessageDisplayOnInvoice.loading) {
       const logo = idx(getLogoDisplayOnInvoice, _ => _.data.getLogoDisplayOnInvoice)
       const qrcode = idx(getQrcodeDisplayOnInvoice, _ => _.data.getQrcodeDisplayOnInvoice)
       const message = idx(getMessageDisplayOnInvoice, _ => _.data.getMessageDisplayOnInvoice)
       setDetailInfo({
         logo: logo,
         qrcode: qrcode,
-        message: message
+        message: message,
       })
       QRCode.toDataURL(qrcode.url, (err, string) => {
         !err && setQrcodeUrl(string)
@@ -50,7 +46,7 @@ export default function useInvoiceDecorations() {
       // 沒啟用或沒有 logo 網址時 imageUrl 是 null；不要 fetch(null)（會打到 /null）
       if (logo && logo.imageUrl) {
         const getDataUrl = async () => {
-          let blob = await fetch(logo.imageUrl).then(r => r.blob());
+          let blob = await fetch(logo.imageUrl).then(r => r.blob())
           let dataUrl = await new Promise(resolve => {
             let reader = new FileReader()
             reader.onload = () => resolve(reader.result)
@@ -61,12 +57,8 @@ export default function useInvoiceDecorations() {
         getDataUrl().catch(() => {})
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-  }, [
-    getLogoDisplayOnInvoice.loading,
-    getQrcodeDisplayOnInvoice.loading,
-    getMessageDisplayOnInvoice.loading
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+  }, [getLogoDisplayOnInvoice.loading, getQrcodeDisplayOnInvoice.loading, getMessageDisplayOnInvoice.loading])
 
   return {
     detailInfo,

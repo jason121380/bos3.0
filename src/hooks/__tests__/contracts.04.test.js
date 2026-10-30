@@ -174,9 +174,7 @@ const ROWS = [
     hook: useFetchGetUserServiceDeductionDetailMultiple.default,
     args: [{ input: { probe: 'input' } }],
     expect: {
-      initial: [
-        { operationName: 'FETCH_USER_SERVICE_DEDUCTION_DETAIL_MULTIPLE', variables: { input: { probe: 'input' } } },
-      ],
+      initial: [{ operationName: 'FETCH_USER_SERVICE_DEDUCTION_DETAIL_MULTIPLE', variables: { input: { probe: 'input' } } }],
       shape: { loading: false, called: true, data: ['getUserServiceDeductionDetialMultiple'] },
       policies: { FETCH_USER_SERVICE_DEDUCTION_DETAIL_MULTIPLE: 'cache-and-network' },
     },
@@ -264,9 +262,7 @@ const ROWS = [
     expect: {
       initial: [],
       shape: ['function', { loading: false, called: false }],
-      invoked: [
-        { fn: 0, calls: [{ operationName: 'GET_MERCHANT_INCOMES_STATEMENT_V2_EXCEL', variables: { date: 'date-v' } }] },
-      ],
+      invoked: [{ fn: 0, calls: [{ operationName: 'GET_MERCHANT_INCOMES_STATEMENT_V2_EXCEL', variables: { date: 'date-v' } }] }],
       shapeAfter: ['function', { loading: false, called: true, data: ['merchantIncomeStatementV2Excel'] }],
       policies: { GET_MERCHANT_INCOMES_STATEMENT_V2_EXCEL: 'cache-and-network' },
     },
@@ -1086,9 +1082,7 @@ const ROWS = [
     expect: {
       initial: [],
       shape: ['function', { loading: false, called: false }],
-      invoked: [
-        { fn: 0, calls: [{ operationName: 'FETCH_ORDERS_FOR_FAST_CHECK', variables: { input: { probe: 'input' } } }] },
-      ],
+      invoked: [{ fn: 0, calls: [{ operationName: 'FETCH_ORDERS_FOR_FAST_CHECK', variables: { input: { probe: 'input' } } }] }],
       shapeAfter: ['function', { loading: false, called: true, data: ['orders'] }],
       policies: { FETCH_ORDERS_FOR_FAST_CHECK: 'cache-and-network' },
     },

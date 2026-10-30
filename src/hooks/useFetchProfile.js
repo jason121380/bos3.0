@@ -25,8 +25,7 @@ export const mockedProfile = {
       email: null,
       status: 'ok',
       gender: 'MALE',
-      avatar:
-        'https://cdn1.iconfinder.com/data/icons/navigation-elements/512/user-login-man-human-body-mobile-person-512.png',
+      avatar: 'https://cdn1.iconfinder.com/data/icons/navigation-elements/512/user-login-man-human-body-mobile-person-512.png',
       address: null,
       nickName: ' ',
       birthday: -2208961440000,

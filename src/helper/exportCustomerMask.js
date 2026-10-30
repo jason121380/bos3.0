@@ -14,11 +14,8 @@ export const isCustomerExportMaskSettingOff = queryResult => {
 // 遮罩格式與帳單列表、掛單列表的「報表匯出」相同：
 // 姓名 1～2 字留第 1 字＋*；3 字留頭尾、中間 *；4 字以上留前 2 字、第 3 字換成 *、再留第 4～5 字；手機留前 4 碼＋***＋第 8～10 碼
 // （4 字以上原本是「插入」* 而沒有遮掉任何字，歐陽小美→歐陽*小美 等於完整姓名；Codex review PR #270 P1，改為取代第 3 字）
-const maskName = n => (n.length < 3
-  ? `${n.substring(0, 1)}*`
-  : n.length < 4
-    ? `${n.substring(0, 1)}*${n.substring(2, 3)}`
-    : `${n.substring(0, 2)}*${n.substring(3, 5)}`)
+const maskName = n =>
+  n.length < 3 ? `${n.substring(0, 1)}*` : n.length < 4 ? `${n.substring(0, 1)}*${n.substring(2, 3)}` : `${n.substring(0, 2)}*${n.substring(3, 5)}`
 const maskPhone = phone => `${phone.substring(0, 4)}***${phone.substring(7, 10)}`
 
 // 卡券管理匯出：「姓名 手機」一欄

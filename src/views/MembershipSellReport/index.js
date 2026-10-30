@@ -5,7 +5,7 @@ import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import useFetchGetMembershipSellReport from 'hooks/useFetchGetMembershipSellReport'
 import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { startOfDay, endOfDay, format } from 'date-fns'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import { maskCustomerName } from 'helper/exportCustomerMask'
 import roundDecimal from './../../helper/roundDecimal.js'
 import { Download } from 'lucide-react'
@@ -34,7 +34,7 @@ export default function MembershipSellReport() {
       designerId: inputData.employeeId === '' ? null : inputData.employeeId,
       customerId: inputData.customerId === '' ? null : inputData.customerId,
       membershipId: inputData.membershipId === '' ? null : inputData.membershipId,
-    }
+    },
   })
 
   const handleCountTotal = key => {
@@ -65,7 +65,7 @@ export default function MembershipSellReport() {
         '販賣業績(實)': roundDecimal(d.truth),
         抽成: roundDecimal(d.rake),
         備註: d.remark,
-        到期日: d.expiryDate ? format(d.expiryDate, 'yyyy/MM/dd') : '永久會籍'
+        到期日: d.expiryDate ? format(d.expiryDate, 'yyyy/MM/dd') : '永久會籍',
       })
     })
     data.push({
@@ -84,13 +84,13 @@ export default function MembershipSellReport() {
       到期日: '',
     })
     setExcelData(data)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleCountTotal）；只在 [reportData] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleCountTotal）；只在 [reportData] 變動時呼叫，補上會每次 render 重跑
   }, [reportData])
 
   return (
     <Page className="ui-root" title="會員卡銷售報表">
       <div>
-        <PageHeader title='會員卡銷售報表'>
+        <PageHeader title="會員卡銷售報表">
           <Button asChild variant="secondary">
             <CSVLink data={excelData} filename="會員卡銷售報表.csv">
               <Download strokeWidth={1.75} />
@@ -123,12 +123,7 @@ export default function MembershipSellReport() {
         {getMembershipSellReport.error ? (
           <QueryFailed onRetry={() => getMembershipSellReport.refetch()} />
         ) : !getMembershipSellReport.loading ? (
-          <Results
-            reportData={reportData}
-            format={format}
-            roundDecimal={roundDecimal}
-            handleCountTotal={handleCountTotal}
-          />
+          <Results reportData={reportData} format={format} roundDecimal={roundDecimal} handleCountTotal={handleCountTotal} />
         ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示
           <div aria-busy="true" aria-label="載入中">

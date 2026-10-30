@@ -63,10 +63,7 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
           <div className="flex flex-wrap gap-4">
             {service.salaryIncreaseItem.map((data, index) => (
               <div className="flex items-center mb-[24px] w-[190px]" key={index}>
-                <span
-                  className="inline-block shrink-0 text-heading tabular-nums text-text"
-                  style={{ margin: '0 5px', width: '25px' }}
-                >
+                <span className="inline-block shrink-0 text-heading tabular-nums text-text" style={{ margin: '0 5px', width: '25px' }}>
                   {data.sorting}
                 </span>
                 <Input
@@ -80,19 +77,12 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
                 <div style={{ display: 'flex' }}>
                   {service.salaryIncreaseItem.length > 1 && (
                     <DeleteForeverIcon
-                      onClick={() =>
-                        inputEnable && handleDeleteSetting('salaryIncreaseItem', index)
-                      }
+                      onClick={() => inputEnable && handleDeleteSetting('salaryIncreaseItem', index)}
                       style={{ cursor: 'pointer' }}
                     />
                   )}
                   {index === service.salaryIncreaseItem.length - 1 && (
-                    <AddIcon
-                      onClick={() =>
-                        inputEnable && handleAddSetting('salaryIncreaseItem', data.sorting)
-                      }
-                      style={{ cursor: 'pointer' }}
-                    />
+                    <AddIcon onClick={() => inputEnable && handleAddSetting('salaryIncreaseItem', data.sorting)} style={{ cursor: 'pointer' }} />
                   )}
                 </div>
               </div>
@@ -108,10 +98,7 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
           <div className="flex flex-wrap gap-4">
             {service.salaryDecreaseItem.map((data, index) => (
               <div className="flex items-center mb-[24px] w-[190px]" key={index}>
-                <span
-                  className="inline-block shrink-0 text-heading tabular-nums text-text"
-                  style={{ margin: '0 5px', width: '25px' }}
-                >
+                <span className="inline-block shrink-0 text-heading tabular-nums text-text" style={{ margin: '0 5px', width: '25px' }}>
                   {data.sorting}
                 </span>
                 <Input
@@ -125,19 +112,12 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
                 <div style={{ display: 'flex' }}>
                   {service.salaryDecreaseItem.length > 1 && (
                     <DeleteForeverIcon
-                      onClick={() =>
-                        inputEnable && handleDeleteSetting('salaryDecreaseItem', index)
-                      }
+                      onClick={() => inputEnable && handleDeleteSetting('salaryDecreaseItem', index)}
                       style={{ cursor: 'pointer' }}
                     />
                   )}
                   {index === service.salaryDecreaseItem.length - 1 && (
-                    <AddIcon
-                      onClick={() =>
-                        inputEnable && handleAddSetting('salaryDecreaseItem', data.sorting)
-                      }
-                      style={{ cursor: 'pointer' }}
-                    />
+                    <AddIcon onClick={() => inputEnable && handleAddSetting('salaryDecreaseItem', data.sorting)} style={{ cursor: 'pointer' }} />
                   )}
                 </div>
               </div>

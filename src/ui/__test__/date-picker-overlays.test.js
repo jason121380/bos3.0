@@ -16,7 +16,13 @@ afterEach(() => {
 
 const Harness = ({ Picker, onAccept, onClose }) => {
   const [value, setValue] = React.useState(initial)
-  return <><Picker value={value} onChange={setValue} onAccept={onAccept} onClose={onClose} closeOnSelect={false} /><output data-testid="value">{value.getDate()}</output><button>外部按鈕</button></>
+  return (
+    <>
+      <Picker value={value} onChange={setValue} onAccept={onAccept} onClose={onClose} closeOnSelect={false} />
+      <output data-testid="value">{value.getDate()}</output>
+      <button>外部按鈕</button>
+    </>
+  )
 }
 const openPicker = Picker => {
   const opener = Picker === DatePicker ? screen.getByRole('button', { name: /^選擇日期/ }) : screen.getByRole('textbox')
@@ -114,7 +120,13 @@ test('手機取消還原，重開確認接受新值', () => {
 test.each([DatePicker, MobileDatePicker])('%s 由外層切換 open 時，每次還原當次開啟焦點', async Picker => {
   const Harness = () => {
     const [open, setOpen] = React.useState(false)
-    return <><button onClick={() => setOpen(true)}>第一個入口</button><button onClick={() => setOpen(true)}>第二個入口</button><Picker open={open} value={initial} onClose={() => setOpen(false)} /></>
+    return (
+      <>
+        <button onClick={() => setOpen(true)}>第一個入口</button>
+        <button onClick={() => setOpen(true)}>第二個入口</button>
+        <Picker open={open} value={initial} onClose={() => setOpen(false)} />
+      </>
+    )
   }
   render(<Harness />)
   for (const name of ['第一個入口', '第二個入口']) {

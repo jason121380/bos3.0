@@ -12,9 +12,7 @@ jest.setTimeout(20000)
 beforeEach(() => loginAs())
 afterEach(cleanup)
 
-it.each([
-  ['查無活動', { fixtures: { GET_MERCHANT_EVENT: { mainEvent: null } } }],
-])('%s時不整頁壞，表單為預設值', async (_, options) => {
+it.each([['查無活動', { fixtures: { GET_MERCHANT_EVENT: { mainEvent: null } } }]])('%s時不整頁壞，表單為預設值', async (_, options) => {
   const { settle } = renderPage(<MainEventEdit match={{ params: { id: 'e1' } }} />, options)
   await settle()
   expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()

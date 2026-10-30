@@ -30,9 +30,19 @@ export default function useDraftCheckout({ passwordData }) {
   const [printOrderDetail, setPrintOrderDetail] = useState([])
   const [isClick, setIsClick] = useState(false)
   const {
-    stayInCreateOrder, bill, orderSetting, orderId, order, handleBillChange,
-    bonusActive, customerBonus, closureDelayed, bonusSetting, setBill,
-    isLineBinded, bonusRewardWithLINE
+    stayInCreateOrder,
+    bill,
+    orderSetting,
+    orderId,
+    order,
+    handleBillChange,
+    bonusActive,
+    customerBonus,
+    closureDelayed,
+    bonusSetting,
+    setBill,
+    isLineBinded,
+    bonusRewardWithLINE,
   } = React.useContext(billContext)
   const [reCheckoutPwd, setReCheckoutPwd] = useState('')
   const [openDialog, setOpenDialog] = useState(false)
@@ -43,9 +53,12 @@ export default function useDraftCheckout({ passwordData }) {
   const client = useApolloClient()
   const mountedRef = useRef(true)
   const leaveDraftRef = useRef(false)
-  useEffect(() => () => {
-    mountedRef.current = false
-  }, [])
+  useEffect(
+    () => () => {
+      mountedRef.current = false
+    },
+    []
+  )
   useEffect(() => {
     if (order) {
       const filterOrder = order
@@ -55,13 +68,10 @@ export default function useDraftCheckout({ passwordData }) {
 
   useEffect(() => {
     if (!passwordData.loading) {
-      const disableRecheckoutOrders = idx(
-        passwordData,
-        _ => _.data.merchantPassword.reCheckoutOrder.isUsing
-      )
+      const disableRecheckoutOrders = idx(passwordData, _ => _.data.merchantPassword.reCheckoutOrder.isUsing)
       setDisableRecheckoutOrders(disableRecheckoutOrders)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [passwordData.loading])
   const { fetchReCheckoutOrder } = useFetchReCheckoutOrder()
 
@@ -76,7 +86,7 @@ export default function useDraftCheckout({ passwordData }) {
   }
 
   const goToClosedBill = (draftId, closedId, listPath) => {
-    const target = closedId && closedId !== draftId ? `/order/${closedId}` : (listPath || '/management/orders')
+    const target = closedId && closedId !== draftId ? `/order/${closedId}` : listPath || '/management/orders'
     try {
       history.replace(target)
     } catch (navError) {
@@ -108,7 +118,7 @@ export default function useDraftCheckout({ passwordData }) {
     return () => {
       cancelled = true
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [orderId, orderDate] 變動時執行；client、goToClosedBill、leaveCheckedOutDraft、order 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [orderId, orderDate] 變動時執行；client、goToClosedBill、leaveCheckedOutDraft、order 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [orderId, orderDate])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps -- F9 快捷鍵的 effect 刻意每次 render 重新綁定，才能拿到最新帳單的結帳函式
@@ -124,19 +134,19 @@ export default function useDraftCheckout({ passwordData }) {
     if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       setIsClick(false)
       setIsRecheckoutOrders(false)
-      return;
+      return
     } else if (!checkMember.verify) {
       openSnackbar({
         message: checkMember.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       setIsClick(false)
       setIsRecheckoutOrders(false)
-      return;
+      return
     } else {
       const draftId = orderSetting.orderId
       fetchReCheckoutOrder({
@@ -161,7 +171,8 @@ export default function useDraftCheckout({ passwordData }) {
           setOpenDialog(false)
           setIsRecheckoutOrders(false)
           setReCheckoutPwd('')
-        }).catch(err => {
+        })
+        .catch(err => {
           if (!isUncertainCheckoutError(err)) {
             openSnackbar({
               message: err.message,
@@ -223,21 +234,21 @@ export default function useDraftCheckout({ passwordData }) {
     if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       setIsClick(false)
       setIsRecheckoutOrders(false)
       setOpen(false)
-      return;
+      return
     } else if (!checkMember.verify) {
       openSnackbar({
         message: checkMember.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       setIsClick(false)
       setIsRecheckoutOrders(false)
       setOpen(false)
-      return;
+      return
     } else {
       fetchReCheckoutOrder({
         updateOrderId: orderSetting.orderId,
@@ -265,7 +276,7 @@ export default function useDraftCheckout({ passwordData }) {
           setOpen(false)
         })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [bill, history, setOpen, draftGate] 變動時執行；fetchReCheckoutOrder、orderSetting.orderId 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [bill, history, setOpen, draftGate] 變動時執行；fetchReCheckoutOrder、orderSetting.orderId 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [bill, history, setOpen, draftGate])
 
   const customerTicketRecords = useFetchTicketRecords({
@@ -299,40 +310,20 @@ export default function useDraftCheckout({ passwordData }) {
   }, [disabledEditOrder, handleReCheckoutOrder, disableRecheckoutOrders, draftGate])
 
   const serviceTotalPriceArray = idx(bill, _ =>
-    _.serviceOrders.map(d =>
-      d.thirdPartyCouponMerchantId === null || d.thirdPartyCouponMerchantId === undefined
-        ? d.price : 0
-    )
+    _.serviceOrders.map(d => (d.thirdPartyCouponMerchantId === null || d.thirdPartyCouponMerchantId === undefined ? d.price : 0))
   )
   const productTotalPriceArray = idx(bill, _ =>
-    _.productOrders.map(d =>
-      d.thirdPartyCouponMerchantId === null || d.thirdPartyCouponMerchantId === undefined
-        ? d.price * d.count
-        : 0
-    )
+    _.productOrders.map(d => (d.thirdPartyCouponMerchantId === null || d.thirdPartyCouponMerchantId === undefined ? d.price * d.count : 0))
   )
   const membershipTotalPriceArray = idx(bill, _ =>
-    _.membershipOrders.map(d =>
-      d.thirdPartyCouponMerchantId === null || d.thirdPartyCouponMerchantId === undefined
-        ? d.price : 0
-    )
+    _.membershipOrders.map(d => (d.thirdPartyCouponMerchantId === null || d.thirdPartyCouponMerchantId === undefined ? d.price : 0))
   )
 
-  const serviceTotalPriceWithoutThirdPartyCoupon = serviceTotalPriceArray.reduce(
-    (total, item) => (total = total + item),
-    0
-  )
-  const productTotalPriceWithoutThirdPartyCoupon = productTotalPriceArray.reduce(
-    (total, item) => (total = total + item),
-    0
-  )
-  const membershipTotalPriceWithoutThirdPartyCoupon = membershipTotalPriceArray.reduce(
-    (total, item) => (total = total + item),
-    0
-  )
+  const serviceTotalPriceWithoutThirdPartyCoupon = serviceTotalPriceArray.reduce((total, item) => (total = total + item), 0)
+  const productTotalPriceWithoutThirdPartyCoupon = productTotalPriceArray.reduce((total, item) => (total = total + item), 0)
+  const membershipTotalPriceWithoutThirdPartyCoupon = membershipTotalPriceArray.reduce((total, item) => (total = total + item), 0)
 
-  const serviceTotalPrice =
-    bill.serviceOrders.length > 0 ? bill.serviceOrders.reduce((a, b) => a + b.price, 0) : 0
+  const serviceTotalPrice = bill.serviceOrders.length > 0 ? bill.serviceOrders.reduce((a, b) => a + b.price, 0) : 0
 
   const merchantSellTotalPrice =
     bill.productOrders.length > 1
@@ -348,16 +339,16 @@ export default function useDraftCheckout({ passwordData }) {
         ? bill.ticketOrders[0].count * bill.ticketOrders[0].price
         : 0
 
-  const membershipTotalPrice =
-    bill.membershipOrders.length > 0 ? bill.membershipOrders.reduce((a, b) => a + b.price, 0) : 0
+  const membershipTotalPrice = bill.membershipOrders.length > 0 ? bill.membershipOrders.reduce((a, b) => a + b.price, 0) : 0
 
-  const couponUsageTotalPrice = idx(customerTicketRecords, _ =>
-    _.data.ticketRecords.data.length > 1
-      ? _.data.ticketRecords.data.reduce((r, b) => r + b.price, 0)
-      : _.data.ticketRecords.data.length === 1
-        ? _.data.ticketRecords.data[0].price
-        : 0
-  ) ?? 0
+  const couponUsageTotalPrice =
+    idx(customerTicketRecords, _ =>
+      _.data.ticketRecords.data.length > 1
+        ? _.data.ticketRecords.data.reduce((r, b) => r + b.price, 0)
+        : _.data.ticketRecords.data.length === 1
+          ? _.data.ticketRecords.data[0].price
+          : 0
+    ) ?? 0
 
   // 只在店家設了重新結帳密碼（disableRecheckoutOrders）時由 Footer 與 F9 呼叫
   const handleOpenReCheckout = () => {
@@ -371,12 +362,12 @@ export default function useDraftCheckout({ passwordData }) {
   useEffect(() => {
     if (
       serviceTotalPriceWithoutThirdPartyCoupon +
-      productTotalPriceWithoutThirdPartyCoupon +
-      couponSellPrice +
-      membershipTotalPriceWithoutThirdPartyCoupon -
-      bill.walletPay -
-      bill.amountByOtherPay -
-      bill.bonusDecount <
+        productTotalPriceWithoutThirdPartyCoupon +
+        couponSellPrice +
+        membershipTotalPriceWithoutThirdPartyCoupon -
+        bill.walletPay -
+        bill.amountByOtherPay -
+        bill.bonusDecount <
       0
     ) {
       setBill(
@@ -388,14 +379,19 @@ export default function useDraftCheckout({ passwordData }) {
       )
     }
   }, [
-    serviceTotalPriceWithoutThirdPartyCoupon, productTotalPriceWithoutThirdPartyCoupon,
-    couponSellPrice, membershipTotalPriceWithoutThirdPartyCoupon, bill.walletPay,
-    bill.amountByOtherPay, bill.bonusDecount, setBill
+    serviceTotalPriceWithoutThirdPartyCoupon,
+    productTotalPriceWithoutThirdPartyCoupon,
+    couponSellPrice,
+    membershipTotalPriceWithoutThirdPartyCoupon,
+    bill.walletPay,
+    bill.amountByOtherPay,
+    bill.bonusDecount,
+    setBill,
   ])
 
   useEffect(() => {
     if (bonusSetting.isUsing) {
-      let bonusDeposit = 0; // 預設為 0
+      let bonusDeposit = 0 // 預設為 0
 
       if (!bonusRewardWithLINE || (bonusRewardWithLINE && isLineBinded)) {
         const total =
@@ -405,23 +401,31 @@ export default function useDraftCheckout({ passwordData }) {
           membershipTotalPriceWithoutThirdPartyCoupon -
           bill.walletPay -
           bill.amountByOtherPay -
-          bill.bonusDecount;
+          bill.bonusDecount
 
-        bonusDeposit = giveBonus[bonusSetting.rule.mode](total, bonusSetting.rule.price, bonusSetting.rule.bonus);
+        bonusDeposit = giveBonus[bonusSetting.rule.mode](total, bonusSetting.rule.price, bonusSetting.rule.bonus)
       }
 
       setBill(
         produce(draft => {
-          draft.bonusDeposit = bonusDeposit;
+          draft.bonusDeposit = bonusDeposit
         })
-      );
+      )
     }
   }, [
-    serviceTotalPriceWithoutThirdPartyCoupon, productTotalPriceWithoutThirdPartyCoupon,
-    couponSellPrice, membershipTotalPriceWithoutThirdPartyCoupon, bill.walletPay,
-    bill.amountByOtherPay, bill.bonusDecount, bill.customerId, bonusRewardWithLINE,
+    serviceTotalPriceWithoutThirdPartyCoupon,
+    productTotalPriceWithoutThirdPartyCoupon,
+    couponSellPrice,
+    membershipTotalPriceWithoutThirdPartyCoupon,
+    bill.walletPay,
+    bill.amountByOtherPay,
+    bill.bonusDecount,
+    bill.customerId,
+    bonusRewardWithLINE,
     // 給點設定可能比帳單晚回來，回來後也要重新計算
-    isLineBinded, setBill, bonusSetting
+    isLineBinded,
+    setBill,
+    bonusSetting,
   ])
 
   // 金額彙總：各列明細的運算式與舊版相同，只加千分位與新版樣式。
@@ -431,25 +435,21 @@ export default function useDraftCheckout({ passwordData }) {
   // - 現金應收與打帳單、帳單詳細、明細、收據共用 billPaymentSummary
   //   （未選商品的店販列價格是 0，與舊式把該列算進去的結果相同）
   // 上方「付款超過應付時歸零」與紅利給點的 effect 用的是各自的運算式，不受影響
-  const performanceTotal = Math.round(
-    serviceTotalPrice +
-    merchantSellTotalPrice +
-    couponUsageTotalPrice +
-    membershipTotalPrice
-  )
+  const performanceTotal = Math.round(serviceTotalPrice + merchantSellTotalPrice + couponUsageTotalPrice + membershipTotalPrice)
   const { cashDue } = billPaymentSummary(bill)
   // 按鈕停用時說明原因（只顯示，不參與停用判斷）：缺什麼與上面的 vaild 同一組條件（見 draftOrderRequirements.js），否則是處理中
   const missing = getMissingForDraftOrder(bill)
   const checkoutLocked = draftGate === 'checking' || draftGate === 'blocked' || draftGate === 'closed'
-  const disabledReason = missing.length > 0
-    ? `尚缺：${missing.join('、')}`
-    : draftGate === 'blocked'
-      ? '無法確認是否已結帳，請到帳單列表確認'
-      : draftGate === 'closed'
-        ? '這張掛單已結帳'
-        : open || isClick || isRecheckoutOrders || draftGate === 'checking'
-          ? '處理中，請稍候'
-          : ''
+  const disabledReason =
+    missing.length > 0
+      ? `尚缺：${missing.join('、')}`
+      : draftGate === 'blocked'
+        ? '無法確認是否已結帳，請到帳單列表確認'
+        : draftGate === 'closed'
+          ? '這張掛單已結帳'
+          : open || isClick || isRecheckoutOrders || draftGate === 'checking'
+            ? '處理中，請稍候'
+            : ''
 
   return {
     open,

@@ -233,7 +233,10 @@ describe('編輯卡券項目：帶入與儲存', () => {
   })
 
   it('存檔成功後清除設定類查詢快取', async () => {
-    const { calls, settle } = renderWithSettingsCache(<CouponEdit match={{ params: { id: 't1' } }} />, { fixtures: fixtures(), route: '/coupon/edit/t1' })
+    const { calls, settle } = renderWithSettingsCache(<CouponEdit match={{ params: { id: 't1' } }} />, {
+      fixtures: fixtures(),
+      route: '/coupon/edit/t1',
+    })
     await settle()
     fireEvent.click(button('儲存'))
     await wait(() => expect(callsOf(calls, 'MERCHANT_COMMISSION_WAY')).toHaveLength(2))
@@ -326,9 +329,7 @@ describe('編輯卡券項目：扣項', () => {
     expect(screen.queryByText(DEFAULT_SECTION)).toBeNull()
     fireEvent.click(button('儲存'))
     await wait(() => expect(callsOf(calls, 'UPDATE_SERVICE')).toHaveLength(1))
-    expect(callsOf(calls, 'UPDATE_SERVICE')[0].variables.input.serviceDeductionItems).toEqual([
-      { type: '設計師抽成', itemSettings: [item()] },
-    ])
+    expect(callsOf(calls, 'UPDATE_SERVICE')[0].variables.input.serviceDeductionItems).toEqual([{ type: '設計師抽成', itemSettings: [item()] }])
   })
 
   it('在畫面上編輯扣項（類別、方式、分指定、數字、基準點、新增、刪除、清除），送出編輯後的內容', async () => {

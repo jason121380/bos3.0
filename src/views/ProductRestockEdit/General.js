@@ -17,12 +17,7 @@ import { formatNumber } from 'ui/format'
 import ProductsModalV3 from './ProductsModalV3'
 import { Autocomplete } from 'ui/combobox'
 
-export default function General({
-  className,
-  purchaseRecord,
-  setPurchaseRecord,
-  disabled
-}) {
+export default function General({ className, purchaseRecord, setPurchaseRecord, disabled }) {
   const [setting, setSetting] = useState({
     keyword: '',
     categoryIds: [],
@@ -69,14 +64,14 @@ export default function General({
 
       setProductCategories(productCategories)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productCategoriesData.loading])
 
   useEffect(() => {
     if (!products.loading) {
       setProductOptions(idx(products, _ => _.data.products.data))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading])
 
   useEffect(() => {
@@ -120,19 +115,19 @@ export default function General({
           count: 1,
           selected: false,
           id: data.id,
-          remainingCount: data.remainingCount
+          remainingCount: data.remainingCount,
         }
       })
       setProductList(productsAddCount)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading, setting])
 
   useEffect(() => {
     if (!products.loading) {
       setProductOptions(idx(products, _ => _.data.products.data))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading])
 
   const hadnleSelectProduct = (product, index) => {
@@ -182,9 +177,7 @@ export default function General({
   }
 
   useEffect(() => {
-    setProductTotal(
-      purchaseRecord.purchaseProduct.reduce((accu, curVal) => accu + (Number(curVal.unitPrice) * Number(curVal.count)), 0)
-    )
+    setProductTotal(purchaseRecord.purchaseProduct.reduce((accu, curVal) => accu + Number(curVal.unitPrice) * Number(curVal.count), 0))
   }, [purchaseRecord, setting])
 
   const handleChangeFocusRow = index => {
@@ -223,18 +216,18 @@ export default function General({
       <CardContent className="flex flex-col gap-6">
         <MobileDatePicker
           closeOnSelect
-          label='進貨日期'
+          label="進貨日期"
           value={purchaseRecord.date}
           disabled={disabled}
           onChange={val => setPurchaseRecord({ ...purchaseRecord, date: new Date(val).getTime() })}
           format="yyyy/MM/dd"
           localeText={{
-            toolbarTitle: '進貨日期'
+            toolbarTitle: '進貨日期',
           }}
           slotProps={{
             toolbar: {
-              toolbarFormat: 'M月d日'
-            }
+              toolbarFormat: 'M月d日',
+            },
           }}
           slots={{
             field: inputProps => (
@@ -242,17 +235,19 @@ export default function General({
                 <InputLabel htmlFor="date-picker">進貨日期</InputLabel>
                 <Input
                   id="date-picker"
-                  type='text'
+                  type="text"
                   onClick={inputProps.onClick}
                   readOnly={disabled}
                   endAdornment={
-                    <InputAdornment position="end"><InsertInvitationIcon /></InputAdornment>
+                    <InputAdornment position="end">
+                      <InsertInvitationIcon />
+                    </InputAdornment>
                   }
                   label="進貨日期"
                   value={format(inputProps.value, inputProps.format)}
                 />
               </FormControl>
-            )
+            ),
           }}
         />
         <div className="flex flex-col gap-4">
@@ -272,7 +267,9 @@ export default function General({
                 <Autocomplete
                   freeSolo
                   readOnly={disabled}
-                  onFocus={() => { setFocusRow(index) }}
+                  onFocus={() => {
+                    setFocusRow(index)
+                  }}
                   id="prodcut-select"
                   style={{ width: '100%' }}
                   options={productOptions || []}
@@ -295,7 +292,7 @@ export default function General({
                       variant="outlined"
                       fullWidth
                       name="product"
-                      ref={(index === focusRow && focus === 'product') ? productRef : null}
+                      ref={index === focusRow && focus === 'product' ? productRef : null}
                       onChange={event => setProductKeyword(event.target.value)}
                       inputProps={{
                         ...params.inputProps,
@@ -308,9 +305,11 @@ export default function General({
               <div className="min-w-0 flex-[2]">
                 <TextField
                   InputProps={{ inputProps: { min: 0, readOnly: disabled } }}
-                  onFocus={() => { setFocusRow(index) }}
+                  onFocus={() => {
+                    setFocusRow(index)
+                  }}
                   label="價格"
-                  ref={(index === focusRow && focus === 'price') ? priceRef : null}
+                  ref={index === focusRow && focus === 'price' ? priceRef : null}
                   variant="outlined"
                   fullWidth
                   name="price"
@@ -330,12 +329,14 @@ export default function General({
               <div className="min-w-0 flex-[2]">
                 <TextField
                   InputProps={{ inputProps: { min: 0, readOnly: disabled } }}
-                  onFocus={() => { setFocusRow(index) }}
+                  onFocus={() => {
+                    setFocusRow(index)
+                  }}
                   label="數量"
                   variant="outlined"
                   fullWidth
                   name="count"
-                  ref={(index === focusRow && focus === 'count') ? countRef : null}
+                  ref={index === focusRow && focus === 'count' ? countRef : null}
                   onKeyDown={event => {
                     if (event.key === 'Enter') {
                       setFocus('product')
@@ -394,9 +395,7 @@ export default function General({
           fullWidth
           value={purchaseRecord.remark}
           InputProps={{ inputProps: { readOnly: disabled } }}
-          onChange={event =>
-            setPurchaseRecord({ ...purchaseRecord, remark: event.target.value })
-          }
+          onChange={event => setPurchaseRecord({ ...purchaseRecord, remark: event.target.value })}
         />
       </CardContent>
       {productsModalOpen && (

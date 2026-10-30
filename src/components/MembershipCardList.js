@@ -42,12 +42,14 @@ const MembershipCardList = ({ data }) => {
           {data.map((d, index) => (
             <Fragment key={`${d.membershipName}-${index}`}>
               <div className="flex min-w-[190px] max-w-[400px] flex-col gap-1 px-5 py-2.5">
-                <div className='first flex items-center justify-between gap-2.5'>
+                <div className="first flex items-center justify-between gap-2.5">
                   <CreditCardTwoToneIcon fontSize="medium" />
                   <h4 className="m-0 truncate text-heading text-text">{d.membershipName}</h4>
                 </div>
-                <div className='last flex flex-col gap-[5px]'>
-                  <h2 className="m-0 truncate text-label text-text-secondary">效期: {d.expiryDay === null ? '無效期' : format(d.expiryDay, 'yyyy/MM/dd')}</h2>
+                <div className="last flex flex-col gap-[5px]">
+                  <h2 className="m-0 truncate text-label text-text-secondary">
+                    效期: {d.expiryDay === null ? '無效期' : format(d.expiryDay, 'yyyy/MM/dd')}
+                  </h2>
                   <h2 className="m-0 truncate text-label text-text-secondary">備註: {d.remark}</h2>
                 </div>
               </div>

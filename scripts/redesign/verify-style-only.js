@@ -14,7 +14,10 @@ function normalize(code) {
       const k = p.node.key
       if (k.type === 'StringLiteral' && /^&::?before$/.test(k.value)) p.remove()
     },
-    StringLiteral(p) { p.node.value = ''; p.node.extra = undefined },
+    StringLiteral(p) {
+      p.node.value = ''
+      p.node.extra = undefined
+    },
   })
   return generate(ast, { comments: false }).code
 }
@@ -23,7 +26,10 @@ let bad = 0
 for (const f of process.argv.slice(2)) {
   const before = execFileSync('git', ['show', `HEAD:${f}`], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
   const after = fs.readFileSync(f, 'utf8')
-  if (normalize(before) !== normalize(after)) { console.log('STRUCTURE CHANGED:', f); bad++ }
+  if (normalize(before) !== normalize(after)) {
+    console.log('STRUCTURE CHANGED:', f)
+    bad++
+  }
 }
 console.log(bad ? `${bad} 個檔案結構有變` : `全部 ${process.argv.length - 2} 個檔案：只有樣式字串變動`)
 process.exit(bad ? 1 : 0)

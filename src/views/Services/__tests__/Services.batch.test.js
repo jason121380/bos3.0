@@ -63,8 +63,18 @@ const fixtures = (overrides = {}) => ({
     services: { totalCount: 120, pageOffset: v.input.pageOffset, pageLimit: v.input.pageLimit, data: SERVICES },
   }),
   ServiceCategories: { serviceCategories: [{ id: 'c1', no: 'C1', name: '剪髮' }] },
-  MERCHANT_COMMISSION_WAY: { merchantCommissionWay: [{ id: 'cw-1', name: '系統預設' }, { id: 'cw-2', name: '設計師抽成' }] },
-  MERCHANT_HELPER_ITEMS: { merchantHelperItems: [{ type: '洗髮', name: '洗髮' }, { type: '吹整', name: '吹整' }] },
+  MERCHANT_COMMISSION_WAY: {
+    merchantCommissionWay: [
+      { id: 'cw-1', name: '系統預設' },
+      { id: 'cw-2', name: '設計師抽成' },
+    ],
+  },
+  MERCHANT_HELPER_ITEMS: {
+    merchantHelperItems: [
+      { type: '洗髮', name: '洗髮' },
+      { type: '吹整', name: '吹整' },
+    ],
+  },
   MERCHANT_DEDUCTION_ITEMS: { merchantDeductionItems: [] },
   GET_MERCHANT_PASSWORD: { merchantPassword: { deleteService: { password: '', isUsing: true } } },
   DEL_COUPONS: { deleteService: true },
@@ -287,7 +297,16 @@ describe('服務項目設定：批次編輯互助點數', () => {
         ids: ['s1', 's2'],
         helperDeductionSetting: [
           { ...zero, type: '洗髮', helperDeductionType: 'onSales', nameList: ['1', '2'], peopleCount: 2, point: 1.5, isSplitted: false },
-          { ...zero, type: '吹整', helperDeductionType: 'onSalary', nameList: ['1'], peopleCount: 1, designatePercent: 10, nonDesignatePercent: 5, isSplitted: false },
+          {
+            ...zero,
+            type: '吹整',
+            helperDeductionType: 'onSalary',
+            nameList: ['1'],
+            peopleCount: 1,
+            designatePercent: 10,
+            nonDesignatePercent: 5,
+            isSplitted: false,
+          },
         ],
       },
     })
@@ -321,11 +340,13 @@ describe('服務項目設定：批次編輯互助點數', () => {
     fireEvent.click(checkboxByLabel('分指定/不指定', helperRows()[3]))
     expect(controlByLabel('點數', helperRows()[3])).toHaveValue(0)
     // 數字欄位捲動滑鼠時失焦
-    ;[controlByLabel('指定點數', helperRows()[0]), controlByLabel('不指定點數', helperRows()[0]), controlByLabel('業績%數', helperRows()[2])].forEach(field => {
-      field.focus()
-      fireEvent.wheel(field)
-      expect(document.activeElement).not.toBe(field)
-    })
+    ;[controlByLabel('指定點數', helperRows()[0]), controlByLabel('不指定點數', helperRows()[0]), controlByLabel('業績%數', helperRows()[2])].forEach(
+      field => {
+        field.focus()
+        fireEvent.wheel(field)
+        expect(document.activeElement).not.toBe(field)
+      }
+    )
     fireEvent.click(screen.getByText('儲存', { selector: 'button' }))
     await confirmWarning('handleSubmitHelperDeductionSetting')
     await wait(() => expect(callsOf(calls, 'SET_BATCH_SETTING_FOR_HELPER')).toHaveLength(1))
@@ -409,7 +430,17 @@ describe('服務項目設定：批次編輯項目扣項', () => {
     const warning = await confirmWarning('handleSubmitDeductionSetting')
     expect(warning.serviceHelperGroupEdit).toBeUndefined()
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'success', message: '批次服務扣項修改完成' }))
-    const base = { isSpecial: false, name: '材料費', type: 'onSales', deductionWay: '', price: 0, designatePrice: 0, nonDesignatePrice: 0, deductionOrder: 1, deductionReference: 0 }
+    const base = {
+      isSpecial: false,
+      name: '材料費',
+      type: 'onSales',
+      deductionWay: '',
+      price: 0,
+      designatePrice: 0,
+      nonDesignatePrice: 0,
+      deductionOrder: 1,
+      deductionReference: 0,
+    }
     expect(callsOf(calls, 'SET_BATCH_SETTING_FOR_DEDUCTION')[0].variables).toEqual({
       input: {
         ids: ['s2'],
@@ -418,7 +449,15 @@ describe('服務項目設定：批次編輯項目扣項', () => {
             type: '系統預設',
             itemSettings: [
               { ...base, deductionWay: '扣趴數', price: 10 },
-              { ...base, deductionWay: '扣固定金額', isSpecial: true, designatePrice: 50, nonDesignatePrice: 30, deductionOrder: 2, deductionReference: 1 },
+              {
+                ...base,
+                deductionWay: '扣固定金額',
+                isSpecial: true,
+                designatePrice: 50,
+                nonDesignatePrice: 30,
+                deductionOrder: 2,
+                deductionReference: 1,
+              },
             ],
           },
           { type: '設計師抽成', itemSettings: [base] },

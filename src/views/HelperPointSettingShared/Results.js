@@ -66,7 +66,7 @@ function Results({ className, status, submitData, setSubmitData, ...rest }) {
             <Input
               id="helperPointPaidFixed"
               value={submitData.paidFixed}
-              type='number'
+              type="number"
               className="tabular-nums"
               onFocus={e => e.target.select()}
               onChange={e => setSubmitData({ ...submitData, paidFixed: parseInt(Math.abs(e.target.value), 10) })}
@@ -94,24 +94,25 @@ function Results({ className, status, submitData, setSubmitData, ...rest }) {
             ))}
           </ToggleGroup>
           <div className="mt-2 flex flex-col gap-5">
-            {status === 'FIXED' ?
-              (<Field label="換算金額" htmlFor="helperPointRetrieveFixed" className="w-[200px]">
+            {status === 'FIXED' ? (
+              <Field label="換算金額" htmlFor="helperPointRetrieveFixed" className="w-[200px]">
                 <Input
                   id="helperPointRetrieveFixed"
-                  type='number'
+                  type="number"
                   className="tabular-nums"
                   value={submitData.retrieveFixed}
                   onFocus={e => e.target.select()}
                   onChange={e => setSubmitData({ ...submitData, retrieveFixed: parseInt(Math.abs(e.target.value), 10) })}
                   onWheel={() => document.activeElement.blur()}
                 />
-              </Field>) :
+              </Field>
+            ) : (
               submitData[status].map((d, index) => (
                 <div className="flex flex-wrap items-end gap-x-5 gap-y-2.5" key={index}>
                   <Field label="點數門檻" htmlFor={`helperPointThreshold-${index}`} className="w-[200px]">
                     <Input
                       id={`helperPointThreshold-${index}`}
-                      type='number'
+                      type="number"
                       className="tabular-nums"
                       value={d.threshold}
                       onChange={e => handleEditRow(index, parseInt(Math.abs(e.target.value), 10), 'threshold')}
@@ -122,7 +123,7 @@ function Results({ className, status, submitData, setSubmitData, ...rest }) {
                   <Field label="換算金額" htmlFor={`helperPointPrice-${index}`} className="w-[200px]">
                     <Input
                       id={`helperPointPrice-${index}`}
-                      type='number'
+                      type="number"
                       className="tabular-nums"
                       value={d.price}
                       onChange={e => handleEditRow(index, parseInt(Math.abs(e.target.value), 10), 'price')}
@@ -131,18 +132,20 @@ function Results({ className, status, submitData, setSubmitData, ...rest }) {
                     />
                   </Field>
                   <div className="flex gap-1">
-                    {index > 0 &&
+                    {index > 0 && (
                       <Button variant="ghost" size="icon" aria-label="刪除此段" className="text-danger" onClick={() => handleDeleteRow(index)}>
                         <Trash2 strokeWidth={1.75} />
-                      </Button>}
-                    {index === submitData[status].length - 1 &&
+                      </Button>
+                    )}
+                    {index === submitData[status].length - 1 && (
                       <Button variant="ghost" size="icon" aria-label="新增一段" onClick={() => handleAddRow(index)}>
                         <Plus strokeWidth={1.75} />
-                      </Button>}
+                      </Button>
+                    )}
                   </div>
                 </div>
               ))
-            }
+            )}
           </div>
         </CardContent>
       </Card>

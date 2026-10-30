@@ -35,7 +35,7 @@ export default function ScheduleCard({
   users,
   disableButton,
   employeeScheduleData,
-  handleSetSchedule
+  handleSetSchedule,
 }) {
   const [progress, setProgress] = useState(0)
   const handleAddTime = (cardIndex, rowIndex) => {
@@ -176,10 +176,7 @@ export default function ScheduleCard({
         setDisableButton(false)
         return
       }
-    } else if (
-      rowIndex === newScheduleCard[cardIndex].scheduleRow.length - 1 &&
-      newScheduleCard[cardIndex].scheduleRow.length - 1 !== 0
-    ) {
+    } else if (rowIndex === newScheduleCard[cardIndex].scheduleRow.length - 1 && newScheduleCard[cardIndex].scheduleRow.length - 1 !== 0) {
       newScheduleCard.forEach((data, index) => {
         if (index === cardIndex) {
           const arr = []
@@ -285,10 +282,7 @@ export default function ScheduleCard({
     newScheduleCard.forEach((data, index) => {
       if (index === cardIndex) {
         const arr = []
-        if (
-          !data.scheduleRow[data.scheduleRow.length - 1].timeAdded &&
-          rowIndex !== data.scheduleRow.length - 1
-        ) {
+        if (!data.scheduleRow[data.scheduleRow.length - 1].timeAdded && rowIndex !== data.scheduleRow.length - 1) {
           clickedRowData.time = new Date().getTime()
           arr.push({ ...clickedRowData })
 
@@ -330,10 +324,7 @@ export default function ScheduleCard({
           const lastData = data.scheduleRow[data.scheduleRow.length - 1]
           data.scheduleRow = [...arr, lastData]
         } else {
-          if (
-            !data.scheduleRow[data.scheduleRow.length - 1].timeAdded &&
-            data.scheduleRow[data.scheduleRow.length - 1].time === 0
-          ) {
+          if (!data.scheduleRow[data.scheduleRow.length - 1].timeAdded && data.scheduleRow[data.scheduleRow.length - 1].time === 0) {
             // 最後一位比照中間的人：只記下時間、不標記（Jason 2026/10/22「照建議」）
             data.scheduleRow[data.scheduleRow.length - 1].time = new Date().getTime()
           }
@@ -348,163 +339,146 @@ export default function ScheduleCard({
     setOpenAddDesignerModal(true)
     setModalCardIndex(cardIndex)
   }
-  return (
-    scheduleCard.map((data, cardIndex) => (
-      <div key={cardIndex} className='ScheduleCard'>
-        <Card className="flex w-[332px] flex-col">
-          <div className="flex items-center justify-between gap-2 px-5 pb-4 pt-5">
-            {!data.setName ? (
-              <FormControl variant="standard" fullWidth>
-                <OutlinedInput
-                  placeholder="排版標題"
-                  value={data.cardName}
-                  disabled={disableButton}
-                  onChange={e => handleCardTitleChange(cardIndex, e)}
-                  onKeyDown={e => handleOnKeyDown(e, cardIndex)}
-                />
-                <MyFormHelperText />
-              </FormControl>
-            ) : (
-              <h3 className="m-0 min-w-0 max-w-[220px] truncate text-heading text-text">
-                {data.cardName || '未命名班表'}
-              </h3>
-            )}
+  return scheduleCard.map((data, cardIndex) => (
+    <div key={cardIndex} className="ScheduleCard">
+      <Card className="flex w-[332px] flex-col">
+        <div className="flex items-center justify-between gap-2 px-5 pb-4 pt-5">
+          {!data.setName ? (
+            <FormControl variant="standard" fullWidth>
+              <OutlinedInput
+                placeholder="排版標題"
+                value={data.cardName}
+                disabled={disableButton}
+                onChange={e => handleCardTitleChange(cardIndex, e)}
+                onKeyDown={e => handleOnKeyDown(e, cardIndex)}
+              />
+              <MyFormHelperText />
+            </FormControl>
+          ) : (
+            <h3 className="m-0 min-w-0 max-w-[220px] truncate text-heading text-text">{data.cardName || '未命名班表'}</h3>
+          )}
 
-            <div className="flex shrink-0 items-center">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-text-secondary"
-                aria-label="編輯班表名稱"
-                disabled={disableButton}
-                onClick={() => handleClickTitle(cardIndex)}
-              >
-                <Pencil strokeWidth={1.75} />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-text-secondary hover:text-danger"
-                aria-label="刪除班表"
-                disabled={disableButton}
-                onClick={() => handleClickOpen(cardIndex)}
-              >
-                <X strokeWidth={1.75} />
-              </Button>
-            </div>
+          <div className="flex shrink-0 items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-text-secondary"
+              aria-label="編輯班表名稱"
+              disabled={disableButton}
+              onClick={() => handleClickTitle(cardIndex)}
+            >
+              <Pencil strokeWidth={1.75} />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-text-secondary hover:text-danger"
+              aria-label="刪除班表"
+              disabled={disableButton}
+              onClick={() => handleClickOpen(cardIndex)}
+            >
+              <X strokeWidth={1.75} />
+            </Button>
           </div>
-          {!employeeScheduleData.loading && progress < 100 ? (
-            <Fragment>
-              <div className="mx-5 h-px bg-border" />
-              {data.scheduleRow.map((eachRow, rowIndex) => {
-                if (eachRow !== null) {
-                  return (
-                    <Fragment key={`${rowIndex}-${eachRow.designerId}`}>
-                      <div className="flex min-h-[48px] items-center gap-2 px-4 py-2 hover:bg-surface-hover">
-                        {eachRow.designerId !== '' && (
-                          <div className="flex min-w-0 flex-1 items-center gap-2">
-                            <Checkbox
-                              aria-label="標記時間"
-                              checked={eachRow.timeAdded}
-                              onChange={() => handleAddTime(cardIndex, rowIndex)}
-                              disabled={disableButton}
-                            />
-                            <span className="truncate text-body font-medium text-text">
-                              {users.find(u => u.id === eachRow.designerId)?.nickName ||
-                                users.find(u => u.id === eachRow.designerId)?.name || ''}
-                              <span className="ml-1 text-caption text-text-tertiary">
-                                {users.find(u => u.id === eachRow.designerId)?.designerNo || ''}
-                              </span>
+        </div>
+        {!employeeScheduleData.loading && progress < 100 ? (
+          <Fragment>
+            <div className="mx-5 h-px bg-border" />
+            {data.scheduleRow.map((eachRow, rowIndex) => {
+              if (eachRow !== null) {
+                return (
+                  <Fragment key={`${rowIndex}-${eachRow.designerId}`}>
+                    <div className="flex min-h-[48px] items-center gap-2 px-4 py-2 hover:bg-surface-hover">
+                      {eachRow.designerId !== '' && (
+                        <div className="flex min-w-0 flex-1 items-center gap-2">
+                          <Checkbox
+                            aria-label="標記時間"
+                            checked={eachRow.timeAdded}
+                            onChange={() => handleAddTime(cardIndex, rowIndex)}
+                            disabled={disableButton}
+                          />
+                          <span className="truncate text-body font-medium text-text">
+                            {users.find(u => u.id === eachRow.designerId)?.nickName || users.find(u => u.id === eachRow.designerId)?.name || ''}
+                            <span className="ml-1 text-caption text-text-tertiary">
+                              {users.find(u => u.id === eachRow.designerId)?.designerNo || ''}
                             </span>
-                          </div>
-                        )}
-                        <div className="ml-auto flex shrink-0 items-center gap-1">
-                          {eachRow.designerId !== '' &&
-                            data.scheduleRow.length > 1 &&
-                            !eachRow.timeAdded && (
-                              <div className="flex gap-0.5">
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  aria-label="上移"
-                                  disabled={disableButton}
-                                  onClick={() => handlePersonGoUp(cardIndex, rowIndex, eachRow)}
-                                >
-                                  <ArrowUp strokeWidth={1.75} />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  aria-label="下移"
-                                  disabled={disableButton}
-                                  onClick={() => handlePersonGoDown(cardIndex, rowIndex, eachRow)}
-                                >
-                                  <ArrowDown strokeWidth={1.75} />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  aria-label="移到最後"
-                                  disabled={disableButton}
-                                  onClick={() => handlePersonGoBottom(cardIndex, rowIndex, eachRow)}
-                                >
-                                  <ChevronsDown strokeWidth={1.75} />
-                                </Button>
-                              </div>
-                            )}
-                          {/* eslint-disable-next-line eqeqeq -- 刻意保留寬鬆比較：值可能是輸入框字串或 null，改成 !== 會改變結果 */}
-                          {eachRow.time != 0 ? (
-                            <div className="ml-1 min-w-[60px] text-right tabular-nums">
-                              <span className="block text-caption text-text-tertiary">
-                                {format(eachRow.time, 'MM/dd')}
-                              </span>
-                              <span className="block text-caption font-medium text-text-secondary">
-                                {format(eachRow.time, 'H:mm')}
-                              </span>
-                            </div>
-                          ) : null}
-                          {eachRow.designerId !== '' && (
+                          </span>
+                        </div>
+                      )}
+                      <div className="ml-auto flex shrink-0 items-center gap-1">
+                        {eachRow.designerId !== '' && data.scheduleRow.length > 1 && !eachRow.timeAdded && (
+                          <div className="flex gap-0.5">
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="ml-1 hover:text-danger"
-                              aria-label="移除人員"
+                              aria-label="上移"
                               disabled={disableButton}
-                              onClick={() => handleDeleteDesigner(cardIndex, rowIndex)}
+                              onClick={() => handlePersonGoUp(cardIndex, rowIndex, eachRow)}
                             >
-                              <Trash2 strokeWidth={1.75} />
+                              <ArrowUp strokeWidth={1.75} />
                             </Button>
-                          )}
-                        </div>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label="下移"
+                              disabled={disableButton}
+                              onClick={() => handlePersonGoDown(cardIndex, rowIndex, eachRow)}
+                            >
+                              <ArrowDown strokeWidth={1.75} />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label="移到最後"
+                              disabled={disableButton}
+                              onClick={() => handlePersonGoBottom(cardIndex, rowIndex, eachRow)}
+                            >
+                              <ChevronsDown strokeWidth={1.75} />
+                            </Button>
+                          </div>
+                        )}
+                        {/* eslint-disable-next-line eqeqeq -- 刻意保留寬鬆比較：值可能是輸入框字串或 null，改成 !== 會改變結果 */}
+                        {eachRow.time != 0 ? (
+                          <div className="ml-1 min-w-[60px] text-right tabular-nums">
+                            <span className="block text-caption text-text-tertiary">{format(eachRow.time, 'MM/dd')}</span>
+                            <span className="block text-caption font-medium text-text-secondary">{format(eachRow.time, 'H:mm')}</span>
+                          </div>
+                        ) : null}
+                        {eachRow.designerId !== '' && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="ml-1 hover:text-danger"
+                            aria-label="移除人員"
+                            disabled={disableButton}
+                            onClick={() => handleDeleteDesigner(cardIndex, rowIndex)}
+                          >
+                            <Trash2 strokeWidth={1.75} />
+                          </Button>
+                        )}
                       </div>
-                      {eachRow.designerId !== '' && <div className="mx-5 h-px bg-border" />}
-                    </Fragment>
-                  )
-                }
-                return undefined
-              })}
-            </Fragment>
-          ) : (
-            <div className="px-5 py-3" aria-busy="true" aria-label="載入中">
-              <Skeleton className="h-8 w-full" />
-            </div>
-          )
-          }
-          <div className="p-3">
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-accent"
-              disabled={disableButton}
-              onClick={() => handleOpenModal(cardIndex)}
-            >
-              <UserPlus strokeWidth={1.75} />
-              新增人員
-            </Button>
+                    </div>
+                    {eachRow.designerId !== '' && <div className="mx-5 h-px bg-border" />}
+                  </Fragment>
+                )
+              }
+              return undefined
+            })}
+          </Fragment>
+        ) : (
+          <div className="px-5 py-3" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-8 w-full" />
           </div>
-        </Card>
-      </div>
-    ))
-  )
+        )}
+        <div className="p-3">
+          <Button variant="ghost" className="w-full justify-start text-accent" disabled={disableButton} onClick={() => handleOpenModal(cardIndex)}>
+            <UserPlus strokeWidth={1.75} />
+            新增人員
+          </Button>
+        </div>
+      </Card>
+    </div>
+  ))
 }
 ScheduleCard.propTypes = {
   sx: PropTypes.string,

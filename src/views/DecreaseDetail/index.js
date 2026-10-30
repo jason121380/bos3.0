@@ -33,7 +33,7 @@ export default function DecreaseDetail() {
   return (
     <Page title="互助點數明細" className="ui-root">
       <div>
-        <PageHeader title='互助點數明細' />
+        <PageHeader title="互助點數明細" />
         {/* 日期留在篩選列；人員、服務、被協助設計師收進「篩選」（STYLE §14）。MerchantSearchBar 拆兩個實例共用同一份 values，收合區的那個不讀網址日期 */}
         <ReportToolbar
           date={

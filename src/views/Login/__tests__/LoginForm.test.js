@@ -128,7 +128,7 @@ describe('<Login />', () => {
     expect(JSON.stringify(user)).not.toMatch(/0912345678|solmateKey|userCode/)
   })
 
-  const loginMocks = (profileResult) => ([
+  const loginMocks = profileResult => [
     {
       request: {
         query: LOGINV2,
@@ -158,14 +158,11 @@ describe('<Login />', () => {
       },
       ...profileResult,
     },
-  ])
+  ]
 
   // 登入 mutation 成功、PROFILE 失敗：不能把按鈕停在「登入中」
   it('login ok, PROFILE fail：顯示錯誤、按鈕恢復可再登入', async () => {
-    const mocks = [
-      ...loginMocks({ error: new Error('PROFILE failed') }),
-      ...loginMocks({ error: new Error('PROFILE failed again') }),
-    ]
+    const mocks = [...loginMocks({ error: new Error('PROFILE failed') }), ...loginMocks({ error: new Error('PROFILE failed again') })]
     const { getByTestId, getByRole } = render(
       <CustomMockedProvider mocks={mocks}>
         <LoginFrom location={{ search: '?q=qqq' }} />

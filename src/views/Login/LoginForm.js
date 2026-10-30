@@ -80,15 +80,7 @@ function LoginForm({ className, location, ...rest }) {
   }
   function getQueryStringValue(key) {
     return decodeURIComponent(
-      location.search.replace(
-        new RegExp(
-          '^(?:.*[&\\?]' +
-          encodeURIComponent(key).replace(/[.+*]/g, '\\$&') +
-          '(?:\\=([^&]*))?)?.*$',
-          'i'
-        ),
-        '$1'
-      )
+      location.search.replace(new RegExp('^(?:.*[&\\?]' + encodeURIComponent(key).replace(/[.+*]/g, '\\$&') + '(?:\\=([^&]*))?)?.*$', 'i'), '$1')
     )
   }
   // 登入 mutation 成功後還要等 PROFILE。查詢失敗時按鈕不能停在「登入中」，要顯示錯誤並允許再按一次。
@@ -116,14 +108,9 @@ function LoginForm({ className, location, ...rest }) {
     setIsKeepLogin(event.target.checked)
   }
   return (
-
     <form {...rest} className="mt-6 flex flex-col" onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col gap-4">
-        <Field
-          label="電話號碼"
-          htmlFor="login-cellphone"
-          error={errors.cellphone && errors.cellphone.message}
-        >
+        <Field label="電話號碼" htmlFor="login-cellphone" error={errors.cellphone && errors.cellphone.message}>
           <Input
             id="login-cellphone"
             name="cellphone"
@@ -135,14 +122,10 @@ function LoginForm({ className, location, ...rest }) {
                 required: '電話號碼為必填',
               })
             }}
-            data-testid='cellphone'
+            data-testid="cellphone"
           />
         </Field>
-        <Field
-          label="密碼"
-          htmlFor="login-password"
-          error={errors.password && errors.password.message}
-        >
+        <Field label="密碼" htmlFor="login-password" error={errors.password && errors.password.message}>
           <Input
             id="login-password"
             name="password"
@@ -150,7 +133,7 @@ function LoginForm({ className, location, ...rest }) {
             autoComplete="current-password"
             invalid={!!errors.password}
             ref={register({ required: '密碼為必填' })}
-            data-testid='password'
+            data-testid="password"
           />
         </Field>
       </div>
@@ -163,14 +146,7 @@ function LoginForm({ className, location, ...rest }) {
           {profileError}
         </p>
       ) : null}
-      <Button
-        className="mt-6 w-full"
-        variant="primary"
-        size="lg"
-        type="submit"
-        data-testid="login-btn"
-        disabled={disabledLoginBtn}
-      >
+      <Button className="mt-6 w-full" variant="primary" size="lg" type="submit" data-testid="login-btn" disabled={disabledLoginBtn}>
         {!disabledLoginBtn ? '登入' : '登入中'}
       </Button>
     </form>

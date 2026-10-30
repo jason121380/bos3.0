@@ -22,9 +22,27 @@ const page = (pageTitle, flags) => ({
 })
 
 const ROLES = [
-  { id: 'r-boss', authorityName: '高階主管', isDefault: false, usingDesignerCount: 1, authoritySettings: JSON.stringify([page('客戶管理', [true, true])]) },
-  { id: 'r-mgr', authorityName: '店長', isDefault: true, usingDesignerCount: 1234, authoritySettings: JSON.stringify([page('客戶管理', [true, false]), page('報表', [true])]) },
-  { id: 'r-new', authorityName: '新人', isDefault: false, usingDesignerCount: 0, authoritySettings: JSON.stringify([page('客戶管理', [false, false])]) },
+  {
+    id: 'r-boss',
+    authorityName: '高階主管',
+    isDefault: false,
+    usingDesignerCount: 1,
+    authoritySettings: JSON.stringify([page('客戶管理', [true, true])]),
+  },
+  {
+    id: 'r-mgr',
+    authorityName: '店長',
+    isDefault: true,
+    usingDesignerCount: 1234,
+    authoritySettings: JSON.stringify([page('客戶管理', [true, false]), page('報表', [true])]),
+  },
+  {
+    id: 'r-new',
+    authorityName: '新人',
+    isDefault: false,
+    usingDesignerCount: 0,
+    authoritySettings: JSON.stringify([page('客戶管理', [false, false])]),
+  },
 ]
 
 const setup = (fixtures = {}) =>

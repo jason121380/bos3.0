@@ -6,7 +6,7 @@ import MerchantListAutocomplete from 'components/MerchantListAutocomplete'
 import DateSelector from 'components/DateSelector'
 import { endOfMonth, startOfMonth, format } from 'date-fns'
 import idx from 'idx'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import useFetchGetOverallPerformanceAnalysisReport from 'hooks/useFetchGetOverallPerformanceAnalysisReport'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -66,7 +66,7 @@ const OverallPerformanceAnalysisReport = () => {
         },
       },
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [date] 變動時執行；getOverallPerformanceAnalysisReportLazy、merchantSelect、performanceInclude 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [date] 變動時執行；getOverallPerformanceAnalysisReportLazy、merchantSelect、performanceInclude 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [date])
 
   useEffect(() => {
@@ -89,10 +89,10 @@ const OverallPerformanceAnalysisReport = () => {
               obj[correctData[0].merchantName] = correctData[0].performance
             }
           })
-          excelData.push(obj,)
+          excelData.push(obj)
         })
 
-        const summeryObj = { '日期': '區間合計', }
+        const summeryObj = { '日期': '區間合計' }
         reportData.performanceSummary.forEach((d, index) => {
           if (d.merchantName === reportData.merchantNameList[index]) {
             summeryObj[d.merchantName] = Math.round(d.performance)
@@ -105,7 +105,7 @@ const OverallPerformanceAnalysisReport = () => {
         })
         excelData.push(summeryObj)
 
-        const workingDayObj = { '日期': '實際工作天數', }
+        const workingDayObj = { '日期': '實際工作天數' }
         reportData.workingDay.forEach((d, index) => {
           if (d.merchantName === reportData.merchantNameList[index]) {
             workingDayObj[d.merchantName] = d.dayCount
@@ -118,7 +118,7 @@ const OverallPerformanceAnalysisReport = () => {
         })
         excelData.push(workingDayObj)
 
-        const averagePerformanceObj = { '日期': '單日平均', }
+        const averagePerformanceObj = { '日期': '單日平均' }
         reportData.averagePerformance.forEach((d, index) => {
           if (d.merchantName === reportData.merchantNameList[index]) {
             averagePerformanceObj[d.merchantName] = d.performance
@@ -131,7 +131,7 @@ const OverallPerformanceAnalysisReport = () => {
         })
         excelData.push(averagePerformanceObj)
 
-        const expectedPerformanceAllMonthObj = { '日期': '當月預估', }
+        const expectedPerformanceAllMonthObj = { '日期': '當月預估' }
         reportData.expectedPerformanceAllMonth.forEach((d, index) => {
           if (d.merchantName === reportData.merchantNameList[index]) {
             expectedPerformanceAllMonthObj[d.merchantName] = d.performance
@@ -147,7 +147,7 @@ const OverallPerformanceAnalysisReport = () => {
         setExcelData(excelData)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [overallPerformanceAnalysisReportLazyData.loading])
 
   const handleToggleButtonChange = (_event, state) => {
@@ -186,18 +186,27 @@ const OverallPerformanceAnalysisReport = () => {
       <PageHeader
         title="多店業績統計表"
         actions={
-          <CSVLink data={excelData} filename="多店業績統計表.csv"
+          <CSVLink
+            data={excelData}
+            filename="多店業績統計表.csv"
             onClick={() => {
-              if (overallPerformanceAnalysisReportLazyData.loading ||
+              if (
+                overallPerformanceAnalysisReportLazyData.loading ||
                 overallPerformanceAnalysisReportLazyData.data === undefined ||
-                excelData.length === 0) {
+                excelData.length === 0
+              ) {
                 return false
               }
-            }}>
-            <Button disabled={overallPerformanceAnalysisReportLazyData.loading ||
-              overallPerformanceAnalysisReportLazyData.data === undefined ||
-              excelData.length === 0}
-              variant="secondary">
+            }}
+          >
+            <Button
+              disabled={
+                overallPerformanceAnalysisReportLazyData.loading ||
+                overallPerformanceAnalysisReportLazyData.data === undefined ||
+                excelData.length === 0
+              }
+              variant="secondary"
+            >
               <Download strokeWidth={1.75} />
               報表匯出
             </Button>
@@ -205,22 +214,12 @@ const OverallPerformanceAnalysisReport = () => {
         }
       />
       <ReportToolbar
-        date={
-          <DateSelector
-            date={date}
-            attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-          />
-        }
+        date={<DateSelector date={date} attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']} dateChange={value => setDate(value)} />}
         filters={
           <>
             <div className="flex min-w-0 flex-col gap-1.5">
               <div className="text-label text-text-secondary">業績包含</div>
-              <ToggleGroup
-                size="small"
-                value={performanceInclude}
-                onChange={handleToggleButtonChange}
-              >
+              <ToggleGroup size="small" value={performanceInclude} onChange={handleToggleButtonChange}>
                 {include.map((data, idx) => (
                   <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                     {data.label}
@@ -238,11 +237,7 @@ const OverallPerformanceAnalysisReport = () => {
           </>
         }
         actions={
-          <Button
-            variant="primary"
-            onClick={handleSearchReport}
-            className="w-[100px]"
-          >
+          <Button variant="primary" onClick={handleSearchReport} className="w-[100px]">
             搜尋
           </Button>
         }
@@ -250,10 +245,7 @@ const OverallPerformanceAnalysisReport = () => {
       {overallPerformanceAnalysisReportLazyData.error ? (
         <QueryFailed onRetry={handleSearchReport} />
       ) : !overallPerformanceAnalysisReportLazyData.loading && overallPerformanceAnalysisReportLazyData.data !== undefined ? (
-        <Results
-          weekDisplay={weekDisplay}
-          overAllReport={overAllReport}
-        />
+        <Results weekDisplay={weekDisplay} overAllReport={overAllReport} />
       ) : (
         <Skeleton className="h-96" aria-busy="true" />
       )}

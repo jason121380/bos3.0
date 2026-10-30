@@ -16,15 +16,13 @@ export const getMissingForDraftOrder = bill => {
   if (!bill.date) missing.push('帳單日期')
   if (!(bill.customerId || bill.withoutCustomerData || bill.customerCellphone)) missing.push('顧客（或勾選「不留客資」）')
   if (!bill.designerId) missing.push('服務人員')
-  if (
-    !(
-      bill.serviceOrders.length > 0 ||
-      bill.productOrders.length > 0 ||
-      bill.ticketOrders.length > 0 ||
-      bill.useTicketOrders.length > 0 ||
-      bill.membershipOrders.length > 0
-    )
-  ) {
+  if (!(
+    bill.serviceOrders.length > 0 ||
+    bill.productOrders.length > 0 ||
+    bill.ticketOrders.length > 0 ||
+    bill.useTicketOrders.length > 0 ||
+    bill.membershipOrders.length > 0
+  )) {
     missing.push('至少一項消費（服務、店販、預收卡、使用預收卡或會員卡）')
   }
   return missing

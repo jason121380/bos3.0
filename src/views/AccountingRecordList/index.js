@@ -32,7 +32,7 @@ function AccountingRecordList() {
   return (
     <Page className="ui-root" title="高階收支登錄">
       <PageHeader
-        title='高階收支登錄'
+        title="高階收支登錄"
         actions={
           <>
             <DateSelector
@@ -83,15 +83,8 @@ function AccountingRecordList() {
       )}
       {getMoneyFlowsForAccounting.error ? (
         <QueryFailed onRetry={() => getMoneyFlowsForAccounting.refetch()} />
-      ) : idx(
-        getMoneyFlowsForAccounting,
-        _ =>
-          _.data.moneyFlows && (
-            <Results
-              moneyFlows={_.data.moneyFlows}
-              pageSetting={pageSetting}
-            />
-          )
+      ) : (
+        idx(getMoneyFlowsForAccounting, _ => _.data.moneyFlows && <Results moneyFlows={_.data.moneyFlows} pageSetting={pageSetting} />)
       )}
     </Page>
   )

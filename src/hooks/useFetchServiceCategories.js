@@ -106,15 +106,12 @@ const FETCH_SERVICE_CATEGORY_ANALYTICS = gql`
 `
 
 export const useLazyFetchServiceCategoriesAnalytics = input => {
-  const [fetchServiceCategoriesAnalytics, serviceCategoriesAnalytics] = useLazyQuery(
-    FETCH_SERVICE_CATEGORY_ANALYTICS,
-    {
-      variables: {
-        input,
-      },
-      fetchPolicy: 'cache-and-network',
-    }
-  )
+  const [fetchServiceCategoriesAnalytics, serviceCategoriesAnalytics] = useLazyQuery(FETCH_SERVICE_CATEGORY_ANALYTICS, {
+    variables: {
+      input,
+    },
+    fetchPolicy: 'cache-and-network',
+  })
   return {
     fetchServiceCategoriesAnalytics,
     serviceCategoriesAnalytics,

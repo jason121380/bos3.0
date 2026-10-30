@@ -29,38 +29,49 @@ function Results({ className, results, excelData, attributeSwitchs, membershipDi
         <TableBody>
           {results.map(({ date, performance }, index) => {
             const {
-              fakePerformance, orderCount, averagePerformance, productPerformance, productOrderCount,
-              membershipPerformance, membershipOrderCount, membershipAveragePerformance, customerUnknownCount,
-              productAveragePerformance, orderMaleCount, orderFemaleCount, orderUnknownCount, categoryData,
-              orderDesignateCount, orderNonDesignatecount, customerMaleCount, customerFemaleCount
+              fakePerformance,
+              orderCount,
+              averagePerformance,
+              productPerformance,
+              productOrderCount,
+              membershipPerformance,
+              membershipOrderCount,
+              membershipAveragePerformance,
+              customerUnknownCount,
+              productAveragePerformance,
+              orderMaleCount,
+              orderFemaleCount,
+              orderUnknownCount,
+              categoryData,
+              orderDesignateCount,
+              orderNonDesignatecount,
+              customerMaleCount,
+              customerFemaleCount,
             } = performance
             return (
               <TableRow key={index}>
                 <TableCell className={`${STICKY_COL} tabular-nums`}>{format(date, 'yyyy/MM/dd')}</TableCell>
                 <TableCell numeric>
-                  {formatNumber(Math.round(fakePerformance))}/{formatNumber(orderCount)}/
-                  {formatNumber(Math.round(averagePerformance))}
+                  {formatNumber(Math.round(fakePerformance))}/{formatNumber(orderCount)}/{formatNumber(Math.round(averagePerformance))}
                 </TableCell>
                 <TableCell numeric>
                   {formatNumber(Math.round(productPerformance))}/{formatNumber(productOrderCount)}/
                   {formatNumber(Math.round(productAveragePerformance))}
                 </TableCell>
-                {membershipDisplay ?
+                {membershipDisplay ? (
                   <TableCell numeric>
                     {formatNumber(Math.round(membershipPerformance))}/{formatNumber(membershipOrderCount)}/
                     {formatNumber(Math.round(membershipAveragePerformance))}
-                  </TableCell> : null
-                }
+                  </TableCell>
+                ) : null}
                 <TableCell numeric>
-                  {formatNumber(Math.round(orderMaleCount))}/{formatNumber(orderFemaleCount)}/
-                  {formatNumber(Math.round(orderUnknownCount))}
+                  {formatNumber(Math.round(orderMaleCount))}/{formatNumber(orderFemaleCount)}/{formatNumber(Math.round(orderUnknownCount))}
                 </TableCell>
                 <TableCell numeric>
                   {formatNumber(Math.round(orderDesignateCount))}/{formatNumber(orderNonDesignatecount)}
                 </TableCell>
                 <TableCell numeric>
-                  {formatNumber(Math.round(customerMaleCount))}/{formatNumber(customerFemaleCount)}/
-                  {formatNumber(Math.round(customerUnknownCount))}
+                  {formatNumber(Math.round(customerMaleCount))}/{formatNumber(customerFemaleCount)}/{formatNumber(Math.round(customerUnknownCount))}
                 </TableCell>
                 {categoryData.map(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
                   if (attributeSwitchs[index]) {

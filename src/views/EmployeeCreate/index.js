@@ -24,32 +24,42 @@ function ServiceCategoryCreate() {
     cellphone: '',
     jobPointId: '',
   })
-  const [service, setService] = useState([{
-    id: '',
-    jobTitle: '',
-    pointValue: 0,
-  }])
+  const [service, setService] = useState([
+    {
+      id: '',
+      jobTitle: '',
+      pointValue: 0,
+    },
+  ])
   const [createBtnDisabled, setCreateBtnDisabled] = useState(false)
   useEffect(() => {
     if (!merchantJobTitlePoint.loading) {
-      setService(idx(merchantJobTitlePoint.data, _ =>
-        _.merchantJobTitlePoint.length > 0
-          ? _.merchantJobTitlePoint.map(d => ({
-            id: d.id,
-            jobTitle: d.jobTitle,
-            pointValue: d.pointValue,
-          }))
-          : [{
+      setService(
+        idx(
+          merchantJobTitlePoint.data,
+          _ =>
+            _.merchantJobTitlePoint.length > 0
+              ? _.merchantJobTitlePoint.map(d => ({
+                  id: d.id,
+                  jobTitle: d.jobTitle,
+                  pointValue: d.pointValue,
+                }))
+              : [
+                  {
+                    id: '',
+                    jobTitle: '',
+                    pointValue: 0,
+                  },
+                ]
+          // 人員身分查詢失敗時以空清單處理（只有「未設定」），仍可新增員工（Jason 2026/10/22；原本整頁錯誤）
+        ) || [
+          {
             id: '',
             jobTitle: '',
             pointValue: 0,
-          }]
-      // 人員身分查詢失敗時以空清單處理（只有「未設定」），仍可新增員工（Jason 2026/10/22；原本整頁錯誤）
-      ) || [{
-        id: '',
-        jobTitle: '',
-        pointValue: 0,
-      }])
+          },
+        ]
+      )
       const point = idx(merchantJobTitlePoint.data, _ => _.merchantJobTitlePoint) || []
       point.forEach(d => {
         if (d.isDefaultValue === true) {
@@ -60,7 +70,7 @@ function ServiceCategoryCreate() {
         }
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [merchantJobTitlePoint.loading] 變動時執行；employee、merchantJobTitlePoint.data 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [merchantJobTitlePoint.loading] 變動時執行；employee、merchantJobTitlePoint.data 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [merchantJobTitlePoint.loading])
   const handleOnChange = ({ event, key }) => {
     if (event.persist) event.persist()
@@ -83,12 +93,12 @@ function ServiceCategoryCreate() {
       let checkInput = {
         firstName: employee.firstName,
         lastName: employee.lastName,
-        cellphone: employee.cellphone
+        cellphone: employee.cellphone,
       }
       if (employee.jobPointId !== '' && employee.jobPointId !== '未設定') {
         checkInput = {
           ...checkInput,
-          jobPointId: employee.jobPointId
+          jobPointId: employee.jobPointId,
         }
       }
       createUser({ input: checkInput })
@@ -107,7 +117,7 @@ function ServiceCategoryCreate() {
           setCreateBtnDisabled(false)
           history.push('/management/employee')
         })
-        .catch((error) => {
+        .catch(error => {
           setCreateBtnDisabled(false)
           openSnackbar({
             message: error.message,
@@ -115,25 +125,14 @@ function ServiceCategoryCreate() {
           })
         })
     }
-
   }
 
-  const vaild = !(
-    employee.firstName &&
-    employee.lastName &&
-    employee.cellphone &&
-    !createBtnDisabled
-  )
+  const vaild = !(employee.firstName && employee.lastName && employee.cellphone && !createBtnDisabled)
   return (
     <Page className="ui-root" title="新增員工">
       <div className="mx-auto max-w-3xl">
-        <PageHeader title='新增員工' />
-        <AboutEmployee
-          onChange={handleOnChange}
-          employee={employee}
-          service={service}
-          setEmployee={setEmployee}
-        />
+        <PageHeader title="新增員工" />
+        <AboutEmployee onChange={handleOnChange} employee={employee} service={service} setEmployee={setEmployee} />
         <div className="mt-6 flex flex-wrap items-center justify-end gap-3">
           {/* 停用原因（STYLE.md §6）：依 vaild（姓氏、名字、手機號碼必填；送出中不列原因） */}
           {vaild && !createBtnDisabled && (
@@ -141,7 +140,12 @@ function ServiceCategoryCreate() {
               尚缺：{[!employee.lastName && '姓氏', !employee.firstName && '名字', !employee.cellphone && '手機號碼'].filter(Boolean).join('、')}
             </p>
           )}
-          <Button variant="primary" onClick={handleOnClick} disabled={vaild} aria-describedby={vaild && !createBtnDisabled ? 'employee-create-missing' : undefined}>
+          <Button
+            variant="primary"
+            onClick={handleOnClick}
+            disabled={vaild}
+            aria-describedby={vaild && !createBtnDisabled ? 'employee-create-missing' : undefined}
+          >
             新增
           </Button>
         </div>

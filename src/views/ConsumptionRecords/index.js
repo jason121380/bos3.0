@@ -36,9 +36,7 @@ function ConsumptionRecords({ location }) {
   }
   React.useEffect(() => {
     if (!customer || (customer && !customer.userCode)) {
-      history.push(
-        `/customer/login?merchantid=${merchantId}&redirect=/customer/consumption/records?merchantid=${merchantId}`
-      )
+      history.push(`/customer/login?merchantid=${merchantId}&redirect=/customer/consumption/records?merchantid=${merchantId}`)
     }
   }, [history, customer, merchantId])
 
@@ -46,18 +44,20 @@ function ConsumptionRecords({ location }) {
     <Page className="ui-root" title="消費記錄">
       {orders.error ? (
         <QueryFailed onRetry={() => orders.refetch()} />
-      ) : idx(orders, _ =>
-        _.data.viewer.customer.orders.orders ? (
-          <Consumption
-            orders={_.data.viewer.customer.orders.orders}
-            totalCount={_.data.viewer.customer.orders.totalCount}
-            pageOffset={_.data.viewer.customer.orders.pageOffset}
-            pageLimit={_.data.viewer.customer.orders.pageLimit}
-            // refetch={orders.refetch}
-            onPageChange={handlePageChange}
-          />
-        ) : (
-          ''
+      ) : (
+        idx(orders, _ =>
+          _.data.viewer.customer.orders.orders ? (
+            <Consumption
+              orders={_.data.viewer.customer.orders.orders}
+              totalCount={_.data.viewer.customer.orders.totalCount}
+              pageOffset={_.data.viewer.customer.orders.pageOffset}
+              pageLimit={_.data.viewer.customer.orders.pageLimit}
+              // refetch={orders.refetch}
+              onPageChange={handlePageChange}
+            />
+          ) : (
+            ''
+          )
         )
       )}
     </Page>

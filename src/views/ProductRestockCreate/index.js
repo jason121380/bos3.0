@@ -17,7 +17,7 @@ export default function ProductRestockCreate() {
   const [password, setPassword] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [isUsing, setIsUsing] = useState({
-    stockIn: true
+    stockIn: true,
   })
   const [purchaseRecords, setPurchaseRecords] = useState({
     operatorId: '',
@@ -36,22 +36,23 @@ export default function ProductRestockCreate() {
   const getStockInIsUsing = useFetchGetStockInIsUsing()
   const { setStockIn } = useFetchSetPurchaseStockIn()
 
-
   const handleSubmit = () => {
     setCheckPurchaseRecords(true)
     addPurchase({
       input: purchaseRecords,
-    }).then(res => {
-      if (res.data.createPurchase.length) {
-        openSnackbar({ message: '成功新增進貨', variant: 'success' })
-        history.push('/product/restock/')
-      } else {
-        openSnackbar({ message: '新增進貨失敗', variant: 'error' })
-        setCheckPurchaseRecords(false)
-      }
-    }).catch(error => {
-      setCheckPurchaseRecords(false)
     })
+      .then(res => {
+        if (res.data.createPurchase.length) {
+          openSnackbar({ message: '成功新增進貨', variant: 'success' })
+          history.push('/product/restock/')
+        } else {
+          openSnackbar({ message: '新增進貨失敗', variant: 'error' })
+          setCheckPurchaseRecords(false)
+        }
+      })
+      .catch(error => {
+        setCheckPurchaseRecords(false)
+      })
   }
 
   const handleSetPassword = value => {
@@ -81,7 +82,7 @@ export default function ProductRestockCreate() {
   const handleStockIn = async id => {
     await setStockIn({
       purchaseUUId: id,
-      pwd: password
+      pwd: password,
     })
   }
 
@@ -105,11 +106,10 @@ export default function ProductRestockCreate() {
     } catch (error) {
       openSnackbar({
         variant: 'error',
-        message: error.message
+        message: error.message,
       })
       setCheckPurchaseRecords(false)
     }
-
   }
 
   useEffect(() => {
@@ -130,40 +130,27 @@ export default function ProductRestockCreate() {
         stockIn: purchaseStockIn.isUsing,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getStockInIsUsing.loading])
-
 
   return (
     <Page title="新增商品進貨" className="ui-root">
       <PageHeader title="新增商品進貨" />
-      <General
-        purchaseRecords={purchaseRecords}
-        setPurchaseRecords={setPurchaseRecords}
-        setPageLoading={setPageLoading}
-      />
-      {(!pageLoading && !getStockInIsUsing.loading) && (
+      <General purchaseRecords={purchaseRecords} setPurchaseRecords={setPurchaseRecords} setPageLoading={setPageLoading} />
+      {!pageLoading && !getStockInIsUsing.loading && (
         <div className="flex items-center justify-end gap-2 pt-6">
-          <Button
-            variant="secondary"
-            disabled={checkPurchaseRecords}
-            onClick={handleSubmit}
-          >
+          <Button variant="secondary" disabled={checkPurchaseRecords} onClick={handleSubmit}>
             新增
           </Button>
-          <Button
-            variant="primary"
-            disabled={checkPurchaseRecords}
-            onClick={handleCheck}
-          >
+          <Button variant="primary" disabled={checkPurchaseRecords} onClick={handleCheck}>
             新增並入庫
           </Button>
         </div>
       )}
       <PasswordDialog
         open={dialogOpen}
-        title='進貨單入庫'
-        inputLabel='入庫密碼'
+        title="進貨單入庫"
+        inputLabel="入庫密碼"
         handleOnCancel={onDialogClose}
         handleOnConfirm={onDialogConfirm}
         isLoading={checkPurchaseRecords}

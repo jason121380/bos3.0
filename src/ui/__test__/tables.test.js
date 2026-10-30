@@ -10,7 +10,15 @@ afterEach(cleanup)
 
 describe('ui/table', () => {
   it('各區段可帶 ref 與 className；dense 縮小列高；numeric 欄右對齊', () => {
-    const refs = { table: React.createRef(), head: React.createRef(), body: React.createRef(), foot: React.createRef(), row: React.createRef(), th: React.createRef(), td: React.createRef() }
+    const refs = {
+      table: React.createRef(),
+      head: React.createRef(),
+      body: React.createRef(),
+      foot: React.createRef(),
+      row: React.createRef(),
+      th: React.createRef(),
+      td: React.createRef(),
+    }
     const { container } = render(
       <Table ref={refs.table} dense wrapperClassName="wrap" className="t">
         <TableHeader ref={refs.head} className="h">

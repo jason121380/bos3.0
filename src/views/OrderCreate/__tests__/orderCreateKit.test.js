@@ -13,16 +13,34 @@ export const HELPER = { userId: 'helper-1', userName: '李助理', userNickName:
 
 // isLocked：'FALSE' 可改價、'TRUE'／'UNSET' 鎖價；isBindedThirdPartTicketLocked：服務綁定的第三方卡券是否鎖定
 export const SERVICE = {
-  id: 'service-1', no: 'S01', name: '精緻剪髮', price: 800, isLocked: 'FALSE', isNoCash: false,
-  bindedThirdPartTicket: null, isBindedThirdPartTicketLocked: 'FALSE',
+  id: 'service-1',
+  no: 'S01',
+  name: '精緻剪髮',
+  price: 800,
+  isLocked: 'FALSE',
+  isNoCash: false,
+  bindedThirdPartTicket: null,
+  isBindedThirdPartTicketLocked: 'FALSE',
 }
 export const SERVICE_LOCKED = {
-  id: 'service-2', no: 'S02', name: '設計染髮', price: 2000, isLocked: 'TRUE', isNoCash: false,
-  bindedThirdPartTicket: { id: 'tp-1' }, isBindedThirdPartTicketLocked: 'TRUE',
+  id: 'service-2',
+  no: 'S02',
+  name: '設計染髮',
+  price: 2000,
+  isLocked: 'TRUE',
+  isNoCash: false,
+  bindedThirdPartTicket: { id: 'tp-1' },
+  isBindedThirdPartTicketLocked: 'TRUE',
 }
 export const SERVICE_UNSET = {
-  id: 'service-3', no: 'S03', name: '頭皮護理', price: 1200, isLocked: 'UNSET', isNoCash: true,
-  bindedThirdPartTicket: null, isBindedThirdPartTicketLocked: 'UNSET',
+  id: 'service-3',
+  no: 'S03',
+  name: '頭皮護理',
+  price: 1200,
+  isLocked: 'UNSET',
+  isNoCash: true,
+  bindedThirdPartTicket: null,
+  isBindedThirdPartTicketLocked: 'UNSET',
 }
 export const SERVICES = [SERVICE, SERVICE_LOCKED, SERVICE_UNSET]
 
@@ -30,11 +48,23 @@ export const PRODUCT = { id: 'product-1', no: 'P01', name: '洗髮精', isUsing:
 export const PRODUCT_LOCKED = { id: 'product-2', no: 'P02', name: '護髮油', isUsing: true, sellPrice: 600, isLocked: 'TRUE' }
 
 export const TICKET = {
-  id: 'ticket-1', no: 'T01', name: '剪髮十次卡', price: 7000, ticketAvailableCount: 10, isLocked: 'FALSE', remark: '',
+  id: 'ticket-1',
+  no: 'T01',
+  name: '剪髮十次卡',
+  price: 7000,
+  ticketAvailableCount: 10,
+  isLocked: 'FALSE',
+  remark: '',
   ServiceCategory: { name: '剪髮' },
 }
 export const TICKET_LOCKED = {
-  id: 'ticket-2', no: 'T02', name: '護髮五次卡', price: 5000, ticketAvailableCount: 5, isLocked: 'TRUE', remark: '限本店',
+  id: 'ticket-2',
+  no: 'T02',
+  name: '護髮五次卡',
+  price: 5000,
+  ticketAvailableCount: 5,
+  isLocked: 'TRUE',
+  remark: '限本店',
   ServiceCategory: { name: '護髮' },
 }
 
@@ -123,7 +153,9 @@ export const pageFixtures = (overrides = {}) => ({
   // 店販「從清單選擇」彈窗的商品清單（hooks/useFetchProducts 的查詢沒有名稱，模擬 link 以 'undefined' 為鍵）
   undefined: {
     products: {
-      totalCount: 2, pageLimit: 50, pageOffset: 0,
+      totalCount: 2,
+      pageLimit: 50,
+      pageOffset: 0,
       data: [PRODUCT, PRODUCT_LOCKED].map(p => ({ ...p, isAvailableForSale: true, productCategory: { id: 'pc-1', name: '洗護' } })),
     },
   },
@@ -131,7 +163,8 @@ export const pageFixtures = (overrides = {}) => ({
   FETCH_MEMBERSHIPS_FOR_AUTOCOMPLETE: { memberships: { data: [MEMBERSHIP, MEMBERSHIP_FOREVER] } },
   FETCH_MEMBERSHIPS_FOR_MODAL: {
     memberships: {
-      pageLimit: 50, pageOffset: 0,
+      pageLimit: 50,
+      pageOffset: 0,
       data: [MEMBERSHIP, MEMBERSHIP_FOREVER].map(m => ({ ...m, membershipCategory: { id: 'mc-1', uuid: 'mc-1', name: '會員' } })),
     },
   },
@@ -244,9 +277,7 @@ if (isMain) {
     const { calls, settle } = setupPage()
     await waitPageReady()
     await settle()
-    const missing = [...new Set(calls.map(c => c.operationName))].filter(
-      name => !Object.prototype.hasOwnProperty.call(fixtures, name)
-    )
+    const missing = [...new Set(calls.map(c => c.operationName))].filter(name => !Object.prototype.hasOwnProperty.call(fixtures, name))
     expect(missing).toEqual([])
   })
 }

@@ -160,8 +160,7 @@ export const buildEngineeringChecks = ({
   const merchantOk = Boolean(merchant && merchant.id && merchant.name && roleName)
   const knownText = (storage.known || []).map(item => `${item.key} ${item.present ? '有' : '無'}`).join('、')
   const storageText = storage.readable ? `鍵數量 ${storage.keyCount}。${knownText}` : '無法讀取 localStorage'
-  const viewportText =
-    viewport && Number.isFinite(viewport.width) && Number.isFinite(viewport.height) ? `${viewport.width} × ${viewport.height}` : ''
+  const viewportText = viewport && Number.isFinite(viewport.width) && Number.isFinite(viewport.height) ? `${viewport.width} × ${viewport.height}` : ''
   const diagnosticsOk = Boolean(storage.readable && userAgent && viewportText)
   const graphql = graphqlStatus === 'pass' || graphqlStatus === 'pending' ? graphqlStatus : 'fail'
 

@@ -17,18 +17,21 @@ const QUERY = gql`
   }
 `
 let counter = 0
-const link = new ApolloLink(() => new Observable(observer => {
-  setTimeout(() => {
-    observer.next({ data: { n: ++counter } })
-    observer.complete()
-  }, 10)
-}))
+const link = new ApolloLink(
+  () =>
+    new Observable(observer => {
+      setTimeout(() => {
+        observer.next({ data: { n: ++counter } })
+        observer.complete()
+      }, 10)
+    })
+)
 
 function Probe({ log, refetchRef, policy }) {
   const q = useQuery(QUERY, policy ? { fetchPolicy: policy } : {})
   useEffect(() => {
     log.push(`loading=${q.loading} n=${q.data && q.data.n}`)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [q.loading] 變動時執行；log、q.data 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [q.loading] 變動時執行；log、q.data 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [q.loading])
   refetchRef.current = q.refetch
   return null
@@ -39,15 +42,26 @@ async function loadingSequence(policy) {
   const client = createApolloClient(link) // 與正式環境相同的 client 設定，只換掉連線
   const log = []
   const refetchRef = { current: null }
-  render(<ApolloProvider client={client}><Probe log={log} refetchRef={refetchRef} policy={policy} /></ApolloProvider>)
+  render(
+    <ApolloProvider client={client}>
+      <Probe log={log} refetchRef={refetchRef} policy={policy} />
+    </ApolloProvider>
+  )
   await wait(() => expect(log).toContain('loading=false n=1'))
-  await act(async () => { await refetchRef.current() })
+  await act(async () => {
+    await refetchRef.current()
+  })
   await new Promise(resolve => setTimeout(resolve, 50))
   return log
 }
 
 test('cache-and-network（全站主要用法）：refetch 時 loading 會 true→false，依 loading 的 effect 才會重算', async () => {
-  expect(await loadingSequence('cache-and-network')).toEqual(['loading=true n=undefined', 'loading=false n=1', 'loading=true n=1', 'loading=false n=2'])
+  expect(await loadingSequence('cache-and-network')).toEqual([
+    'loading=true n=undefined',
+    'loading=false n=1',
+    'loading=true n=1',
+    'loading=false n=2',
+  ])
 })
 
 test.each([undefined, 'cache-first', 'network-only', 'no-cache'])('%s：refetch 不改變 loading（與 v2 client 相同）', async policy => {

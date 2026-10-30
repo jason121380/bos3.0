@@ -58,11 +58,8 @@ function ServiceCategoryCreate() {
     <Page className="ui-root" title="新增支付方式">
       {/* 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-3xl */}
       <div className="mx-auto flex max-w-3xl flex-col gap-6">
-        <PageHeader className="pb-0" title='新增支付方式' />
-        <AboutPayment
-          payment={payment}
-          onChange={handleOnchange}
-        />
+        <PageHeader className="pb-0" title="新增支付方式" />
+        <AboutPayment payment={payment} onChange={handleOnchange} />
         <div className="flex flex-wrap items-center gap-3">
           <Button
             variant="primary"

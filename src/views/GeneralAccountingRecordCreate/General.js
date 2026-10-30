@@ -54,34 +54,34 @@ function Summary({ stayInCreateAccount, ...rest }) {
     switch (focus) {
       case 'type1':
         type1Ref.current.focus()
-        break;
+        break
       case 'type2':
         type2Ref.current.focus()
-        break;
+        break
       case 'account':
         accountRef.current.focus()
-        break;
+        break
       case 'price':
         priceRef.current.focus()
         priceRef.current.select()
-        break;
+        break
       case 'relation':
         relationRef.current.focus()
-        break;
+        break
       case 'designer':
         designerRef.current.focus()
-        break;
+        break
       case 'payType':
         payTypeRef.current.focus()
-        break;
+        break
       case 'remarkItem':
         remarkItemRef.current.focus()
-        break;
+        break
       case 'remark':
         remarkRef.current.focus()
-        break;
+        break
       default:
-        break;
+        break
     }
   }, [focus])
 
@@ -114,7 +114,7 @@ function Summary({ stayInCreateAccount, ...rest }) {
       setRevenueSubjects(revenueInit)
       setExpenditureSubjects(expenditureInit)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [accountingSubjects.loading])
   const [isClick, setIsClick] = useState(false)
   var valid = !(amount !== null && amount !== '' && accountingSubject && inoutType && walletType)
@@ -152,7 +152,7 @@ function Summary({ stayInCreateAccount, ...rest }) {
     } catch (error) {
       openSnackbar({
         message: error.message,
-        variant: 'error'
+        variant: 'error',
       })
       window.addEventListener('keydown', keyDownSubmit)
       setIsClick(false)
@@ -172,7 +172,7 @@ function Summary({ stayInCreateAccount, ...rest }) {
       window.removeEventListener('keydown', keyDownSubmit)
     }
     // F8 送出時要讀到最新的日期、登錄者、收付方式、關係人、備註：這些改變時也重新註冊（Jason 2026/10/22）
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（keyDownSubmit）；只在 [accountingSubject, amount, inoutType, date, walletType, userId, relationUserId, remark, stayInCreateAccount, location] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（keyDownSubmit）；只在 [accountingSubject, amount, inoutType, date, walletType, userId, relationUserId, remark, stayInCreateAccount, location] 變動時呼叫，補上會每次 render 重跑
   }, [accountingSubject, amount, inoutType, date, walletType, userId, relationUserId, remark, stayInCreateAccount, location])
 
   const employeeOptions =
@@ -186,10 +186,8 @@ function Summary({ stayInCreateAccount, ...rest }) {
       })
     ) || []
 
-  const selectedEmployee =
-    idx(users, _ => employeeOptions.find(d => d.value === userId)) || null
-  const selectedrelationUser =
-    idx(users, _ => employeeOptions.find(d => d.value === relationUserId)) || null
+  const selectedEmployee = idx(users, _ => employeeOptions.find(d => d.value === userId)) || null
+  const selectedrelationUser = idx(users, _ => employeeOptions.find(d => d.value === relationUserId)) || null
   const handleOpenModal = () => {
     setOpenAccountingSubjectModal(!openAccountingSubjectModal)
   }
@@ -202,7 +200,7 @@ function Summary({ stayInCreateAccount, ...rest }) {
       history.push(`/general/accounting/create?date=${location.search.split('=')[1]}`)
       setDate(Number(location.search.split('=')[1]))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 網址參數只在進頁時讀一次，換頁會重新掛載
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 網址參數只在進頁時讀一次，換頁會重新掛載
   }, [history])
   // 備註快捷
 
@@ -250,18 +248,16 @@ function Summary({ stayInCreateAccount, ...rest }) {
               format="yyyy/MM/dd"
               label="開單日期"
               value={date}
-              onChange={(e) => {
-                history.push(
-                  `/general/accounting/create?date=${new Date(e).getTime()}`
-                )
+              onChange={e => {
+                history.push(`/general/accounting/create?date=${new Date(e).getTime()}`)
                 setDate(e)
               }}
               localeText={{
-                toolbarTitle: '選擇日期'
+                toolbarTitle: '選擇日期',
               }}
               slotProps={{
                 toolbar: {
-                  toolbarFormat: 'yyyy年M月d日'
+                  toolbarFormat: 'yyyy年M月d日',
                 },
                 textField: {
                   variant: 'standard',
@@ -275,8 +271,8 @@ function Summary({ stayInCreateAccount, ...rest }) {
                         type2Ref.current.focus()
                       }
                     }
-                  }
-                }
+                  },
+                },
               }}
             />
           </div>
@@ -300,18 +296,10 @@ function Summary({ stayInCreateAccount, ...rest }) {
                 }
               }}
             >
-              <ToggleGroupItem
-                ref={type1Ref}
-                value="REVENUE"
-                aria-label="left aligned"
-              >
+              <ToggleGroupItem ref={type1Ref} value="REVENUE" aria-label="left aligned">
                 收入
               </ToggleGroupItem>
-              <ToggleGroupItem
-                ref={type2Ref}
-                value="EXPENDITURE"
-                aria-label="centered"
-              >
+              <ToggleGroupItem ref={type2Ref} value="EXPENDITURE" aria-label="centered">
                 支出
               </ToggleGroupItem>
             </ToggleGroup>
@@ -319,13 +307,7 @@ function Summary({ stayInCreateAccount, ...rest }) {
           {inoutType !== null && (
             <Fragment>
               <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="shrink-0 text-text-secondary"
-                  aria-label="從科目列表選擇"
-                  onClick={handleOpenModal}
-                >
+                <Button variant="ghost" size="icon" className="shrink-0 text-text-secondary" aria-label="從科目列表選擇" onClick={handleOpenModal}>
                   <Copy strokeWidth={1.75} />
                 </Button>
                 <AccountingSubjectsAutocomplete
@@ -357,7 +339,7 @@ function Summary({ stayInCreateAccount, ...rest }) {
                     setAmount(e.target.value)
                   }}
                   onKeyDown={event => {
-                    if (event.key === "Enter") {
+                    if (event.key === 'Enter') {
                       if (accountingSubject !== null && accountingSubject.title === '員工借支') {
                         setFocus('relation')
                       } else {
@@ -373,26 +355,13 @@ function Summary({ stayInCreateAccount, ...rest }) {
                   <Autocomplete
                     autoHighlight
                     options={employeeOptions}
-                    getOptionLabel={option =>
-                      option.title +
-                      '-' +
-                      (option.designerNo ? option.designerNo : '(無代號)')
-                    }
-                    renderInput={params => (
-                      <TextField
-                        {...params}
-                        label="關係人"
-                        variant="outlined"
-                        fullWidth
-                        inputRef={relationRef}
-                      />
-                    )}
+                    getOptionLabel={option => option.title + '-' + (option.designerNo ? option.designerNo : '(無代號)')}
+                    renderInput={params => <TextField {...params} label="關係人" variant="outlined" fullWidth inputRef={relationRef} />}
                     onFocus={() => setFocus('relation')}
                     onChange={(event, completed) => {
                       setRelationUserId(idx(completed, _ => _.value))
                       setFocus('designer')
-                    }
-                    }
+                    }}
                     onKeyDown={event => {
                       if (event.key === 'Enter') {
                         setFocus('designer')
@@ -406,14 +375,8 @@ function Summary({ stayInCreateAccount, ...rest }) {
                 <Autocomplete
                   autoHighlight
                   options={employeeOptions}
-                  getOptionLabel={option =>
-                    option.title +
-                    '-' +
-                    (option.designerNo ? option.designerNo : '(無代號)')
-                  }
-                  renderInput={params => (
-                    <TextField {...params} inputRef={designerRef} label="登錄者" variant="outlined" fullWidth />
-                  )}
+                  getOptionLabel={option => option.title + '-' + (option.designerNo ? option.designerNo : '(無代號)')}
+                  renderInput={params => <TextField {...params} inputRef={designerRef} label="登錄者" variant="outlined" fullWidth />}
                   onFocus={() => setFocus('designer')}
                   onChange={(event, completed) => {
                     setUserId(idx(completed, _ => _.value))
@@ -455,7 +418,9 @@ function Summary({ stayInCreateAccount, ...rest }) {
                     label="備註快捷鍵"
                   >
                     {remarkItem.map((data, index) => (
-                      <NativeSelectOption key={index} value={data.value}>{data.label}</NativeSelectOption>
+                      <NativeSelectOption key={index} value={data.value}>
+                        {data.label}
+                      </NativeSelectOption>
                     ))}
                   </NativeSelect>
                 </FormControl>
@@ -493,7 +458,10 @@ function Summary({ stayInCreateAccount, ...rest }) {
         {/* 停用原因（STYLE.md §6）：依 valid（收支類別、科目、金額、收付方式必填）；送出中不顯示 */}
         {valid && (
           <p id="general-accounting-create-missing" role="status" className="text-caption text-text-secondary">
-            尚缺：{[!inoutType && '收入／支出', !accountingSubject && '科目', (amount === null || amount === '') && '金額', !walletType && '收付方式'].filter(Boolean).join('、')}
+            尚缺：
+            {[!inoutType && '收入／支出', !accountingSubject && '科目', (amount === null || amount === '') && '金額', !walletType && '收付方式']
+              .filter(Boolean)
+              .join('、')}
           </p>
         )}
         <Button
@@ -503,7 +471,7 @@ function Summary({ stayInCreateAccount, ...rest }) {
           onClick={() => {
             Submit()
           }}
-        // onDoubleClick={valid === false}
+          // onDoubleClick={valid === false}
         >
           新增
         </Button>

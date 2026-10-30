@@ -21,8 +21,6 @@ import SourceSelect from 'components/SourceSelect'
 import StaffCombobox from 'components/StaffCombobox'
 import { GENDER_OPTIONS, makeFieldChange, makeBirthdayChange } from 'views/OrderShared/customerFormInput'
 
-
-
 function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
   const inputLabel = React.useRef()
   const lastCustomerNo = useFetchGetLastCustomerNo()
@@ -50,9 +48,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
     birthday: customer.birthday || { year: '', month: '', day: '' },
     PreferDesignerId: customer.PreferDesignerId || '',
     OfficialBrandMerchantId:
-      customer.OfficialBrandMerchantId || localStorage.getItem('userMerchant')
-        ? JSON.parse(localStorage.getItem('userMerchant')).id
-        : null,
+      customer.OfficialBrandMerchantId || localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
     email: customer.email || '',
     address: customer.address || '',
     lineId: customer.lineId || '',
@@ -87,9 +83,6 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
   // 欄位輸入（OrderShared/customerFormInput，四頁共用）
   const handleFieldChange = makeFieldChange(setValues)
   const handleBirthdayChange = makeBirthdayChange(birthdayObj, setBirthdayObj)
-
-
-
 
   const handleSubmit = () => {
     if (values.customerId.length > 0) {
@@ -160,8 +153,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
     checkIsCustomerNoUsedLazy({
       variables: {
         input: values.no,
-        customerId: values.customerId === "" ? null : values.customerId,
-      }
+        customerId: values.customerId === '' ? null : values.customerId,
+      },
     })
   }
 
@@ -171,11 +164,11 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
       setIsSetTime(false)
       setNoVerify(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [checkIsCustomerNoUsedLazyData.loading])
 
   React.useEffect(() => {
-    if (values.no !== "") {
+    if (values.no !== '') {
       setIsSetTime(true)
       const timer = setTimeout(() => {
         checkNo()
@@ -186,7 +179,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
     } else {
       setNoVerify(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（checkNo）；只在 [values.no] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（checkNo）；只在 [values.no] 變動時呼叫，補上會每次 render 重跑
   }, [values.no])
 
   React.useEffect(() => {
@@ -194,19 +187,22 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
       const data = idx(lastCustomerNo, _ => _.data.getLastCustomerNo)
       setLastNo(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [lastCustomerNo.loading])
 
   return (
     <Dialog open={open}>
       {/* 保留原表單寬 700px；本批僅替換彈窗外殼。 */}
-      <DialogContent hideClose
+      <DialogContent
+        hideClose
         onOpenAutoFocus={event => {
           // 沿用舊 Modal：已有欄位焦點就保留，否則先聚焦面板，避免選人窗自動叫出手機鍵盤。
           event.preventDefault()
           if (!event.target.contains(document.activeElement)) event.target.focus()
         }}
-        className="sm:max-w-[700px]" aria-describedby={undefined}>
+        className="sm:max-w-[700px]"
+        aria-describedby={undefined}
+      >
         <DialogHeader className="items-center pb-4">
           <div className="flex w-full items-center justify-between gap-4">
             <DialogTitle>{values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}</DialogTitle>
@@ -227,117 +223,76 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                 value={values.no}
                 variant="outlined"
                 InputProps={{
-                  endAdornment: (
-                    (values.no === '') ? '' :
-                      isSetTime ?
-                        <InputAdornment position="start">
-                          <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
-                        </InputAdornment> :
-                        !noVerify ?
-                          <InputAdornment position="start">
-                            <CheckRoundedIcon color='success' />
-                          </InputAdornment> :
-                          <InputAdornment position="start">
-                            <WarningAmberRoundedIcon color='error' />
-                          </InputAdornment>
-                  ),
+                  endAdornment:
+                    values.no === '' ? (
+                      ''
+                    ) : isSetTime ? (
+                      <InputAdornment position="start">
+                        <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
+                      </InputAdornment>
+                    ) : !noVerify ? (
+                      <InputAdornment position="start">
+                        <CheckRoundedIcon color="success" />
+                      </InputAdornment>
+                    ) : (
+                      <InputAdornment position="start">
+                        <WarningAmberRoundedIcon color="error" />
+                      </InputAdornment>
+                    ),
                 }}
               />
             </div>
             <div className="min-w-0">
               <Field label="客戶姓名">
-                <Input
-                  name="name"
-                  onChange={handleFieldChange}
-                  value={values.name}
-                />
+                <Input name="name" onChange={handleFieldChange} value={values.name} />
               </Field>
             </div>
             <div className="min-w-0">
               {/* 標籤在欄位上方（與同彈窗其他欄位一致），不用外框上緣標籤 */}
               <Field label="性別" htmlFor="orderEditAddCustomer-gender">
-              <NativeSelect
-                id="orderEditAddCustomer-gender"
-                value={values.gender}
-                name="gender"
-                onChange={handleFieldChange}
-              >
-                <NativeSelectOption value="UNKNOWN">
-                  <em>未知</em>
-                </NativeSelectOption>
-                {GENDER_OPTIONS.map((data, index) => (
-                  <NativeSelectOption value={data.value} key={`${data.value}-${index}`}>
-                    {data.label}
+                <NativeSelect id="orderEditAddCustomer-gender" value={values.gender} name="gender" onChange={handleFieldChange}>
+                  <NativeSelectOption value="UNKNOWN">
+                    <em>未知</em>
                   </NativeSelectOption>
-                ))}
-              </NativeSelect>
+                  {GENDER_OPTIONS.map((data, index) => (
+                    <NativeSelectOption value={data.value} key={`${data.value}-${index}`}>
+                      {data.label}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
               </Field>
             </div>
             <div className="min-w-0">
               <Field label="Email">
-                <Input
-                  name="email"
-                  value={values.email}
-                  onChange={handleFieldChange}
-                />
+                <Input name="email" value={values.email} onChange={handleFieldChange} />
               </Field>
             </div>
             <div className="min-w-0">
               <Field label="lineId">
-                <Input
-                  name="lineId"
-                  value={values.lineId}
-                  onChange={handleFieldChange}
-                />
+                <Input name="lineId" value={values.lineId} onChange={handleFieldChange} />
               </Field>
             </div>
             <div className="min-w-0">
               <Field label="地址">
-                <Input
-                  name="address"
-                  value={values.address}
-                  onChange={handleFieldChange}
-                />
+                <Input name="address" value={values.address} onChange={handleFieldChange} />
               </Field>
             </div>
             <div className="min-w-0">
               <Field label="客戶暱稱">
-                <Input
-                  name="nickName"
-                  value={values.nickName}
-                  onChange={handleFieldChange}
-                />
+                <Input name="nickName" value={values.nickName} onChange={handleFieldChange} />
               </Field>
             </div>
             <div className="min-w-0">
               {/* 生日三格：標籤在上（比照打帳單的新增顧客彈窗） */}
               <div className="flex flex-wrap gap-2.5">
                 <Field label="民國年" className="w-20">
-                  <TextField
-                    fullWidth
-                    name="year"
-                    value={birthdayObj.year}
-                    onChange={e => handleBirthdayChange(e)}
-                    variant="outlined"
-                  />
+                  <TextField fullWidth name="year" value={birthdayObj.year} onChange={e => handleBirthdayChange(e)} variant="outlined" />
                 </Field>
                 <Field label="月" className="w-20">
-                  <TextField
-                    fullWidth
-                    name="month"
-                    value={birthdayObj.month}
-                    onChange={e => handleBirthdayChange(e)}
-                    variant="outlined"
-                  />
+                  <TextField fullWidth name="month" value={birthdayObj.month} onChange={e => handleBirthdayChange(e)} variant="outlined" />
                 </Field>
                 <Field label="日" className="w-20">
-                  <TextField
-                    fullWidth
-                    name="day"
-                    value={birthdayObj.day}
-                    onChange={e => handleBirthdayChange(e)}
-                    variant="outlined"
-                  />
+                  <TextField fullWidth name="day" value={birthdayObj.day} onChange={e => handleBirthdayChange(e)} variant="outlined" />
                 </Field>
               </div>
             </div>
@@ -385,40 +340,32 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                 </div> */}
             <div className="min-w-0">
               <Field label="電話">
-                <Input
-                  onChange={handleFieldChange}
-                  name="cellphone"
-                  value={values.cellphone}
-                />
+                <Input onChange={handleFieldChange} name="cellphone" value={values.cellphone} />
               </Field>
             </div>
             <div className="min-w-0">
-              <SourceSelect
-                emptyOption
-                value={values.source}
-                onChange={handleFieldChange}
-              />
+              <SourceSelect emptyOption value={values.source} onChange={handleFieldChange} />
             </div>
             <div className="min-w-0">
               <Field label="最近設計師" htmlFor="orderEditAddCustomer-latestDesigner">
-              <NativeSelect
-                id="orderEditAddCustomer-latestDesigner"
-                value={customer.latestDesigner || ''}
-                onChange={handleFieldChange}
-                name="DesignerId"
-                disabled
-              >
-                <NativeSelectOption value="">
-                  <em>None</em>
-                </NativeSelectOption>
-                {idx(designers, _ =>
-                  _.data.users.users.map((data, index) => (
-                    <NativeSelectOption value={data.id} key={`${data.id}-${index}`}>
-                      {data.name}
-                    </NativeSelectOption>
-                  ))
-                )}
-              </NativeSelect>
+                <NativeSelect
+                  id="orderEditAddCustomer-latestDesigner"
+                  value={customer.latestDesigner || ''}
+                  onChange={handleFieldChange}
+                  name="DesignerId"
+                  disabled
+                >
+                  <NativeSelectOption value="">
+                    <em>None</em>
+                  </NativeSelectOption>
+                  {idx(designers, _ =>
+                    _.data.users.users.map((data, index) => (
+                      <NativeSelectOption value={data.id} key={`${data.id}-${index}`}>
+                        {data.name}
+                      </NativeSelectOption>
+                    ))
+                  )}
+                </NativeSelect>
               </Field>
             </div>
             <div className="min-w-0">
@@ -434,23 +381,17 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
             </div>
             <div className="min-w-0">
               <Field label="備註">
-                <Input
-                  onChange={handleFieldChange}
-                  name="remark"
-                  value={values.remark}
-                />
+                <Input onChange={handleFieldChange} name="remark" value={values.remark} />
               </Field>
             </div>
           </div>
         </DialogBody>
         <div className="h-px bg-border" />
         <DialogFooter className="border-t-0">
-          <Button variant="secondary" onClick={onClose}>取消</Button>
-          <Button
-            variant="primary"
-            onClick={handleSubmit}
-            disabled={quickAddCustomer}
-          >
+          <Button variant="secondary" onClick={onClose}>
+            取消
+          </Button>
+          <Button variant="primary" onClick={handleSubmit} disabled={quickAddCustomer}>
             {values.customerId.length > 0 ? '儲存' : '新增'}
           </Button>
         </DialogFooter>

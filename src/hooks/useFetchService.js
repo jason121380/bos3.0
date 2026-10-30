@@ -117,7 +117,7 @@ export const useLazyFetchService = () => {
 
 export const useLazyFetchServiceNew = () => {
   const [getService, serviceDetail] = useLazyQuery(GET_SERVICE_FOR_RENDER_HELPER, {
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'cache-and-network',
   })
   return [getService, serviceDetail]
 }

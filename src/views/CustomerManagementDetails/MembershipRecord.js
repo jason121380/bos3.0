@@ -1,7 +1,7 @@
-import { format } from 'date-fns';
-import { useEffect } from 'react';
+import { format } from 'date-fns'
+import { useEffect } from 'react'
 import { Fragment, useState } from 'react'
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep'
 import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
@@ -19,10 +19,11 @@ function MembershipRecord({ records }) {
 
   return (
     <Fragment>
-      {records.length === 0 ?
+      {records.length === 0 ? (
         <Card>
           <EmptyState title="無資料" />
-        </Card> :
+        </Card>
+      ) : (
         <Card className="p-5">
           <Table wrapperClassName="max-h-[calc(100vh-300px)] overflow-auto">
             <TableHeader className="sticky top-0 z-10">
@@ -47,7 +48,7 @@ function MembershipRecord({ records }) {
             </TableBody>
           </Table>
         </Card>
-      }
+      )}
     </Fragment>
   )
 }

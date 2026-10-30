@@ -14,8 +14,8 @@ export default function useFetchGetCustomerReference() {
 }
 
 export function useFetchGetCustomerReferenceLazy() {
-  const [ getReferenceLazy, referenceLazyData ] = useLazyQuery(GET_CUSTOMER_REFERENCE, {
+  const [getReferenceLazy, referenceLazyData] = useLazyQuery(GET_CUSTOMER_REFERENCE, {
     fetchPolicy: SETTINGS_FETCH_POLICY,
   })
-  return [ getReferenceLazy, referenceLazyData ]
+  return [getReferenceLazy, referenceLazyData]
 }

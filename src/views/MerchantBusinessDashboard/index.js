@@ -31,14 +31,11 @@ function MerchantBusinessDashboard() {
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading && !merchantDashboardData.loading) {
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const membership = idx(merchantDashboardData, _ => _.data.merchantDashboard.intervalSummary.membership)
       setMembershipDisplay(isMemberShipCardActive || membership !== 0)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading, merchantDashboardData.loading])
   return (
     <Page className="ui-root" title="營業儀表板">
@@ -46,10 +43,7 @@ function MerchantBusinessDashboard() {
       <Toolbar>
         <DateSelector
           date={pageSetting}
-          attributes={[
-            'thismonth', 'lastmonth', 'dbyesterday',
-            'yesterday', 'today', 'startDate', 'endDate'
-          ]}
+          attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
           dateChange={value => setPageSetting(value)}
         />
       </Toolbar>

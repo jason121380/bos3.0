@@ -15,7 +15,10 @@ function swap(src) {
   let changed = false
   const moved = new Set()
   let out = src.replace(/import\s*\{([^}]*)\}\s*from\s*(['"])@mui\/material\2;?[ \t]*\n/g, (line, names) => {
-    const parts = names.split(',').map(s => s.trim()).filter(Boolean)
+    const parts = names
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean)
     const keep = parts.filter(p => !MOVE.includes(p.split(/\s+as\s+/)[0]))
     const take = parts.filter(p => MOVE.includes(p.split(/\s+as\s+/)[0]))
     if (take.length === 0) return line

@@ -11,6 +11,8 @@
     "test:nowatch": "react-scripts test --verbose --runInBand --watchAll=false",
     "test:coverage": "react-scripts test --coverage --verbose --runInBand --watchAll=false",
     "lint": "npm run lint:build",
+    "format": "prettier --write \"src/**/*.{js,jsx,css,scss}\" \"e2e/**/*.js\" \"scripts/**/*.{js,mjs}\" \"*.{js,mjs}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,css,scss}\" \"e2e/**/*.js\" \"scripts/**/*.{js,mjs}\" \"*.{js,mjs}\"",
     "cy:open": "cypress open",
     "cy:run": "TZ=America/New_York cypress run --record",
     "test:e2e": "playwright test -c e2e/playwright.config.js"
@@ -85,6 +87,7 @@
     "autoprefixer": "^10.4.24",
     "cypress": "^6.0.1",
     "mutationobserver-shim": "^0.3.7",
+    "prettier": "3.9.10",
     "react-scripts": "5.0.1",
     "sass": "^1.75.0",
     "sinon": "^7.4.1",

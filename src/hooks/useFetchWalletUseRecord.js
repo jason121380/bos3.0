@@ -29,14 +29,7 @@ const FETCH_WALLET_USE_RECORD = gql`
   }
 `
 
-export default function useFetchWalletUseRecord({
-  start,
-  end,
-  pageLimit,
-  pageOffset,
-  customerId,
-  designerId,
-}) {
+export default function useFetchWalletUseRecord({ start, end, pageLimit, pageOffset, customerId, designerId }) {
   return useQuery(FETCH_WALLET_USE_RECORD, {
     variables: {
       input: {

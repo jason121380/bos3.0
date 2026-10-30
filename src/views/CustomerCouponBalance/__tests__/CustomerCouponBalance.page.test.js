@@ -11,20 +11,32 @@ jest.setTimeout(20000)
 
 jest.mock('components/EmployeeAutoComplete', () => ({ label, value, onChange }) => (
   <div data-testid={label} data-value={String(value)}>
-    <button type="button" onClick={() => onChange({ userId: `${label}-1` })}>選{label}</button>
-    <button type="button" onClick={() => onChange({ id: '' })}>清除{label}</button>
+    <button type="button" onClick={() => onChange({ userId: `${label}-1` })}>
+      選{label}
+    </button>
+    <button type="button" onClick={() => onChange({ id: '' })}>
+      清除{label}
+    </button>
   </div>
 ))
 jest.mock('components/CustomerAutoComplete', () => ({ value, onChange }) => (
   <div data-testid="customer" data-value={value}>
-    <button type="button" onClick={() => onChange({ id: 'customer-1' })}>選顧客</button>
-    <button type="button" onClick={() => onChange({ id: '' })}>清除顧客</button>
+    <button type="button" onClick={() => onChange({ id: 'customer-1' })}>
+      選顧客
+    </button>
+    <button type="button" onClick={() => onChange({ id: '' })}>
+      清除顧客
+    </button>
   </div>
 ))
 jest.mock('components/TicketAutoComplete', () => ({ value, onChange }) => (
   <div data-testid="ticket" data-value={value}>
-    <button type="button" onClick={() => onChange({ id: 'ticket-1' })}>選卡券</button>
-    <button type="button" onClick={() => onChange({ id: '' })}>清除卡券</button>
+    <button type="button" onClick={() => onChange({ id: 'ticket-1' })}>
+      選卡券
+    </button>
+    <button type="button" onClick={() => onChange({ id: '' })}>
+      清除卡券
+    </button>
   </div>
 ))
 
@@ -47,7 +59,25 @@ const coupon = overrides => ({
 
 const REPORT = [
   { data: [coupon()] },
-  { data: [coupon({ customerName: '林先生', customerNo: 'C02', customerCellPhone: '0922333444', couponNo: 'T02', couponName: '剪髮卡', totalCount: 2, usedCount: 0, remainingCount: 2, singleCouponPrice: 500, singleCouponPriceDecreaseHandingFee: 500, otherPaymentName: 'LINE Pay', isIntoPerformanceWhileBuying: false, singleCouponHandingFee: 0 })] },
+  {
+    data: [
+      coupon({
+        customerName: '林先生',
+        customerNo: 'C02',
+        customerCellPhone: '0922333444',
+        couponNo: 'T02',
+        couponName: '剪髮卡',
+        totalCount: 2,
+        usedCount: 0,
+        remainingCount: 2,
+        singleCouponPrice: 500,
+        singleCouponPriceDecreaseHandingFee: 500,
+        otherPaymentName: 'LINE Pay',
+        isIntoPerformanceWhileBuying: false,
+        singleCouponHandingFee: 0,
+      }),
+    ],
+  },
 ]
 
 const setup = (fixtures = {}) =>
@@ -72,9 +102,7 @@ describe('顧客卡券餘額表', () => {
     expect(lastInput(utils.calls)).toEqual({ customerId: [], couponId: [], preferDesignerId: null, latestDesignerId: null })
     const row = screen.getByText('護髮五次卡').closest('tr')
     // 總金額 5 × 200、剩餘金額 3 × 200、單張 200、扣手續費後 180、手續費 |−20|
-    ;['1,000', '600', '200', '180', '20', '無', '是', '0912345678'].forEach(text =>
-      expect(within(row).getByText(text)).toBeInTheDocument()
-    )
+    ;['1,000', '600', '200', '180', '20', '無', '是', '0912345678'].forEach(text => expect(within(row).getByText(text)).toBeInTheDocument())
     const row2 = screen.getByText('剪髮卡').closest('tr')
     expect(within(row2).getByText('LINE Pay')).toBeInTheDocument()
     expect(within(row2).getByText('否')).toBeInTheDocument()
@@ -107,9 +135,7 @@ describe('顧客卡券餘額表', () => {
     fireEvent.click(screen.getByText('清除卡券'))
     fireEvent.click(screen.getByText('清除偏好設計師'))
     fireEvent.click(screen.getByText('清除最近設計師'))
-    await wait(() =>
-      expect(lastInput(utils.calls)).toEqual({ customerId: [], couponId: [], preferDesignerId: null, latestDesignerId: null })
-    )
+    await wait(() => expect(lastInput(utils.calls)).toEqual({ customerId: [], couponId: [], preferDesignerId: null, latestDesignerId: null }))
   })
 
   it('沒有資料時合計為 0', async () => {

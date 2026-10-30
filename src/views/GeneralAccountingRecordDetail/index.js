@@ -92,61 +92,55 @@ export default function AccountingRecordDetail(props) {
     switch (focus) {
       case 'type1':
         type1Ref.current.focus()
-        break;
+        break
       case 'type2':
         type2Ref.current.focus()
-        break;
+        break
       case 'account':
         accountRef.current.focus()
-        break;
+        break
       case 'price':
         priceRef.current.focus()
         priceRef.current.select()
-        break;
+        break
       case 'relation':
         relationRef.current.focus()
-        break;
+        break
       case 'designer':
         designerRef.current.focus()
-        break;
+        break
       case 'payType':
         payTypeRef.current.focus()
-        break;
+        break
       case 'remarkItem':
         remarkItemRef.current.focus()
-        break;
+        break
       case 'remark':
         remarkRef.current.focus()
-        break;
+        break
       default:
-        break;
+        break
     }
   }, [focus])
-
 
   useEffect(() => {
     // 紀錄查詢失敗（或已被刪除）時不帶入，以空表單顯示、不整頁錯誤（Jason 2026/10/22）
     if (!getMoneyFlow.loading && idx(getMoneyFlow, _ => _.data.moneyFlow)) {
       setDate(getMoneyFlow.data.moneyFlow.date)
       setAccountingSubjects({
-        title:
-          getMoneyFlow.data.moneyFlow.accountingSubject !== null ? getMoneyFlow.data.moneyFlow.accountingSubject.name : '',
+        title: getMoneyFlow.data.moneyFlow.accountingSubject !== null ? getMoneyFlow.data.moneyFlow.accountingSubject.name : '',
         value: getMoneyFlow.data.moneyFlow.accountingSubject !== null ? getMoneyFlow.data.moneyFlow.accountingSubject.id : '',
-        number:
-          getMoneyFlow.data.moneyFlow.accountingSubject !== null ? getMoneyFlow.data.moneyFlow.accountingSubject.number : '',
-        inoutType:
-          getMoneyFlow.data.moneyFlow.accountingSubject !== null
-            ? getMoneyFlow.data.moneyFlow.accountingSubject.inoutType
-            : '',
+        number: getMoneyFlow.data.moneyFlow.accountingSubject !== null ? getMoneyFlow.data.moneyFlow.accountingSubject.number : '',
+        inoutType: getMoneyFlow.data.moneyFlow.accountingSubject !== null ? getMoneyFlow.data.moneyFlow.accountingSubject.inoutType : '',
       })
       setAmount(getMoneyFlow.data.moneyFlow.amount)
       setRelationUserId(
         getMoneyFlow.data.moneyFlow.relationUser !== null
           ? {
-            title: getMoneyFlow.data.moneyFlow.relationUser.name,
-            value: getMoneyFlow.data.moneyFlow.relationUser.id,
-            designerNo: getMoneyFlow.data.moneyFlow.relationUser.designerNo,
-          }
+              title: getMoneyFlow.data.moneyFlow.relationUser.name,
+              value: getMoneyFlow.data.moneyFlow.relationUser.id,
+              designerNo: getMoneyFlow.data.moneyFlow.relationUser.designerNo,
+            }
           : null
       )
       setInoutType(getMoneyFlow.data.moneyFlow.inoutType)
@@ -160,7 +154,7 @@ export default function AccountingRecordDetail(props) {
       setRemark(getMoneyFlow.data.moneyFlow.remark)
       setWalletType({ title: getMoneyFlow.data.moneyFlow.walletType, value: getMoneyFlow.data.moneyFlow.walletType })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMoneyFlow.loading])
 
   useEffect(() => {
@@ -192,27 +186,24 @@ export default function AccountingRecordDetail(props) {
       setRevenueSubjects(revenueInit)
       setExpenditureSubjects(expenditureInit)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [accountingSubjects.loading])
 
   useEffect(() => {
     if (!merchantPassword.loading) {
-      const editPwdIsUsing = idx(
-        merchantPassword,
-        _ => _.data.merchantPassword.editMoneyFlow.isUsing
-      )
+      const editPwdIsUsing = idx(merchantPassword, _ => _.data.merchantPassword.editMoneyFlow.isUsing)
       setEditPwdIsUsing(editPwdIsUsing)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantPassword.loading])
 
   useEffect(() => {
     if (showMessage && accountingSubject) {
       if (accountingSubject.title !== '員工借支' || (accountingSubject.title === '員工借支' && relationUserId)) {
-        setShowMessage(false);
+        setShowMessage(false)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（showMessage）；只在 [accountingSubject, relationUserId] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（showMessage）；只在 [accountingSubject, relationUserId] 變動時呼叫，補上會每次 render 重跑
   }, [accountingSubject, relationUserId])
 
   if (getMoneyFlow.loading) return ''
@@ -338,15 +329,15 @@ export default function AccountingRecordDetail(props) {
                   format="yyyy/MM/dd"
                   label="開單日期"
                   value={date}
-                  onChange={(e) => {
+                  onChange={e => {
                     setDate(e)
                   }}
                   localeText={{
-                    toolbarTitle: '選擇日期'
+                    toolbarTitle: '選擇日期',
                   }}
                   slotProps={{
                     toolbar: {
-                      toolbarFormat: 'yyyy年M月d日'
+                      toolbarFormat: 'yyyy年M月d日',
                     },
                     textField: {
                       variant: 'standard',
@@ -360,8 +351,8 @@ export default function AccountingRecordDetail(props) {
                             type2Ref.current.focus()
                           }
                         }
-                      }
-                    }
+                      },
+                    },
                   }}
                 />
               </div>
@@ -402,18 +393,10 @@ export default function AccountingRecordDetail(props) {
                     }
                   }}
                 >
-                  <ToggleGroupItem
-                    ref={type1Ref}
-                    value="REVENUE"
-                    aria-label="left aligned"
-                  >
+                  <ToggleGroupItem ref={type1Ref} value="REVENUE" aria-label="left aligned">
                     收入
                   </ToggleGroupItem>
-                  <ToggleGroupItem
-                    ref={type2Ref}
-                    value="EXPENDITURE"
-                    aria-label="centered"
-                  >
+                  <ToggleGroupItem ref={type2Ref} value="EXPENDITURE" aria-label="centered">
                     支出
                   </ToggleGroupItem>
                 </ToggleGroup>
@@ -460,7 +443,7 @@ export default function AccountingRecordDetail(props) {
                         setAmount(e.target.value)
                       }}
                       onKeyDown={event => {
-                        if (event.key === "Enter") {
+                        if (event.key === 'Enter') {
                           if (accountingSubject !== null && accountingSubject.title === '員工借支') {
                             setFocus('relation')
                           } else {
@@ -488,20 +471,8 @@ export default function AccountingRecordDetail(props) {
                                 }
                               })}
                               value={relationUserId}
-                              getOptionLabel={option =>
-                                option.title +
-                                '-' +
-                                (option.designerNo ? option.designerNo : '(無代號)')
-                              }
-                              renderInput={params => (
-                                <TextField
-                                  {...params}
-                                  label="關係人"
-                                  variant="outlined"
-                                  fullWidth
-                                  inputRef={relationRef}
-                                />
-                              )}
+                              getOptionLabel={option => option.title + '-' + (option.designerNo ? option.designerNo : '(無代號)')}
+                              renderInput={params => <TextField {...params} label="關係人" variant="outlined" fullWidth inputRef={relationRef} />}
                               onFocus={() => setFocus('relation')}
                               onChange={(event, completed) => {
                                 setRelationUserId(completed)
@@ -531,20 +502,8 @@ export default function AccountingRecordDetail(props) {
                               }
                             })}
                             value={userId}
-                            getOptionLabel={option =>
-                              option.title +
-                              '-' +
-                              (option.designerNo ? option.designerNo : '(無代號)')
-                            }
-                            renderInput={params => (
-                              <TextField
-                                {...params}
-                                inputRef={designerRef}
-                                label="登錄者"
-                                variant="outlined"
-                                fullWidth
-                              />
-                            )}
+                            getOptionLabel={option => option.title + '-' + (option.designerNo ? option.designerNo : '(無代號)')}
+                            renderInput={params => <TextField {...params} inputRef={designerRef} label="登錄者" variant="outlined" fullWidth />}
                             onFocus={() => setFocus('designer')}
                             onChange={(event, completed) => {
                               setUserId(completed)
@@ -590,7 +549,9 @@ export default function AccountingRecordDetail(props) {
                         label="備註快捷鍵"
                       >
                         {remarkItem.map((data, index) => (
-                          <NativeSelectOption key={index} value={data.value}>{data.label}</NativeSelectOption>
+                          <NativeSelectOption key={index} value={data.value}>
+                            {data.label}
+                          </NativeSelectOption>
                         ))}
                       </NativeSelect>
                     </FormControl>
@@ -615,18 +576,10 @@ export default function AccountingRecordDetail(props) {
             </CardContent>
           </Card>
           <div className="flex items-center justify-between gap-4 py-6">
-            <Button
-              onClick={editPwdIsUsing ? handleOpenDialog : Submit}
-              variant="primary"
-              disabled={isClick}
-            >
+            <Button onClick={editPwdIsUsing ? handleOpenDialog : Submit} variant="primary" disabled={isClick}>
               儲存
             </Button>
-            <Button
-              onClick={() => setOpenDeleteDialog(true)}
-              variant="danger"
-              disabled={isClick}
-            >
+            <Button onClick={() => setOpenDeleteDialog(true)} variant="danger" disabled={isClick}>
               <Trash2 strokeWidth={1.75} />
               刪除
             </Button>
@@ -651,12 +604,7 @@ export default function AccountingRecordDetail(props) {
           </DialogHeader>
           <DialogBody>
             <Field label="儲存密碼" htmlFor="edit-money-flow-password">
-              <Input
-                id="edit-money-flow-password"
-                type="password"
-                value={editPwd}
-                onChange={event => setEditPwd(event.target.value)}
-              />
+              <Input id="edit-money-flow-password" type="password" value={editPwd} onChange={event => setEditPwd(event.target.value)} />
             </Field>
           </DialogBody>
           <DialogFooter>

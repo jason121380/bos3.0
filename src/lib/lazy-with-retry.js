@@ -5,14 +5,11 @@ import { lazy } from 'react'
 
 export const CHUNK_RELOAD_KEY = 'bos.chunk-reload'
 
-const CHUNK_ERROR = /ChunkLoadError|Loading chunk|Loading CSS chunk|dynamically imported module|module script failed|Importing a module script failed|text\/html|Unexpected token\s*['"]?</i
+const CHUNK_ERROR =
+  /ChunkLoadError|Loading chunk|Loading CSS chunk|dynamically imported module|module script failed|Importing a module script failed|text\/html|Unexpected token\s*['"]?</i
 
 export function isChunkLoadError(error) {
-  const text = [
-    error && error.name,
-    error && error.message,
-    error && error.toString && error.toString(),
-  ].filter(Boolean).join(' ')
+  const text = [error && error.name, error && error.message, error && error.toString && error.toString()].filter(Boolean).join(' ')
   return CHUNK_ERROR.test(text)
 }
 
@@ -46,15 +43,17 @@ export function reloadOnceForChunkError() {
 }
 
 export function loadWithRetry(importer) {
-  return importer().then(mod => {
-    clearChunkReloadFlag()
-    return mod
-  }).catch(error => {
-    if (isChunkLoadError(error) && reloadOnceForChunkError()) {
-      return new Promise(() => {})
-    }
-    throw error
-  })
+  return importer()
+    .then(mod => {
+      clearChunkReloadFlag()
+      return mod
+    })
+    .catch(error => {
+      if (isChunkLoadError(error) && reloadOnceForChunkError()) {
+        return new Promise(() => {})
+      }
+      throw error
+    })
 }
 
 export function lazyWithRetry(importer) {

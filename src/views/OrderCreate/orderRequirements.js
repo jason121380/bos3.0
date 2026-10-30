@@ -14,8 +14,7 @@ export const hasAnyItem = bill =>
   bill.useTicketOrders.length > 0 ||
   bill.membershipOrders.length > 0
 
-export const hasCustomer = bill =>
-  bill.customerId !== undefined || !!bill.withoutCustomerData || bill.customerCellphone.length > 0
+export const hasCustomer = bill => bill.customerId !== undefined || !!bill.withoutCustomerData || bill.customerCellphone.length > 0
 
 export const getMissingForOrder = bill => {
   const missing = []

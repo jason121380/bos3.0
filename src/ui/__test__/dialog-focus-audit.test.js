@@ -20,28 +20,65 @@ beforeEach(() => {
   media = window.matchMedia
   window.matchMedia = query => ({ matches: query === '(pointer: fine)', addEventListener() {}, removeEventListener() {} })
 })
-afterEach(() => { cleanup(); window.matchMedia = media })
+afterEach(() => {
+  cleanup()
+  window.matchMedia = media
+})
 
 function Field({ kind }) {
-  if (kind === 'popover') return <Popover><PopoverTrigger>欄位</PopoverTrigger><PopoverContent><input aria-label="浮層輸入" /></PopoverContent></Popover>
-  if (kind === 'dropdown') return <DropdownMenu><DropdownMenuTrigger>欄位</DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem>甲</DropdownMenuItem></DropdownMenuContent></DropdownMenu>
-  if (kind === 'desktop' || kind === 'mobile') return React.createElement(kind === 'desktop' ? DatePicker : MobileDatePicker, { value: initial, onChange: () => {} })
-  if (kind === 'native') return <NativeSelect label="欄位" value="a"><NativeSelectOption value="a">甲</NativeSelectOption></NativeSelect>
+  if (kind === 'popover')
+    return (
+      <Popover>
+        <PopoverTrigger>欄位</PopoverTrigger>
+        <PopoverContent>
+          <input aria-label="浮層輸入" />
+        </PopoverContent>
+      </Popover>
+    )
+  if (kind === 'dropdown')
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger>欄位</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>甲</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+  if (kind === 'desktop' || kind === 'mobile')
+    return React.createElement(kind === 'desktop' ? DatePicker : MobileDatePicker, { value: initial, onChange: () => {} })
+  if (kind === 'native')
+    return (
+      <NativeSelect label="欄位" value="a">
+        <NativeSelectOption value="a">甲</NativeSelectOption>
+      </NativeSelect>
+    )
   if (kind === 'date-field') return <DateField label="欄位" value={initial} format="yyyy/MM/dd" />
   return <TextField label="欄位" />
 }
 function Harness({ kind, lowerClose }) {
   const [password, setPassword] = React.useState(false)
   const [toast, setToast] = React.useState(true)
-  return <Dialog open onOpenChange={lowerClose}><DialogContent id="lower" hideClose aria-describedby={undefined}>
-    <DialogTitle>焦點稽核</DialogTitle><Field kind={kind} />
-    {kind === 'toast' && toast && <ToastCard title="提示" onClose={() => setToast(false)} />}
-    <button>下一欄</button>
-    <button onClick={() => setPassword(true)}>開啟密碼窗</button>
-    <PasswordDialog open={password} title="密碼確認" inputLabel="操作密碼" inputOnChange={() => {}} handleOnCancel={() => setPassword(false)} handleOnConfirm={() => {}} />
-  </DialogContent></Dialog>
+  return (
+    <Dialog open onOpenChange={lowerClose}>
+      <DialogContent id="lower" hideClose aria-describedby={undefined}>
+        <DialogTitle>焦點稽核</DialogTitle>
+        <Field kind={kind} />
+        {kind === 'toast' && toast && <ToastCard title="提示" onClose={() => setToast(false)} />}
+        <button>下一欄</button>
+        <button onClick={() => setPassword(true)}>開啟密碼窗</button>
+        <PasswordDialog
+          open={password}
+          title="密碼確認"
+          inputLabel="操作密碼"
+          inputOnChange={() => {}}
+          handleOnCancel={() => setPassword(false)}
+          handleOnConfirm={() => {}}
+        />
+      </DialogContent>
+    </Dialog>
+  )
 }
-const popupRole = kind => ['desktop', 'mobile'].includes(kind) ? 'grid' : kind === 'dropdown' ? 'menu' : kind === 'popover' ? 'textbox' : 'listbox'
+const popupRole = kind => (['desktop', 'mobile'].includes(kind) ? 'grid' : kind === 'dropdown' ? 'menu' : kind === 'popover' ? 'textbox' : 'listbox')
 const openField = async kind => {
   let trigger
   if (kind === 'desktop') trigger = screen.getByRole('button', { name: /^選擇日期/ })
@@ -51,7 +88,9 @@ const openField = async kind => {
   act(() => trigger.focus())
   if (kind === 'dropdown') fireEvent.keyDown(trigger, { key: 'ArrowDown' })
   else fireEvent.click(trigger)
-  await act(async () => { await Promise.resolve() })
+  await act(async () => {
+    await Promise.resolve()
+  })
   if (['desktop', 'mobile'].includes(kind)) act(() => screen.getByRole('gridcell', { name: '2026年10月20日' }).focus())
   return trigger
 }
@@ -122,7 +161,6 @@ test.each(['native', 'dropdown', 'mobile'])('%s：modal 關閉後可移焦並開
   await wait(() => expect(target).toHaveFocus())
 })
 
-
 test.each(['desktop', 'mobile'])('%s：窗內開啟時即聚焦所選日期', async kind => {
   render(<Harness kind={kind} />)
   const trigger = kind === 'desktop' ? screen.getByRole('button', { name: /^選擇日期/ }) : screen.getByRole('textbox')
@@ -136,7 +174,9 @@ test.each(['dropdown', 'mobile'])('%s：第一下外點只解散 modal，下一�
   const lowerClose = jest.fn()
   render(<Harness kind={kind} lowerClose={lowerClose} />)
   const trigger = await openField(kind)
-  await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)) })
+  await act(async () => {
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
   fireEvent(document.body, new MouseEvent('pointerdown', { bubbles: true, button: 0 }))
   fireEvent.mouseDown(document.body)
   fireEvent.click(document.body)

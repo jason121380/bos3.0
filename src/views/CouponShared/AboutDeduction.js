@@ -79,12 +79,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {
           if (index === index2) {
-            return (
-              (data2.isSpecial = !data2.isSpecial),
-              (data2.price = 0),
-              (data2.designatePrice = 0),
-              (data2.nonDesignatePrice = 0)
-            )
+            return ((data2.isSpecial = !data2.isSpecial), (data2.price = 0), (data2.designatePrice = 0), (data2.nonDesignatePrice = 0))
           }
         })
       }
@@ -226,10 +221,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                     {content.deductionOrder}
                   </span>
                   <Field label="扣項類別" className="w-full sm:w-36">
-                    <NativeSelect
-                      onChange={event => handleDeductionTypeChange(data.type, event, index)}
-                      value={content.type}
-                    >
+                    <NativeSelect onChange={event => handleDeductionTypeChange(data.type, event, index)} value={content.type}>
                       {deductions.map((data, idx) => (
                         <NativeSelectOption value={data.value} key={`${data.value}-${idx}`}>
                           {data.label}
@@ -257,10 +249,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                   </FormControl> */}
                   {content.name && (
                     <Field label="扣成方式" className="w-full sm:w-36">
-                      <NativeSelect
-                        onChange={event => handleDeductionWay(data.type, event, index)}
-                        value={content.deductionWay}
-                      >
+                      <NativeSelect onChange={event => handleDeductionWay(data.type, event, index)} value={content.deductionWay}>
                         {deductionWay2.map((data, idx) => (
                           <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                             {data.label}
@@ -272,29 +261,19 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                   {content.isSpecial && content.name ? (
                     <div className="flex flex-col gap-1">
                       <div className="flex gap-3">
-                        <Field
-                          label={content.deductionWay === '扣固定金額' ? '指定金額' : '指定%'}
-                          className="w-24"
-                        >
+                        <Field label={content.deductionWay === '扣固定金額' ? '指定金額' : '指定%'} className="w-24">
                           <Input
                             type="number"
                             value={content.designatePrice}
-                            onChange={event =>
-                              handleDeductionNum(data.type, event, index, 'designatePrice')
-                            }
+                            onChange={event => handleDeductionNum(data.type, event, index, 'designatePrice')}
                             onWheel={() => document.activeElement.blur()}
                           />
                         </Field>
-                        <Field
-                          label={content.deductionWay === '扣固定金額' ? '不指定金額' : '不指定%'}
-                          className="w-24"
-                        >
+                        <Field label={content.deductionWay === '扣固定金額' ? '不指定金額' : '不指定%'} className="w-24">
                           <Input
                             type="number"
                             value={content.nonDesignatePrice}
-                            onChange={event =>
-                              handleDeductionNum(data.type, event, index, 'nonDesignatePrice')
-                            }
+                            onChange={event => handleDeductionNum(data.type, event, index, 'nonDesignatePrice')}
                             onWheel={() => document.activeElement.blur()}
                           />
                         </Field>
@@ -313,10 +292,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                     content.name && (
                       <div className="flex flex-col gap-1">
                         <div>
-                          <Field
-                            label={content.deductionWay === '扣固定金額' ? '固定金額' : '業績%數'}
-                            className="w-24"
-                          >
+                          <Field label={content.deductionWay === '扣固定金額' ? '固定金額' : '業績%數'} className="w-24">
                             <Input
                               type="number"
                               value={content.price}

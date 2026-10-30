@@ -13,7 +13,7 @@ export default function useFetchSetCustomerIsUnwelcome() {
       setCustomerIsUnwelcome({
         variables: {
           customerId,
-          input
+          input,
         },
       }),
   }

@@ -27,7 +27,7 @@ function HelperPointSettingEdit({ match }) {
     retrievePointWay: 'FIXED',
     NONSEGMENTED: [{ threshold: 0, price: 0 }],
     SEGMENTED: [{ threshold: 0, price: 0 }],
-    isAccordingToHelper: false
+    isAccordingToHelper: false,
   })
 
   useEffect(() => {
@@ -44,7 +44,7 @@ function HelperPointSettingEdit({ match }) {
       if (newSubmitData[data.retrievePointWay]) newSubmitData[data.retrievePointWay] = data.retrieveSegmentSetting
       setSubmitData(newSubmitData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getMerchantPointValueSettingsForEdit、submitData）；只在 [getMerchantPointValueSettingsForEdit.loading] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getMerchantPointValueSettingsForEdit、submitData）；只在 [getMerchantPointValueSettingsForEdit.loading] 變動時呼叫，補上會每次 render 重跑
   }, [getMerchantPointValueSettingsForEdit.loading])
 
   const handleUpdate = () => {
@@ -58,7 +58,7 @@ function HelperPointSettingEdit({ match }) {
       name: submitData.name,
       paidFixed: submitData.paidFixed,
       retrievePointWay: submitData.retrievePointWay,
-      isAccordingToHelper: submitData.isAccordingToHelper
+      isAccordingToHelper: submitData.isAccordingToHelper,
     }
     if (data.retrievePointWay === 'FIXED') {
       data.retrieveFixed = submitData.retrieveFixed
@@ -69,23 +69,25 @@ function HelperPointSettingEdit({ match }) {
       updateSettingId: settingId,
       updateSettingData: data,
     }
-    updateMerchantPointValueSetting(inputValue).then(res => {
-      if (res.data.updateMerchantPointValueSetting) {
-        openSnackbar({
-          variant: 'success',
-          message: '儲存成功',
-        })
-        history.push('/performanceDeductionParameter')
-      } else {
-        openSnackbar({
-          variant: 'warning',
-          message: '儲存失敗',
-        })
+    updateMerchantPointValueSetting(inputValue)
+      .then(res => {
+        if (res.data.updateMerchantPointValueSetting) {
+          openSnackbar({
+            variant: 'success',
+            message: '儲存成功',
+          })
+          history.push('/performanceDeductionParameter')
+        } else {
+          openSnackbar({
+            variant: 'warning',
+            message: '儲存失敗',
+          })
+          setIsClick(false)
+        }
+      })
+      .catch(error => {
         setIsClick(false)
-      }
-    }).catch(error => {
-      setIsClick(false)
-    })
+      })
   }
   return (
     <Page className="ui-root" title="編輯互助點數設定">
@@ -100,18 +102,14 @@ function HelperPointSettingEdit({ match }) {
         />
         {getMerchantPointValueSettingsForEdit.error ? (
           <QueryFailed onRetry={() => getMerchantPointValueSettingsForEdit.refetch()} />
-        ) : !getMerchantPointValueSettingsForEdit.loading ?
-          <Results
-            className="max-w-3xl"
-            status={submitData.retrievePointWay}
-            submitData={submitData}
-            setSubmitData={setSubmitData}
-          /> : (
-            // 載入中：與舊版 CircularProgress 相同時機顯示
-            <div aria-busy="true" aria-label="載入中">
-              <Skeleton className="h-[360px] w-full max-w-3xl rounded-lg" />
-            </div>
-          )}
+        ) : !getMerchantPointValueSettingsForEdit.loading ? (
+          <Results className="max-w-3xl" status={submitData.retrievePointWay} submitData={submitData} setSubmitData={setSubmitData} />
+        ) : (
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[360px] w-full max-w-3xl rounded-lg" />
+          </div>
+        )}
       </div>
     </Page>
   )

@@ -4,10 +4,21 @@ import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { cn, focusRing } from 'ui/utils'
 import cloneDeep from 'lodash/cloneDeep'
 import {
-  isBefore, startOfDay, endOfDay, subDays, addDays,
-  startOfMonth, endOfMonth, addMonths, subMonths,
-  startOfWeek, endOfWeek, addWeeks, subWeeks,
-  format, isSameDay
+  isBefore,
+  startOfDay,
+  endOfDay,
+  subDays,
+  addDays,
+  startOfMonth,
+  endOfMonth,
+  addMonths,
+  subMonths,
+  startOfWeek,
+  endOfWeek,
+  addWeeks,
+  subWeeks,
+  format,
+  isSameDay,
 } from 'date-fns'
 import { useHistory, useLocation } from 'react-router'
 import useQueryString from 'hooks/useQueryString'
@@ -15,8 +26,17 @@ import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 const DateSelector = ({
-  date, dateChange, disabled, attributes, margin, getQueryData = true,
-  onlyStart, pickerOption, inputFormat, rangelimit, ...rest
+  date,
+  dateChange,
+  disabled,
+  attributes,
+  margin,
+  getQueryData = true,
+  onlyStart,
+  pickerOption,
+  inputFormat,
+  rangelimit,
+  ...rest
 }) => {
   const history = useHistory()
   const location = useLocation()
@@ -90,8 +110,8 @@ const DateSelector = ({
     thisweek: () => getButton('本週', thisweek, isThisWeek(date.startDate, date.endDate)),
     nextweek: () => getButton('下週', nextweek, isNextWeek(date.startDate, date.endDate)),
     lastweek: () => getButton('上週', lastweek, isLastWeek(date.startDate, date.endDate)),
-    startDate: () => <DatePicker key='起始時間' type={'起始時間'} />,
-    endDate: () => <DatePicker key='結束時間' type={'結束時間'} />,
+    startDate: () => <DatePicker key="起始時間" type={'起始時間'} />,
+    endDate: () => <DatePicker key="結束時間" type={'結束時間'} />,
   }
 
   const DatePicker = ({ type }) => {
@@ -102,7 +122,7 @@ const DateSelector = ({
         value={date[key ? 'startDate' : 'endDate']}
         onChange={value => handleDateChange(new Date(value).getTime(), key ? 'startDate' : 'endDate')}
         localeText={{
-          toolbarTitle: onlyStart ? '選擇日期' : type
+          toolbarTitle: onlyStart ? '選擇日期' : type,
         }}
         slots={{
           field: inputProps => (
@@ -115,11 +135,11 @@ const DateSelector = ({
             >
               {format(inputProps.value, inputFormat)}
             </button>
-          )
+          ),
         }}
         slotProps={{
           toolbar: {
-            toolbarFormat: 'M月d日'
+            toolbarFormat: 'M月d日',
           },
         }}
       />
@@ -143,9 +163,7 @@ const DateSelector = ({
   }
 
   const pushDate = ({ startDate, endDate }) => {
-    history.push(
-      `${location.pathname}?startDate=${startDate}&endDate=${endDate}`
-    )
+    history.push(`${location.pathname}?startDate=${startDate}&endDate=${endDate}`)
   }
 
   const today = () => {
@@ -249,7 +267,7 @@ const DateSelector = ({
       }
       dateChange(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   const quickKeys = attributes.filter(key => key !== 'startDate' && key !== 'endDate')
@@ -261,45 +279,45 @@ const DateSelector = ({
   // 精簡版（STYLE.md §6）：「快速選擇」下拉 ＋ 一個日期區間欄位
   return (
     <>
-    <div id='DateSelector' className={cn('ui-root noprint inline-flex flex-wrap items-center gap-2', margin && 'my-6')}>
-      {quickOptions.length > 0 && (
-        // 2026/10/30 第三波：由 Radix ui/select 改為全站統一的 NativeSelect（自家清單，與其他單選下拉同一套操作）。
-        // 未選任何快速區間時值為 ''、清單沒有對應項目，按鈕顯示佔位字「快速選擇」。
-        <NativeSelect
-          value={activeQuick ? activeQuick.title : ''}
-          placeholder="快速選擇"
-          onChange={event => {
-            const option = quickOptions.find(d => d.title === event.target.value)
-            option && option.func()
-          }}
-          disabled={disabled}
-          fullWidth={false}
-          className="w-auto"
-          inputProps={{
-            'aria-label': '快速選擇日期區間',
-            className: cn('min-w-[112px]', activeQuick && 'border-accent/40'),
-          }}
-        >
-          {quickOptions.map(option => (
-            <NativeSelectOption key={option.title} value={option.title}>
-              {option.title}
-            </NativeSelectOption>
-          ))}
-        </NativeSelect>
-      )}
-      {hasStart && (
-        <div className="flex h-9 max-sm:h-10 items-center gap-0.5 rounded-md border border-solid border-border-strong bg-background pl-2.5 pr-1 hover:border-border-strong-hover">
-          <CalendarDays className="mr-1 h-4 w-4 text-text-tertiary" strokeWidth={1.75} />
-          {buttonObj.startDate()}
-          {hasEnd && (
-            <>
-              <span className="text-text-tertiary">–</span>
-              {buttonObj.endDate()}
-            </>
-          )}
-        </div>
-      )}
-    </div>
+      <div id="DateSelector" className={cn('ui-root noprint inline-flex flex-wrap items-center gap-2', margin && 'my-6')}>
+        {quickOptions.length > 0 && (
+          // 2026/10/30 第三波：由 Radix ui/select 改為全站統一的 NativeSelect（自家清單，與其他單選下拉同一套操作）。
+          // 未選任何快速區間時值為 ''、清單沒有對應項目，按鈕顯示佔位字「快速選擇」。
+          <NativeSelect
+            value={activeQuick ? activeQuick.title : ''}
+            placeholder="快速選擇"
+            onChange={event => {
+              const option = quickOptions.find(d => d.title === event.target.value)
+              option && option.func()
+            }}
+            disabled={disabled}
+            fullWidth={false}
+            className="w-auto"
+            inputProps={{
+              'aria-label': '快速選擇日期區間',
+              className: cn('min-w-[112px]', activeQuick && 'border-accent/40'),
+            }}
+          >
+            {quickOptions.map(option => (
+              <NativeSelectOption key={option.title} value={option.title}>
+                {option.title}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
+        )}
+        {hasStart && (
+          <div className="flex h-9 max-sm:h-10 items-center gap-0.5 rounded-md border border-solid border-border-strong bg-background pl-2.5 pr-1 hover:border-border-strong-hover">
+            <CalendarDays className="mr-1 h-4 w-4 text-text-tertiary" strokeWidth={1.75} />
+            {buttonObj.startDate()}
+            {hasEnd && (
+              <>
+                <span className="text-text-tertiary">–</span>
+                {buttonObj.endDate()}
+              </>
+            )}
+          </div>
+        )}
+      </div>
     </>
   )
 }
@@ -307,15 +325,27 @@ const DateSelector = ({
 DateSelector.propTypes = {
   date: PropTypes.shape({
     startDate: PropTypes.number,
-    endDate: PropTypes.number
+    endDate: PropTypes.number,
   }).isRequired,
   dateChange: PropTypes.func,
   disabled: PropTypes.bool,
-  attributes: PropTypes.arrayOf(PropTypes.oneOf([
-    'lastmonth', 'thismonth', 'today', 'yesterday',
-    'dbyesterday', 'nextmonth', 'tomorrow', 'datomorrow',
-    'thisweek', 'nextweek', 'lastweek', 'startDate', 'endDate'
-  ])),
+  attributes: PropTypes.arrayOf(
+    PropTypes.oneOf([
+      'lastmonth',
+      'thismonth',
+      'today',
+      'yesterday',
+      'dbyesterday',
+      'nextmonth',
+      'tomorrow',
+      'datomorrow',
+      'thisweek',
+      'nextweek',
+      'lastweek',
+      'startDate',
+      'endDate',
+    ])
+  ),
   margin: PropTypes.bool,
   onlyStart: PropTypes.bool,
   pickerOption: PropTypes.object,
@@ -325,7 +355,7 @@ DateSelector.propTypes = {
 }
 
 DateSelector.defaultProps = {
-  dateChange: () => { },
+  dateChange: () => {},
   disabled: false,
   attributes: [],
   margin: false,
@@ -333,7 +363,7 @@ DateSelector.defaultProps = {
   pickerOption: {},
   inputFormat: 'yyyy/MM/dd',
   rest: {},
-  rangelimit: () => false
+  rangelimit: () => false,
 }
 
 export default DateSelector

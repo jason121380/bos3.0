@@ -12,15 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 import { cn } from 'ui/utils'
 import { formatNumber } from 'ui/format'
 
-function ProductsModal({
-  productsModalOpen,
-  closeModal,
-  productList,
-  productCategories,
-  selectedCategorie,
-  setPurchaseRecords,
-  purchaseRecords,
-}) {
+function ProductsModal({ productsModalOpen, closeModal, productList, productCategories, selectedCategorie, setPurchaseRecords, purchaseRecords }) {
   const [selectedCategorieId, setSelectedCategorieId] = useState([])
   const [selectedProducts, setSelectedProducts] = useState([])
   const [categorie, setCategorie] = useState('')
@@ -29,14 +21,12 @@ function ProductsModal({
   useEffect(() => {
     const tmpArr = []
     if (categorie !== '') {
-      productList
-        .filter(product => product.productCategory !== null && product.productCategory.id === categorie)
-        .map(product => tmpArr.push(product))
+      productList.filter(product => product.productCategory !== null && product.productCategory.id === categorie).map(product => tmpArr.push(product))
     } else {
       productList.map(product => tmpArr.push(product))
     }
     setSelectedCategorieId(tmpArr)
-    
+
     tmpArr.forEach((product, index) => {
       product.selected = false
     })
@@ -51,7 +41,7 @@ function ProductsModal({
         }
       })
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [categorie] 變動時執行；productList、selectedProducts 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [categorie] 變動時執行；productList、selectedProducts 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [categorie])
 
   useEffect(() => {
@@ -61,7 +51,7 @@ function ProductsModal({
     } else if (sortType === 'STOCK_ASC') {
       cloneData.sort((a, b) => a.remainingCount - b.remainingCount)
     } else {
-      const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'})
+      const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
       cloneData.sort((a, b) => {
         const noA = a.productNo
         const noB = b.productNo
@@ -69,7 +59,7 @@ function ProductsModal({
       })
     }
     setSelectedCategorieId(cloneData)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [sortType] 變動時執行；selectedCategorieId 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [sortType] 變動時執行；selectedCategorieId 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [sortType])
 
   useEffect(() => {
@@ -81,7 +71,7 @@ function ProductsModal({
       })
       setSelectedCategorieId(productList)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productList.loading])
 
   const handleProductInputOnChange = (e, index, id) => {
@@ -179,20 +169,12 @@ function ProductsModal({
 
   const Header = () => (
     <div className="flex flex-wrap items-center gap-3">
-      <span className="text-heading text-text">
-        所有商品
-      </span>
-      <ToggleGroup
-        size="small"
-        exclusive
-        value={sortType}
-        onChange={(e, v) => v && setSortType(v)}
-      >
-        <ToggleGroupItem value='NO'>編號</ToggleGroupItem>
-        <ToggleGroupItem value='STOCK_DESC'>庫存多到少</ToggleGroupItem>
-        <ToggleGroupItem value='STOCK_ASC'>庫存少到多</ToggleGroupItem>
+      <span className="text-heading text-text">所有商品</span>
+      <ToggleGroup size="small" exclusive value={sortType} onChange={(e, v) => v && setSortType(v)}>
+        <ToggleGroupItem value="NO">編號</ToggleGroupItem>
+        <ToggleGroupItem value="STOCK_DESC">庫存多到少</ToggleGroupItem>
+        <ToggleGroupItem value="STOCK_ASC">庫存少到多</ToggleGroupItem>
       </ToggleGroup>
-
     </div>
   )
   // 篩選鈕的選取狀態（舊版以 contained / outlined 區分）
@@ -203,18 +185,12 @@ function ProductsModal({
     <Dialog open={productsModalOpen}>
       <DialogContent size="lg" className="max-w-[960px]" hideClose aria-describedby={undefined}>
         <div className="flex items-center justify-between gap-4 px-6 py-4">
-          <Header/>
+          <Header />
           <div className="flex shrink-0 items-center gap-2">
-            <Button
-              variant="primary"
-              onClick={handleSelectProductsConfirm}
-            >
+            <Button variant="primary" onClick={handleSelectProductsConfirm}>
               確定
             </Button>
-            <Button
-              variant="secondary"
-              onClick={closeModal}
-            >
+            <Button variant="secondary" onClick={closeModal}>
               關閉
             </Button>
           </div>
@@ -236,11 +212,7 @@ function ProductsModal({
                 {productCategory.name}
               </Button>
             ))}
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setCategorie('')}
-            >
+            <Button size="sm" variant="ghost" onClick={() => setCategorie('')}>
               清除篩選
             </Button>
           </div>
@@ -270,9 +242,7 @@ function ProductsModal({
                     />
                   </TableCell>
                   <TableCell className="tabular-nums">{product.productNo}</TableCell>
-                  <TableCell>
-                    {product.productCategory !== null ? product.productCategory.name : ''}
-                  </TableCell>
+                  <TableCell>{product.productCategory !== null ? product.productCategory.name : ''}</TableCell>
                   <TableCell>{product.productName}</TableCell>
                   <TableCell className="py-2.5">
                     <TextField
@@ -309,16 +279,10 @@ function ProductsModal({
           </Table>
         </div>
         <div className="flex items-center justify-end gap-2 border-0 border-t border-solid border-border px-6 py-4">
-          <Button
-            variant="primary"
-            onClick={handleSelectProductsConfirm}
-          >
+          <Button variant="primary" onClick={handleSelectProductsConfirm}>
             確定
           </Button>
-          <Button
-            variant="secondary"
-            onClick={closeModal}
-          >
+          <Button variant="secondary" onClick={closeModal}>
             關閉
           </Button>
         </div>

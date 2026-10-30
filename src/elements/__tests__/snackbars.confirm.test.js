@@ -161,10 +161,7 @@ describe('確認型：日結', () => {
     fireEvent.click(screen.getByRole('button', { name: '確定日結' }))
     expect(screen.getByRole('button', { name: '處理中…' })).toBeDisabled()
     await wait(() => expect(reload).toHaveBeenCalledTimes(1))
-    expect(mockApi.daily.mock.calls).toEqual([
-      [{ date: '2026-10-20', checkoutStaff: 'staff-1' }],
-      [{ date: '2026-10-21', checkoutStaff: 'staff-1' }],
-    ])
+    expect(mockApi.daily.mock.calls).toEqual([[{ date: '2026-10-20', checkoutStaff: 'staff-1' }], [{ date: '2026-10-21', checkoutStaff: 'staff-1' }]])
     expect(setSelectedOrders).toHaveBeenCalledWith([])
     expect(screen.getByRole('status')).toHaveTextContent('日結成功')
   })
@@ -239,9 +236,7 @@ describe('確認型：其他', () => {
   it('刪除版本更新紀錄：mutation 失敗顯示錯誤訊息', async () => {
     mockApi.deleteRecord = jest.fn(() => Promise.reject(new Error('沒有權限')))
     render(<CustomizedSnackbars />)
-    act(() =>
-      openSnackbar({ message: '確定刪除？', variant: 'error', resign: true, deleteSystemRecordPending: true, systemUpdateId: 'sys-1' })
-    )
+    act(() => openSnackbar({ message: '確定刪除？', variant: 'error', resign: true, deleteSystemRecordPending: true, systemUpdateId: 'sys-1' }))
     fireEvent.click(screen.getByRole('button', { name: '刪除' }))
     await flush()
     expect(screen.getByRole('alert')).toHaveTextContent('沒有權限')
@@ -294,9 +289,7 @@ describe('純訊息：自動消失的暫停與恢復', () => {
 describe('其他呈現', () => {
   it('確認框的訊息可以是元件（不做 trim）', () => {
     render(<CustomizedSnackbars />)
-    act(() =>
-      openSnackbar({ message: <strong>請確認批次內容</strong>, variant: 'error', groupEdit: true, handleSubmitDeductionSetting: () => {} })
-    )
+    act(() => openSnackbar({ message: <strong>請確認批次內容</strong>, variant: 'error', groupEdit: true, handleSubmitDeductionSetting: () => {} }))
     expect(screen.getByRole('alertdialog', { name: '確認批次編輯' }).querySelector('strong')).toHaveTextContent('請確認批次內容')
   })
 

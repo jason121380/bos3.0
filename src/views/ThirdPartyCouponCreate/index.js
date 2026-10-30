@@ -41,11 +41,7 @@ function ServiceCategoryCreate() {
       openSnackbar({ message: '新增第三方卡券成功', variant: 'success' })
     })
   }
-  const vaild = !(
-    thirdPartyCoupon.type &&
-    thirdPartyCoupon.name &&
-    thirdPartyCoupon.handlingFee >= 0
-  )
+  const vaild = !(thirdPartyCoupon.type && thirdPartyCoupon.name && thirdPartyCoupon.handlingFee >= 0)
   // 停用原因（STYLE.md §6）：依 vaild 的三個欄位，依畫面順序列出目前缺的
   const missing = [
     !thirdPartyCoupon.name && '名稱',
@@ -57,17 +53,19 @@ function ServiceCategoryCreate() {
     <Page className="ui-root" title="新增第三方卡券">
       <div className="mx-auto w-full max-w-3xl">
         <PageHeader title="新增第三方卡券" />
-        <AboutThirdPartyCoupon
-          thirdPartyCoupon={thirdPartyCoupon}
-          onChange={handleOnchange}
-        />
+        <AboutThirdPartyCoupon thirdPartyCoupon={thirdPartyCoupon} onChange={handleOnchange} />
         <div className="mt-6 flex flex-wrap items-center justify-end gap-3">
           {vaild && (
             <p id="third-party-coupon-create-missing" role="status" className="text-caption text-text-secondary">
               尚缺：{missing.join('、')}
             </p>
           )}
-          <Button variant="primary" disabled={vaild} aria-describedby={vaild ? 'third-party-coupon-create-missing' : undefined} onClick={handleSubmit}>
+          <Button
+            variant="primary"
+            disabled={vaild}
+            aria-describedby={vaild ? 'third-party-coupon-create-missing' : undefined}
+            onClick={handleSubmit}
+          >
             新增
           </Button>
         </div>

@@ -58,8 +58,16 @@ const fixtures = ({ authName = '店長', authorityId = 'auth-1', settings = role
 
 const setup = options => renderPage(<EmployeeManagementList />, { fixtures: fixtures(options), route: '/management/employee' })
 // 姓名連結內是「姓」「名」兩個文字節點（後面可能接「未設定抽成」標示），只取文字節點
-const ownText = el => Array.from(el.childNodes).filter(n => n.nodeType === 3).map(n => n.textContent).join('')
-const names = () => screen.getAllByRole('row').slice(1).map(tr => ownText(tr.querySelectorAll('a')[1]))
+const ownText = el =>
+  Array.from(el.childNodes)
+    .filter(n => n.nodeType === 3)
+    .map(n => n.textContent)
+    .join('')
+const names = () =>
+  screen
+    .getAllByRole('row')
+    .slice(1)
+    .map(tr => ownText(tr.querySelectorAll('a')[1]))
 const row = name => screen.getByText(name).closest('tr')
 
 beforeEach(() => loginAs())

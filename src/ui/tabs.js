@@ -6,11 +6,7 @@ import { cn, focusRing } from './utils'
 const Tabs = TabsPrimitive.Root
 
 const TabsList = React.forwardRef(({ className, ...props }, ref) => (
-  <TabsPrimitive.List
-    ref={ref}
-    className={cn('flex items-center gap-1 overflow-x-auto', className)}
-    {...props}
-  />
+  <TabsPrimitive.List ref={ref} className={cn('flex items-center gap-1 overflow-x-auto', className)} {...props} />
 ))
 TabsList.displayName = 'TabsList'
 

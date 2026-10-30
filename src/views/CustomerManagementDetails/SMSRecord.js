@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format } from 'date-fns'
 import { Fragment } from 'react'
 import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
@@ -7,10 +7,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 function SMSRecord({ records }) {
   return (
     <Fragment>
-      {records.length === 0 ?
+      {records.length === 0 ? (
         <Card>
           <EmptyState title="無資料" />
-        </Card> :
+        </Card>
+      ) : (
         <Card className="p-5">
           <Table wrapperClassName="max-h-[calc(100vh-300px)] overflow-auto">
             <TableHeader className="sticky top-0 z-10">
@@ -22,7 +23,7 @@ function SMSRecord({ records }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {records.map(({date, cellphone, message}, i) => (
+              {records.map(({ date, cellphone, message }, i) => (
                 <TableRow key={`${date}-${i}`}>
                   <TableCell className="tabular-nums">{format(date, 'yyyy/MM/dd')}</TableCell>
                   <TableCell className="tabular-nums">{format(date, 'H:mm')}</TableCell>
@@ -33,7 +34,7 @@ function SMSRecord({ records }) {
             </TableBody>
           </Table>
         </Card>
-      }
+      )}
     </Fragment>
   )
 }

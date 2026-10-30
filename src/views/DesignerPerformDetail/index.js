@@ -34,10 +34,7 @@ function DesignerPerformDetail({ history, location }) {
     },
   })
 
-  const {
-    fetchServiceCategoriesAnalytics,
-    serviceCategoriesAnalytics,
-  } = useLazyFetchServiceCategoriesAnalytics({
+  const { fetchServiceCategoriesAnalytics, serviceCategoriesAnalytics } = useLazyFetchServiceCategoriesAnalytics({
     startDate: pageSetting.startDate,
     endDate: pageSetting.endDate,
     userId: pageSetting.employeeId,
@@ -85,16 +82,13 @@ function DesignerPerformDetail({ history, location }) {
     <Page className="ui-root" title="設計師細項分析">
       <div>
         <Header />
-        <MerchantSearchBar
-          values={pageSetting}
-          onFilter={values => setPageSetting(values)}
-          outside
-          visible={['datePicker', 'employee', 'payment']}
-        />
-        {[designerSalesDetail, serviceCategoriesAnalytics, merchantSalesAnalytics, designerOrderRecords, serviceOrderHelpers].some(q => q && q.error) && (
+        <MerchantSearchBar values={pageSetting} onFilter={values => setPageSetting(values)} outside visible={['datePicker', 'employee', 'payment']} />
+        {[designerSalesDetail, serviceCategoriesAnalytics, merchantSalesAnalytics, designerOrderRecords, serviceOrderHelpers].some(
+          q => q && q.error
+        ) && (
           <QueryFailed
             onRetry={() => {
-              [designerSalesDetail, serviceCategoriesAnalytics, merchantSalesAnalytics, designerOrderRecords, serviceOrderHelpers]
+              ;[designerSalesDetail, serviceCategoriesAnalytics, merchantSalesAnalytics, designerOrderRecords, serviceOrderHelpers]
                 .filter(q => q && q.error && q.refetch)
                 .forEach(q => q.refetch())
             }}

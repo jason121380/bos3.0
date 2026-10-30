@@ -10,6 +10,12 @@ export function calendarUpdateTime(isoDate) {
 
 const shippedRecords = [
   {
+    title: '2026/10/30 程式碼排版統一',
+    versionNo: 'v3.10302235',
+    updateTime: '2026-10-30',
+    content: '- 內部程式碼排版統一，並在每次更新前自動檢查；使用上沒有變化',
+  },
+  {
     title: '2026/10/30 預約頁設計師可搜尋',
     versionNo: 'v3.10302151',
     updateTime: '2026-10-30',

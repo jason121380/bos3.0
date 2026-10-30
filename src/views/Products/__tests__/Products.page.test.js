@@ -63,7 +63,10 @@ const PRODUCTS = [
 
 const fixtures = (overrides = {}) => ({
   undefined: byQueryText([
-    ['totalCount', vars => ({ products: { data: PRODUCTS, totalCount: 120, pageLimit: vars.input.pageLimit || 50, pageOffset: vars.input.pageOffset || 0 } })],
+    [
+      'totalCount',
+      vars => ({ products: { data: PRODUCTS, totalCount: 120, pageLimit: vars.input.pageLimit || 50, pageOffset: vars.input.pageOffset || 0 } }),
+    ],
   ]),
   PRODUCT_CATEGORIES: { productCategories: CATEGORIES },
   GET_MERCHANT_PASSWORD: { merchantPassword: { deleteProduct: { isUsing: false } } },
@@ -76,8 +79,7 @@ const fixtures = (overrides = {}) => ({
   ...overrides,
 })
 
-const renderList = (overrides, options) =>
-  renderPage(<Products />, { fixtures: fixtures(overrides), route: '/products', ...options })
+const renderList = (overrides, options) => renderPage(<Products />, { fixtures: fixtures(overrides), route: '/products', ...options })
 
 const productQueries = calls => callsOf(calls, undefined)
 const lastInput = calls => {

@@ -10,7 +10,7 @@ const GET_MERCHANT_AVATAR = settingsQuery(gql`
 export default function useFetchGetMerchantAvatar({ input }) {
   return useQuery(GET_MERCHANT_AVATAR, {
     variables: {
-      input
+      input,
     },
     fetchPolicy: SETTINGS_FETCH_POLICY,
   })

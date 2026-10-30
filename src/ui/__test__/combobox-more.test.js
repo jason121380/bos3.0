@@ -293,7 +293,12 @@ describe('選單位置與欄位外觀', () => {
   it('在對話框內時選單掛在對話框裡，以對話框為座標系定位', () => {
     render(
       <div role="dialog">
-        <Autocomplete options={options} getOptionLabel={getOptionLabel} value={null} renderInput={params => <TextField {...params} placeholder="請選擇" />} />
+        <Autocomplete
+          options={options}
+          getOptionLabel={getOptionLabel}
+          value={null}
+          renderInput={params => <TextField {...params} placeholder="請選擇" />}
+        />
       </div>
     )
     fireEvent.click(screen.getByPlaceholderText('請選擇'))
@@ -304,7 +309,10 @@ describe('選單位置與欄位外觀', () => {
 
   it('label／required／error／helperText／small／disabled／inputRef（函式）', () => {
     const inputRef = jest.fn()
-    const { container, input } = renderAc({ value: null }, { label: '服務', required: true, error: true, helperText: '必填', size: 'small', disabled: true, inputRef })
+    const { container, input } = renderAc(
+      { value: null },
+      { label: '服務', required: true, error: true, helperText: '必填', size: 'small', disabled: true, inputRef }
+    )
     expect(inputRef).toHaveBeenCalledWith(input)
     const label = screen.getByText('服務')
     expect(label.className).toContain('text-danger')

@@ -1,10 +1,7 @@
 import React from 'react'
 import CustomMockedProvider from '__tests__/CustomMockedProvider.test'
 import { render, fireEvent, cleanup, wait, within } from '@testing-library/react'
-import {
-  GET_CUSTOMER_CATEGORY,
-  mockedMerchantCustomerCategory,
-} from 'hooks/useFetchMerchantCustomerCategory'
+import { GET_CUSTOMER_CATEGORY, mockedMerchantCustomerCategory } from 'hooks/useFetchMerchantCustomerCategory'
 import { mockedProductCateResp, GET_PRODUCT_CATEGORIES } from 'hooks/useFetchProductCategories'
 
 import ProductCreate from '../ProductCreate'
@@ -78,9 +75,12 @@ describe('<ProductCreate />', () => {
     mockCreateProduct.mockReset()
     cleanup()
     localStorage.clear()
-    localStorage.setItem('userMerchant', JSON.stringify({
-      id: '3f33dbc7-0fd1-4504-9ab3-0c43a41ef603',
-    }))
+    localStorage.setItem(
+      'userMerchant',
+      JSON.stringify({
+        id: '3f33dbc7-0fd1-4504-9ab3-0c43a41ef603',
+      })
+    )
   })
 
   it('should submit successful', async () => {

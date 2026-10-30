@@ -14,14 +14,14 @@ const TABLE_COLUMNS = {
   HELPER_POINTS: '互助獲得(點數)',
   HELPER_PRICE: '互助獲得(金額)',
   PRODUCT_TOTAL: '店販業績',
-  MEMBERSHIP_TOTAL: '會員卡業績'
+  MEMBERSHIP_TOTAL: '會員卡業績',
 }
 
 function Results({ report, performReference, displayReportWithMembership }) {
   const [open, setOpen] = useState([])
   const hasMergedDetailsRows = report.some(data => data.mergedDetails?.length > 1)
 
-  const handleClick = (index) => () => {
+  const handleClick = index => () => {
     const idx = open.indexOf(index)
     if (idx > -1) {
       const arr = open
@@ -31,12 +31,12 @@ function Results({ report, performReference, displayReportWithMembership }) {
       setOpen([...open, index])
     }
   }
-  const isOpen = (index) => open.includes(index)
+  const isOpen = index => open.includes(index)
   const getHasMergedDetails = data => data.mergedDetails?.length > 1
 
-  const renderRoundedCell = (value) => <TableCell numeric>{formatNumber(roundDecimal(value))}</TableCell>;
+  const renderRoundedCell = value => <TableCell numeric>{formatNumber(roundDecimal(value))}</TableCell>
 
-  const renderDetailsTable = (data) => (
+  const renderDetailsTable = data => (
     <Table dense>
       <TableHeader>
         <TableRow>
@@ -44,9 +44,9 @@ function Results({ report, performReference, displayReportWithMembership }) {
           <TableHead numeric>{TABLE_COLUMNS.HELPER_POINTS}</TableHead>
           <TableHead numeric>{TABLE_COLUMNS.HELPER_PRICE}</TableHead>
           <TableHead numeric>{`${TABLE_COLUMNS.PRODUCT_TOTAL}(${performReference === 'TRUTH' ? '實' : '虛'})`}</TableHead>
-          {displayReportWithMembership &&
+          {displayReportWithMembership && (
             <TableHead numeric>{`${TABLE_COLUMNS.MEMBERSHIP_TOTAL}(${performReference === 'TRUTH' ? '實' : '虛'})`}</TableHead>
-          }
+          )}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -63,15 +63,13 @@ function Results({ report, performReference, displayReportWithMembership }) {
     </Table>
   )
 
-  const renderTotalCell = (key) => (
-    <TableCell numeric>
-      {formatNumber(Math.round(report.reduce((accu, curVal) => accu + (curVal[key] || 0), 0)))}
-    </TableCell>
-  );
+  const renderTotalCell = key => (
+    <TableCell numeric>{formatNumber(Math.round(report.reduce((accu, curVal) => accu + (curVal[key] || 0), 0)))}</TableCell>
+  )
 
   const renderTotalRow = () => (
     <TableRow>
-      {hasMergedDetailsRows && <TableCell className='noprint'/>}
+      {hasMergedDetailsRows && <TableCell className="noprint" />}
       <TableCell className="font-bold">合計</TableCell>
       <TableCell />
       <TableCell />
@@ -83,19 +81,19 @@ function Results({ report, performReference, displayReportWithMembership }) {
   )
 
   return (
-    <Table dense wrapperClassName='HelperLeaderBoardTable' className="min-w-[650px]" aria-label="a dense table">
+    <Table dense wrapperClassName="HelperLeaderBoardTable" className="min-w-[650px]" aria-label="a dense table">
       <TableHeader>
         <TableRow>
-          {hasMergedDetailsRows && <TableHead className='noprint'>{TABLE_COLUMNS.EXPAND}</TableHead>}
+          {hasMergedDetailsRows && <TableHead className="noprint">{TABLE_COLUMNS.EXPAND}</TableHead>}
           <TableHead>{TABLE_COLUMNS.RANK}</TableHead>
           <TableHead>{TABLE_COLUMNS.DESIGNER}</TableHead>
           <TableHead>{TABLE_COLUMNS.STORE}</TableHead>
           <TableHead numeric>{TABLE_COLUMNS.HELPER_POINTS}</TableHead>
           <TableHead numeric>{TABLE_COLUMNS.HELPER_PRICE}</TableHead>
           <TableHead numeric>{`${TABLE_COLUMNS.PRODUCT_TOTAL}(${performReference === 'TRUTH' ? '實' : '虛'})`}</TableHead>
-          {displayReportWithMembership &&
+          {displayReportWithMembership && (
             <TableHead numeric>{`${TABLE_COLUMNS.MEMBERSHIP_TOTAL}(${performReference === 'TRUTH' ? '實' : '虛'})`}</TableHead>
-          }
+          )}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -104,20 +102,15 @@ function Results({ report, performReference, displayReportWithMembership }) {
           return (
             <Fragment key={index}>
               <TableRow>
-                {hasMergedDetailsRows &&
-                  <TableCell className='noprint'>
+                {hasMergedDetailsRows && (
+                  <TableCell className="noprint">
                     {hasMergedDetails ? (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        aria-label={isOpen(index) ? '收合明細' : '展開明細'}
-                        onClick={handleClick(index)}
-                      >
-                        {isOpen(index) ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
+                      <Button variant="ghost" size="sm" aria-label={isOpen(index) ? '收合明細' : '展開明細'} onClick={handleClick(index)}>
+                        {isOpen(index) ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                       </Button>
                     ) : null}
                   </TableCell>
-                }
+                )}
                 <TableCell>
                   <span>{index + 1}</span>
                 </TableCell>
@@ -128,17 +121,13 @@ function Results({ report, performReference, displayReportWithMembership }) {
                 {renderRoundedCell(data.productTotal)}
                 {displayReportWithMembership && renderRoundedCell(data.membershipTotal)}
               </TableRow>
-              {hasMergedDetails &&
+              {hasMergedDetails && (
                 <TableRow className={isOpen(index) ? 'noprint' : 'noprint border-b-0'}>
                   <TableCell className="!p-0" colSpan={hasMergedDetailsRows ? 8 : 7}>
-                    {isOpen(index) && (
-                      <div className="m-4">
-                        {renderDetailsTable(data)}
-                      </div>
-                    )}
+                    {isOpen(index) && <div className="m-4">{renderDetailsTable(data)}</div>}
                   </TableCell>
                 </TableRow>
-              }
+              )}
             </Fragment>
           )
         })}

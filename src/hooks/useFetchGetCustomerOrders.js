@@ -47,7 +47,6 @@ const GET_CUSTOMER_ORDER_LIST = gql`
   }
 `
 
-
 export default function useFetchGetCustomerOrders(input) {
   return useQuery(GET_CUSTOMER_ORDER_LIST, {
     variables: {

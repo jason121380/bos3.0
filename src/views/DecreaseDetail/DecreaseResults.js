@@ -1,16 +1,14 @@
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import { useEffect, useState, Fragment } from 'react'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
-function Results({
-  customers, results, summary, pointSummary, beenAssistedDesigner, ...rest
-}) {
+function Results({ customers, results, summary, pointSummary, beenAssistedDesigner, ...rest }) {
   const [excelData, setExcelData] = useState([])
   const [summary2, setSummary2] = useState(0)
   const [pointSummary2, setPointSummary2] = useState(0)
@@ -40,11 +38,7 @@ function Results({
           互助人: order.helper.name,
           '互助換算金額(方式)': `${order.helperFee}(${order.helperMoneyGivenWay})`,
           點數: order.helperPoint,
-          互助扣項方式: order.helperDeductionType === 'onSales'
-            ? '依業績'
-            : order.helperDeductionType === 'onSalary'
-              ? '依薪水'
-              : '無扣項',
+          互助扣項方式: order.helperDeductionType === 'onSales' ? '依業績' : order.helperDeductionType === 'onSalary' ? '依薪水' : '無扣項',
         })
       })
       excelData.push({
@@ -64,11 +58,7 @@ function Results({
             互助人: order.helper.name,
             '互助換算金額(方式)': `${order.helperFee}(${order.helperMoneyGivenWay})`,
             點數: order.helperPoint,
-            互助扣項方式: order.helperDeductionType === 'onSales'
-              ? '依業績'
-              : order.helperDeductionType === 'onSalary'
-                ? '依薪水'
-                : '無扣項',
+            互助扣項方式: order.helperDeductionType === 'onSales' ? '依業績' : order.helperDeductionType === 'onSalary' ? '依薪水' : '無扣項',
           })
         })
       excelData.push({
@@ -78,7 +68,7 @@ function Results({
       })
     }
     setExcelData(excelData)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [results, beenAssistedDesigner, summary2, pointSummary2] 變動時執行；pointSummary、summary 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [results, beenAssistedDesigner, summary2, pointSummary2] 變動時執行；pointSummary、summary 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [results, beenAssistedDesigner, summary2, pointSummary2])
 
   // 點數顯示截短小數（最多 4 個字元），但不可截掉整數位數（原本 12345 會顯示成 1234）
@@ -98,7 +88,7 @@ function Results({
           className="items-center pb-4"
           action={
             <Button asChild size="sm" variant="secondary">
-              <CSVLink data={excelData} filename="互助點數明細.csv" >
+              <CSVLink data={excelData} filename="互助點數明細.csv">
                 <Download strokeWidth={1.75} />
                 報表匯出
               </CSVLink>
@@ -107,28 +97,46 @@ function Results({
         >
           <div className="flex items-baseline gap-3">
             <CardTitle>互助紀錄</CardTitle>
-            <span className="text-label tabular-nums text-text-secondary">
-              {results.length} 筆資料
-            </span>
+            <span className="text-label tabular-nums text-text-secondary">{results.length} 筆資料</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
-              <Table dense className="min-w-[900px]">
-                <TableHeader>
-                  <TableRow className="hover:bg-transparent">
-                    <TableHead>日期</TableHead>
-                    <TableHead>帳單編號</TableHead>
-                    <TableHead>服務項目(互助項目)</TableHead>
-                    <TableHead>設計師</TableHead>
-                    <TableHead>互助人</TableHead>
-                    <TableHead numeric>互助換算金額(方式)</TableHead>
-                    <TableHead numeric>點數</TableHead>
-                    <TableHead>互助扣項方式</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {results !== undefined && beenAssistedDesigner === undefined
-                    ? results.map((order, index) => (
+          <Table dense className="min-w-[900px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead>日期</TableHead>
+                <TableHead>帳單編號</TableHead>
+                <TableHead>服務項目(互助項目)</TableHead>
+                <TableHead>設計師</TableHead>
+                <TableHead>互助人</TableHead>
+                <TableHead numeric>互助換算金額(方式)</TableHead>
+                <TableHead numeric>點數</TableHead>
+                <TableHead>互助扣項方式</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {results !== undefined && beenAssistedDesigner === undefined
+                ? results.map((order, index) => (
+                    <TableRow key={`decrease-result-${index}`}>
+                      <TableCell className="tabular-nums">{format(new Date(order.date), 'yyyy/MM/dd')}</TableCell>
+                      <TableCell className="tabular-nums">#{order.orderNo}</TableCell>
+                      <TableCell>
+                        {order.service.name}({order.helperType})
+                      </TableCell>
+                      <TableCell>{order.designer.name}</TableCell>
+                      <TableCell>{order.helper.name}</TableCell>
+                      <TableCell numeric>
+                        {formatNumber(order.helperFee)}({order.helperMoneyGivenWay})
+                      </TableCell>
+                      <TableCell numeric>{formatNumber(pointFloatDisplay(order.helperPoint))}</TableCell>
+                      <TableCell>
+                        {order.helperDeductionType === 'onSales' ? '依業績' : order.helperDeductionType === 'onSalary' ? '依薪水' : '無扣項'}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                : results
+                    .filter(data => data.designer.id === beenAssistedDesigner)
+                    .map((order, index) => (
                       <TableRow key={`decrease-result-${index}`}>
                         <TableCell className="tabular-nums">{format(new Date(order.date), 'yyyy/MM/dd')}</TableCell>
                         <TableCell className="tabular-nums">#{order.orderNo}</TableCell>
@@ -142,59 +150,31 @@ function Results({
                         </TableCell>
                         <TableCell numeric>{formatNumber(pointFloatDisplay(order.helperPoint))}</TableCell>
                         <TableCell>
-                          {order.helperDeductionType === 'onSales'
-                            ? '依業績'
-                            : order.helperDeductionType === 'onSalary'
-                              ? '依薪水'
-                              : '無扣項'}
+                          {order.helperDeductionType === 'onSales' ? '依業績' : order.helperDeductionType === 'onSalary' ? '依薪水' : '無扣項'}
                         </TableCell>
                       </TableRow>
-                    ))
-                    : results
-                      .filter(data => data.designer.id === beenAssistedDesigner)
-                      .map((order, index) => (
-                        <TableRow key={`decrease-result-${index}`}>
-                          <TableCell className="tabular-nums">{format(new Date(order.date), 'yyyy/MM/dd')}</TableCell>
-                          <TableCell className="tabular-nums">#{order.orderNo}</TableCell>
-                          <TableCell>
-                            {order.service.name}({order.helperType})
-                          </TableCell>
-                          <TableCell>{order.designer.name}</TableCell>
-                          <TableCell>{order.helper.name}</TableCell>
-                          <TableCell numeric>
-                            {formatNumber(order.helperFee)}({order.helperMoneyGivenWay})
-                          </TableCell>
-                          <TableCell numeric>{formatNumber(pointFloatDisplay(order.helperPoint))}</TableCell>
-                          <TableCell>
-                            {order.helperDeductionType === 'onSales'
-                              ? '依業績'
-                              : order.helperDeductionType === 'onSalary'
-                                ? '依薪水'
-                                : '無扣項'}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  <TableRow className="font-bold">
-                    <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                    {beenAssistedDesigner !== undefined ? (
-                      <Fragment>
-                        <TableCell numeric>{formatNumber(summary2)}</TableCell>
-                        <TableCell numeric>{formatNumber(pointFloatDisplay(pointSummary2))}</TableCell>
-                      </Fragment>
-                    ) : (
-                      <Fragment>
-                        <TableCell numeric>{formatNumber(summary)}</TableCell>
-                        <TableCell numeric>{formatNumber(pointFloatDisplay(pointSummary))}</TableCell>
-                      </Fragment>
-                    )}
-                    <TableCell></TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+                    ))}
+              <TableRow className="font-bold">
+                <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                {beenAssistedDesigner !== undefined ? (
+                  <Fragment>
+                    <TableCell numeric>{formatNumber(summary2)}</TableCell>
+                    <TableCell numeric>{formatNumber(pointFloatDisplay(pointSummary2))}</TableCell>
+                  </Fragment>
+                ) : (
+                  <Fragment>
+                    <TableCell numeric>{formatNumber(summary)}</TableCell>
+                    <TableCell numeric>{formatNumber(pointFloatDisplay(pointSummary))}</TableCell>
+                  </Fragment>
+                )}
+                <TableCell></TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </div>
       </Card>
     </div>

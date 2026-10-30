@@ -8,7 +8,7 @@ import { Autocomplete } from 'ui/combobox'
 function ThirdPartyAutoComplete(
   {
     className = '',
-    onChange = () => { },
+    onChange = () => {},
     label = '',
     value = [],
     initFirst,
@@ -30,7 +30,7 @@ function ThirdPartyAutoComplete(
     if (setThirdPartyAlready !== undefined && !designers.loading) {
       setThirdPartyAlready(!designers.loading)
     }
-  }, [designers.loading, setThirdPartyAlready]);
+  }, [designers.loading, setThirdPartyAlready])
   useEffect(() => {
     if (initFirst && designers.data && !designers.loading) {
       onChange(idx(designers, _ => _.data.merchant.thirdpartyCoupons[0]))
@@ -42,18 +42,16 @@ function ThirdPartyAutoComplete(
       // 查詢失敗或回 null 時以空清單顯示，Autocomplete 拿到 null 會整頁壞（2026/10/22）
       setOptions(idx(designers, _ => _.data.merchant.thirdpartyCoupons) || [])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-  }, [designers.loading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+  }, [designers.loading])
 
   useEffect(() => {
     if (!designers.loading) {
-      const selectedValue = idx(designers, _ =>
-        _.data.merchant.thirdpartyCoupons.find(d => d.id === value)
-      )
+      const selectedValue = idx(designers, _ => _.data.merchant.thirdpartyCoupons.find(d => d.id === value))
       setSelectedValue(selectedValue)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-  }, [designers.loading, value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+  }, [designers.loading, value])
   return (
     <Autocomplete
       disabled={disabled}
@@ -64,11 +62,15 @@ function ThirdPartyAutoComplete(
       value={!!selectedValue ? selectedValue : null}
       options={options}
       autoHighlight
-      getOptionLabel={option => !!option ? option.name : ''}
+      getOptionLabel={option => (!!option ? option.name : '')}
       inputValue={!!selectedValue ? selectedValue.name : ''}
       loading={designers.loading}
       onChange={(_event, value) => onChange(idx(value, _ => value))}
-      renderOption={(props, option) => <span {...props} data-testid={option.name}>{option.name}</span>}
+      renderOption={(props, option) => (
+        <span {...props} data-testid={option.name}>
+          {option.name}
+        </span>
+      )}
       renderInput={params => (
         <TextField
           {...params}

@@ -24,12 +24,23 @@ jest.mock('ui/date-picker', () => ({
 }))
 jest.mock('components/BookingRecordListAutoComplete', () => ({ value, onChange }) => (
   <div data-testid="booking-designer" data-value={JSON.stringify(value)}>
-    <button type="button" onClick={() => onChange({ id: 'u-1', userId: 'designer-1' })}>選服務人員</button>
-    <button type="button" onClick={() => onChange({ id: '' })}>清除服務人員</button>
+    <button type="button" onClick={() => onChange({ id: 'u-1', userId: 'designer-1' })}>
+      選服務人員
+    </button>
+    <button type="button" onClick={() => onChange({ id: '' })}>
+      清除服務人員
+    </button>
   </div>
 ))
 
-const USERS = { users: { users: [{ id: 'd1', name: '王小美' }, { id: 'd2', name: 'Amy' }] } }
+const USERS = {
+  users: {
+    users: [
+      { id: 'd1', name: '王小美' },
+      { id: 'd2', name: 'Amy' },
+    ],
+  },
+}
 const fixtures = (overrides = {}) => ({
   FETCH_USERS: USERS,
   CUSTOMER_CATEGORY: { merchantCustomerCategory: [] },
@@ -92,7 +103,9 @@ describe('基本資料', () => {
     cleanup()
     const unknown = renderDetails({
       fixtures: fixtures({
-        FETCH_CUSTOMER_DETAIL: { customer: { ...CUSTOMER, gender: 'UNKNOWN', birthday: null, source: null, latestDesigner: null, preferDesigner: null } },
+        FETCH_CUSTOMER_DETAIL: {
+          customer: { ...CUSTOMER, gender: 'UNKNOWN', birthday: null, source: null, latestDesigner: null, preferDesigner: null },
+        },
       }),
     })
     await unknown.settle()

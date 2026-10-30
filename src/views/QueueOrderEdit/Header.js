@@ -15,7 +15,7 @@ function Header() {
   // 外層 div（className 含 noprint）依鐵則不動，只調整內部排列
   return (
     <div className="ui-root noprint flex flex-wrap items-center justify-between gap-4 pb-6">
-      <FastCheckOrdersModal date={bill.date} open={openModal} setOpenModal={setOpenModal}/>
+      <FastCheckOrdersModal date={bill.date} open={openModal} setOpenModal={setOpenModal} />
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="m-0 text-title !font-bold text-text">{`重新開單 ${bill.no ? `(${bill.no})` : ''}`}</h1>
         <Button size="sm" variant="secondary" onClick={() => setOpenModal(true)}>

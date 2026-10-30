@@ -470,9 +470,7 @@ const ROWS = [
     hook: useFetchGetMerchantDailyPerformanceReport.default,
     args: [{ input: { probe: 'input' } }],
     expect: {
-      initial: [
-        { operationName: 'FETCH_GET_MERCHANT_DAILY_PERFORMANCE_REPORT', variables: { input: { probe: 'input' } } },
-      ],
+      initial: [{ operationName: 'FETCH_GET_MERCHANT_DAILY_PERFORMANCE_REPORT', variables: { input: { probe: 'input' } } }],
       shape: { loading: false, called: true, data: ['merchantDailyPerformanceReport'] },
       policies: { FETCH_GET_MERCHANT_DAILY_PERFORMANCE_REPORT: 'cache-and-network' },
     },
@@ -584,9 +582,7 @@ const ROWS = [
     hook: useFetchGetMerchantPointValueSettings.useFetchGetMerchantPointValueSettingsForEdit,
     args: [{ probe: 'input' }],
     expect: {
-      initial: [
-        { operationName: 'GET_MERCHANT_POINT_VALUE_SETTING_FOR_EDIT', variables: { input: { probe: 'input' } } },
-      ],
+      initial: [{ operationName: 'GET_MERCHANT_POINT_VALUE_SETTING_FOR_EDIT', variables: { input: { probe: 'input' } } }],
       shape: { loading: false, called: true, data: ['getMerchantPointValueSetting'] },
       policies: { GET_MERCHANT_POINT_VALUE_SETTING_FOR_EDIT: 'cache-and-network' },
     },
@@ -826,9 +822,7 @@ const ROWS = [
       invoked: [
         {
           fn: 0,
-          calls: [
-            { operationName: 'FETCH_GET_OVERALL_PERFORMANCE_ANALYSIS_REPORT', variables: { input: { probe: 'input' } } },
-          ],
+          calls: [{ operationName: 'FETCH_GET_OVERALL_PERFORMANCE_ANALYSIS_REPORT', variables: { input: { probe: 'input' } } }],
         },
       ],
       shapeAfter: ['function', { loading: false, called: true, data: ['overallPerformanceAnalysisReport'] }],
@@ -1203,9 +1197,7 @@ const ROWS = [
     expect: {
       initial: [],
       shape: ['function', { loading: false, called: false }],
-      invoked: [
-        { fn: 0, calls: [{ operationName: 'GET_PRODUCT_LEADERBOAED_V2', variables: { input: { probe: 'input' } } }] },
-      ],
+      invoked: [{ fn: 0, calls: [{ operationName: 'GET_PRODUCT_LEADERBOAED_V2', variables: { input: { probe: 'input' } } }] }],
       shapeAfter: ['function', { loading: false, called: true, data: ['getProductLeaderBoardV2'] }],
       policies: { GET_PRODUCT_LEADERBOAED_V2: 'cache-and-network' },
     },
@@ -1229,9 +1221,7 @@ const ROWS = [
     expect: {
       initial: [],
       shape: ['function', { loading: false, called: false }],
-      invoked: [
-        { fn: 0, calls: [{ operationName: 'GET_PRODUCT_RESERVE_CHECK', variables: { input: { probe: 'input' } } }] },
-      ],
+      invoked: [{ fn: 0, calls: [{ operationName: 'GET_PRODUCT_RESERVE_CHECK', variables: { input: { probe: 'input' } } }] }],
       shapeAfter: ['function', { loading: false, called: true, data: ['productReserveCheck'] }],
       policies: { GET_PRODUCT_RESERVE_CHECK: 'cache-and-network' },
     },

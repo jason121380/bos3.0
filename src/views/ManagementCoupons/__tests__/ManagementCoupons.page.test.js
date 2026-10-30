@@ -16,7 +16,10 @@ jest.setTimeout(30000)
 jest.mock('components/DateSelector', () => ({ dateChange, date }) => (
   <div>
     <span data-testid="date-range">{`${date.startDate}-${date.endDate}`}</span>
-    <button type="button" onClick={() => dateChange({ startDate: new Date(2026, 8, 1).getTime(), endDate: new Date(2026, 8, 30, 23, 59, 59, 999).getTime() })}>
+    <button
+      type="button"
+      onClick={() => dateChange({ startDate: new Date(2026, 8, 1).getTime(), endDate: new Date(2026, 8, 30, 23, 59, 59, 999).getTime() })}
+    >
       選九月
     </button>
   </div>
@@ -53,7 +56,13 @@ const USED = [
     price: 100.005,
     name: '護髮',
     no: 'T01',
-    order: { id: 'buy-1', date: new Date(2026, 8, 1, 0, 30).getTime(), no: 'B001', customer: { id: 'c1', name: '陳小姐', cellphone: '0912345678' }, designer: { id: 'd2', name: '李店長', designerNo: 'D02' } },
+    order: {
+      id: 'buy-1',
+      date: new Date(2026, 8, 1, 0, 30).getTime(),
+      no: 'B001',
+      customer: { id: 'c1', name: '陳小姐', cellphone: '0912345678' },
+      designer: { id: 'd2', name: '李店長', designerNo: 'D02' },
+    },
     service: { id: 's1', name: '護髮十次卡' },
     usageOrder: { id: 'use-1', no: 'U001', date: new Date(2026, 9, 2, 0, 30).getTime(), designer: { id: 'd1', name: '王小美', designerNo: 'D01' } },
   },
@@ -62,7 +71,13 @@ const USED = [
     price: 50,
     name: '護髮',
     no: 'T01',
-    order: { id: 'buy-2', date: new Date(2026, 8, 5).getTime(), no: 'B002', customer: { id: 'c2', name: '林先生', cellphone: '0922333444' }, designer: { id: 'd1', name: '王小美', designerNo: 'D01' } },
+    order: {
+      id: 'buy-2',
+      date: new Date(2026, 8, 5).getTime(),
+      no: 'B002',
+      customer: { id: 'c2', name: '林先生', cellphone: '0922333444' },
+      designer: { id: 'd1', name: '王小美', designerNo: 'D01' },
+    },
     service: { id: 's1', name: '護髮十次卡' },
     usageOrder: { id: 'use-2', no: 'U002', date: new Date(2026, 9, 3).getTime(), designer: { id: 'd1', name: '王小美', designerNo: 'D01' } },
   },
@@ -70,7 +85,9 @@ const USED = [
 
 const fixtures = (overrides = {}) => ({
   FETCH_TICKET_SELL_OVERVIEW: { ticketSellOverview: SOLD },
-  FETCH_USED_TICKET_RECORDS: v => ({ usedTicketRecords: { data: USED, pageLimit: v.input.pageLimit, pageOffset: v.input.pageOffset, totalCount: 120 } }),
+  FETCH_USED_TICKET_RECORDS: v => ({
+    usedTicketRecords: { data: USED, pageLimit: v.input.pageLimit, pageOffset: v.input.pageOffset, totalCount: 120 },
+  }),
   ...overrides,
 })
 const START = new Date(2026, 9, 1).getTime()

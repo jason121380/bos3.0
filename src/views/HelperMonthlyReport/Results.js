@@ -4,21 +4,18 @@ import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 const styles = {
-  table: ({
+  table: {
     minWidth: 650,
-  }),
+  },
   designerName: {
     fontWeight: 'bold',
   },
 }
 
-function Results({
-  helperMonthlyReport,
-  membershipDisplay,
-}) {
+function Results({ helperMonthlyReport, membershipDisplay }) {
   return (
     // HelperMonthlyReport：@media print 樣式掛鉤（以 table／th／td 標籤選取），保留在表格外框
-    <Table dense wrapperClassName='HelperMonthlyReport mt-2' className="min-w-[650px]" aria-label="a dense table">
+    <Table dense wrapperClassName="HelperMonthlyReport mt-2" className="min-w-[650px]" aria-label="a dense table">
       {/* 列印時表頭白底黑字，與舊版 th.MuiTableCell-head 的列印樣式一致 */}
       <TableHeader className="print:bg-transparent print:[&_th]:text-text">
         <TableRow className="hover:bg-transparent">
@@ -36,8 +33,8 @@ function Results({
         </TableRow>
       </TableHeader>
       <TableBody>
-          {helperMonthlyReport.map((data, index) => {
-            return (
+        {helperMonthlyReport.map((data, index) => {
+          return (
             <TableRow key={index}>
               <TableCell>{data.designer}</TableCell>
               <TableCell numeric>{formatNumber(Math.round(data.helperRetrievePriceWithoutPoint))}</TableCell>
@@ -51,32 +48,30 @@ function Results({
                 </Fragment>
               )}
             </TableRow>
-            )
-          })}
+          )
+        })}
         <TableRow className="bg-surface font-medium">
           <TableCell className="font-bold">合計</TableCell>
-            <TableCell numeric>
-              {formatNumber(Math.round(helperMonthlyReport.reduce((accu, curVal) => accu + curVal.helperRetrievePriceWithoutPoint, 0)))}
-            </TableCell>
-            <TableCell numeric>
-              {formatNumber(Math.round(helperMonthlyReport.reduce((accu, curVal) => accu + curVal.helperRetrievePoint, 0)))}
-            </TableCell>
-            <TableCell numeric>
-              {formatNumber(Math.round(helperMonthlyReport.reduce((accu, curVal) => accu + curVal.productPerformance, 0)))}
-            </TableCell>
-            <TableCell numeric>
-              {formatNumber(Math.round(helperMonthlyReport.reduce((accu, curVal) => accu + curVal.productRake, 0) * 10) / 10)}
-            </TableCell>
-            {membershipDisplay && (
-              <Fragment>
-                <TableCell numeric>
-                  {formatNumber(Math.round(helperMonthlyReport.reduce((accu, curVal) => accu + curVal.membershipPerformance, 0)))}
-                </TableCell>
-                <TableCell numeric>
-                  {formatNumber(Math.round(helperMonthlyReport.reduce((accu, curVal) => accu + curVal.membershipRake, 0) * 10) / 10)}
-                </TableCell>
-              </Fragment> 
-            )}
+          <TableCell numeric>
+            {formatNumber(Math.round(helperMonthlyReport.reduce((accu, curVal) => accu + curVal.helperRetrievePriceWithoutPoint, 0)))}
+          </TableCell>
+          <TableCell numeric>
+            {formatNumber(Math.round(helperMonthlyReport.reduce((accu, curVal) => accu + curVal.helperRetrievePoint, 0)))}
+          </TableCell>
+          <TableCell numeric>{formatNumber(Math.round(helperMonthlyReport.reduce((accu, curVal) => accu + curVal.productPerformance, 0)))}</TableCell>
+          <TableCell numeric>
+            {formatNumber(Math.round(helperMonthlyReport.reduce((accu, curVal) => accu + curVal.productRake, 0) * 10) / 10)}
+          </TableCell>
+          {membershipDisplay && (
+            <Fragment>
+              <TableCell numeric>
+                {formatNumber(Math.round(helperMonthlyReport.reduce((accu, curVal) => accu + curVal.membershipPerformance, 0)))}
+              </TableCell>
+              <TableCell numeric>
+                {formatNumber(Math.round(helperMonthlyReport.reduce((accu, curVal) => accu + curVal.membershipRake, 0) * 10) / 10)}
+              </TableCell>
+            </Fragment>
+          )}
         </TableRow>
       </TableBody>
     </Table>

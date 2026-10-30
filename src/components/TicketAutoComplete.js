@@ -25,7 +25,7 @@ function TicketAutoComplete(
     isTicketSellingEditable,
     setCouponAlready,
     isLaunched,
-    getData
+    getData,
   },
   ref
 ) {
@@ -34,14 +34,14 @@ function TicketAutoComplete(
   const [ticketsKeyword, setTicketsKeyword] = React.useState('')
   const tickets = useFetchTickets({
     isLaunched: isLaunched,
-    orderId: orderId
+    orderId: orderId,
   })
 
   useEffect(() => {
     if (setCouponAlready !== undefined && !tickets.loading) {
       setCouponAlready(!tickets.loading)
     }
-  }, [tickets.loading, setCouponAlready]);
+  }, [tickets.loading, setCouponAlready])
   const handleFieldChange = event => {
     idx(event, _ => {
       setTicketsKeyword(_.target.value)
@@ -62,14 +62,14 @@ function TicketAutoComplete(
 
   useEffect(() => {
     if (options.length > 0) getData && getData(options)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getData）；只在 [options] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getData）；只在 [options] 變動時呼叫，補上會每次 render 重跑
   }, [options])
 
   useEffect(() => {
     if (selectedValue?.no === ticketsKeyword || selectedValue?.name.includes(ticketsKeyword)) {
       setTicketsKeyword(selectedValue.name)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [selectedValue] 變動時執行；ticketsKeyword 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [selectedValue] 變動時執行；ticketsKeyword 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [selectedValue])
 
   useEffect(() => {
@@ -91,11 +91,7 @@ function TicketAutoComplete(
         return false
       })
       filterByName = newOptions.filter((data, index) => {
-        if (
-          data.name !== '' &&
-          data.name !== null &&
-          data.name.toLowerCase().includes(keyWord.toLowerCase())
-        ) {
+        if (data.name !== '' && data.name !== null && data.name.toLowerCase().includes(keyWord.toLowerCase())) {
           return data.name.toLowerCase().includes(keyWord.toLowerCase())
         }
         return false
@@ -125,13 +121,17 @@ function TicketAutoComplete(
       // 沒有代號（空字串或 null）時只顯示名稱（原本只排除空字串，null 顯示成「名稱(null)」；比照 ServicesAutoComplete，Jason 2026/10/22 fix all）
       getOptionLabel={option =>
         ticketsKeyword === option.no
-          ? option.no === '' ? `${option.name}${option.no ? `(${option.no})` : ''}` : option.no
+          ? option.no === ''
+            ? `${option.name}${option.no ? `(${option.no})` : ''}`
+            : option.no
           : `${option.name}${option.no ? `(${option.no})` : ''}`
       }
       loading={tickets.loading}
       onChange={(_event, value) => onChange(idx(value, _ => value) || { id: '' })}
       renderOption={(props, option) => (
-        <span {...props} data-testid={`${inputProps['data-testid']}-${option.name}`}>{option.name}</span>
+        <span {...props} data-testid={`${inputProps['data-testid']}-${option.name}`}>
+          {option.name}
+        </span>
       )}
       renderInput={params => (
         <TextField

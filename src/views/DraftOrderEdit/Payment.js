@@ -10,9 +10,7 @@ export default function Payment() {
   const { bill, handleBillChange } = React.useContext(billContext)
 
   const otherPayLimit =
-    bill.serviceOrders
-      .map(d => typeof d.thirdPartyCouponMerchantId !== 'string' && d.price)
-      .reduce((total, item) => (total = total + item), 0) +
+    bill.serviceOrders.map(d => typeof d.thirdPartyCouponMerchantId !== 'string' && d.price).reduce((total, item) => (total = total + item), 0) +
     bill.productOrders
       .filter(d => typeof d.thirdPartyCouponMerchantId !== 'string')
       .reduce((total, item) => (total = total + item.price * item.count), 0) +
@@ -43,27 +41,16 @@ export default function Payment() {
     .map(d => d.thirdPartyCouponMerchantId === null && d.price)
     .reduce((total, item) => (total = total + item), 0)
 
-  const merchantSellTotalPrice = bill.productOrders.reduce(
-    (total, item) => (total = total + item.price * item.count),
-    0
-  )
-  const couponSellPrice = bill.ticketOrders.reduce(
-    (total, item) => (total = total + item.price * item.count),
-    0
-  )
-  const memberShipCardSellPrice = bill.membershipOrders.reduce(
-    (total, item) => (total = total + item.price),
-    0
-  )
+  const merchantSellTotalPrice = bill.productOrders.reduce((total, item) => (total = total + item.price * item.count), 0)
+  const couponSellPrice = bill.ticketOrders.reduce((total, item) => (total = total + item.price * item.count), 0)
+  const memberShipCardSellPrice = bill.membershipOrders.reduce((total, item) => (total = total + item.price), 0)
   const totalShouldPay =
     bill.serviceOrders.length +
       bill.productOrders.length +
       bill.ticketOrders.length +
       bill.membershipOrders.length -
-      (servicesWithThirdPartyCount.length +
-        productsWithThirdPartyCount.length +
-        memberShipCardWithThirdPartyCount.length) >=
-      1
+      (servicesWithThirdPartyCount.length + productsWithThirdPartyCount.length + memberShipCardWithThirdPartyCount.length) >=
+    1
       ? serviceTotalPrice + merchantSellTotalPrice + couponSellPrice + memberShipCardSellPrice
       : 0
 
@@ -84,7 +71,7 @@ export default function Payment() {
         value: 0,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [bill.payType] 變動時執行；bill.amountByOtherPay、handleBillChange 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [bill.payType] 變動時執行；bill.amountByOtherPay、handleBillChange 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [bill.payType])
   const amountByOtherPay = value => {
     if (value <= otherPayLimit && totalShouldPay > 0 && value <= totalShouldPay) {

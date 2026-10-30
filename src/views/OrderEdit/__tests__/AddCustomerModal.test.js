@@ -48,7 +48,16 @@ const fixtures = (overrides = {}) => ({
   GET_CUSTOMER_REFERENCE: { getCustomerReference: ['朋友介紹', '網路'] },
   GET_CHECK_IS_CUSTOMER_NO_USED: v => ({ checkIsCustomerNoUsed: v.input === 'C01' && v.customerId !== 'customer-1' }),
   SET_CUSTOMER: { updateCustomer: true },
-  FETCH_ADD_CUSTOMER: { addCustomer: { id: 'customer-new', name: '林先生', gender: 'MALE', cellphone: '0922333444', birthday: { year: '', month: '', day: '' }, category: '' } },
+  FETCH_ADD_CUSTOMER: {
+    addCustomer: {
+      id: 'customer-new',
+      name: '林先生',
+      gender: 'MALE',
+      cellphone: '0922333444',
+      birthday: { year: '', month: '', day: '' },
+      category: '',
+    },
+  },
   ...overrides,
 })
 
@@ -59,17 +68,14 @@ function Harness({ initialCustomer }) {
   const [bill, setBill] = useState({ customerId: 'before', customerCellphone: '0900' })
   return (
     <>
-      {open && (
-        <AddCustomerModal open={open} onClose={() => setOpen(false)} customer={customer} setCustomer={setCustomer} setBill={setBill} />
-      )}
+      {open && <AddCustomerModal open={open} onClose={() => setOpen(false)} customer={customer} setCustomer={setCustomer} setBill={setBill} />}
       <output data-testid="bill">{JSON.stringify(bill)}</output>
       <output data-testid="customer">{customer.customerId}</output>
     </>
   )
 }
 
-const renderModal = (initialCustomer, overrides) =>
-  renderPage(<Harness initialCustomer={initialCustomer} />, { fixtures: fixtures(overrides) })
+const renderModal = (initialCustomer, overrides) => renderPage(<Harness initialCustomer={initialCustomer} />, { fixtures: fixtures(overrides) })
 const modal = () => screen.getByText(/^(新增客戶|編輯客戶資料)$/).closest('[role="dialog"]')
 const field = name => modal().querySelector(`input[name="${name}"]`)
 const bill = () => JSON.parse(screen.getByTestId('bill').textContent)

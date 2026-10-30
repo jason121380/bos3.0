@@ -12,9 +12,7 @@ const roundToStep = (rawValue, step) => {
   if (!Number.isFinite(num)) return num
   if (step == null || step === 'any') return num
   const stepText = String(step)
-  const decimals = stepText.includes('e-')
-    ? Number(stepText.split('e-')[1]) || 0
-    : (stepText.split('.')[1] || '').length
+  const decimals = stepText.includes('e-') ? Number(stepText.split('e-')[1]) || 0 : (stepText.split('.')[1] || '').length
   return decimals > 0 ? Number(num.toFixed(decimals)) : Math.round(num)
 }
 

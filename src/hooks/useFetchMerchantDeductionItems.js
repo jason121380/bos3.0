@@ -11,9 +11,7 @@ export const GET_MERCHANT_DEDUCTION_ITEMS = settingsQuery(gql`
 `)
 
 export default function useFetchMerchantDeductionItems() {
-  const merchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
+  const merchantId = localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null
   return useQuery(GET_MERCHANT_DEDUCTION_ITEMS, {
     variables: {
       merchantId,

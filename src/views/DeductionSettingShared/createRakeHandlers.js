@@ -359,13 +359,11 @@ export default function createRakeHandlers({ profitSharing, onChange, deductionI
   const handleNonSegmentedThresholdInput = (event, index, rakeType) => {
     checkInput(event, rakeType)
     const newProfitSharing = cloneDeep(profitSharing)
-    newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.forEach(
-      (data, index2) => {
-        if (index === index2) {
-          data.threshold = parseInt(event.target.value, 10)
-        }
+    newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.forEach((data, index2) => {
+      if (index === index2) {
+        data.threshold = parseInt(event.target.value, 10)
       }
-    )
+    })
     onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
   }
   const handleNonSegmentedDesignateThresholdInput = (event, index, rakeType) => {
@@ -391,14 +389,12 @@ export default function createRakeHandlers({ profitSharing, onChange, deductionI
   const handleNonSegmentedRakeInput = (event, index, rakeType) => {
     checkInput(event, rakeType)
     const newProfitSharing = cloneDeep(profitSharing)
-    newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.forEach(
-      (data, index2) => {
-        if (index === index2) {
-          data.rake = parseFloat(event.target.value)
-          onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
-        }
+    newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.forEach((data, index2) => {
+      if (index === index2) {
+        data.rake = parseFloat(event.target.value)
+        onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
       }
-    )
+    })
   }
   const handleNonSegmentedDesignateRakeInput = (event, index, rakeType) => {
     checkInput(event, rakeType)

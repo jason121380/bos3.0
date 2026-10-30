@@ -49,14 +49,16 @@ export function NewBookingSection({
         }}
         required
       />
-      <Field label='服務時長'>
+      <Field label="服務時長">
         <NativeSelect
           className={`ui-root ${styles.field}`}
           value={values.timeCost}
           onChange={event => setValues({ ...values, timeCost: event.target.value })}
         >
           {timeCostArray.map(d => (
-            <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
+            <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>
+              {d.label}
+            </NativeSelectOption>
           ))}
         </NativeSelect>
       </Field>
@@ -98,21 +100,22 @@ export function NewBookingSection({
           />
         </div>
       )}
-      {!checkinMode && (modaltype === 'openOrder' ?
-        <button type="button" className={`${actionRow} ${styles.field}`} onClick={closeOrderTime} disabled={btnDisabled}>
-          <Avatar className="bg-accent/8 text-accent">
-            <LockOpenIcon />
-          </Avatar>
-          <span className="min-w-0 flex-1">開啟預約</span>
-        </button>
-        :
-        <button type="button" className={`${actionRow} ${styles.field}`} onClick={closeOrderTime} disabled={btnDisabled}>
-          <Avatar className="bg-accent/8 text-accent">
-            <LockIcon />
-          </Avatar>
-          <span className="min-w-0 flex-1">關閉預約</span>
-        </button>
-      )}
+      {!checkinMode &&
+        (modaltype === 'openOrder' ? (
+          <button type="button" className={`${actionRow} ${styles.field}`} onClick={closeOrderTime} disabled={btnDisabled}>
+            <Avatar className="bg-accent/8 text-accent">
+              <LockOpenIcon />
+            </Avatar>
+            <span className="min-w-0 flex-1">開啟預約</span>
+          </button>
+        ) : (
+          <button type="button" className={`${actionRow} ${styles.field}`} onClick={closeOrderTime} disabled={btnDisabled}>
+            <Avatar className="bg-accent/8 text-accent">
+              <LockIcon />
+            </Avatar>
+            <span className="min-w-0 flex-1">關閉預約</span>
+          </button>
+        ))}
 
       <div className="flex justify-end gap-2">
         <Button
@@ -160,104 +163,102 @@ export function NdsBookingSection({
       <button
         type="button"
         className={`${actionRow} ${styles.field}`}
-        onClick={() => { setOrderLimit(!orderLimit) }}
+        onClick={() => {
+          setOrderLimit(!orderLimit)
+        }}
       >
         <Avatar className="bg-accent/8 text-accent">
           <PersonIcon />
         </Avatar>
         <span className="min-w-0 flex-1">{orderLimit ? '設定可預約人數上限' : '回到預約'}</span>
       </button>
-      {orderLimit ? <Fragment>
-        <TextField
-          label="顧客電話"
-          type="tel"
-          value={values.cellphone}
-          className={styles.field}
-          fullWidth
-          variant="outlined"
-          onChange={e => {
-            setValues({ ...values, cellphone: e.target.value })
-          }}
-          required
-        />
-        <TextField
-          label="顧客姓名"
-          value={values.name}
-          className={styles.field}
-          fullWidth
-          variant="outlined"
-          onChange={e => {
-            setValues({ ...values, name: e.target.value })
-          }}
-          required
-        />
-        <Field label='服務時長'>
-          <NativeSelect
-            className={`ui-root ${styles.field}`}
-            value={values.timeCost}
-            onChange={event => setValues({ ...values, timeCost: event.target.value })}
-          >
-            {timeCostArray.map(d => (
-              <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
-            ))}
-          </NativeSelect>
-        </Field>
-        <TextField
-          label="備註"
-          value={values.remark}
-          className={styles.field}
-          fullWidth
-          variant="outlined"
-          onChange={e => {
-            setValues({ ...values, remark: e.target.value })
-          }}
-        />
-        <TextField
-          label="顧客備註"
-          value={values.remarkForCustomer}
-          className={styles.field}
-          fullWidth
-          variant="outlined"
-          onChange={e => {
-            setValues({ ...values, remarkForCustomer: e.target.value })
-          }}
-        />
-        {bookingCusCheck && (
-          <div>
-            <CheckboxField
-              className="ui-root py-2"
-              label="未來預訂(待確認)"
-              checked={values.isCusCheckRequired}
-              onChange={() => setValues({ ...values, isCusCheckRequired: !values.isCusCheckRequired })}
-            />
-          </div>
-        )}
-        <div className="flex justify-end gap-2">
-          <Button
-            variant="primary"
-            type="submit"
-            disabled={btnDisabled}
-            onClick={createNdsBooking}
-          >
-            預約
-          </Button>
-          <Button
-            variant="secondary"
-            type="submit"
-            disabled={btnDisabled}
-            onClick={() => {
-              setModalOpen(false)
-            }}
-          >
-            取消
-          </Button>
-        </div>
-
-      </Fragment> :
+      {orderLimit ? (
         <Fragment>
-          <div className="mb-[0.35em] text-body font-medium text-text">
-            可預約人數設定
+          <TextField
+            label="顧客電話"
+            type="tel"
+            value={values.cellphone}
+            className={styles.field}
+            fullWidth
+            variant="outlined"
+            onChange={e => {
+              setValues({ ...values, cellphone: e.target.value })
+            }}
+            required
+          />
+          <TextField
+            label="顧客姓名"
+            value={values.name}
+            className={styles.field}
+            fullWidth
+            variant="outlined"
+            onChange={e => {
+              setValues({ ...values, name: e.target.value })
+            }}
+            required
+          />
+          <Field label="服務時長">
+            <NativeSelect
+              className={`ui-root ${styles.field}`}
+              value={values.timeCost}
+              onChange={event => setValues({ ...values, timeCost: event.target.value })}
+            >
+              {timeCostArray.map(d => (
+                <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>
+                  {d.label}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
+          </Field>
+          <TextField
+            label="備註"
+            value={values.remark}
+            className={styles.field}
+            fullWidth
+            variant="outlined"
+            onChange={e => {
+              setValues({ ...values, remark: e.target.value })
+            }}
+          />
+          <TextField
+            label="顧客備註"
+            value={values.remarkForCustomer}
+            className={styles.field}
+            fullWidth
+            variant="outlined"
+            onChange={e => {
+              setValues({ ...values, remarkForCustomer: e.target.value })
+            }}
+          />
+          {bookingCusCheck && (
+            <div>
+              <CheckboxField
+                className="ui-root py-2"
+                label="未來預訂(待確認)"
+                checked={values.isCusCheckRequired}
+                onChange={() => setValues({ ...values, isCusCheckRequired: !values.isCusCheckRequired })}
+              />
+            </div>
+          )}
+          <div className="flex justify-end gap-2">
+            <Button variant="primary" type="submit" disabled={btnDisabled} onClick={createNdsBooking}>
+              預約
+            </Button>
+            <Button
+              variant="secondary"
+              type="submit"
+              disabled={btnDisabled}
+              onClick={() => {
+                setModalOpen(false)
+              }}
+            >
+              取消
+            </Button>
           </div>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <div className="mb-[0.35em] text-body font-medium text-text">可預約人數設定</div>
           <div className="mb-[0.35em] text-body font-medium text-text">
             時段:
             {format(new Date(clickData.dateTime), 'yyyy/MM/dd  HH:mm')}
@@ -277,12 +278,7 @@ export function NdsBookingSection({
             }
           />
           <div className="flex justify-end gap-2">
-            <Button
-              variant="primary"
-              type="submit"
-              disabled={btnDisabled}
-              onClick={updateLimitCount}
-            >
+            <Button variant="primary" type="submit" disabled={btnDisabled} onClick={updateLimitCount}>
               儲存
             </Button>
             <Button
@@ -296,7 +292,8 @@ export function NdsBookingSection({
               取消
             </Button>
           </div>
-        </Fragment>}
+        </Fragment>
+      )}
     </Fragment>
   )
 }

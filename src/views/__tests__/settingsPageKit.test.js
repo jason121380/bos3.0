@@ -34,7 +34,11 @@ export function fieldByLabel(text, root = document.body) {
 export function pickOption(select, optionText) {
   const option = Array.from(select.options).find(o => o.textContent.trim() === optionText)
   if (!option) {
-    throw new Error(`下拉沒有「${optionText}」：${Array.from(select.options).map(o => o.textContent).join('、')}`)
+    throw new Error(
+      `下拉沒有「${optionText}」：${Array.from(select.options)
+        .map(o => o.textContent)
+        .join('、')}`
+    )
   }
   fireEvent.change(select, { target: { value: option.value } })
 }
@@ -68,7 +72,8 @@ function StubDatePicker({ label, value, onChange, readOnly, minDate, maxDate }) 
   )
 }
 export const datePickerModule = { MobileDatePicker: StubDatePicker, DatePicker: StubDatePicker }
-export const pickDate = (label, date) => fireEvent.change(document.querySelector(`input[aria-label="${label}"]`), { target: { value: String(date.getTime()) } })
+export const pickDate = (label, date) =>
+  fireEvent.change(document.querySelector(`input[aria-label="${label}"]`), { target: { value: String(date.getTime()) } })
 
 // components/MerchantListAutocompleteForManagement（店家選擇器，另有自己的查詢與彈窗）的替身：
 // 按「選擇店家（測試）」回傳 m1、m2；目前選取、是否唯讀、是否用於規則與活動 id 放在屬性上
@@ -137,10 +142,27 @@ export const TRANSFER_FIXTURES = {
       ],
     },
   },
-  GET_PRODUCT_IN_TRANSFERLIST: { products: { data: [{ id: 'p1', no: 'G1', name: '洗髮精', sellPrice: 450 }, { id: 'p2', no: 'G2', name: '髮蠟', sellPrice: 350 }] } },
-  GET_TICKETS_FOR_TRANSFERLIST: { tickets: [{ id: 't1', no: 'T1', name: '剪髮券', price: 300 }, { id: 't2', no: 'T2', name: '洗髮券', price: 200 }] },
+  GET_PRODUCT_IN_TRANSFERLIST: {
+    products: {
+      data: [
+        { id: 'p1', no: 'G1', name: '洗髮精', sellPrice: 450 },
+        { id: 'p2', no: 'G2', name: '髮蠟', sellPrice: 350 },
+      ],
+    },
+  },
+  GET_TICKETS_FOR_TRANSFERLIST: {
+    tickets: [
+      { id: 't1', no: 'T1', name: '剪髮券', price: 300 },
+      { id: 't2', no: 'T2', name: '洗髮券', price: 200 },
+    ],
+  },
   FETCH_MEMBERSHIPS_FOR_TRANSFERLIST: {
-    memberships: { data: [{ uuid: 'mc1', no: 'C1', name: '年卡', sellPrice: 12000 }, { uuid: 'mc2', no: 'C2', name: '季卡', sellPrice: 5000 }] },
+    memberships: {
+      data: [
+        { uuid: 'mc1', no: 'C1', name: '年卡', sellPrice: 12000 },
+        { uuid: 'mc2', no: 'C2', name: '季卡', sellPrice: 5000 },
+      ],
+    },
   },
 }
 if (isMain) {

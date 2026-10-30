@@ -63,7 +63,7 @@ export default function Services({
       idx(serviceRef, _ => _.current.focus())
     } else {
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [expanded, focusFirstField] 變動時執行；bill.designerId、bill.serviceOrders.length、index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [expanded, focusFirstField] 變動時執行；bill.designerId、bill.serviceOrders.length、index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [expanded, focusFirstField])
 
   React.useEffect(() => {
@@ -87,14 +87,8 @@ export default function Services({
         .map((data, index) => ({
           type: data.type,
           helperDeductiontype: data.helperDeductiontype,
-          helperId:
-            helper.length > 0 && helper[index] !== undefined && helper[index].type === data.type
-              ? helper[index].helperId
-              : '',
-          isDesignate:
-            helper.length > 0 && helper[index] !== undefined && helper[index].type === data.type
-              ? helper[index].isDesignate
-              : false,
+          helperId: helper.length > 0 && helper[index] !== undefined && helper[index].type === data.type ? helper[index].helperId : '',
+          isDesignate: helper.length > 0 && helper[index] !== undefined && helper[index].type === data.type ? helper[index].isDesignate : false,
         }))
 
       helper.forEach(data => {
@@ -112,7 +106,7 @@ export default function Services({
       // }))
       setHelper(newHelper)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [serviceDetail.data, serviceDetail.loading] 變動時執行；helper 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [serviceDetail.data, serviceDetail.loading] 變動時執行；helper 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [serviceDetail.data, serviceDetail.loading])
   React.useEffect(() => {
     if (helper.length > 0) {
@@ -229,7 +223,7 @@ export default function Services({
       default:
         break
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [focus, focusRow] 變動時執行；helper.length、helperRefs、index、service.isLocked 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [focus, focusRow] 變動時執行；helper.length、helperRefs、index、service.isLocked 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [focus, focusRow])
 
   const handleFocus = event => {
@@ -319,12 +313,7 @@ export default function Services({
                     setFocus(helper[0].type)
                     idx(helperRefs, _ => _[0].current.focus())
                   }
-                  if (
-                    event.key === 'Enter' &&
-                    helper.length === 0 &&
-                    !serviceDetail.loading &&
-                    isHelperDesignation
-                  ) {
+                  if (event.key === 'Enter' && helper.length === 0 && !serviceDetail.loading && isHelperDesignation) {
                     if (ticketDisabled || !thirdPartTicket) {
                       changeRowFocus(index + 1)
                       setFocus('service')
@@ -332,12 +321,7 @@ export default function Services({
                       setFocus('thirdParty')
                       thirdPartyRef.current.focus()
                     }
-                  } else if (
-                    event.key === 'Enter' &&
-                    helper.length === 0 &&
-                    !serviceDetail.loading &&
-                    !isHelperDesignation
-                  ) {
+                  } else if (event.key === 'Enter' && helper.length === 0 && !serviceDetail.loading && !isHelperDesignation) {
                     if (ticketDisabled || !thirdPartTicket) {
                       changeRowFocus(index + 1)
                       setFocus('service')
@@ -382,11 +366,7 @@ export default function Services({
                           } else if (event.key === 'Enter' && idx + 1 < helper.length) {
                             setFocus(helper[idx + 1].type)
                             helperRefs[idx + 1].current.focus()
-                          } else if (
-                            event.key === 'Enter' &&
-                            idx + 1 === helper.length &&
-                            thirdPartTicket
-                          ) {
+                          } else if (event.key === 'Enter' && idx + 1 === helper.length && thirdPartTicket) {
                             if (ticketDisabled) {
                               changeRowFocus(index + 1)
                               setFocus('service')
@@ -423,11 +403,7 @@ export default function Services({
                           if (event.key === 'Enter' && idx + 1 < helper.length) {
                             setFocus(helper[idx + 1].type)
                             helperRefs[idx + 1].current.focus()
-                          } else if (
-                            event.key === 'Enter' &&
-                            idx + 1 === helper.length &&
-                            thirdPartTicket
-                          ) {
+                          } else if (event.key === 'Enter' && idx + 1 === helper.length && thirdPartTicket) {
                             if (ticketDisabled) {
                               changeRowFocus(index + 1)
                               setFocus('service')
@@ -495,12 +471,7 @@ export default function Services({
               return undefined
             })}
         </div>
-        <RowIconButton
-          label="清除此列"
-          className={`mr-1.5 ${ROW_ICON_ALIGN}`}
-          onClick={handleClear}
-          data-testid={`service-${index}-clear`}
-        >
+        <RowIconButton label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`} onClick={handleClear} data-testid={`service-${index}-clear`}>
           <Eraser aria-hidden="true" strokeWidth={1.75} />
         </RowIconButton>
 
@@ -519,14 +490,7 @@ export default function Services({
           ''
         )}
       </div>
-      {last ? (
-        <AddRowButton
-          onClick={addService}
-          data-testid={`service-${index}-add`}
-        />
-      ) : (
-        ''
-      )}
+      {last ? <AddRowButton onClick={addService} data-testid={`service-${index}-add`} /> : ''}
     </Fragment>
   )
 }

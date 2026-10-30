@@ -17,19 +17,31 @@ jest.setTimeout(30000)
 jest.mock('elements/snackbars', () => ({ openSnackbar: jest.fn() }))
 jest.mock('ui/date-picker', () => ({
   MobileDatePicker: ({ value, onChange, label, localeText }) => (
-    <input aria-label={label || (localeText && localeText.toolbarTitle)} data-value={value} onChange={e => onChange(new Date(Number(e.target.value)))} />
+    <input
+      aria-label={label || (localeText && localeText.toolbarTitle)}
+      data-value={value}
+      onChange={e => onChange(new Date(Number(e.target.value)))}
+    />
   ),
 }))
 jest.mock('components/CustomerAutoComplete', () => ({ onChange, value }) => (
   <div data-testid="customer-picker" data-value={value || ''}>
-    <button type="button" onClick={() => onChange({ id: '' })}>清除顧客</button>
-    <button type="button" onClick={() => onChange({ id: 'c-9' })}>選顧客</button>
+    <button type="button" onClick={() => onChange({ id: '' })}>
+      清除顧客
+    </button>
+    <button type="button" onClick={() => onChange({ id: 'c-9' })}>
+      選顧客
+    </button>
   </div>
 ))
 jest.mock('components/BookingRecordListAutoComplete', () => ({ onChange, value }) => (
   <div data-testid="designer-picker" data-value={value || ''}>
-    <button type="button" onClick={() => onChange({ id: '' })}>清除服務人員</button>
-    <button type="button" onClick={() => onChange({ id: 'row-2', userId: 'd-2' })}>選服務人員</button>
+    <button type="button" onClick={() => onChange({ id: '' })}>
+      清除服務人員
+    </button>
+    <button type="button" onClick={() => onChange({ id: 'row-2', userId: 'd-2' })}>
+      選服務人員
+    </button>
   </div>
 ))
 
@@ -42,8 +54,15 @@ const DESIGNERS = [
     calendar: [
       ...AMY(base).calendar,
       reservation(base, 10, 30, 1, {
-        ids: ['b-3'], nameToDisplay: '黃小姐', bookingStatus: '預約成功', isDesignate: false, isCheckin: true, isNoShow: true,
-        customerId: 'c-3', customerCellphone: '0933', isCusCheckRequired: true,
+        ids: ['b-3'],
+        nameToDisplay: '黃小姐',
+        bookingStatus: '預約成功',
+        isDesignate: false,
+        isCheckin: true,
+        isNoShow: true,
+        customerId: 'c-3',
+        customerCellphone: '0933',
+        isCusCheckRequired: true,
       }),
       reservation(base, 12, 0, 1, { ids: ['b-4'], nameToDisplay: '已完成客', bookingStatus: '已完成', customerId: 'c-4' }),
       reservation(base, 13, 0, 1, { ids: ['b-5'], nameToDisplay: '取消客', bookingStatus: '設計師已取消', customerId: 'c-5' }),
@@ -56,8 +75,14 @@ const NDS = base => ({
   designerName: '不指定',
   calendar: [
     reservation(base, 10, 0, 1, {
-      ids: ['n-1'], nameToDisplay: '路人甲', bookingStatus: '預約成功', customerId: 'c-7', isCheckin: false, remark: '第一次',
-      remarkForCustomer: '靠窗', notificationDayCount: 1,
+      ids: ['n-1'],
+      nameToDisplay: '路人甲',
+      bookingStatus: '預約成功',
+      customerId: 'c-7',
+      isCheckin: false,
+      remark: '第一次',
+      remarkForCustomer: '靠窗',
+      notificationDayCount: 1,
     }),
     reservation(base, 11, 0, 1, { ids: ['n-2'], nameToDisplay: '路人乙', bookingStatus: '預約成功', customerId: 'c-8', isCheckin: true }),
     reservation(base, 12, 0, 1, { ids: ['n-3'], nameToDisplay: '路人丙', bookingStatus: '預約成功', customerId: 'c-6', isCheckin: null }),
@@ -199,7 +224,9 @@ describe('關閉／開放時段', () => {
 })
 
 describe('不指定時段：預約與可預約人數', () => {
-  const LIMIT = limit => ({ FETCH_NON_DESIGNATE_BOOKING_LIMIT: { merchantDesignateTimeNonDesignateBookingLimit: { date: at(DAY_START, 15), limit } } })
+  const LIMIT = limit => ({
+    FETCH_NON_DESIGNATE_BOOKING_LIMIT: { merchantDesignateTimeNonDesignateBookingLimit: { date: at(DAY_START, 15), limit } },
+  })
 
   it('查詢點的那一格的人數上限；電話、姓名必填；送出不指定預約的欄位', async () => {
     const utils = setup({
@@ -267,7 +294,9 @@ describe('不指定時段：預約與可預約人數', () => {
   })
 
   it('不指定預約失敗：提示原因、按鈕恢復；沒回 id 時不關窗', async () => {
-    const utils = setup({ fixtures: { ...LIMIT(3), NON_DESIGNATION_BOOKING: sequence(new Error('電話格式錯誤'), { nonDesignationBooking: { id: null } }) } })
+    const utils = setup({
+      fixtures: { ...LIMIT(3), NON_DESIGNATION_BOOKING: sequence(new Error('電話格式錯誤'), { nonDesignationBooking: { id: null } }) },
+    })
     await pageReady(utils)
     fireEvent.click(ndsCell(row(15)))
     await screen.findByRole('button', { name: '設定可預約人數上限' })
@@ -470,7 +499,10 @@ describe('預約明細', () => {
   it('報到／取消報到：送預約 id 與「不是手機」；失敗時提示原因', async () => {
     const utils = setup({
       settings: { checkin: true },
-      fixtures: { SET_BOOKING_CHECK_IN: sequence(new Error('尚未到報到時間'), { bookingCheckin: true }), SET_BOOKING_CANCEL_CHECK_IN: sequence(new Error('已開單'), { bookingCancelCheckin: true }) },
+      fixtures: {
+        SET_BOOKING_CHECK_IN: sequence(new Error('尚未到報到時間'), { bookingCheckin: true }),
+        SET_BOOKING_CANCEL_CHECK_IN: sequence(new Error('已開單'), { bookingCancelCheckin: true }),
+      },
     })
     await pageReady(utils)
     fireEvent.click(block('陳小姐'))
@@ -685,7 +717,12 @@ describe('編輯預約', () => {
     fireEvent.click(within(dialog()).getByTestId('assign-designer-false'))
     fireEvent.click(button('儲存'))
     await closedDialog()
-    expect(sentOf(utils.calls, 'UpdateOrder')[0].input.orderInput).toMatchObject({ designerId: null, isDesignate: false, customerId: 'c-7', remark: '第一次' })
+    expect(sentOf(utils.calls, 'UpdateOrder')[0].input.orderInput).toMatchObject({
+      designerId: null,
+      isDesignate: false,
+      customerId: 'c-7',
+      remark: '第一次',
+    })
     expect(sentOf(utils.calls, 'UpdateOrder')[0].input.notificationDayCount).toBe(1)
     // 改成指定並選了服務人員：送出該服務人員
     fireEvent.click(block('路人甲'))

@@ -235,7 +235,15 @@ describe('TablePagination（第二輪）', () => {
     const ref = React.createRef()
     const onRows = jest.fn()
     render(
-      <TablePagination ref={ref} count={100} page={0} rowsPerPage={10} rowsPerPageOptions={[10, 25]} onPageChange={() => {}} onRowsPerPageChange={onRows} />
+      <TablePagination
+        ref={ref}
+        count={100}
+        page={0}
+        rowsPerPage={10}
+        rowsPerPageOptions={[10, 25]}
+        onPageChange={() => {}}
+        onRowsPerPageChange={onRows}
+      />
     )
     expect(ref.current).toBeInstanceOf(HTMLDivElement)
     fireEvent.change(screen.getByLabelText('每頁筆數'), { target: { value: '1' } })
@@ -246,7 +254,11 @@ describe('TablePagination（第二輪）', () => {
 describe('Avatar', () => {
   // 員工、顧客常沒有照片或圖片網址失效；不能顯示破圖
   it('圖片載入失敗時改顯示 children（姓名首字）', () => {
-    render(<Avatar src="https://example.invalid/x.png" alt="王小美">王</Avatar>)
+    render(
+      <Avatar src="https://example.invalid/x.png" alt="王小美">
+        王
+      </Avatar>
+    )
     fireEvent.error(screen.getByAltText('王小美'))
     expect(screen.getByText('王')).toBeInTheDocument()
   })
@@ -256,7 +268,9 @@ describe('Accordion', () => {
   const setup = (expanded, onClick = jest.fn()) =>
     render(
       <Accordion expanded={expanded}>
-        <AccordionSummary onClick={onClick} data-testid="sum">服務項目</AccordionSummary>
+        <AccordionSummary onClick={onClick} data-testid="sum">
+          服務項目
+        </AccordionSummary>
         <AccordionDetails>
           <input data-testid="price" defaultValue="500" />
         </AccordionDetails>

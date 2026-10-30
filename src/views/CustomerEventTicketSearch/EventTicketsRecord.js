@@ -1,8 +1,8 @@
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { Fragment, useState } from 'react'
-import clsx from 'clsx';
-import cloneDeep from 'lodash/cloneDeep';
-import { format } from 'date-fns';
+import clsx from 'clsx'
+import cloneDeep from 'lodash/cloneDeep'
+import { format } from 'date-fns'
 import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 
@@ -31,13 +31,16 @@ function EventTicketsRecord({ data }) {
           {/* 手機版：每個活動一張卡片，點擊展開該活動的抽獎券列表 */}
           {customerEventTickets.map(({ eventName, tickets }, i) => {
             const isSelect = selectIds.includes(`${eventName}-${i}`)
-            const Icon = () => isSelect ? arrowUp : arrowDown
+            const Icon = () => (isSelect ? arrowUp : arrowDown)
             return (
               <Fragment key={`${eventName}-${i}`}>
                 <Card className="overflow-hidden">
                   <button
                     type="button"
-                    className={clsx('flex min-h-11 w-full items-center justify-between gap-3 px-5 py-4 text-left', tickets.length ? 'cursor-pointer hover:bg-surface-hover' : 'cursor-default')}
+                    className={clsx(
+                      'flex min-h-11 w-full items-center justify-between gap-3 px-5 py-4 text-left',
+                      tickets.length ? 'cursor-pointer hover:bg-surface-hover' : 'cursor-default'
+                    )}
                     onClick={() => tickets.length && handleSetCollapse(`${eventName}-${i}`)}
                   >
                     <span className="flex min-w-0 flex-col gap-1">
@@ -46,24 +49,24 @@ function EventTicketsRecord({ data }) {
                     </span>
                     {tickets.length ? <Icon /> : ''}
                   </button>
-                  {tickets.length ? (
-                    selectIds.indexOf(`${eventName}-${i}`) > -1 && (
-                      <ul className="border-0 border-t border-solid border-border">
-                        {tickets.map(({ serialNumber, consumptionDate, consumptionStoreName }) => (
-                          <li key={serialNumber} className="border-0 border-b border-solid border-border px-5 py-3 last:border-b-0">
-                            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-body">
-                              <dt className="text-label text-text-secondary">流水號</dt>
-                              <dd className="m-0 break-all text-right tabular-nums text-text">{serialNumber}</dd>
-                              <dt className="text-label text-text-secondary">發券日期</dt>
-                              <dd className="m-0 text-right tabular-nums text-text">{format(consumptionDate, 'yyyy/MM/dd')}</dd>
-                              <dt className="text-label text-text-secondary">發券店家</dt>
-                              <dd className="m-0 text-right text-text">{consumptionStoreName}</dd>
-                            </dl>
-                          </li>
-                        ))}
-                      </ul>
-                    )
-                  ) : null}
+                  {tickets.length
+                    ? selectIds.indexOf(`${eventName}-${i}`) > -1 && (
+                        <ul className="border-0 border-t border-solid border-border">
+                          {tickets.map(({ serialNumber, consumptionDate, consumptionStoreName }) => (
+                            <li key={serialNumber} className="border-0 border-b border-solid border-border px-5 py-3 last:border-b-0">
+                              <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-body">
+                                <dt className="text-label text-text-secondary">流水號</dt>
+                                <dd className="m-0 break-all text-right tabular-nums text-text">{serialNumber}</dd>
+                                <dt className="text-label text-text-secondary">發券日期</dt>
+                                <dd className="m-0 text-right tabular-nums text-text">{format(consumptionDate, 'yyyy/MM/dd')}</dd>
+                                <dt className="text-label text-text-secondary">發券店家</dt>
+                                <dd className="m-0 text-right text-text">{consumptionStoreName}</dd>
+                              </dl>
+                            </li>
+                          ))}
+                        </ul>
+                      )
+                    : null}
                 </Card>
               </Fragment>
             )

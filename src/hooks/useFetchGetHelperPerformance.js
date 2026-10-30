@@ -16,11 +16,11 @@ const GET_HELPER_PERFORMANCE = gql`
   }
 `
 
-export const useFetchGetHelperPerformance = ({input, jobTitle}) =>
+export const useFetchGetHelperPerformance = ({ input, jobTitle }) =>
   useQuery(GET_HELPER_PERFORMANCE, {
     variables: {
       input,
-      jobTitle
+      jobTitle,
     },
     fetchPolicy: 'cache-and-network',
   })

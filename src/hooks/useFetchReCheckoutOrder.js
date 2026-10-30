@@ -16,7 +16,7 @@ export default function useFetchReCheckoutOrder() {
         variables: {
           input: input,
         },
-      })
+      }),
   }
 }
 

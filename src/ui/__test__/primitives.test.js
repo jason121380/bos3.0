@@ -120,7 +120,11 @@ describe('StatGrid／Stat／StatCard：統計數值', () => {
     expect(screen.getByText('營收')).toBeInTheDocument()
     expect(screen.getByText('1,200')).toBeInTheDocument()
     expect(screen.queryByText('較上月')).toBeNull()
-    rerender(<Stat label="營收" hint="較上月">1,200</Stat>)
+    rerender(
+      <Stat label="營收" hint="較上月">
+        1,200
+      </Stat>
+    )
     expect(screen.getByText('較上月')).toBeInTheDocument()
   })
 

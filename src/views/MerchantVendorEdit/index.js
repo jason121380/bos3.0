@@ -47,21 +47,21 @@ function MerchantVendorEdit({ match }) {
         vendorUUId: vendorUUId,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantVendor.loading, vendorList.loading])
   const handleUpdateData = () => {
     setIsClick(true)
     if (submitData.vendorUUId === null) {
       openSnackbar({
         message: '請選擇廠商',
-        variant: 'warning'
+        variant: 'warning',
       })
       setIsClick(false)
       return
     } else if (submitData.no === '') {
       openSnackbar({
         message: '請輸入代號',
-        variant: 'warning'
+        variant: 'warning',
       })
       setIsClick(false)
       return
@@ -69,24 +69,26 @@ function MerchantVendorEdit({ match }) {
       const inputValue = cloneDeep(submitData)
       inputValue.vendorUUId = submitData.vendorUUId.uuid
       updateMerchantVendor({
-        input: inputValue
-      }).then(res => {
-        if (res.data.updateMerchantVendor) {
-          openSnackbar({
-            message: '編輯成功',
-            variant: 'success'
-          })
-          history.push('/merchant-vendor')
-        } else {
-          openSnackbar({
-            message: '編輯失敗',
-            variant: 'error'
-          })
-          setIsClick(false)
-        }
-      }).catch(error => {
-        setIsClick(false)
+        input: inputValue,
       })
+        .then(res => {
+          if (res.data.updateMerchantVendor) {
+            openSnackbar({
+              message: '編輯成功',
+              variant: 'success',
+            })
+            history.push('/merchant-vendor')
+          } else {
+            openSnackbar({
+              message: '編輯失敗',
+              variant: 'error',
+            })
+            setIsClick(false)
+          }
+        })
+        .catch(error => {
+          setIsClick(false)
+        })
     }
   }
 
@@ -94,22 +96,27 @@ function MerchantVendorEdit({ match }) {
     <Page className="ui-root" title="編輯廠商">
       <div className="max-w-3xl">
         <PageHeader title="編輯廠商" />
-        {(merchantVendor.error || vendorList.error) ? (
-          <QueryFailed onRetry={() => { if (merchantVendor.error) merchantVendor.refetch(); if (vendorList.error) vendorList.refetch() }} />
+        {merchantVendor.error || vendorList.error ? (
+          <QueryFailed
+            onRetry={() => {
+              if (merchantVendor.error) merchantVendor.refetch()
+              if (vendorList.error) vendorList.refetch()
+            }}
+          />
         ) : (
           <>
-          <AboutMerchantVendor
-            isEdit
-            vendorOption={vendorOption}
-            isLodaing={vendorList.loading}
-            submitData={submitData}
-            setSubmitData={setSubmitData}
-          />
-          <div className="mt-6 flex justify-end">
-            <Button disabled={vendorList.loading || isClick} onClick={handleUpdateData} variant="primary">
-              儲存
-            </Button>
-          </div>
+            <AboutMerchantVendor
+              isEdit
+              vendorOption={vendorOption}
+              isLodaing={vendorList.loading}
+              submitData={submitData}
+              setSubmitData={setSubmitData}
+            />
+            <div className="mt-6 flex justify-end">
+              <Button disabled={vendorList.loading || isClick} onClick={handleUpdateData} variant="primary">
+                儲存
+              </Button>
+            </div>
           </>
         )}
       </div>

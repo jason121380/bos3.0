@@ -8,13 +8,13 @@ import { Autocomplete } from 'ui/combobox'
 
 let first = true
 
-const MerchantListAutocompleteForManagement = ({ onValueChange = () => { }, selectIds = [], isReadOnly = false, inRule = false, eventId = null }) => {
+const MerchantListAutocompleteForManagement = ({ onValueChange = () => {}, selectIds = [], isReadOnly = false, inRule = false, eventId = null }) => {
   const [merchantForManagement, merchantForManagementData] = useFetchGetUserMerchantForManagementLazy()
   const [eventJoinMerchants, eventJoinMerchantsData] = useFetchGetEventJoinMerchants()
   const [merchantList, setMerchantList] = useState({
     allMerchants: [],
     groups: [],
-    merchants: []
+    merchants: [],
   })
   const [values, setValues] = useState([])
   const [open, setOpen] = useState(false)
@@ -41,7 +41,7 @@ const MerchantListAutocompleteForManagement = ({ onValueChange = () => { }, sele
   useEffect(() => {
     const ids = values.map(d => d.id)
     onValueChange(ids)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（onValueChange）；只在 [values] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（onValueChange）；只在 [values] 變動時呼叫，補上會每次 render 重跑
   }, [values])
 
   useEffect(() => {
@@ -52,7 +52,7 @@ const MerchantListAutocompleteForManagement = ({ onValueChange = () => { }, sele
       const data = JSON.parse(eventJoinMerchantsData.data.eventJoinedMerchants)
       handleSetData(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSetData）；只在 [merchantForManagementData, eventJoinMerchantsData] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSetData）；只在 [merchantForManagementData, eventJoinMerchantsData] 變動時呼叫，補上會每次 render 重跑
   }, [merchantForManagementData, eventJoinMerchantsData])
 
   useEffect(() => {
@@ -65,18 +65,18 @@ const MerchantListAutocompleteForManagement = ({ onValueChange = () => { }, sele
     if (inRule && eventId) {
       eventJoinMerchants({
         variables: {
-          eventId: eventId
-        }
+          eventId: eventId,
+        },
       })
     } else {
       merchantForManagement()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（eventJoinMerchants、merchantForManagement）；只在 [inRule, eventId] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（eventJoinMerchants、merchantForManagement）；只在 [inRule, eventId] 變動時呼叫，補上會每次 render 重跑
   }, [inRule, eventId])
 
   return (
     <>
-      <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'flex-end' }}>
+      <div id="openModal" style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'flex-end' }}>
         <Autocomplete
           className="min-w-0 flex-1 [&_input]:cursor-pointer"
           readOnly={isReadOnly}
@@ -87,7 +87,13 @@ const MerchantListAutocompleteForManagement = ({ onValueChange = () => { }, sele
           style={{ cursor: 'pointer' }}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           popupIcon={
-            isReadOnly ? '' : <Button asChild variant="primary" size="sm" onClick={handleSelectAll}><div>全選</div></Button>
+            isReadOnly ? (
+              ''
+            ) : (
+              <Button asChild variant="primary" size="sm" onClick={handleSelectAll}>
+                <div>全選</div>
+              </Button>
+            )
           }
           value={values}
           onChange={(e, v) => {
@@ -96,11 +102,7 @@ const MerchantListAutocompleteForManagement = ({ onValueChange = () => { }, sele
           options={merchantList.allMerchants || []}
           disableCloseOnSelect
           getOptionLabel={option => option.name}
-          renderOption={(props, option) => (
-            <li {...props}>
-              {option.name}
-            </li>
-          )}
+          renderOption={(props, option) => <li {...props}>{option.name}</li>}
           renderInput={params => (
             <TextField
               onClick={event => !isReadOnly && handleOnClick(event)}
@@ -116,8 +118,12 @@ const MerchantListAutocompleteForManagement = ({ onValueChange = () => { }, sele
             />
           )}
         />
-        {isReadOnly ? '' : (
-          <Button onClick={() => setOpen(true)} variant="primary" className="shrink-0">選擇店家</Button>
+        {isReadOnly ? (
+          ''
+        ) : (
+          <Button onClick={() => setOpen(true)} variant="primary" className="shrink-0">
+            選擇店家
+          </Button>
         )}
       </div>
       <MerchantsListModal
@@ -134,7 +140,7 @@ const MerchantListAutocompleteForManagement = ({ onValueChange = () => { }, sele
 
 MerchantListAutocompleteForManagement.propTypes = {
   onValueChange: PropTypes.func,
-  selectIds: PropTypes.array
+  selectIds: PropTypes.array,
 }
 
 export default MerchantListAutocompleteForManagement

@@ -28,38 +28,40 @@ const Accordion = React.forwardRef(({ expanded = false, className, children, ...
 ))
 Accordion.displayName = 'Accordion'
 
-const AccordionSummary = React.forwardRef(
-  ({ className, expandIcon, summaryMeta, children, onClick, onKeyDown, ...props }, ref) => {
-    const expanded = useContext(AccordionContext)
-    return (
-      <div
-        ref={ref}
-        role="button"
-        tabIndex={0}
-        aria-expanded={expanded}
-        onClick={onClick}
-        onKeyDown={event => {
-          if (onKeyDown) onKeyDown(event)
-          // 與原生按鈕相同：焦點在標題本身時，Enter／空白鍵等同點擊
-          if (!event.defaultPrevented && event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
-            event.preventDefault()
-            if (onClick) onClick(event)
-          }
-        }}
-        className={cn(
-          'flex min-h-[52px] w-full cursor-pointer select-none items-center gap-3 rounded-lg px-5 py-3.5 text-left transition-colors hover:bg-surface',
-          focusRing,
-          className
-        )}
-        {...props}
-      >
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1">{children}</div>
-        {summaryMeta && <span className="shrink-0 text-label tabular-nums text-text-secondary">{summaryMeta}</span>}
-        <ChevronDown aria-hidden="true" strokeWidth={1.75} className={cn('h-5 w-5 shrink-0 text-text-tertiary transition-transform', expanded && 'rotate-180')} />
-      </div>
-    )
-  }
-)
+const AccordionSummary = React.forwardRef(({ className, expandIcon, summaryMeta, children, onClick, onKeyDown, ...props }, ref) => {
+  const expanded = useContext(AccordionContext)
+  return (
+    <div
+      ref={ref}
+      role="button"
+      tabIndex={0}
+      aria-expanded={expanded}
+      onClick={onClick}
+      onKeyDown={event => {
+        if (onKeyDown) onKeyDown(event)
+        // 與原生按鈕相同：焦點在標題本身時，Enter／空白鍵等同點擊
+        if (!event.defaultPrevented && event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+          event.preventDefault()
+          if (onClick) onClick(event)
+        }
+      }}
+      className={cn(
+        'flex min-h-[52px] w-full cursor-pointer select-none items-center gap-3 rounded-lg px-5 py-3.5 text-left transition-colors hover:bg-surface',
+        focusRing,
+        className
+      )}
+      {...props}
+    >
+      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1">{children}</div>
+      {summaryMeta && <span className="shrink-0 text-label tabular-nums text-text-secondary">{summaryMeta}</span>}
+      <ChevronDown
+        aria-hidden="true"
+        strokeWidth={1.75}
+        className={cn('h-5 w-5 shrink-0 text-text-tertiary transition-transform', expanded && 'rotate-180')}
+      />
+    </div>
+  )
+})
 AccordionSummary.displayName = 'AccordionSummary'
 
 const AccordionDetails = React.forwardRef(({ className, style, ...props }, ref) => {

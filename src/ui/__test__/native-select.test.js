@@ -13,23 +13,45 @@ const pick = name => {
   fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name }))
 }
 const options = [
-  <NativeSelectOption key="none" value="">未選擇</NativeSelectOption>,
-  <NativeSelectOption key="a" value="A">啟用</NativeSelectOption>,
-  <NativeSelectOption key="b" value={2}>停用</NativeSelectOption>,
+  <NativeSelectOption key="none" value="">
+    未選擇
+  </NativeSelectOption>,
+  <NativeSelectOption key="a" value="A">
+    啟用
+  </NativeSelectOption>,
+  <NativeSelectOption key="b" value={2}>
+    停用
+  </NativeSelectOption>,
 ]
 
 describe('NativeSelect 空值顯示', () => {
   it('預設（displayEmpty）維持原本行為：有 value="" 的選項時顯示它的文字', () => {
-    render(<NativeSelect label="狀態" value="" onChange={() => {}}>{options}</NativeSelect>)
+    render(
+      <NativeSelect label="狀態" value="" onChange={() => {}}>
+        {options}
+      </NativeSelect>
+    )
     expect(trigger()).toHaveTextContent('未選擇')
   })
 
   it('displayEmpty={false} 且沒有 placeholder：值為空時欄位顯示空白', () => {
-    const { rerender } = render(<NativeSelect label="狀態" value="" displayEmpty={false} onChange={() => {}}>{options}</NativeSelect>)
+    const { rerender } = render(
+      <NativeSelect label="狀態" value="" displayEmpty={false} onChange={() => {}}>
+        {options}
+      </NativeSelect>
+    )
     expect(trigger().className).toMatch(/text-transparent/)
-    rerender(<NativeSelect label="狀態" value={null} displayEmpty={false} onChange={() => {}}>{options}</NativeSelect>)
+    rerender(
+      <NativeSelect label="狀態" value={null} displayEmpty={false} onChange={() => {}}>
+        {options}
+      </NativeSelect>
+    )
     expect(trigger().className).toMatch(/text-transparent/)
-    rerender(<NativeSelect label="狀態" value="A" displayEmpty={false} onChange={() => {}}>{options}</NativeSelect>)
+    rerender(
+      <NativeSelect label="狀態" value="A" displayEmpty={false} onChange={() => {}}>
+        {options}
+      </NativeSelect>
+    )
     expect(trigger()).toHaveTextContent('啟用')
     expect(trigger().className).not.toMatch(/text-transparent/)
   })
@@ -38,10 +60,18 @@ describe('NativeSelect 空值顯示', () => {
   // 原本可以選回空值的欄位（清單裡有 value='' 的選項），改完仍要能選回空值。
   it('displayEmpty={false}＋placeholder：值為空時顯示「請選擇…」，空值選項仍可選來清空', () => {
     const onChange = jest.fn()
-    const { rerender } = render(<NativeSelect label="狀態" value="" displayEmpty={false} placeholder="請選擇…" onChange={onChange}>{options}</NativeSelect>)
+    const { rerender } = render(
+      <NativeSelect label="狀態" value="" displayEmpty={false} placeholder="請選擇…" onChange={onChange}>
+        {options}
+      </NativeSelect>
+    )
     expect(trigger()).toHaveTextContent('請選擇…')
     expect(trigger().className).not.toMatch(/text-transparent/)
-    rerender(<NativeSelect label="狀態" value="A" displayEmpty={false} placeholder="請選擇…" onChange={onChange}>{options}</NativeSelect>)
+    rerender(
+      <NativeSelect label="狀態" value="A" displayEmpty={false} placeholder="請選擇…" onChange={onChange}>
+        {options}
+      </NativeSelect>
+    )
     expect(trigger()).toHaveTextContent('啟用')
     pick('未選擇')
     expect(onChange.mock.calls[0][0].target.value).toBe('')
@@ -51,7 +81,11 @@ describe('NativeSelect 空值顯示', () => {
 describe('NativeSelect 非受控（defaultValue）', () => {
   it('沒傳 value 時記住使用者選的項目，並照常回傳原始值（數字維持數字）', () => {
     const onChange = jest.fn()
-    render(<NativeSelect label="狀態" defaultValue="" name="status" onChange={onChange}>{options}</NativeSelect>)
+    render(
+      <NativeSelect label="狀態" defaultValue="" name="status" onChange={onChange}>
+        {options}
+      </NativeSelect>
+    )
     pick('停用')
     expect(onChange.mock.calls[0][0].target).toEqual({ value: 2, name: 'status' })
     expect(trigger()).toHaveTextContent('停用')
@@ -59,7 +93,11 @@ describe('NativeSelect 非受控（defaultValue）', () => {
 
   it('有傳 value（受控）時不自己記，畫面以 value 為準', () => {
     const onChange = jest.fn()
-    render(<NativeSelect label="狀態" value="A" onChange={onChange}>{options}</NativeSelect>)
+    render(
+      <NativeSelect label="狀態" value="A" onChange={onChange}>
+        {options}
+      </NativeSelect>
+    )
     pick('停用')
     expect(onChange).toHaveBeenCalledTimes(1)
     expect(trigger()).toHaveTextContent('啟用')
@@ -69,7 +107,11 @@ describe('NativeSelect 非受控（defaultValue）', () => {
 describe('NativeSelect 唯讀與其他轉傳', () => {
   it('readOnly：點選項不會呼叫 onChange（活動規則檢視模式不可改）', () => {
     const onChange = jest.fn()
-    render(<NativeSelect label="狀態" value="A" readOnly onChange={onChange}>{options}</NativeSelect>)
+    render(
+      <NativeSelect label="狀態" value="A" readOnly onChange={onChange}>
+        {options}
+      </NativeSelect>
+    )
     expect(trigger()).toHaveAttribute('aria-readonly', 'true')
     fireEvent.change(document.querySelector('select'), { target: { value: '2' } })
     expect(onChange).not.toHaveBeenCalled()
@@ -78,7 +120,11 @@ describe('NativeSelect 唯讀與其他轉傳', () => {
   // 原本由 form-control Select 的測試守住（2026/10/30 移除 Select 時搬來）：唯讀欄位仍可 Enter 跳欄、Tab 離開
   it('readOnly：方向鍵等按鍵被擋下，Enter／Tab 保留；onKeyDown 照常收到', () => {
     const onKeyDown = jest.fn()
-    const { rerender } = render(<NativeSelect label="狀態" value="A" readOnly onKeyDown={onKeyDown}>{options}</NativeSelect>)
+    const { rerender } = render(
+      <NativeSelect label="狀態" value="A" readOnly onKeyDown={onKeyDown}>
+        {options}
+      </NativeSelect>
+    )
     const press = key => {
       const ev = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true })
       trigger().dispatchEvent(ev)
@@ -88,12 +134,20 @@ describe('NativeSelect 唯讀與其他轉傳', () => {
     expect(press('Enter')).toBe(false)
     expect(press('Tab')).toBe(false)
     expect(onKeyDown).toHaveBeenCalledTimes(3)
-    rerender(<NativeSelect label="狀態" value="A" onChange={() => {}}>{options}</NativeSelect>)
+    rerender(
+      <NativeSelect label="狀態" value="A" onChange={() => {}}>
+        {options}
+      </NativeSelect>
+    )
     expect(press('Tab')).toBe(false)
   })
 
   it('renderValue：按鈕顯示自訂內容（偏好設計師載入中）', () => {
-    render(<NativeSelect label="狀態" value="loading" renderValue={v => `顯示:${v}`} onChange={() => {}}>{options}</NativeSelect>)
+    render(
+      <NativeSelect label="狀態" value="loading" renderValue={v => `顯示:${v}`} onChange={() => {}}>
+        {options}
+      </NativeSelect>
+    )
     expect(trigger()).toHaveTextContent('顯示:loading')
   })
 
@@ -116,7 +170,9 @@ describe('NativeSelect 唯讀與其他轉傳', () => {
     render(
       <>
         <span id="outer-label">外部標籤</span>
-        <NativeSelect value="A" size="small" labelId="outer-label" onChange={() => {}}>{options}</NativeSelect>
+        <NativeSelect value="A" size="small" labelId="outer-label" onChange={() => {}}>
+          {options}
+        </NativeSelect>
       </>
     )
     const button = screen.getByRole('combobox', { name: '外部標籤' })
@@ -125,14 +181,22 @@ describe('NativeSelect 唯讀與其他轉傳', () => {
 
   it('labelRef 指到標籤元素：原本掛在 InputLabel 的 ref（預約頁量標籤寬度）搬過來後仍拿得到', () => {
     const labelRef = React.createRef()
-    render(<NativeSelect label="狀態" labelRef={labelRef} value="A" onChange={() => {}}>{options}</NativeSelect>)
+    render(
+      <NativeSelect label="狀態" labelRef={labelRef} value="A" onChange={() => {}}>
+        {options}
+      </NativeSelect>
+    )
     expect(labelRef.current.tagName).toBe('LABEL')
     expect(labelRef.current).toHaveTextContent('狀態')
   })
 
   it('onChange 第二參數與 form-control Select 相同（{ props }）：客戶來源篩選讀 child.props.value', () => {
     const onChange = jest.fn()
-    render(<NativeSelect label="狀態" value="" onChange={onChange}>{options}</NativeSelect>)
+    render(
+      <NativeSelect label="狀態" value="" onChange={onChange}>
+        {options}
+      </NativeSelect>
+    )
     pick('停用')
     expect(onChange.mock.calls[0][1].props.value).toBe(2)
   })

@@ -46,9 +46,7 @@ export default function useFetchUsersInModal(input) {
   return useQuery(GET_USERS, {
     variables: {
       input: {
-        MerchantId: localStorage.getItem('userMerchant')
-          ? JSON.parse(localStorage.getItem('userMerchant')).id
-          : null,
+        MerchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
         ...input,
       },
     },
@@ -72,9 +70,7 @@ export function useFetchUsersForCreatePicking(input) {
   return useQuery(GET_USERS_FOR_CREATE_PICKING, {
     variables: {
       input: {
-        MerchantId: localStorage.getItem('userMerchant')
-          ? JSON.parse(localStorage.getItem('userMerchant')).id
-          : null,
+        MerchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
         ...input,
       },
     },
@@ -277,9 +273,7 @@ export function useFetchUsersMonthCheckout({ usagelimit, date }) {
   return useQuery(GET_USERS_IS_MONTH_CHECKOUT, {
     variables: {
       input: {
-        MerchantId: localStorage.getItem('userMerchant')
-          ? JSON.parse(localStorage.getItem('userMerchant')).id
-          : null,
+        MerchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
         usagelimit: usagelimit,
       },
       date: date,
@@ -305,9 +299,7 @@ export function useFetchUsersInEmployeeSchedule(input) {
   return useQuery(GET_USERS_IN_EMPLOYEE_SCHEDULE, {
     variables: {
       input: {
-        MerchantId: localStorage.getItem('userMerchant')
-          ? JSON.parse(localStorage.getItem('userMerchant')).id
-          : null,
+        MerchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
         ...input,
       },
     },
@@ -345,7 +337,7 @@ const GET_USERS_IN_EMPLOYEE_LIST = gql`
 export function useFetchUsersInEmployeeList(input) {
   return useQuery(GET_USERS_IN_EMPLOYEE_LIST, {
     variables: {
-      input
+      input,
     },
     fetchPolicy: 'cache-and-network',
   })

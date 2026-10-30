@@ -13,8 +13,14 @@ const VIEWPORTS = {
   desktop: { width: 1366, height: 800 },
 }
 const DARK_ROUTES = [
-  '/order/create', '/management/orders', '/products', '/employee-daily-report',
-  '/merchant-business-interval-report', '/dashboard-list-detail', '/parameter', '/profile/general',
+  '/order/create',
+  '/management/orders',
+  '/products',
+  '/employee-daily-report',
+  '/merchant-business-interval-report',
+  '/dashboard-list-detail',
+  '/parameter',
+  '/profile/general',
 ]
 // 不算頁面問題的 console 訊息：本測試刻意 abort 的外部連線、WebSocket 解析失敗
 const IGNORED_CONSOLE = /Failed to load resource|net::ERR_|ERR_NAME_NOT_RESOLVED|WebSocket|websocket|socket\.io/i
@@ -76,7 +82,8 @@ async function inspect(page) {
 
 function assertPage(info, errors, skip) {
   if (!skip.includes('crash')) expect(info.crash, '出現錯誤邊界「這個頁面發生錯誤」').toBe(false)
-  if (!skip.includes('hScroll')) expect(info.scrollWidth, `橫向捲動：scrollWidth ${info.scrollWidth} > clientWidth ${info.clientWidth}`).toBeLessThanOrEqual(info.clientWidth + 1)
+  if (!skip.includes('hScroll'))
+    expect(info.scrollWidth, `橫向捲動：scrollWidth ${info.scrollWidth} > clientWidth ${info.clientWidth}`).toBeLessThanOrEqual(info.clientWidth + 1)
   if (!skip.includes('console')) expect(errors, '未捕捉的 console error').toEqual([])
 }
 
@@ -117,4 +124,3 @@ for (const route of routes) {
     if (!skip.includes('crash')) expect(info.crash, '所有查詢失敗時出現錯誤邊界「這個頁面發生錯誤」').toBe(false)
   })
 }
-

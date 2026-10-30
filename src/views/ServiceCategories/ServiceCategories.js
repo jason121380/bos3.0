@@ -26,12 +26,11 @@ function CustomerManagementList() {
         />
         {serviceCategories.error ? (
           <QueryFailed onRetry={() => serviceCategories.refetch()} />
-        ) : !serviceCategories.loading ?
-          <Results
-            categories={idx(serviceCategories, _ => _.data.serviceCategories) || []}
-            refetchCategories={serviceCategories.refetch}
-          /> : <Skeleton className="h-[320px] w-full rounded-lg" aria-label="載入中" />}
-
+        ) : !serviceCategories.loading ? (
+          <Results categories={idx(serviceCategories, _ => _.data.serviceCategories) || []} refetchCategories={serviceCategories.refetch} />
+        ) : (
+          <Skeleton className="h-[320px] w-full rounded-lg" aria-label="載入中" />
+        )}
       </div>
     </Page>
   )

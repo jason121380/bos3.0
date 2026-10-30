@@ -203,7 +203,8 @@ describe('與原生 Date 相容', () => {
 describe('啟用條件', () => {
   it('不強制時：裝置已是 UTC+8 就不替換，否則替換', () => {
     // 已安裝的狀態下再呼叫一律回傳 true；這裡直接檢查判斷函式在原生物件上的結果
-    const expected = new NativeDateTimeFormat().resolvedOptions().timeZone === 'Asia/Taipei' ||
+    const expected =
+      new NativeDateTimeFormat().resolvedOptions().timeZone === 'Asia/Taipei' ||
       [0, 6].every(m => new NativeDate(2026, m, 1).getTimezoneOffset() === -480)
     expect(deviceMatchesBusinessTime(NativeDate, NativeDateTimeFormat)).toBe(expected)
   })

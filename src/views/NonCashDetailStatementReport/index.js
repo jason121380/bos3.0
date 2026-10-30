@@ -11,7 +11,7 @@ import { startOfDay, endOfDay, format } from 'date-fns'
 import useFetchNonCashDetailStatement from 'hooks/useFetchNonCashDetailStatement'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusActive'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import Results from './Results'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -149,7 +149,7 @@ export default function Employees() {
       excelData.push(obj3)
       setExcelData(excelData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [nonCashDetailStatement.loading, customerBonusActive.loading])
 
   // 選色設計師
@@ -180,10 +180,7 @@ export default function Employees() {
         title="非現金明細對帳單"
         actions={
           <Button asChild variant="secondary">
-            <CSVLink
-              data={excelData}
-              filename="非現金明細對帳單.csv"
-            >
+            <CSVLink data={excelData} filename="非現金明細對帳單.csv">
               <Download strokeWidth={1.75} />
               報表匯出
             </CSVLink>
@@ -203,12 +200,7 @@ export default function Employees() {
             <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
               <div className="flex flex-col items-start gap-1.5">
                 <div className="divText text-label text-text-secondary">排序依序</div>
-                <ToggleGroup
-                  size="small"
-                  value={orderSubmit}
-                  onChange={handleToggleButtonChange}
-                  exclusive
-                >
+                <ToggleGroup size="small" value={orderSubmit} onChange={handleToggleButtonChange} exclusive>
                   {orderBy.map((data, idx) => (
                     <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                       {data.label}
@@ -229,23 +221,11 @@ export default function Employees() {
                   onChange={(event, value) => handleChecked(value)}
                   renderOption={(props, option, { selected }) => (
                     <li {...props}>
-                      <Checkbox
-                        style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                        icon={icon}
-                        checkedIcon={checkedIcon}
-                        checked={selected}
-                      />
+                      <Checkbox style={{ color: 'rgb(var(--text))', marginRight: 8 }} icon={icon} checkedIcon={checkedIcon} checked={selected} />
                       {option.label}
                     </li>
                   )}
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      label="設計師名稱"
-                      placeholder="設計師"
-                    />
-                  )}
+                  renderInput={params => <TextField {...params} variant="outlined" label="設計師名稱" placeholder="設計師" />}
                 />
               </div>
             )}
@@ -263,14 +243,10 @@ export default function Employees() {
       {!userOrderableList.loading ? (
         <Fragment>
           {nonCashDetailStatement.error ? (
-          <QueryFailed onRetry={() => nonCashDetailStatement.refetch()} />
-        ) : !nonCashDetailStatement.loading ? (
+            <QueryFailed onRetry={() => nonCashDetailStatement.refetch()} />
+          ) : !nonCashDetailStatement.loading ? (
             nonCashDetailStatement !== undefined && (
-              <Results
-                data={idx(nonCashDetailStatement, _ => _.data)}
-                bonusDisplay={bonusDisplay}
-                total={total}
-              />
+              <Results data={idx(nonCashDetailStatement, _ => _.data)} bonusDisplay={bonusDisplay} total={total} />
             )
           ) : (
             <Skeleton className="h-96" aria-busy="true" />

@@ -32,7 +32,12 @@ jest.mock('ui/date-picker', () => ({
 
 afterEach(cleanup)
 
-const PAYMENTS = { merchantPayWays: [{ id: 'pay-1', name: '信用卡' }, { id: 'pay-2', name: 'LINE Pay' }] }
+const PAYMENTS = {
+  merchantPayWays: [
+    { id: 'pay-1', name: '信用卡' },
+    { id: 'pay-2', name: 'LINE Pay' },
+  ],
+}
 const BOTH = { allowDepositAddition: true, allowDepositDeduction: true }
 
 function setup({ identity = BOTH, bill = { customerId: 'customer-1', designerId: 'designer-1' }, walletDeposit = { walletDeposit: true } } = {}) {

@@ -147,9 +147,7 @@ describe('新增商品進貨：填單與送出', () => {
     const now = new Date()
     const dialog = await screen.findByRole('dialog')
     fireEvent.click(within(dialog).getByRole('gridcell', { name: `${now.getFullYear()}年${now.getMonth() + 1}月15日` }))
-    await wait(() => expect(screen.getByLabelText('進貨日期')).toHaveValue(
-      `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/15`
-    ))
+    await wait(() => expect(screen.getByLabelText('進貨日期')).toHaveValue(`${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/15`))
     fireEvent.click(addButton())
     await wait(() => expect(callsOf(calls, 'CREATE_PURCHASE')).toHaveLength(1))
     // 選日子保留原本的時刻（同舊版），日期是台灣時間的 15 日

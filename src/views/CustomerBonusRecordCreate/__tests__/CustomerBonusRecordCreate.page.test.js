@@ -25,14 +25,22 @@ jest.mock('ui/date-picker', () => {
 })
 jest.mock('components/EmployeeAutoComplete', () => ({ label, value, onChange }) => (
   <div data-testid="designer" data-value={value || ''}>
-    <button type="button" onClick={() => onChange({ userId: 'designer-1', userName: '王小美' })}>選{label}</button>
-    <button type="button" onClick={() => onChange({ id: '' })}>清除設計師</button>
+    <button type="button" onClick={() => onChange({ userId: 'designer-1', userName: '王小美' })}>
+      選{label}
+    </button>
+    <button type="button" onClick={() => onChange({ id: '' })}>
+      清除設計師
+    </button>
   </div>
 ))
 jest.mock('components/CustomerAutoComplete', () => ({ label, value, onChange }) => (
   <div data-testid="customer" data-value={value || ''}>
-    <button type="button" onClick={() => onChange({ id: 'customer-1', name: '陳小姐' })}>選{label}</button>
-    <button type="button" onClick={() => onChange({ id: '' })}>清除顧客</button>
+    <button type="button" onClick={() => onChange({ id: 'customer-1', name: '陳小姐' })}>
+      選{label}
+    </button>
+    <button type="button" onClick={() => onChange({ id: '' })}>
+      清除顧客
+    </button>
   </div>
 ))
 

@@ -96,7 +96,12 @@ export function openCombo(label, { typed, container = document.body, index = 0 }
 export function pickOption(label, optionText, { typed, container = document.body, index = 0 } = {}) {
   const input = openCombo(label, { typed, container, index })
   const option = comboOptions().find(o => o.textContent === optionText)
-  if (!option) throw new Error(`找不到選項「${optionText}」：${comboOptions().map(o => o.textContent).join('、')}`)
+  if (!option)
+    throw new Error(
+      `找不到選項「${optionText}」：${comboOptions()
+        .map(o => o.textContent)
+        .join('、')}`
+    )
   fireEvent.click(option)
   return input
 }
@@ -114,8 +119,7 @@ export function optionTexts(label, { typed, container = document.body, index = 0
 }
 
 // 匯出檔內容（react-csv 在 jsdom 以 data URI 放在連結上）
-export const exportedCsv = (linkText = '報表匯出') =>
-  decodeURIComponent(screen.getByText(linkText).closest('a').getAttribute('href'))
+export const exportedCsv = (linkText = '報表匯出') => decodeURIComponent(screen.getByText(linkText).closest('a').getAttribute('href'))
 
 // 日期快速選擇（components/DateSelector 的「快速選擇日期區間」下拉）
 export function pickQuickDate(title) {

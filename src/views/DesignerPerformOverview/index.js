@@ -7,7 +7,7 @@ import useFetchMerchantImmediatePerformReport from 'hooks/useFetchMerchantImmedi
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import idx from 'idx'
 import { useEffect, useState } from 'react'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import DateSelector from 'components/DateSelector'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -38,12 +38,11 @@ function DesignerPerformOverview() {
 
   useEffect(() => {
     if (!isDisplayTogglePerformanceButtonData.loading && !isMemberShipCardActiveData.loading) {
-      const isDisplayTogglePerformanceButton = idx(
-        isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
+      const isDisplayTogglePerformanceButton = idx(isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
       setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
     }
     // 兩支查詢都要等：會員卡查詢較晚回來時也要再跑一次（B2 清單 #4／#5）
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isDisplayTogglePerformanceButtonData.loading, isMemberShipCardActiveData.loading])
   // ---------------------------------------------------------------------------------------------------
   const merchantImmediatePerformReportData = useFetchMerchantImmediatePerformReport({
@@ -54,16 +53,13 @@ function DesignerPerformOverview() {
   useEffect(() => {
     if (merchantImmediatePerformReportData.loading || merchantImmediatePerformReportData.error) return
     if (!merchantImmediatePerformReportData.loading) {
-      const merchantImmediatePerformReport = idx(
-        merchantImmediatePerformReportData,
-        _ => _.data.merchantImmediatePerformanceReport
-      )
+      const merchantImmediatePerformReport = idx(merchantImmediatePerformReportData, _ => _.data.merchantImmediatePerformanceReport)
       if (!merchantImmediatePerformReport) return
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       setMerchantImmediatePerformReport(merchantImmediatePerformReport)
       const { users, wholeStore } = merchantImmediatePerformReport
       const { membershipPerformance, membershipOrderCount, membershipAveragePerformance } = wholeStore
-      const memberActive = isMemberShipCardActive || membershipPerformance > 0 || membershipOrderCount > 0 | membershipAveragePerformance > 0
+      const memberActive = isMemberShipCardActive || membershipPerformance > 0 || (membershipOrderCount > 0) | (membershipAveragePerformance > 0)
       const excelData = []
       const attributeSwitch = []
       setMembershipDisplay(memberActive)
@@ -72,11 +68,7 @@ function DesignerPerformOverview() {
       })
       users.forEach(data => {
         data.categoryData.forEach((category, index) => {
-          if (
-            category.fakePerformance > 0 ||
-            category.orderCount > 0 ||
-            category.averagePerformance > 0
-          ) {
+          if (category.fakePerformance > 0 || category.orderCount > 0 || category.averagePerformance > 0) {
             attributeSwitch[index] = true
           }
         })
@@ -86,24 +78,49 @@ function DesignerPerformOverview() {
         users.forEach(element => {
           const obj = {}
           const {
-            fakePerformance, orderCount, averagePerformance, productPerformance, productOrderCount,
-            membershipPerformance, membershipOrderCount, membershipAveragePerformance,
-            productAveragePerformance, orderMaleCount, orderFemaleCount, orderUnknownCount, userNo,
-            userName, orderDesignateCount, orderNonDesignatecount, customerMaleCount, customerFemaleCount,
-            customerUnknownCount, categoryData
+            fakePerformance,
+            orderCount,
+            averagePerformance,
+            productPerformance,
+            productOrderCount,
+            membershipPerformance,
+            membershipOrderCount,
+            membershipAveragePerformance,
+            productAveragePerformance,
+            orderMaleCount,
+            orderFemaleCount,
+            orderUnknownCount,
+            userNo,
+            userName,
+            orderDesignateCount,
+            orderNonDesignatecount,
+            customerMaleCount,
+            customerFemaleCount,
+            customerUnknownCount,
+            categoryData,
           } = element
           if (
-            fakePerformance > 0 || orderCount > 0 || averagePerformance > 0 ||
-            productPerformance > 0 || productOrderCount > 0 || productAveragePerformance > 0 ||
-            membershipPerformance > 0 || membershipOrderCount > 0 || membershipAveragePerformance > 0 ||
-            orderMaleCount > 0 || orderFemaleCount > 0 || orderUnknownCount > 0
+            fakePerformance > 0 ||
+            orderCount > 0 ||
+            averagePerformance > 0 ||
+            productPerformance > 0 ||
+            productOrderCount > 0 ||
+            productAveragePerformance > 0 ||
+            membershipPerformance > 0 ||
+            membershipOrderCount > 0 ||
+            membershipAveragePerformance > 0 ||
+            orderMaleCount > 0 ||
+            orderFemaleCount > 0 ||
+            orderUnknownCount > 0
           ) {
             obj['編號'] = userNo
             obj['設計師'] = userName
             obj['服務業績/人次/單均價'] = `${Math.round(fakePerformance)} / ${Math.round(orderCount)} / ${Math.round(averagePerformance)}`
-            obj['店販業績/人次/單均價'] = `${Math.round(productPerformance)} / ${Math.round(productOrderCount)} / ${Math.round(productAveragePerformance)}`
+            obj['店販業績/人次/單均價'] =
+              `${Math.round(productPerformance)} / ${Math.round(productOrderCount)} / ${Math.round(productAveragePerformance)}`
             if (memberActive) {
-              obj['會員卡業績/人次/單均價'] = `${Math.round(membershipPerformance)} / ${Math.round(membershipOrderCount)} / ${Math.round(membershipAveragePerformance)}`
+              obj['會員卡業績/人次/單均價'] =
+                `${Math.round(membershipPerformance)} / ${Math.round(membershipOrderCount)} / ${Math.round(membershipAveragePerformance)}`
             }
             obj['男/女/未知 (人次)'] = `${orderMaleCount} / ${orderFemaleCount} / ${orderUnknownCount}`
             obj['指定/不指定 (人次)'] = `${orderDesignateCount} / ${orderNonDesignatecount}`
@@ -119,18 +136,32 @@ function DesignerPerformOverview() {
         })
         const obj2 = {}
         const {
-          categoryData, fakePerformance, orderCount, averagePerformance, productPerformance,
-          productOrderCount, productAveragePerformance, orderMaleCount, orderFemaleCount,
-          membershipPerformance, membershipOrderCount, membershipAveragePerformance,
-          orderUnknownCount, orderDesignateCount, orderNonDesignatecount, customerMaleCount,
-          customerFemaleCount, customerUnknownCount
+          categoryData,
+          fakePerformance,
+          orderCount,
+          averagePerformance,
+          productPerformance,
+          productOrderCount,
+          productAveragePerformance,
+          orderMaleCount,
+          orderFemaleCount,
+          membershipPerformance,
+          membershipOrderCount,
+          membershipAveragePerformance,
+          orderUnknownCount,
+          orderDesignateCount,
+          orderNonDesignatecount,
+          customerMaleCount,
+          customerFemaleCount,
+          customerUnknownCount,
         } = wholeStore
 
         obj2['設計師'] = '全店'
         obj2['服務業績/人次/單均價'] = `${Math.round(fakePerformance)} / ${orderCount} / ${Math.round(averagePerformance)}`
         obj2['店販業績/人次/單均價'] = `${Math.round(productPerformance)} / ${productOrderCount} / ${Math.round(productAveragePerformance)}`
         if (memberActive) {
-          obj2['會員卡業績/人次/單均價'] = `${Math.round(membershipPerformance)} / ${Math.round(membershipOrderCount)} / ${Math.round(membershipAveragePerformance)}`
+          obj2['會員卡業績/人次/單均價'] =
+            `${Math.round(membershipPerformance)} / ${Math.round(membershipOrderCount)} / ${Math.round(membershipAveragePerformance)}`
         }
         obj2['男/女/未知 (人次)'] = `${Math.round(orderMaleCount)} / ${orderFemaleCount} / ${Math.round(orderUnknownCount)}`
         obj2['指定/不指定 (人次)'] = `${Math.round(orderDesignateCount)} / ${orderNonDesignatecount}`
@@ -146,7 +177,7 @@ function DesignerPerformOverview() {
       setExcelData(excelData)
       setAttributeSwitchs(attributeSwitch)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantImmediatePerformReportData.loading, isMemberShipCardActiveData.loading])
 
   const handleToggleButtonChange = value => {
@@ -158,13 +189,9 @@ function DesignerPerformOverview() {
       <div>
         {/* 頁首只放「報表匯出」（STYLE §14） */}
         <PageHeader
-          title='全店業績分析表'
+          title="全店業績分析表"
           actions={
-            <CSVLink
-              data={excelData}
-              filename="全店業績分析表.csv"
-              style={{ display: 'inline' }}
-            >
+            <CSVLink data={excelData} filename="全店業績分析表.csv" style={{ display: 'inline' }}>
               <Button variant="secondary">
                 <Download strokeWidth={1.75} />
                 報表匯出
@@ -185,22 +212,15 @@ function DesignerPerformOverview() {
             !isDisplayTogglePerformanceButton ? (
               <div className="flex flex-col gap-1.5">
                 <div className="divText text-label text-text-secondary">業績依據：</div>
-                <ReferToggleButton
-                  value={performReference}
-                  onChange={handleToggleButtonChange}
-                />
+                <ReferToggleButton value={performReference} onChange={handleToggleButtonChange} />
               </div>
             ) : undefined
           }
         />
         {merchantImmediatePerformReportData.error ? (
           <QueryFailed onRetry={() => merchantImmediatePerformReportData.refetch()} />
-        ) : (!merchantImmediatePerformReportData.loading && merchantImmediatePerformReport !== null) ? (
-          <PerformResultsV2
-            results={merchantImmediatePerformReport}
-            membershipDisplay={membershipDisplay}
-            attributeSwitchs={attributeSwitchs}
-          />
+        ) : !merchantImmediatePerformReportData.loading && merchantImmediatePerformReport !== null ? (
+          <PerformResultsV2 results={merchantImmediatePerformReport} membershipDisplay={membershipDisplay} attributeSwitchs={attributeSwitchs} />
         ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示
           <div className="mt-2" aria-busy="true" aria-label="載入中">

@@ -1,11 +1,11 @@
-export const createImage = (url) =>
+export const createImage = url =>
   new Promise((resolve, reject) => {
     const image = new Image()
     image.addEventListener('load', () => resolve(image))
-    image.addEventListener('error', (error) => reject(error))
+    image.addEventListener('error', error => reject(error))
     // image.setAttribute('crossOrigin', 'anonymous') // needed to avoid cross-origin issues on CodeSandbox
     image.src = url
-})
+  })
 
 export function getRadianAngle(degreeValue) {
   return (degreeValue * Math.PI) / 180
@@ -18,21 +18,14 @@ export function rotateSize(width, height, rotation) {
   const rotRad = getRadianAngle(rotation)
 
   return {
-    width:
-      Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
-    height:
-      Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height),
+    width: Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
+    height: Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height),
   }
 }
 /**
  * This function was adapted from the one in the ReadMe of https://github.com/DominicTobias/react-image-crop
  */
-export default async function getCroppedImg(
-  imageSrc,
-  pixelCrop,
-  rotation = 0,
-  flip = { horizontal: false, vertical: false }
-) {
+export default async function getCroppedImg(imageSrc, pixelCrop, rotation = 0, flip = { horizontal: false, vertical: false }) {
   const image = await createImage(imageSrc)
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
@@ -44,11 +37,7 @@ export default async function getCroppedImg(
   const rotRad = getRadianAngle(rotation)
 
   // calculate bounding box of the rotated image
-  const { width: bBoxWidth, height: bBoxHeight } = rotateSize(
-    image.width,
-    image.height,
-    rotation
-  )
+  const { width: bBoxWidth, height: bBoxHeight } = rotateSize(image.width, image.height, rotation)
 
   // set canvas size to match the bounding box
   canvas.width = bBoxWidth
@@ -65,12 +54,7 @@ export default async function getCroppedImg(
 
   // croppedAreaPixels values are bounding box relative
   // extract the cropped image using these values
-  const data = ctx.getImageData(
-    pixelCrop.x,
-    pixelCrop.y,
-    pixelCrop.width,
-    pixelCrop.height
-  )
+  const data = ctx.getImageData(pixelCrop.x, pixelCrop.y, pixelCrop.width, pixelCrop.height)
 
   // set canvas width to final desired crop size - this will clear existing context
   canvas.width = pixelCrop.width
@@ -83,8 +67,8 @@ export default async function getCroppedImg(
   // return canvas.toDataURL('image/jpeg');
   // As a blob
   return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      const file = new File([blob], "avatar")
+    canvas.toBlob(blob => {
+      const file = new File([blob], 'avatar')
       resolve(file)
     }, 'image/png')
   })

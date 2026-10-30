@@ -70,9 +70,15 @@ const write = args.includes('--write')
 let total = { files: 0, icons: 0 }
 for (const f of args.filter(a => !a.startsWith('--')).flatMap(t => walk(t))) {
   let r
-  try { r = transform(f) } catch (e) { console.error('PARSE ERROR', f, e.message); continue }
+  try {
+    r = transform(f)
+  } catch (e) {
+    console.error('PARSE ERROR', f, e.message)
+    continue
+  }
   if (!r) continue
-  total.files++; total.icons += r.swapped
+  total.files++
+  total.icons += r.swapped
   if (write) fs.writeFileSync(f, r.out)
 }
 console.log(JSON.stringify(total))

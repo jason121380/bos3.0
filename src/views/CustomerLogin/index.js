@@ -19,12 +19,7 @@ export default function Reservation(props) {
   function getQueryStringValue(key) {
     return decodeURIComponent(
       props.location.search.replace(
-        new RegExp(
-          '^(?:.*[&\\?]' +
-          encodeURIComponent(key).replace(/[.+*]/g, '\\$&') +
-          '(?:\\=([^&]*))?)?.*$',
-          'i'
-        ),
+        new RegExp('^(?:.*[&\\?]' + encodeURIComponent(key).replace(/[.+*]/g, '\\$&') + '(?:\\=([^&]*))?)?.*$', 'i'),
         '$1'
       )
     )

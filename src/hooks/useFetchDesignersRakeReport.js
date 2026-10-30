@@ -87,11 +87,8 @@ export default function useFetchDesignerRakeReport({ input, designerIds }) {
   })
 }
 export function useFetchDesignerRakeReportLazy() {
-  const [fetchDesignerRakeReportLazy, designerRakeReportLazyData] = useLazyQuery(
-    FETCH_DESIGNER_RAKE_REPORT,
-    {
-      fetchPolicy: 'cache-and-network',
-    }
-  )
+  const [fetchDesignerRakeReportLazy, designerRakeReportLazyData] = useLazyQuery(FETCH_DESIGNER_RAKE_REPORT, {
+    fetchPolicy: 'cache-and-network',
+  })
   return { fetchDesignerRakeReportLazy, designerRakeReportLazyData }
 }

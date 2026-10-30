@@ -56,9 +56,7 @@ export default function Reservation({ location }) {
   }
   return (
     <div className="flex flex-col gap-4">
-      {customerProfile && customerProfile.error && (
-        <QueryFailed onRetry={() => customerProfile.refetch()} />
-      )}
+      {customerProfile && customerProfile.error && <QueryFailed onRetry={() => customerProfile.refetch()} />}
       {/* 會員卡圖片與疊字：圖片來源、寬度 100% 與疊字位置沿用舊版 */}
       <div className="relative overflow-hidden rounded-lg">
         {idx(customerProfile, _ => {

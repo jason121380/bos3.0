@@ -131,7 +131,11 @@ describe('新增員工', () => {
     await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
     // 與「店家沒有任何身分設定」相同：除了「未設定」只有一個空白選項
-    expect(Array.from(screen.getByLabelText('人員身分類別設定').options).map(o => o.textContent).filter(Boolean)).toEqual(['未設定'])
+    expect(
+      Array.from(screen.getByLabelText('人員身分類別設定').options)
+        .map(o => o.textContent)
+        .filter(Boolean)
+    ).toEqual(['未設定'])
     fillAll()
     submit()
     await wait(() => expect(callsOf(calls, 'CREATE_USER')).toHaveLength(1))

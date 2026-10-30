@@ -35,11 +35,11 @@ const ProductInvoicingRecordReport = () => {
   const [reportData, setReportData] = useState([])
   const [date, setDate] = useState({
     startDate: urlParams.has('startDate') && urlParams.has('endDate') ? +urlParams.get('startDate') : startOfMonth(new Date()).getTime(),
-    endDate: urlParams.has('startDate') && urlParams.has('endDate') ? +urlParams.get('endDate') : endOfDay(new Date()).getTime()
+    endDate: urlParams.has('startDate') && urlParams.has('endDate') ? +urlParams.get('endDate') : endOfDay(new Date()).getTime(),
   })
   const [submitValue, setSubmitValue] = useState({
     selectProduct: [],
-    recordType: ['SALE', 'PICKING', 'PURCHASE']
+    recordType: ['SALE', 'PICKING', 'PURCHASE'],
   })
 
   const selectAll = event => {
@@ -54,9 +54,9 @@ const ProductInvoicingRecordReport = () => {
         input: date,
         productId: [],
         recordType: ['SALE', 'PICKING', 'PURCHASE'],
-      }
+      },
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   useEffect(() => {
@@ -64,27 +64,27 @@ const ProductInvoicingRecordReport = () => {
       const data = idx(getAllProducts, _ => _.data.products.data)
       setProductOptions(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAllProducts.loading])
 
   useEffect(() => {
     if (!invoicingRecordReportLazyData.loading && invoicingRecordReportLazyData.data !== undefined) {
       const data = idx(invoicingRecordReportLazyData, _ => _.data.productInvoicingRecordReport)
-      setReportData(data);
+      setReportData(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [invoicingRecordReportLazyData.loading])
 
   useEffect(() => {
     if (submitValue.selectProduct.length === 0) {
       handleSearch()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [submitValue.selectProduct] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [submitValue.selectProduct] 變動時呼叫，補上會每次 render 重跑
   }, [submitValue.selectProduct])
 
   useEffect(() => {
     handleSearch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [date] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [date] 變動時呼叫，補上會每次 render 重跑
   }, [date])
 
   const handleSearch = (inputDate = date) => {
@@ -94,7 +94,7 @@ const ProductInvoicingRecordReport = () => {
         input: inputDate,
         productId: productId,
         recordType: submitValue.recordType,
-      }
+      },
     })
   }
 
@@ -105,9 +105,9 @@ const ProductInvoicingRecordReport = () => {
   }
 
   return (
-    <Page className='ProductInvoicingRecordReport ui-root' title="商品進銷貨報表">
+    <Page className="ProductInvoicingRecordReport ui-root" title="商品進銷貨報表">
       <div>
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'none', justifyContent: 'space-between' }}>
           <div className="merchantNamePrint">
             {JSON.parse(localStorage.getItem('userMerchant')).name +
               '   ' +
@@ -117,13 +117,10 @@ const ProductInvoicingRecordReport = () => {
               '   ' +
               '商品進銷貨報表'}
           </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' +
-              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-          </div>
+          <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
         </div>
         <PageHeader
-          title='商品進銷貨報表'
+          title="商品進銷貨報表"
           actions={
             <>
               <UIButton
@@ -147,7 +144,7 @@ const ProductInvoicingRecordReport = () => {
           }
           filters={
             <>
-              <div className='noprint flex flex-wrap items-end gap-3'>
+              <div className="noprint flex flex-wrap items-end gap-3">
                 <div className="flex flex-col gap-1.5">
                   <span className="text-label text-text-secondary">類型</span>
                   <ToggleGroup
@@ -175,7 +172,10 @@ const ProductInvoicingRecordReport = () => {
                     size="sm"
                     style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
                     disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
-                    onClick={selectAll}>全選</UIButton>
+                    onClick={selectAll}
+                  >
+                    全選
+                  </UIButton>
                 }
                 onOpen={() => setOpen(true)}
                 onClose={() => setOpen(false)}
@@ -188,17 +188,11 @@ const ProductInvoicingRecordReport = () => {
                   props.key = props.id
                   return (
                     <li {...props}>
-                      <Checkbox
-                        style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                        icon={icon}
-                        checkedIcon={checkedIcon}
-                        checked={selected}
-                      />
+                      <Checkbox style={{ color: 'rgb(var(--text))', marginRight: 8 }} icon={icon} checkedIcon={checkedIcon} checked={selected} />
                       {`${option.no === null ? '無代號' : option.no} - ${option.name}`}
                     </li>
                   )
-                }
-                }
+                }}
                 filterOptions={(options, { inputValue }) => {
                   const keyWord = inputValue.toLocaleLowerCase()
                   const newOptions = options.filter(d => {
@@ -238,14 +232,14 @@ const ProductInvoicingRecordReport = () => {
         />
         {invoicingRecordReportLazyData.error || getAllProducts.error ? (
           <QueryFailed onRetry={retryFailedQueries} />
-        ) : (!getAllProducts.loading && !invoicingRecordReportLazyData.loading && invoicingRecordReportLazyData.data !== undefined) ?
-          <Results reportData={reportData} /> : (
-            // 載入中：與舊版 CircularProgress 相同時機顯示
-            <div className="noprint mt-3" aria-busy="true" aria-label="載入中">
-              <Skeleton className="h-[320px] w-full rounded-lg" />
-            </div>
-          )
-        }
+        ) : !getAllProducts.loading && !invoicingRecordReportLazyData.loading && invoicingRecordReportLazyData.data !== undefined ? (
+          <Results reportData={reportData} />
+        ) : (
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div className="noprint mt-3" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
+          </div>
+        )}
       </div>
     </Page>
   )

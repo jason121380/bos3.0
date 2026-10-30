@@ -11,17 +11,10 @@ import cloneDeep from 'lodash/cloneDeep'
 import { Fragment, useContext, useState, useEffect, useRef } from 'react'
 import { ROW_INLINE_ALIGN } from 'views/OrderShared/rowAlign'
 
-export default function CouponUse({
-  index,
-  couponUsages,
-  couponUsage,
-  onChange,
-}) {
+export default function CouponUse({ index, couponUsages, couponUsage, onChange }) {
   const { bill, order } = useContext(billContext)
   const [price, setPrice] = useState(0)
-  const [ticketOrderHelpers, setTicketOrderHelpers] = useState(
-    couponUsage.useTicketOrderHelpers
-  )
+  const [ticketOrderHelpers, setTicketOrderHelpers] = useState(couponUsage.useTicketOrderHelpers)
   const ticketRecord = useFetchLazyTicketRecords()
   useEffect(() => {
     if (!ticketRecord.response.loading && ticketRecord.response.data) {
@@ -50,12 +43,7 @@ export default function CouponUse({
         return next
       })
 
-      setPrice(
-        ticketRecord.response.data.ticketRecords.data
-          .map(data => data.service.price)
-          .reduce((a, b) => a.concat(b), [])
-
-      )
+      setPrice(ticketRecord.response.data.ticketRecords.data.map(data => data.service.price).reduce((a, b) => a.concat(b), []))
     }
   }, [ticketRecord.response.loading, ticketRecord.response.data, couponUsage])
   const useFetchTicketRecodRef = useRef(ticketRecord.fetchTicketRecod)
@@ -73,15 +61,15 @@ export default function CouponUse({
       idx(value, _ => {
         return _.service.helperDeductionSetting.length > 0
           ? _.service.helperDeductionSetting
-            .map(data =>
-              data.nameList.map(name => ({
-                type: ticketHelperType(data.type, name),
-                helperId: '',
-                isDesignate: false,
-                helperDeductiontype: data.helperDeductionType,
-              }))
-            )
-            .reduce((a, b) => a.concat(b))
+              .map(data =>
+                data.nameList.map(name => ({
+                  type: ticketHelperType(data.type, name),
+                  helperId: '',
+                  isDesignate: false,
+                  helperDeductiontype: data.helperDeductionType,
+                }))
+              )
+              .reduce((a, b) => a.concat(b))
           : []
       })
     )

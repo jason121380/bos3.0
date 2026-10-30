@@ -19,7 +19,8 @@ function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetc
     setSelectedPayment(newSelectedPayment)
   }
   const handleSelectOne = id => {
-    const newSelect = [...selectedPayment], index = newSelect.indexOf(id)
+    const newSelect = [...selectedPayment],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -48,9 +49,7 @@ function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetc
         <CardHeader className="pb-4">
           <div className="flex items-baseline gap-3">
             <CardTitle>所有第三方卡券</CardTitle>
-            <span className="text-label tabular-nums text-text-secondary">
-              共 {thirdPartyCouponList.length} 筆
-            </span>
+            <span className="text-label tabular-nums text-text-secondary">共 {thirdPartyCouponList.length} 筆</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -60,14 +59,8 @@ function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetc
                 <TableHead className="w-12">
                   <Checkbox
                     aria-label="全選"
-                    checked={
-                      selectedPayment.length === thirdPartyCouponList.length &&
-                      thirdPartyCouponList.length > 0
-                    }
-                    indeterminate={
-                      selectedPayment.length > 0 &&
-                      selectedPayment.length < thirdPartyCouponList.length
-                    }
+                    checked={selectedPayment.length === thirdPartyCouponList.length && thirdPartyCouponList.length > 0}
+                    indeterminate={selectedPayment.length > 0 && selectedPayment.length < thirdPartyCouponList.length}
                     onChange={handleSelectAll}
                     disabled={thirdPartyCouponList.length === 0}
                   />
@@ -81,10 +74,7 @@ function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetc
             </TableHeader>
             <TableBody>
               {thirdPartyCouponList.map((data, idx) => (
-                <TableRow
-                  key={`${data.id}-${idx}`}
-                  data-state={selectedPayment.indexOf(data.id) > -1 ? 'selected' : undefined}
-                >
+                <TableRow key={`${data.id}-${idx}`} data-state={selectedPayment.indexOf(data.id) > -1 ? 'selected' : undefined}>
                   <TableCell>
                     <Checkbox
                       aria-label={`選取 ${data.name}`}
@@ -101,9 +91,7 @@ function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetc
                   </TableCell>
                   <TableCell className="tabular-nums text-text-secondary">{idx + 1}</TableCell>
                   <TableCell>{data.name}</TableCell>
-                  <TableCell numeric>
-                    {data.type === 'PERCENT' ? `${data.handlingFee}%` : formatNumber(data.handlingFee)}
-                  </TableCell>
+                  <TableCell numeric>{data.type === 'PERCENT' ? `${data.handlingFee}%` : formatNumber(data.handlingFee)}</TableCell>
                   <TableCell>{data.isNoCash ? '是' : '否'}</TableCell>
                 </TableRow>
               ))}
@@ -123,7 +111,7 @@ Results.propTypes = {
 
 Results.defaultProps = {
   customers: [],
-  className: {}
+  className: {},
 }
 
 export default Results

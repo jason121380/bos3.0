@@ -9,7 +9,7 @@ import { useFormContext } from 'react-hook-form'
 import idx from 'idx'
 import useFetchPayments from 'hooks/useFetchPayments'
 import { MobileDateTimePicker } from 'ui/date-picker'
-import format from 'date-fns/format';
+import format from 'date-fns/format'
 import { Card, CardContent } from 'ui/card'
 import { Field, Input as UiInput } from 'ui/input'
 
@@ -19,12 +19,7 @@ const FORM_CONTROL = '!mb-6'
 export default function General() {
   const { register, errors, setValue, watch, clearErrors } = useFormContext()
   const payments = useFetchPayments()
-  const { designerId, customerId, payType, date } = watch([
-    'designerId',
-    'customerId',
-    'payType',
-    'date',
-  ])
+  const { designerId, customerId, payType, date } = watch(['designerId', 'customerId', 'payType', 'date'])
 
   React.useEffect(() => {
     register('customerId', {
@@ -81,13 +76,13 @@ export default function General() {
       <CardContent>
         <MobileDateTimePicker
           closeOnSelect
-          label='選擇日期'
+          label="選擇日期"
           value={date}
           onChange={val => setValue('date', new Date(val).getTime())}
           format="yyyy/MM/dd HH:mm"
           className={FORM_CONTROL}
           localeText={{
-            toolbarTitle: '選擇日期'
+            toolbarTitle: '選擇日期',
           }}
           slots={{
             field: inputProps => (
@@ -95,16 +90,18 @@ export default function General() {
                 <InputLabel htmlFor="date-picker">日期</InputLabel>
                 <Input
                   id="date-picker"
-                  type='text'
+                  type="text"
                   onClick={inputProps.onClick}
                   endAdornment={
-                    <InputAdornment position="end"><InsertInvitationIcon/></InputAdornment>
+                    <InputAdornment position="end">
+                      <InsertInvitationIcon />
+                    </InputAdornment>
                   }
                   label="日期"
                   value={format(inputProps.value, inputProps.format)}
                 />
               </FormControl>
-            )
+            ),
           }}
         />
         <TextField
@@ -127,7 +124,7 @@ export default function General() {
               message: '金額必須小於 2147483647',
             },
           })}
-          onWheel={() => document.activeElement.blur()}              
+          onWheel={() => document.activeElement.blur()}
         />
         <EmployeeAutoComplete
           className={FORM_CONTROL}
@@ -162,12 +159,7 @@ export default function General() {
             }}
           />
         </div>
-        <FormControl
-          variant="outlined"
-          className={FORM_CONTROL}
-          fullWidth
-          error={Boolean(errors?.payType)}
-        >
+        <FormControl variant="outlined" className={FORM_CONTROL} fullWidth error={Boolean(errors?.payType)}>
           <NativeSelect
             name="payType"
             defaultValue=""
@@ -213,10 +205,7 @@ export default function General() {
           </FormControl>
         )}
         <Field label="備註">
-          <UiInput
-            name="remark"
-            ref={register}
-          />
+          <UiInput name="remark" ref={register} />
         </Field>
       </CardContent>
     </Card>

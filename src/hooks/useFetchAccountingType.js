@@ -9,7 +9,7 @@ const GET_ACCOUNTING_TYPE = gql`
 export default function useFetchAccountingType({ input }) {
   return useQuery(GET_ACCOUNTING_TYPE, {
     variables: {
-      input
+      input,
     },
     fetchPolicy: 'cache-and-network',
   })

@@ -12,16 +12,7 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
-function Results({
-  className,
-  date,
-  walletDepositRecord,
-  onChange,
-  resultSetting,
-  walletBalance,
-  paginationLabel,
-  ...rest
-}) {
+function Results({ className, date, walletDepositRecord, onChange, resultSetting, walletBalance, paginationLabel, ...rest }) {
   const history = useHistory()
   const pageRef = useRef(null)
 
@@ -29,7 +20,7 @@ function Results({
     if (pageRef.current) {
       paginationLabel(pageRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（paginationLabel）；只在 [pageRef.current, walletDepositRecord] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（paginationLabel）；只在 [pageRef.current, walletDepositRecord] 變動時呼叫，補上會每次 render 重跑
   }, [pageRef.current, walletDepositRecord])
 
   const handleAddWalletClick = () => {
@@ -39,25 +30,16 @@ function Results({
   return (
     <div {...rest} className={clsx('flex flex-col gap-4', className)}>
       <Card className="flex flex-col items-center gap-1 px-5 py-6 text-center">
-        <span className="text-label text-text-secondary">
-          入金餘額
-        </span>
+        <span className="text-label text-text-secondary">入金餘額</span>
         <span className="text-display tabular-nums text-text">{formatNumber(walletBalance)}</span>
       </Card>
       <div className="flex items-center justify-between gap-3">
         <span className="text-label tabular-nums text-text-secondary">
           共 {idx(walletDepositRecord.data, _ => _.walletDepositRecord.totalCount)} 筆資料,
           {resultSetting.record.pageOffset + 1}/
-          {Math.ceil(
-            idx(walletDepositRecord.data, _ => _.walletDepositRecord.totalCount) /
-            resultSetting.record.pageLimit
-          )}
+          {Math.ceil(idx(walletDepositRecord.data, _ => _.walletDepositRecord.totalCount) / resultSetting.record.pageLimit)}
         </span>
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={handleAddWalletClick}
-        >
+        <Button variant="primary" size="sm" onClick={handleAddWalletClick}>
           <Plus strokeWidth={1.75} />
           新增入金
         </Button>
@@ -91,9 +73,7 @@ function Results({
                   <TableRow key={record.id}>
                     <TableCell>
                       <Button asChild size="sm" variant="secondary">
-                        <RouterLink to={`/topup/edit/${record.id}`}>
-                          編輯
-                        </RouterLink>
+                        <RouterLink to={`/topup/edit/${record.id}`}>編輯</RouterLink>
                       </Button>
                     </TableCell>
                     <TableCell className="tabular-nums">{format(record.date, 'yyyy/MM/dd')}</TableCell>
@@ -102,9 +82,9 @@ function Results({
                       <div className="text-caption tabular-nums text-text-secondary">{record.Customer.cellphone}</div>
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(record.handlingFeeDecountWay === 'BYCUSTOMER'
-                        ? record.money + Math.abs(record.handlingFeeDecountPrice)
-                        : record.money)}
+                      {formatNumber(
+                        record.handlingFeeDecountWay === 'BYCUSTOMER' ? record.money + Math.abs(record.handlingFeeDecountPrice) : record.money
+                      )}
                     </TableCell>
                     <TableCell numeric>{formatNumber(record.money)}</TableCell>
                     <TableCell>
@@ -128,12 +108,7 @@ function Results({
                 <TableCell className="font-bold">合計</TableCell>
                 <TableCell colSpan={3} />
                 <TableCell numeric className="font-bold">
-                  {formatNumber(idx(walletDepositRecord, _ =>
-                    _.data.walletDepositRecord.record.reduce(
-                      (prev, next) => prev + next.money,
-                      0
-                    )
-                  ))}
+                  {formatNumber(idx(walletDepositRecord, _ => _.data.walletDepositRecord.record.reduce((prev, next) => prev + next.money, 0)))}
                 </TableCell>
                 <TableCell colSpan={5}></TableCell>
               </TableRow>
@@ -143,11 +118,9 @@ function Results({
         <div className="flex justify-end px-3 pb-2">
           <TablePagination
             ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
+            labelRowsPerPage="每頁顯示數量"
             count={walletDepositRecord.data === undefined ? 0 : idx(walletDepositRecord.data, _ => _.walletDepositRecord.totalCount)}
-            onPageChange={(_event, page) =>
-              onChange({ event: { target: { value: page } }, key: 'pageOffset' })
-            }
+            onPageChange={(_event, page) => onChange({ event: { target: { value: page } }, key: 'pageOffset' })}
             onRowsPerPageChange={event => onChange({ event, key: 'pageLimit' })}
             page={resultSetting.record.pageOffset}
             rowsPerPage={resultSetting.record.pageLimit}

@@ -24,7 +24,18 @@ test('方向鍵切換與邊界循環、Space 清空、受控值與 max／size', 
   const change = jest.fn()
   function Fixture() {
     const [value, setValue] = React.useState(3)
-    return <Rating name="custom" value={value} max={4} size="large" onChange={(e, v) => { change(e, v); setValue(v) }} />
+    return (
+      <Rating
+        name="custom"
+        value={value}
+        max={4}
+        size="large"
+        onChange={(e, v) => {
+          change(e, v)
+          setValue(v)
+        }}
+      />
+    )
   }
   render(<Fixture />)
   expect(screen.getAllByRole('radio')).toHaveLength(4)

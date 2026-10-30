@@ -69,7 +69,7 @@ export default function ProductCreate({ match }) {
   const handleSubmit = async status => {
     setSaveBtn(true)
     try {
-      if (!isUnlimProdEmpPrice && (product.employeePrice < product.cost)) throw new Error('自購價不可低於成本價')
+      if (!isUnlimProdEmpPrice && product.employeePrice < product.cost) throw new Error('自購價不可低於成本價')
       await updateProduct({ input: product })
       openSnackbar({ variant: 'success', message: '成功儲存商品變更' })
       if (status === 'toList') {
@@ -90,11 +90,13 @@ export default function ProductCreate({ match }) {
     setSaveBtn(true)
     const { itemId, ...rest } = cloneDeep(product)
     try {
-      if (!isUnlimProdEmpPrice && (product.employeePrice < product.cost)) throw new Error('自購價不可低於成本價')
-      await createProduct({ input: {
+      if (!isUnlimProdEmpPrice && product.employeePrice < product.cost) throw new Error('自購價不可低於成本價')
+      await createProduct({
+        input: {
           OfficialBrandMerchantId: JSON.parse(localStorage.getItem('userMerchant')).id,
-          ...rest
-      } })
+          ...rest,
+        },
+      })
       openSnackbar({ variant: 'success', message: '成功新增商品' })
       history.push('/products')
     } catch (error) {
@@ -147,7 +149,7 @@ export default function ProductCreate({ match }) {
         })
       )
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [productDetail.loading, productDetail.data] 變動時執行；isDuplicate 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [productDetail.loading, productDetail.data] 變動時執行；isDuplicate 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [productDetail.loading, productDetail.data])
 
   useEffect(() => {
@@ -162,15 +164,15 @@ export default function ProductCreate({ match }) {
         }
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading, productDetail.loading])
 
   useEffect(() => {
     if (!merchantVendorList.loading) {
-      const data = idx(merchantVendorList,_=>_.data.getMerchantVendorList)
+      const data = idx(merchantVendorList, _ => _.data.getMerchantVendorList)
       setMerchantVendor(data || [])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantVendorList.loading])
 
   useEffect(() => {
@@ -179,25 +181,15 @@ export default function ProductCreate({ match }) {
   }, [product])
 
   return (
-    <Page className="ui-root" title={isDuplicate ? "新增商品" : "編輯商品"} >
+    <Page className="ui-root" title={isDuplicate ? '新增商品' : '編輯商品'}>
       <div className="mx-auto flex max-w-5xl flex-col gap-6">
-        <PageHeader title={isDuplicate ? "新增商品" : "編輯商品"} className="pb-0" />
+        <PageHeader title={isDuplicate ? '新增商品' : '編輯商品'} className="pb-0" />
         {productDetail.error ? (
           <QueryFailed onRetry={() => productDetail.refetch()} />
         ) : (
           <>
-            <AboutProduct
-              product={product}
-              onChange={handleOnChange}
-              setProduct={setProduct}
-              merchantVendor={merchantVendor}
-            />
-            {product.isAvailableForSale && !productDetail.loading && (
-              <AboutSalesProduct
-                product={product}
-                onChange={handleOnChange}
-              />
-            )}
+            <AboutProduct product={product} onChange={handleOnChange} setProduct={setProduct} merchantVendor={merchantVendor} />
+            {product.isAvailableForSale && !productDetail.loading && <AboutSalesProduct product={product} onChange={handleOnChange} />}
             {/* 停用原因（STYLE.md §6）：依 vaild（名稱、庫存單位、商品類別必填），只列目前真的缺的 */}
             {vaild && (
               <p id="product-edit-missing" role="status" className="text-caption text-text-secondary">
@@ -206,20 +198,26 @@ export default function ProductCreate({ match }) {
             )}
             <div className="flex flex-wrap items-center justify-between gap-2">
               {isDuplicate ? (
-                <Button variant="primary" disabled={saveBtn || vaild} aria-describedby={vaild ? 'product-edit-missing' : undefined} onClick={handleCreate}>
+                <Button
+                  variant="primary"
+                  disabled={saveBtn || vaild}
+                  aria-describedby={vaild ? 'product-edit-missing' : undefined}
+                  onClick={handleCreate}
+                >
                   新增
                 </Button>
               ) : (
                 <>
-                  <Button variant="primary" disabled={saveBtn || vaild} aria-describedby={vaild ? 'product-edit-missing' : undefined} onClick={() => handleSubmit('toList')}>
+                  <Button
+                    variant="primary"
+                    disabled={saveBtn || vaild}
+                    aria-describedby={vaild ? 'product-edit-missing' : undefined}
+                    onClick={() => handleSubmit('toList')}
+                  >
                     儲存
                   </Button>
                   <div className="flex items-center gap-2">
-                    <Button
-                      variant="secondary"
-                      disabled={productIndex === 0 || saveBtn || vaild}
-                      onClick={() => handleSubmit('toLast')}
-                    >
+                    <Button variant="secondary" disabled={productIndex === 0 || saveBtn || vaild} onClick={() => handleSubmit('toLast')}>
                       儲存並上一筆
                     </Button>
                     <Button

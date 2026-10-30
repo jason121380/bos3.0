@@ -31,8 +31,8 @@ export default function PanelCouponUse({ expanded, onPanelClick, display, reset 
     if (bill.customerId) {
       ticketRecordsForOrderLazyV2({
         variables: {
-          customerId: bill.customerId
-        }
+          customerId: bill.customerId,
+        },
       })
       setCouponUsage([
         {
@@ -45,16 +45,16 @@ export default function PanelCouponUse({ expanded, onPanelClick, display, reset 
       setTotalCoupons(0)
       setHelper([[]])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（ticketRecordsForOrderLazyV2）；只在 [bill.customerId] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（ticketRecordsForOrderLazyV2）；只在 [bill.customerId] 變動時呼叫，補上會每次 render 重跑
   }, [bill.customerId])
 
   React.useEffect(() => {
     if (!ticketRecordsForOrderLazyDataV2.loading && ticketRecordsForOrderLazyDataV2.data !== undefined) {
       const data = ticketRecordsForOrderLazyDataV2.data.ticketRecordsForOrderV2
-      const totalCount = data.reduce((a, b) => a + b.ticketRecordForOrder.length ,0)
+      const totalCount = data.reduce((a, b) => a + b.ticketRecordForOrder.length, 0)
       setTotalCoupons(totalCount)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [ticketRecordsForOrderLazyDataV2.loading])
 
   React.useEffect(() => {
@@ -68,7 +68,7 @@ export default function PanelCouponUse({ expanded, onPanelClick, display, reset 
   }, [])
 
   React.useEffect(() => {
-    if(reset === 'reset'){
+    if (reset === 'reset') {
       setTotalCoupons(0)
       setCouponUsage([
         {
@@ -166,11 +166,7 @@ export default function PanelCouponUse({ expanded, onPanelClick, display, reset 
         style={{ width: '100%' }}
       >
         <p className={`m-0 ${styles.heading}`}>使用預收卡</p>
-        {teachingMode && (
-          <p className={`m-0 ${styles.couponTeachTitle}`}>
-            使用卡券必須設定好助理才能輸入助理**
-          </p>
-        )}
+        {teachingMode && <p className={`m-0 ${styles.couponTeachTitle}`}>使用卡券必須設定好助理才能輸入助理**</p>}
         {totalCoupons !== 0 && (
           <Fragment>
             <p className={`m-0 ${styles.heading}`}>

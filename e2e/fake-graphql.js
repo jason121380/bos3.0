@@ -7,8 +7,16 @@ const LIST_NAME = /(^data$|s$|sV\d+$|List|list$|Records|records$|Record$|Data$|N
 const PAGINATION_FIELDS = ['totalCount', 'pageLimit', 'pageOffset']
 // 後端實際回清單、但名稱不像清單的欄位（自動補齊會誤補成物件，頁面 .map／.forEach 就會拋錯）
 const KNOWN_LISTS = new Set([
-  'designerDailyReport', 'otherPayway', 'thirdPartTicket', 'merchantCommissionWay', 'categoryPerformance',
-  'merchantCustomerCategory', 'generalMoneyFlow', 'moneyFlow', 'moneyFlowNotCash', 'walletDeposit',
+  'designerDailyReport',
+  'otherPayway',
+  'thirdPartTicket',
+  'merchantCommissionWay',
+  'categoryPerformance',
+  'merchantCustomerCategory',
+  'generalMoneyFlow',
+  'moneyFlow',
+  'moneyFlowNotCash',
+  'walletDeposit',
 ])
 
 // 由 e2e/learn-shapes.js 從頁面實際錯誤學到的形狀（真後端回清單／時間戳的欄位）。重新產生：見該檔說明。
@@ -87,8 +95,36 @@ const FIXTURES = {
     pageOffset: 0,
     totalCount: 2,
     data: [
-      { id: 'p-1', cost: 100, no: 'P001', name: '控油洗髮精', isUsing: true, sellPrice: 680, updatedAt: NOW, stockUnit: '瓶', employeePrice: 500, productCategory: { id: 'c-1', name: '洗髮' }, creator: { id: 'user-1', name: '測試店長' }, isLocked: false, isAvailableForSale: true },
-      { id: 'p-2', cost: 120, no: 'P002', name: '修護髮膜', isUsing: true, sellPrice: 880, updatedAt: NOW, stockUnit: '罐', employeePrice: 650, productCategory: { id: 'c-2', name: '護髮' }, creator: { id: 'user-1', name: '測試店長' }, isLocked: false, isAvailableForSale: true },
+      {
+        id: 'p-1',
+        cost: 100,
+        no: 'P001',
+        name: '控油洗髮精',
+        isUsing: true,
+        sellPrice: 680,
+        updatedAt: NOW,
+        stockUnit: '瓶',
+        employeePrice: 500,
+        productCategory: { id: 'c-1', name: '洗髮' },
+        creator: { id: 'user-1', name: '測試店長' },
+        isLocked: false,
+        isAvailableForSale: true,
+      },
+      {
+        id: 'p-2',
+        cost: 120,
+        no: 'P002',
+        name: '修護髮膜',
+        isUsing: true,
+        sellPrice: 880,
+        updatedAt: NOW,
+        stockUnit: '罐',
+        employeePrice: 650,
+        productCategory: { id: 'c-2', name: '護髮' },
+        creator: { id: 'user-1', name: '測試店長' },
+        isLocked: false,
+        isAvailableForSale: true,
+      },
     ],
   },
 }
@@ -104,9 +140,11 @@ function respondGraphql(body, { failRoots = new Set(), failAll = false } = {}) {
     }
     const op = doc.definitions.find(d => d.kind === 'OperationDefinition')
     const fr = {}
-    doc.definitions.filter(d => d.kind === 'FragmentDefinition').forEach(f => {
-      fr[f.name.value] = f
-    })
+    doc.definitions
+      .filter(d => d.kind === 'FragmentDefinition')
+      .forEach(f => {
+        fr[f.name.value] = f
+      })
     const roots = op.selectionSet.selections.filter(s => s.kind === 'Field').map(s => s.name.value)
     if ((failAll && op.operation === 'query') || roots.some(r => failRoots.has(r))) {
       return { data: null, errors: [{ message: 'Internal server error', extensions: { code: 'INTERNAL_SERVER_ERROR' } }] }

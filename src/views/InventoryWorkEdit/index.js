@@ -36,7 +36,12 @@ function InventoryWorkEdit({ match }) {
       // 查詢失敗或查無草稿時沒有資料：不建立清單，不讓整頁拋錯
       if (!productsData || !inventory) return
       const data = productsData.map(({ productId, productNo, productName, count, productCategoryId }) => ({
-        productId, productNo, productName, currentCount: count, productCategoryId, inventoryCount: null
+        productId,
+        productNo,
+        productName,
+        currentCount: count,
+        productCategoryId,
+        inventoryCount: null,
       }))
       const { date, creatorName } = inventory
       inventory.details.forEach(({ productId, currentCount, inventoryCount }) => {
@@ -54,13 +59,13 @@ function InventoryWorkEdit({ match }) {
       setInventoryData(sortData(data, sort))
       setInfo({ date, creatorName })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [products.loading, getInventory.loading] 變動時執行；getInventory、products、sort 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [products.loading, getInventory.loading] 變動時執行；getInventory、products、sort 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [products.loading, getInventory.loading])
 
   useEffect(() => {
     const resData = sortData(inventoryData, sort)
     setInventoryData(resData)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [sort] 變動時執行；inventoryData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [sort] 變動時執行；inventoryData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [sort])
 
   const handleDeleteInventory = async () => {
@@ -70,21 +75,21 @@ function InventoryWorkEdit({ match }) {
       if (res.data.deleteInventory) {
         openSnackbar({
           variant: 'success',
-          message: '刪除成功'
+          message: '刪除成功',
         })
         history.push('/inventory-work')
       } else {
         setIsClick(false)
         openSnackbar({
           variant: 'warning',
-          message: '刪除失敗'
+          message: '刪除失敗',
         })
       }
     } catch (error) {
       setIsClick(false)
       openSnackbar({
         variant: 'warning',
-        message: '刪除失敗'
+        message: '刪除失敗',
       })
     }
   }
@@ -97,10 +102,11 @@ function InventoryWorkEdit({ match }) {
     if (!isDraft) {
       const checkNull = data.some(({ inventoryCount }) => inventoryCount === null)
       if (checkNull) {
-        checkNull && openSnackbar({
-          variant: 'warning',
-          message: '盤點數量不得為空'
-        })
+        checkNull &&
+          openSnackbar({
+            variant: 'warning',
+            message: '盤點數量不得為空',
+          })
         setIsClick(false)
         return
       }
@@ -116,25 +122,25 @@ function InventoryWorkEdit({ match }) {
         input: {
           date: new Date().getTime(),
           isDraft,
-          inventoryDetails
-        }
+          inventoryDetails,
+        },
       })
       if (res.data.updateInventory) {
         openSnackbar({
           variant: 'success',
-          message: isDraft ? '儲存成功' : '新增成功'
+          message: isDraft ? '儲存成功' : '新增成功',
         })
         history.push('/inventory-work')
       } else {
         openSnackbar({
           variant: 'warning',
-          message: isDraft ? '儲存失敗' : '新增失敗'
+          message: isDraft ? '儲存失敗' : '新增失敗',
         })
       }
     } catch (error) {
       openSnackbar({
         variant: 'error',
-        message: error.message
+        message: error.message,
       })
     } finally {
       setIsClick(false)
@@ -157,7 +163,7 @@ function InventoryWorkEdit({ match }) {
                   disableHide: true,
                   resign: true,
                   deleteInventoryWork: true,
-                  deleteInventoryWorkFunc: handleDeleteInventory
+                  deleteInventoryWorkFunc: handleDeleteInventory,
                 })
               }}
             >
@@ -167,11 +173,12 @@ function InventoryWorkEdit({ match }) {
         />
         {getInventory.error ? (
           <QueryFailed onRetry={() => getInventory.refetch()} />
-        ) : (products.loading || getInventory.loading || productCategories.loading) ?
+        ) : products.loading || getInventory.loading || productCategories.loading ? (
           <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
             <Skeleton className="h-[72px] w-full rounded-lg" />
             <Skeleton className="h-[320px] w-full rounded-lg" />
-          </div> :
+          </div>
+        ) : (
           <General
             sort={sort}
             setSort={setSort}
@@ -182,7 +189,7 @@ function InventoryWorkEdit({ match }) {
             handleCreateIventory={handleCreateIventory}
             categoriesData={idx(productCategories, _ => _.data.productCategories) || []}
           />
-        }
+        )}
       </div>
     </Page>
   )

@@ -32,7 +32,7 @@ function ServiceCategoryCreate({ match }) {
 
       setCategoryId(productCategoryDetail.data.productCategory.id)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [productCategoryDetail.data, productCategoryDetail.loading] 變動時執行；productCategoryDetail、setValue 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [productCategoryDetail.data, productCategoryDetail.loading] 變動時執行；productCategoryDetail、setValue 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [productCategoryDetail.data, productCategoryDetail.loading])
 
   const onSubmit = data => {
@@ -60,11 +60,7 @@ function ServiceCategoryCreate({ match }) {
         ) : (
           <>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-              <Provider value={value}>
-                {!productCategoryDetail.loading && (
-                  <AboutProductCategory />
-                )}
-              </Provider>
+              <Provider value={value}>{!productCategoryDetail.loading && <AboutProductCategory />}</Provider>
               <div className="flex justify-end">
                 <Button variant="primary" type="submit" data-testid="save">
                   儲存

@@ -296,7 +296,14 @@ describe('PaymentAutoComplete 付款方式（單選）', () => {
     const onChange = jest.fn()
     const ref = React.createRef()
     const { settle } = renderPage(
-      <PaymentAutoComplete ref={ref} value="現金" onChange={onChange} setPaymentAlready={ready} label="付款方式" inputProps={{ 'data-testid': 'pay' }} />,
+      <PaymentAutoComplete
+        ref={ref}
+        value="現金"
+        onChange={onChange}
+        setPaymentAlready={ready}
+        label="付款方式"
+        inputProps={{ 'data-testid': 'pay' }}
+      />,
       { fixtures }
     )
     await settle()
@@ -337,7 +344,15 @@ describe('TicketAutoComplete 卡券（單選）', () => {
     const getData = jest.fn()
     const onFieldChange = jest.fn()
     const { settle, calls } = renderPage(
-      <TicketAutoComplete value="" orderId="o-1" isLaunched setCouponAlready={ready} getData={getData} onFieldChange={onFieldChange} inputProps={{ 'data-testid': 'tk' }} />,
+      <TicketAutoComplete
+        value=""
+        orderId="o-1"
+        isLaunched
+        setCouponAlready={ready}
+        getData={getData}
+        onFieldChange={onFieldChange}
+        inputProps={{ 'data-testid': 'tk' }}
+      />,
       { fixtures }
     )
     await settle()

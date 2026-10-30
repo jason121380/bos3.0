@@ -62,10 +62,7 @@ const FETCH_MERCHANT_IMMEDIATE_PERFORM_REPORT = gql`
     }
   }
 `
-export default function useFetchMerchantImmediatePerformReport({
-  input,
-  displayReference = 'FAKE',
-}) {
+export default function useFetchMerchantImmediatePerformReport({ input, displayReference = 'FAKE' }) {
   return useQuery(FETCH_MERCHANT_IMMEDIATE_PERFORM_REPORT, {
     variables: {
       input,

@@ -62,17 +62,15 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
 
   const [values, setValues] = React.useState({
     customerId: customer.id || '',
-    category: customer.category  || '',
-    no: customer.no  || '',
-    name: customer.name  || '',
-    nickName: customer.nickName  || '',
-    cellphone: customer.cellphone  || 0,
+    category: customer.category || '',
+    no: customer.no || '',
+    name: customer.name || '',
+    nickName: customer.nickName || '',
+    cellphone: customer.cellphone || 0,
     birthday: customer.birthday || { year: '', month: '', day: '' },
     // 顧客查詢回的是 preferDesigner { id }（原本讀不存在的 PreferDesignerId，永遠帶入空白、沒動就儲存會清掉；Jason 2026/10/22 fix all）
     PreferDesignerId: (customer.preferDesigner && customer.preferDesigner.id) || '',
-    OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-      ? JSON.parse(localStorage.getItem('userMerchant')).id
-      : null,
+    OfficialBrandMerchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
     email: customer.email || '',
     address: customer.address || '',
     lineId: customer.lineId || '',
@@ -82,13 +80,11 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
   })
   const vaild = !(
     // values.category &&
-    (
-      values.name &&
-      values.gender &&
-      values.cellphone &&
-      // values.birthday &&
-      values.OfficialBrandMerchantId
-    )
+    values.name &&
+    values.gender &&
+    values.cellphone &&
+    // values.birthday &&
+    values.OfficialBrandMerchantId
   )
   const { refetch } = useStore()
   const { loading } = usePageLoading()
@@ -172,8 +168,8 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
     checkIsCustomerNoUsedLazy({
       variables: {
         input: values.no,
-        customerId: values.customerId
-      }
+        customerId: values.customerId,
+      },
     })
   }
 
@@ -183,11 +179,11 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
       setIsSetTime(false)
       setNoVerify(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [checkIsCustomerNoUsedLazyData.loading])
 
   React.useEffect(() => {
-    if (values.no !== "") {
+    if (values.no !== '') {
       setIsSetTime(true)
       const timer = setTimeout(() => {
         checkNo()
@@ -198,7 +194,7 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
     } else {
       setNoVerify(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（checkNo）；只在 [values.no] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（checkNo）；只在 [values.no] 變動時呼叫，補上會每次 render 重跑
   }, [values.no])
 
   // 未開啟時不渲染；放在所有 hooks 之後（原本在兩個 useEffect 之前 return，違反 hooks 呼叫順序規則）
@@ -207,14 +203,25 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={o => { if (!o) onClose() }}>
+    <Dialog
+      open={open}
+      onOpenChange={o => {
+        if (!o) onClose()
+      }}
+    >
       {/* 保留原 700px 寬度。 */}
-      <DialogContent hideClose
-          onOpenAutoFocus={event => {
-            // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
-            event.preventDefault()
-            if (!event.target.contains(document.activeElement)) event.target.focus()
-          }} aria-describedby={undefined} aria-labelledby="customer-edit-modal-title" {...rest} className={clsx('!max-w-[700px] overflow-y-auto', className)}>
+      <DialogContent
+        hideClose
+        onOpenAutoFocus={event => {
+          // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
+          event.preventDefault()
+          if (!event.target.contains(document.activeElement)) event.target.focus()
+        }}
+        aria-describedby={undefined}
+        aria-labelledby="customer-edit-modal-title"
+        {...rest}
+        className={clsx('!max-w-[700px] overflow-y-auto', className)}
+      >
         <CardHeader className="pb-4">
           <CardTitle id="customer-edit-modal-title">編輯客戶資料</CardTitle>
         </CardHeader>
@@ -233,20 +240,22 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
                 variant="outlined"
                 onKeyDown={e => handleKeyDownFocus(e)}
                 InputProps={{
-                  endAdornment: (
-                    (values.no === '') ? '' :
-                      isSetTime ?
-                        <InputAdornment position="start">
-                          <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
-                        </InputAdornment> :
-                        !noVerify ?
-                          <InputAdornment position="start">
-                            <CheckRoundedIcon color='success' />
-                          </InputAdornment> :
-                          <InputAdornment position="start">
-                            <WarningAmberRoundedIcon color='error' />
-                          </InputAdornment>
-                  ),
+                  endAdornment:
+                    values.no === '' ? (
+                      ''
+                    ) : isSetTime ? (
+                      <InputAdornment position="start">
+                        <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
+                      </InputAdornment>
+                    ) : !noVerify ? (
+                      <InputAdornment position="start">
+                        <CheckRoundedIcon color="success" />
+                      </InputAdornment>
+                    ) : (
+                      <InputAdornment position="start">
+                        <WarningAmberRoundedIcon color="error" />
+                      </InputAdornment>
+                    ),
                 }}
               />
             </div>
@@ -272,7 +281,7 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
                 placeholder="請選擇…"
                 label="性別"
                 labelRef={inputLabel}
-              // onKeyDown={e => handleKeyDownFocus(e)}
+                // onKeyDown={e => handleKeyDownFocus(e)}
               >
                 <NativeSelectOption value="UNKNOWN">
                   <em>未知</em>
@@ -386,12 +395,7 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
               />
             </div>
             <div>
-              <SourceSelect
-                emptyOption
-                value={values.source}
-                onChange={handleFieldChange}
-                ref={sourceRef}
-              />
+              <SourceSelect emptyOption value={values.source} onChange={handleFieldChange} ref={sourceRef} />
             </div>
             <div>
               <NativeSelect
@@ -428,14 +432,7 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
               />
             </div>
             <div>
-              <TextField
-                fullWidth
-                label="備註"
-                onChange={handleFieldChange}
-                name="remark"
-                value={values.remark}
-                variant="outlined"
-              />
+              <TextField fullWidth label="備註" onChange={handleFieldChange} name="remark" value={values.remark} variant="outlined" />
             </div>
           </div>
         </CardContent>
@@ -443,10 +440,20 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
           {/* 停用原因（STYLE.md §6）：依 vaild（客戶姓名、性別、電話必填；沒有目前店家時無法儲存） */}
           {vaild && (
             <p id="customer-edit-missing" role="status" className="mr-auto text-caption text-text-secondary">
-              尚缺：{[!values.name && '客戶姓名', !values.gender && '性別', !values.cellphone && '電話', !values.OfficialBrandMerchantId && '目前店家（請重新選擇店家）'].filter(Boolean).join('、')}
+              尚缺：
+              {[
+                !values.name && '客戶姓名',
+                !values.gender && '性別',
+                !values.cellphone && '電話',
+                !values.OfficialBrandMerchantId && '目前店家（請重新選擇店家）',
+              ]
+                .filter(Boolean)
+                .join('、')}
             </p>
           )}
-          <Button variant="secondary" onClick={onClose}>取消</Button>
+          <Button variant="secondary" onClick={onClose}>
+            取消
+          </Button>
           <Button variant="primary" onClick={handleSubmit} disabled={vaild} aria-describedby={vaild ? 'customer-edit-missing' : undefined}>
             儲存
           </Button>
@@ -465,7 +472,7 @@ CustomerEditModal.propTypes = {
 
 CustomerEditModal.defaultProps = {
   open: false,
-  onClose: () => { },
+  onClose: () => {},
 }
 
 export default CustomerEditModal

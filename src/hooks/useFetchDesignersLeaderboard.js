@@ -62,7 +62,7 @@ export default function useFetchDesignersLeaderboard({
   merchantId,
   reference,
   isIncludeProductPerformance,
-  isIncludeMembershipPerformance
+  isIncludeMembershipPerformance,
 }) {
   return useQuery(FETCH_DESIGNERS_LEADERBOARD, {
     variables: {
@@ -71,7 +71,7 @@ export default function useFetchDesignersLeaderboard({
       merchantId,
       reference,
       isIncludeProductPerformance,
-      isIncludeMembershipPerformance
+      isIncludeMembershipPerformance,
     },
     fetchPolicy: 'cache-and-network',
   })

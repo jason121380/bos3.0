@@ -21,7 +21,8 @@ function CompatLayer({ open, modal = false, onEscapeKeyDown, restoreFocus = fals
   }, [open, onPointerEventsChange])
   if (!open) return null
   return (
-    <FocusScope asChild
+    <FocusScope
+      asChild
       onMountAutoFocus={event => {
         restoreTo.current = document.activeElement
         event.preventDefault()

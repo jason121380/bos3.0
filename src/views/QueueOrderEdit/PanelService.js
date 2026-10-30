@@ -41,14 +41,11 @@ export default function PanelService({ thirdPartTicket }) {
 
   useEffect(() => {
     if (!isHelperDesignationData.loading) {
-      const isHelperDesignation = idx(
-        isHelperDesignationData,
-        _ => _.data.getIsHelperDesignationDisplay
-      )
+      const isHelperDesignation = idx(isHelperDesignationData, _ => _.data.getIsHelperDesignationDisplay)
 
       setIsHelperDesignationData(isHelperDesignation)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isHelperDesignationData.loading])
 
   useEffect(() => {
@@ -60,7 +57,7 @@ export default function PanelService({ thirdPartTicket }) {
       setServicesInModal(servicesInModal)
     } else {
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [serviceCategoriesData.loading, servicesData.loading])
 
   useEffect(() => {
@@ -104,7 +101,7 @@ export default function PanelService({ thirdPartTicket }) {
       }
       setServices(newServices)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [order.loading, servicesForTicketLocked.loading])
 
   function handleAddService() {
@@ -265,10 +262,13 @@ export default function PanelService({ thirdPartTicket }) {
         data-testid="panelService"
         onClick={handleAccordionClick}
         // 收合時顯示「已填 N 筆 · 小計」（只讀畫面上的項目列，不參與計算或送出；比照打帳單）
-        summaryMeta={!expanded && panelSummary(
-          services.filter(d => d.serviceId).length,
-          services.filter(d => d.serviceId).reduce((total, d) => total + d.price, 0)
-        )}
+        summaryMeta={
+          !expanded &&
+          panelSummary(
+            services.filter(d => d.serviceId).length,
+            services.filter(d => d.serviceId).reduce((total, d) => total + d.price, 0)
+          )
+        }
         style={{ width: '100%' }}
       >
         <p className="m-0 !text-[16px] font-bold text-text">項目消費</p>

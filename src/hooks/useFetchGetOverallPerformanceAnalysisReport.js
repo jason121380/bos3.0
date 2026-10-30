@@ -32,9 +32,11 @@ const FETCH_GET_OVERALL_PERFORMANCE_ANALYSIS_REPORT = gql`
 `
 
 export default function useFetchGetOverallPerformanceAnalysisReport() {
-  const [getOverallPerformanceAnalysisReportLazy, overallPerformanceAnalysisReportLazyData] =
-    useLazyQuery(FETCH_GET_OVERALL_PERFORMANCE_ANALYSIS_REPORT, {
+  const [getOverallPerformanceAnalysisReportLazy, overallPerformanceAnalysisReportLazyData] = useLazyQuery(
+    FETCH_GET_OVERALL_PERFORMANCE_ANALYSIS_REPORT,
+    {
       fetchPolicy: 'cache-and-network',
-    })
+    }
+  )
   return [getOverallPerformanceAnalysisReportLazy, overallPerformanceAnalysisReportLazyData]
 }

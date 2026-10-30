@@ -10,7 +10,7 @@ export default function useFetchUpdateAttendantRecord() {
   const [updateAttendantRecord] = useMutation(UPDATA_ATTENDANT_RECORD)
   return {
     updateAttendantRecord: ({ input }) =>
-    updateAttendantRecord({
+      updateAttendantRecord({
         variables: {
           input,
         },

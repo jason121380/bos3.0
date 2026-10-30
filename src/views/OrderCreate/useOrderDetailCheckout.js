@@ -10,13 +10,7 @@ import { handleTidyBill, checkProductOrders, checkMembershipOrders } from 'helpe
 // 把 #printMain／#printThermal 的內容寫進列印視窗（printDiv）、返回。列印範本本身仍在 OrderDetailModal.js，
 // 以這裡建立的 printMainRef／printThermalRef 掛上。
 export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout }) {
-  const {
-    bill,
-    stayInCreateOrder,
-    setCheckoutBtnClick,
-    setReset,
-    closureDelayed,
-  } = useContext(billContext)
+  const { bill, stayInCreateOrder, setCheckoutBtnClick, setReset, closureDelayed } = useContext(billContext)
   const { createOrder } = useFetchCreateOrder()
   const { open, toggle, setOpen } = useToggle()
   const useCreateOrder = useRef(createOrder)
@@ -57,71 +51,74 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
       // 不會改回 DOM，按鈕原本會一直停用到返回重開明細
       if (checkOrderRef.current) checkOrderRef.current.disabled = false
       if (checkOrderPrintRef.current) checkOrderPrintRef.current.disabled = false
-      setCheckoutBtn(false);
-      setIsClick(false);
+      setCheckoutBtn(false)
+      setIsClick(false)
       setCheckoutBtnClick(false)
       setOpen(open)
     }
   }
 
-  const usehandleCreateOrder = useCallback(isPrint => {
-    handleBtnDisabled(true)
-    const tmp = handleTidyBill(bill)
-    const checkProduct = checkProductOrders(tmp.productOrders)
-    const checkMember = checkMembershipOrders(tmp.membershipOrders)
+  const usehandleCreateOrder = useCallback(
+    isPrint => {
+      handleBtnDisabled(true)
+      const tmp = handleTidyBill(bill)
+      const checkProduct = checkProductOrders(tmp.productOrders)
+      const checkMember = checkMembershipOrders(tmp.membershipOrders)
 
-    if (!checkProduct.verify) {
-      openSnackbar({
-        message: checkProduct.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return;
-    } else if (!checkMember.verify) {
-      openSnackbar({
-        message: checkMember.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return;
-    } else {
-      sentRef.current = true
-      useCreateOrder
-        .current(tmp)
-        .then(res => {
-          setOrderNumber(res.data.createOrder2)
-          setCheckoutBtn(false)
-          openSnackbar({
-            message: '帳單新增成功',
-            variant: 'success',
+      if (!checkProduct.verify) {
+        openSnackbar({
+          message: checkProduct.message,
+          variant: 'error',
+        })
+        handleBtnDisabled(false)
+        return
+      } else if (!checkMember.verify) {
+        openSnackbar({
+          message: checkMember.message,
+          variant: 'error',
+        })
+        handleBtnDisabled(false)
+        return
+      } else {
+        sentRef.current = true
+        useCreateOrder
+          .current(tmp)
+          .then(res => {
+            setOrderNumber(res.data.createOrder2)
+            setCheckoutBtn(false)
+            openSnackbar({
+              message: '帳單新增成功',
+              variant: 'success',
+            })
+            if (stayInCreateOrder) {
+              setReset('reset')
+              closeModal()
+              setTimeout(() => {
+                setCheckoutBtn(false)
+                setCheckoutBtnClick(false)
+                setIsClick(false)
+                setReset('')
+                clearTimeout()
+              }, 500)
+            } else {
+              history.push('/management/orders')
+            }
           })
-          if (stayInCreateOrder) {
-            setReset('reset')
-            closeModal()
-            setTimeout(() => {
-              setCheckoutBtn(false);
-              setCheckoutBtnClick(false)
-              setIsClick(false);
-              setReset('')
-              clearTimeout()
-            }, 500);
-          } else {
-            history.push('/management/orders')
-          }
-        })
-        .catch(err => {
-          sentRef.current = false
-          setCheckoutBtn(false)
-          setCheckoutBtnClick(false)
-          // 與「結帳並列印」失敗相同，恢復按鈕讓使用者可再按
-          setIsClick(false)
-        })
-        .finally(() => {
-          setOpen(false)
-        })
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（closeModal、handleBtnDisabled、stayInCreateOrder）；只在 [bill, history, setCheckoutBtnClick, setOpen, setReset] 變動時呼叫，補上會每次 render 重跑
-  }, [bill, history, setCheckoutBtnClick, setOpen, setReset])
+          .catch(err => {
+            sentRef.current = false
+            setCheckoutBtn(false)
+            setCheckoutBtnClick(false)
+            // 與「結帳並列印」失敗相同，恢復按鈕讓使用者可再按
+            setIsClick(false)
+          })
+          .finally(() => {
+            setOpen(false)
+          })
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（closeModal、handleBtnDisabled、stayInCreateOrder）；只在 [bill, history, setCheckoutBtnClick, setOpen, setReset] 變動時呼叫，補上會每次 render 重跑
+    [bill, history, setCheckoutBtnClick, setOpen, setReset]
+  )
 
   const usehandleCreateOrderAndPrint = useCallback(() => {
     // 明細還在載入（列印範本尚未掛上）：不送出。回傳 'null dom' 讓 F8 快捷鍵知道沒有送出、保留鍵盤監聽
@@ -135,17 +132,17 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
     if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       handleBtnDisabled(false)
-      return;
+      return
     } else if (!checkMember.verify) {
       openSnackbar({
         message: checkMember.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       handleBtnDisabled(false)
-      return;
+      return
     } else {
       sentRef.current = true
       useCreateOrder
@@ -164,12 +161,12 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
             setTimeout(() => {
               closeModal()
               setReset('reset')
-              setCheckoutBtn(false);
+              setCheckoutBtn(false)
               setCheckoutBtnClick(false)
-              setIsClick(false);
+              setIsClick(false)
               setReset('')
               clearTimeout()
-            }, 500);
+            }, 500)
           } else {
             printDiv()
             history.push('/management/orders')
@@ -185,7 +182,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
           setOpen(false)
         })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（closeModal、handleBtnDisabled、printDiv、stayInCreateOrder）；只在 [bill, history, setCheckoutBtnClick, setOpen, setReset] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（closeModal、handleBtnDisabled、printDiv、stayInCreateOrder）；只在 [bill, history, setCheckoutBtnClick, setOpen, setReset] 變動時呼叫，補上會每次 render 重跑
   }, [bill, history, setCheckoutBtnClick, setOpen, setReset])
 
   const usehandleCreateDraftOrder = useCallback(() => {
@@ -197,17 +194,17 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
     if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       handleBtnDisabled(false)
-      return;
+      return
     } else if (!checkMember.verify) {
       openSnackbar({
         message: checkMember.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       handleBtnDisabled(false)
-      return;
+      return
     } else {
       sentRef.current = true
       useCreateOrder
@@ -243,7 +240,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
           setOpen(false)
         })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（closeModal、handleBtnDisabled、stayInCreateOrder）；只在 [bill, history, setCheckoutBtnClick, setOpen, setReset] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（closeModal、handleBtnDisabled、stayInCreateOrder）；只在 [bill, history, setCheckoutBtnClick, setOpen, setReset] 變動時呼叫，補上會每次 render 重跑
   }, [bill, history, setCheckoutBtnClick, setOpen, setReset])
 
   useEffect(() => {
@@ -259,7 +256,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
     return () => {
       document.removeEventListener('keydown', handleCreateOrderShortCut)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（usehandleCreateOrderAndPrint）；只在 [usehandleCreateOrder] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（usehandleCreateOrderAndPrint）；只在 [usehandleCreateOrder] 變動時呼叫，補上會每次 render 重跑
   }, [usehandleCreateOrder])
 
   function printDiv() {
@@ -268,29 +265,21 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
 
     var newWin = window.open('', 'Print-Window')
     if (orderDetailPrintLayout === 'A4') {
-      newWin.document.write(
-        '<html><body onload="window.print()" style="margin: 0mm 5mm;">' +
-        printMain.innerHTML +
-        '</body></html>'
-      )
+      newWin.document.write('<html><body onload="window.print()" style="margin: 0mm 5mm;">' + printMain.innerHTML + '</body></html>')
     } else if (orderDetailPrintLayout === '感熱紙(80mm)') {
       newWin.document.write(
         '<html><style>@page {margin: 1mm; width:78mm;}</style><body onload="window.print()" style="width:78mm">' +
-        printThermal.innerHTML +
-        '</body></html>'
+          printThermal.innerHTML +
+          '</body></html>'
       )
     } else if (orderDetailPrintLayout === '感熱紙(57mm)') {
       newWin.document.write(
         '<html><style>@page {margin: 1mm; width:56mm;}</style><body onload="window.print()" style="width:56mm">' +
-        printThermal.innerHTML +
-        '</body></html>'
+          printThermal.innerHTML +
+          '</body></html>'
       )
     } else {
-      newWin.document.write(
-        '<html><style>@page {margin: 1mm;}</style><body onload="window.print()">' +
-        printThermal.innerHTML +
-        '</body></html>'
-      )
+      newWin.document.write('<html><style>@page {margin: 1mm;}</style><body onload="window.print()">' + printThermal.innerHTML + '</body></html>')
     }
 
     if (closureDelayed) {
@@ -299,7 +288,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
       }, 100)
       setTimeout(() => {
         newWin.close()
-      }, 10000);
+      }, 10000)
     } else {
       newWin.document.close()
       setTimeout(function () {

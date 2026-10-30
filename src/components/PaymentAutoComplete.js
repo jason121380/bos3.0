@@ -7,30 +7,18 @@ import compose from 'utils/compose'
 import { Autocomplete } from 'ui/combobox'
 
 function PaymentAutoComplete(
-  {
-    className = '',
-    onChange = () => {},
-    label = '',
-    value,
-    name,
-    autoFocus,
-    onFocus,
-    onKeyDown,
-    inputProps = {},
-    setPaymentAlready,
-  },
+  { className = '', onChange = () => {}, label = '', value, name, autoFocus, onFocus, onKeyDown, inputProps = {}, setPaymentAlready },
   ref
 ) {
   const paymentToggle = useToggle()
   const payment = useFetchMerchantPayWays()
-  
+
   useEffect(() => {
     if (setPaymentAlready !== undefined && !payment.loading) {
       setPaymentAlready(!payment.loading)
     }
-  }, [payment.loading, setPaymentAlready]);
-  const selectedValue =
-    idx(payment, _ => _.data.merchantPayWays.find(d => d.name === value)) || null
+  }, [payment.loading, setPaymentAlready])
+  const selectedValue = idx(payment, _ => _.data.merchantPayWays.find(d => d.name === value)) || null
 
   const options =
     idx(payment, _ =>
@@ -59,7 +47,9 @@ function PaymentAutoComplete(
       getOptionLabel={option => option.name}
       loading={payment.loading}
       renderOption={(props, option) => (
-        <span {...props} data-testid={`${inputProps['data-testid'] ?? ''}-${option.name}`}>{option.name}</span>
+        <span {...props} data-testid={`${inputProps['data-testid'] ?? ''}-${option.name}`}>
+          {option.name}
+        </span>
       )}
       renderInput={params => (
         <TextField

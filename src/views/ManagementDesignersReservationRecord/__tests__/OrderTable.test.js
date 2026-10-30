@@ -19,8 +19,16 @@ afterEach(cleanup)
 const WEEK = startOfWeek(new Date(2026, 9, 14)).getTime()
 const at = (day, hour) => setHours(addDays(WEEK, day), hour).getTime()
 const reservation = (id, day, extra) => ({
-  type: 'RESERVATION', ids: [id], startTime: at(day, 11), endTime: at(day, 12), timeCost: 2, isDesignate: true,
-  bookingStatus: '預約成功', isCheckin: null, isDone: false, ...extra,
+  type: 'RESERVATION',
+  ids: [id],
+  startTime: at(day, 11),
+  endTime: at(day, 12),
+  timeCost: 2,
+  isDesignate: true,
+  bookingStatus: '預約成功',
+  isCheckin: null,
+  isDone: false,
+  ...extra,
 })
 
 const renderTable = (designerNameType, designer = {}) => {
@@ -29,26 +37,49 @@ const renderTable = (designerNameType, designer = {}) => {
     data: {
       getMerchantDesignerWeekCalendar: {
         merchantUnappointCalendar: [],
-        merchantDesignerCalendar: [{
-          designerId: 'd1', designerName: '王大明', designerNickname: '小明', bookingLimit: 1, ...designer,
-          calendar: [
-            reservation('r1', 1, { nameToDisplay: '成功客' }),
-            reservation('r2', 2, { nameToDisplay: '待審客', bookingStatus: '待審核' }),
-          ],
-        }],
+        merchantDesignerCalendar: [
+          {
+            designerId: 'd1',
+            designerName: '王大明',
+            designerNickname: '小明',
+            bookingLimit: 1,
+            ...designer,
+            calendar: [reservation('r1', 1, { nameToDisplay: '成功客' }), reservation('r2', 2, { nameToDisplay: '待審客', bookingStatus: '待審核' })],
+          },
+        ],
       },
     },
   }
   const merchant = { data: { merchant: { openingHours: '10:00:00', closingHours: '20:00:00' } } }
   const checkinSettings = { isBookingCheckinEnabled: false }
   const { orderRange, calendarData, openTime } = buildWeekCalendar({
-    DesignerCalendar, merchant, date: WEEK, height: 40, isOne: true, checkinMode: false, bookingCusCheck: false, checkinSettings, checkedType: '',
+    DesignerCalendar,
+    merchant,
+    date: WEEK,
+    height: 40,
+    isOne: true,
+    checkinMode: false,
+    bookingCusCheck: false,
+    checkinSettings,
+    checkedType: '',
   })
   render(
     <OrderTable
-      orderRange={orderRange} calendarData={calendarData} designerNameType={designerNameType} merchantId="m1" openTime={openTime}
-      refetchData={() => {}} remarkDisplay={false} cusRemarkDisplay={false} isOne designerId={['d1']} ndsRef={{ current: [] }}
-      checkinSettings={checkinSettings} checkinMode={false} calendarSize={{ width: 150, height: 40, breakWidth: 45 }} cancelPasswordUsing={false}
+      orderRange={orderRange}
+      calendarData={calendarData}
+      designerNameType={designerNameType}
+      merchantId="m1"
+      openTime={openTime}
+      refetchData={() => {}}
+      remarkDisplay={false}
+      cusRemarkDisplay={false}
+      isOne
+      designerId={['d1']}
+      ndsRef={{ current: [] }}
+      checkinSettings={checkinSettings}
+      checkinMode={false}
+      calendarSize={{ width: 150, height: 40, breakWidth: 45 }}
+      cancelPasswordUsing={false}
     />
   )
 }
@@ -107,22 +138,46 @@ describe('備註跑馬燈：顯示備註的設定比週曆晚到', () => {
       data: {
         getMerchantDesignerWeekCalendar: {
           merchantUnappointCalendar: [],
-          merchantDesignerCalendar: [{
-            designerId: 'd1', designerName: '王大明', designerNickname: '小明', bookingLimit: 1,
-            calendar: [reservation('r1', 1, { nameToDisplay: '成功客', remark: '很長的預約備註', remarkForCustomer: '很長的顧客備註' })],
-          }],
+          merchantDesignerCalendar: [
+            {
+              designerId: 'd1',
+              designerName: '王大明',
+              designerNickname: '小明',
+              bookingLimit: 1,
+              calendar: [reservation('r1', 1, { nameToDisplay: '成功客', remark: '很長的預約備註', remarkForCustomer: '很長的顧客備註' })],
+            },
+          ],
         },
       },
     }
     const merchant = { data: { merchant: { openingHours: '10:00:00', closingHours: '20:00:00' } } }
     const checkinSettings = { isBookingCheckinEnabled: false }
     const { orderRange, calendarData, openTime } = buildWeekCalendar({
-      DesignerCalendar, merchant, date: WEEK, height: 40, isOne: true, checkinMode: false, bookingCusCheck: false, checkinSettings, checkedType: '',
+      DesignerCalendar,
+      merchant,
+      date: WEEK,
+      height: 40,
+      isOne: true,
+      checkinMode: false,
+      bookingCusCheck: false,
+      checkinSettings,
+      checkedType: '',
     })
     const ndsRef = { current: [] }
     const props = {
-      orderRange, calendarData, designerNameType: 'NAME', merchantId: 'm1', openTime, refetchData: () => {}, isOne: true,
-      designerId: ['d1'], ndsRef, checkinSettings, checkinMode: false, calendarSize: { width: 150, height: 40, breakWidth: 45 }, cancelPasswordUsing: false,
+      orderRange,
+      calendarData,
+      designerNameType: 'NAME',
+      merchantId: 'm1',
+      openTime,
+      refetchData: () => {},
+      isOne: true,
+      designerId: ['d1'],
+      ndsRef,
+      checkinSettings,
+      checkinMode: false,
+      calendarSize: { width: 150, height: 40, breakWidth: 45 },
+      cancelPasswordUsing: false,
     }
     const { rerender } = render(<OrderTable {...props} remarkDisplay={false} cusRemarkDisplay={false} />)
     expect(document.querySelector('#remark')).toBeNull()

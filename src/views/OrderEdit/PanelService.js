@@ -15,12 +15,8 @@ import ServicesModal from 'views/OrderShared/EditServicesModal'
 import Services from './Services'
 import useOncePerOrder from './useOncePerOrder'
 
-
 export default function PanelService({ thirdPartTicket, expanded, setExpanded }) {
-  const {
-    handleBillChange, orderId, bindedThirdPart,
-    services, setServices, sData, setSData
-  } = useContext(billContext)
+  const { handleBillChange, orderId, bindedThirdPart, services, setServices, sData, setSData } = useContext(billContext)
   const servicesOrder = useFetchServiceOrders({ id: orderId })
   const isFirstLoad = useOncePerOrder()
   const [focusRow, setFocusRow] = React.useState(0)
@@ -49,14 +45,11 @@ export default function PanelService({ thirdPartTicket, expanded, setExpanded })
   // 打帳單判斷指定助理服務顯示checkbox變數
   React.useEffect(() => {
     if (!isHelperDesignationData.loading) {
-      const isHelperDesignation = idx(
-        isHelperDesignationData,
-        _ => _.data.getIsHelperDesignationDisplay
-      )
+      const isHelperDesignation = idx(isHelperDesignationData, _ => _.data.getIsHelperDesignationDisplay)
 
       setIsHelperDesignationData(isHelperDesignation)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isHelperDesignationData.loading])
 
   React.useEffect(() => {
@@ -67,7 +60,7 @@ export default function PanelService({ thirdPartTicket, expanded, setExpanded })
       setServiceCategories(serviceCategories)
       setServicesInModal(servicesInModal)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [serviceCategoriesData.loading, servicesData.loading])
 
   React.useEffect(() => {
@@ -77,36 +70,36 @@ export default function PanelService({ thirdPartTicket, expanded, setExpanded })
       const newServices =
         servicesOrder.data.order.serviceOrders.length > 0
           ? servicesOrder.data.order.serviceOrders.map(data => ({
-            id: uuid(),
-            price: data.price,
-            serviceId: data.service.id,
-            isLocked: data.service.isLocked,
-            isNoCash: data.service.isNoCash,
-            thirdPartyPayName: data.thirdPartyPayName,
-            thirdPartyCouponMerchantId: data.thirdPartyPayId,
-            isBindedThirdPartTicketLocked: data.service.isBindedThirdPartTicketLocked,
-            serviceOrderHelpers: data.helperList.map(helper => ({
-              type: helper.type,
-              helperId: helper.helper.id,
-              isDesignate: helper.isDesignate,
-              helperDeductiontype: helper.helperDeductionType,
-            })),
-          }))
-          : [
-            {
               id: uuid(),
-              price: 0,
-              serviceId: '',
-              serviceOrderHelpers: [],
-            },
-          ]
+              price: data.price,
+              serviceId: data.service.id,
+              isLocked: data.service.isLocked,
+              isNoCash: data.service.isNoCash,
+              thirdPartyPayName: data.thirdPartyPayName,
+              thirdPartyCouponMerchantId: data.thirdPartyPayId,
+              isBindedThirdPartTicketLocked: data.service.isBindedThirdPartTicketLocked,
+              serviceOrderHelpers: data.helperList.map(helper => ({
+                type: helper.type,
+                helperId: helper.helper.id,
+                isDesignate: helper.isDesignate,
+                helperDeductiontype: helper.helperDeductionType,
+              })),
+            }))
+          : [
+              {
+                id: uuid(),
+                price: 0,
+                serviceId: '',
+                serviceOrderHelpers: [],
+              },
+            ]
 
       if (newServices.length > 0 && newServices[0].serviceId !== '') {
         setExpanded(true)
       }
       setServices(newServices)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [servicesOrder.loading, setExpanded, setServices, isFirstLoad, orderId])
   function handleAddService() {
     const newServices = cloneDeep(services)
@@ -264,10 +257,13 @@ export default function PanelService({ thirdPartTicket, expanded, setExpanded })
         data-testid="panelService"
         onClick={handleAccordionClick}
         style={{ width: '100%' }}
-        summaryMeta={!expanded && panelSummary(
-          services.filter(d => d.serviceId).length,
-          services.filter(d => d.serviceId).reduce((total, d) => total + d.price, 0)
-        )}
+        summaryMeta={
+          !expanded &&
+          panelSummary(
+            services.filter(d => d.serviceId).length,
+            services.filter(d => d.serviceId).reduce((total, d) => total + d.price, 0)
+          )
+        }
       >
         <p className="m-0 !text-[16px] font-bold text-text">項目消費</p>
       </AccordionSummary>

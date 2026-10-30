@@ -16,7 +16,9 @@ jest.mock('elements/snackbars', () => ({
   openSnackbar: jest.fn(),
 }))
 jest.mock('components/EmployeeAutoComplete', () => ({ label, onChange }) => (
-  <button type="button" onClick={() => onChange({ userId: `${label}-id` })}>選{label}</button>
+  <button type="button" onClick={() => onChange({ userId: `${label}-id` })}>
+    選{label}
+  </button>
 ))
 
 const CUSTOMERS = [

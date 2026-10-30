@@ -21,7 +21,7 @@ const GET_MMULTI_MERCHANTS_LEADER_BOARD = gql`
 `
 
 export default function useFetchGetMultiMerchantsLeaderBoard() {
-  const [getMultiMerchantsLeaderBoardLazy, getMultiMerchantsLeaderBoardLazyData] =  useLazyQuery(GET_MMULTI_MERCHANTS_LEADER_BOARD, {
+  const [getMultiMerchantsLeaderBoardLazy, getMultiMerchantsLeaderBoardLazyData] = useLazyQuery(GET_MMULTI_MERCHANTS_LEADER_BOARD, {
     fetchPolicy: 'cache-and-network',
   })
   return [getMultiMerchantsLeaderBoardLazy, getMultiMerchantsLeaderBoardLazyData]

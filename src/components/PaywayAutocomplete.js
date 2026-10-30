@@ -11,7 +11,7 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />
 // 沒給 value 時當成沒選（模組層常數：參數預設 [] 每次渲染都是新陣列，會讓依賴 value 的 effect 每次渲染都 setState）
 const NO_VALUE = []
 
-const PaywayAutocomplete = ({ value = NO_VALUE, onChange = () => { }, isReadOnly = false, ...rest }) => {
+const PaywayAutocomplete = ({ value = NO_VALUE, onChange = () => {}, isReadOnly = false, ...rest }) => {
   const getPayWays = useFetchGetPayWays()
   const [selectValue, setSelectValue] = useState([])
   const [options, setOptions] = useState([])
@@ -24,7 +24,7 @@ const PaywayAutocomplete = ({ value = NO_VALUE, onChange = () => { }, isReadOnly
       setSelectValue(newValue)
       setOptions(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getPayWays.loading, value])
 
   return (
@@ -42,18 +42,11 @@ const PaywayAutocomplete = ({ value = NO_VALUE, onChange = () => { }, isReadOnly
       readOnly={isReadOnly}
       renderOption={(props, option, { selected }) => (
         <span {...props} className={`${props.className} !p-[6px] [font-size:14px]`}>
-          <Checkbox
-            style={{ color: 'rgb(var(--text))', padding: 2, marginRight: 4 }}
-            icon={icon}
-            checkedIcon={checkedIcon}
-            checked={selected}
-          />
+          <Checkbox style={{ color: 'rgb(var(--text))', padding: 2, marginRight: 4 }} icon={icon} checkedIcon={checkedIcon} checked={selected} />
           {option.label}
         </span>
       )}
-      renderInput={params => (
-        <TextField {...params} variant="outlined" label="支付方式" placeholder='選擇方式' />
-      )}
+      renderInput={params => <TextField {...params} variant="outlined" label="支付方式" placeholder="選擇方式" />}
     />
   )
 }

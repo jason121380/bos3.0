@@ -1,10 +1,7 @@
 import React from 'react'
 import CustomMockedProvider from '__tests__/CustomMockedProvider.test'
 import { render, fireEvent } from '@testing-library/react'
-import {
-  CREATE_PRODUCT_CATEGORY,
-  mockedCreateProductCateResp,
-} from 'hooks/useFetchCreateProductCategory'
+import { CREATE_PRODUCT_CATEGORY, mockedCreateProductCateResp } from 'hooks/useFetchCreateProductCategory'
 import { GET_PRODUCT_CATEGORIES, mockedProductCateResp } from 'hooks/useFetchProductCategories'
 import { Router } from 'react-router-dom'
 
@@ -46,9 +43,12 @@ const createWrapper = () => {
 
 describe('<ProductCategoryCreate />', () => {
   beforeEach(() => {
-    localStorage.setItem('userMerchant', JSON.stringify({
-      id: 'id',
-    }))
+    localStorage.setItem(
+      'userMerchant',
+      JSON.stringify({
+        id: 'id',
+      })
+    )
   })
   it('should create product category successful', async () => {
     const { getByTestId } = createWrapper()

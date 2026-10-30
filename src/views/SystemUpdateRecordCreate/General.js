@@ -1,7 +1,7 @@
 import { useState, useEffect, Fragment } from 'react'
 import { format } from 'date-fns'
-import MdEditor from 'md-editor-rt';
-import 'md-editor-rt/lib/style.css';
+import MdEditor from 'md-editor-rt'
+import 'md-editor-rt/lib/style.css'
 import { openSnackbar } from 'elements/snackbars'
 import { useHistory } from 'react-router'
 import { useFetchCreateSystemUpdateCreate } from 'hooks/useFetchSystemUpdateRecord'
@@ -66,14 +66,8 @@ const General = () => {
       })
   }
 
-
   useEffect(() => {
-    setEnable(
-      updateRecord.title === '' ||
-      updateRecord.content === '' ||
-      updateRecord.versionNo === '' ||
-      updateRecord.updateTime === ''
-    )
+    setEnable(updateRecord.title === '' || updateRecord.content === '' || updateRecord.versionNo === '' || updateRecord.updateTime === '')
   }, [updateRecord])
 
   useEffect(() => {
@@ -81,7 +75,7 @@ const General = () => {
       ...updateRecord,
       content: mdValue,
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（updateRecord）；只在 [mdValue] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（updateRecord）；只在 [mdValue] 變動時呼叫，補上會每次 render 重跑
   }, [mdValue])
 
   return (
@@ -103,11 +97,12 @@ const General = () => {
                 format="yyyy-MM-dd"
                 value={updateRecord.updateTime}
                 onChange={date => {
-                  date && setUpdateRecord({
-                    ...updateRecord,
-                    // 保留原生 type=date 的存值語意：yyyy-MM-dd 字串以 UTC 零點解析，避免換 picker 後差 8 小時
-                    updateTime: new Date(format(date, 'yyyy-MM-dd')).getTime(),
-                  })
+                  date &&
+                    setUpdateRecord({
+                      ...updateRecord,
+                      // 保留原生 type=date 的存值語意：yyyy-MM-dd 字串以 UTC 零點解析，避免換 picker 後差 8 小時
+                      updateTime: new Date(format(date, 'yyyy-MM-dd')).getTime(),
+                    })
                 }}
               />
               <Field label="版本" htmlFor="system-update-version" className="w-[300px] max-w-full">
@@ -136,7 +131,7 @@ const General = () => {
             theme={theme}
             style={{ height: '700px' }}
             modelValue={mdValue}
-            language='en-US'
+            language="en-US"
             onChange={value => setMdValue(value)}
             toolbars={[
               'bold',
@@ -167,7 +162,7 @@ const General = () => {
               'preview',
               'htmlPreview',
               'catalog',
-              'github'
+              'github',
             ]}
           />
         </div>

@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
-const initialPinnedTableState = { table: [] };
+const initialPinnedTableState = { table: [] }
 
 const pinnedTableSlice = createSlice({
   name: 'pinnedTable',
@@ -10,8 +10,8 @@ const pinnedTableSlice = createSlice({
       state.table = action.payload
     },
   },
-});
+})
 
-export const pinnedTableActions = pinnedTableSlice.actions;
+export const pinnedTableActions = pinnedTableSlice.actions
 
-export default pinnedTableSlice.reducer;
+export default pinnedTableSlice.reducer

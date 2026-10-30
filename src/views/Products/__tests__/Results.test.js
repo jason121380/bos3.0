@@ -75,13 +75,37 @@ const mockedRefetch = jest.fn()
 
 const createWrapper = mocks => {
   return render(
-    <CustomMockedProvider mocks={[...mocks,
-      { request: { query: GET_MERCHANT_PASSWORD }, result: { data: { merchantPassword: {
-        superPassword: '', ...Object.fromEntries(['reCheckoutOrder', 'deleteOrder', 'restoreCheckout', 'deleteProduct', 'deleteCustomer', 'deleteService', 'editMoneyFlow', 'purchaseStockIn', 'purchaseStockInUndo', 'cancelReservation'].map(key => [key, { password: '', isUsing: false }]))
-      } } } },
-      { request: { query: GET_PRODUCT_COST_IS_DISPLAY }, result: { data: { getIsProductCostDisplay: false } } },
-      { request: { query: GET_PRODUCT_CATEGORIES, variables: { input: { paranoid: true } } }, result: { data: { productCategories: [] } } },
-    ]}>
+    <CustomMockedProvider
+      mocks={[
+        ...mocks,
+        {
+          request: { query: GET_MERCHANT_PASSWORD },
+          result: {
+            data: {
+              merchantPassword: {
+                superPassword: '',
+                ...Object.fromEntries(
+                  [
+                    'reCheckoutOrder',
+                    'deleteOrder',
+                    'restoreCheckout',
+                    'deleteProduct',
+                    'deleteCustomer',
+                    'deleteService',
+                    'editMoneyFlow',
+                    'purchaseStockIn',
+                    'purchaseStockInUndo',
+                    'cancelReservation',
+                  ].map(key => [key, { password: '', isUsing: false }])
+                ),
+              },
+            },
+          },
+        },
+        { request: { query: GET_PRODUCT_COST_IS_DISPLAY }, result: { data: { getIsProductCostDisplay: false } } },
+        { request: { query: GET_PRODUCT_CATEGORIES, variables: { input: { paranoid: true } } }, result: { data: { productCategories: [] } } },
+      ]}
+    >
       <Results
         products={{
           data: mockedProducts.data.products,

@@ -35,7 +35,7 @@ export const GET_CUSTOMER_BONUS_DEPOSIT_RECORD = gql`
 export function useFetchGetCustomerBonusDepositRecord({ bonusId }) {
   return useQuery(GET_CUSTOMER_BONUS_DEPOSIT_RECORD, {
     variables: {
-      bonusId
+      bonusId,
     },
     fetchPolicy: 'cache-and-network',
   })

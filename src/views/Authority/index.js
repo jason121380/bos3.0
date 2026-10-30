@@ -24,20 +24,16 @@ function Authority() {
         }
       />
       {merchantAuthData.error ? (
-          <QueryFailed onRetry={() => merchantAuthData.refetch()} />
-        ) : !merchantAuthData.loading ?
-        idx(merchantAuthData, _ => (
-          <Results
-            merchantAuth={_.data.getMerchantAuthorities}
-            merchantAuthDataRefetch={merchantAuthData.refetch}
-          />
-        )) : (
-          <div className="flex flex-col gap-2">
-            <Skeleton className="h-11 w-full" />
-            <Skeleton className="h-11 w-full" />
-            <Skeleton className="h-11 w-full" />
-          </div>
-        )}
+        <QueryFailed onRetry={() => merchantAuthData.refetch()} />
+      ) : !merchantAuthData.loading ? (
+        idx(merchantAuthData, _ => <Results merchantAuth={_.data.getMerchantAuthorities} merchantAuthDataRefetch={merchantAuthData.refetch} />)
+      ) : (
+        <div className="flex flex-col gap-2">
+          <Skeleton className="h-11 w-full" />
+          <Skeleton className="h-11 w-full" />
+          <Skeleton className="h-11 w-full" />
+        </div>
+      )}
     </Page>
   )
 }

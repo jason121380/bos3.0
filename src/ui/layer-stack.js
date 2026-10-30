@@ -35,25 +35,28 @@ function useLayerRef(forwardedRef, enabled = true, onEscapeKeyDown) {
     latestRef.current = forwardedRef
     assignRef(forwardedRef, nodeRef.current)
   }, [forwardedRef])
-  const ref = React.useCallback(node => {
-    if (nodeRef.current) {
-      const index = layers.indexOf(nodeRef.current)
-      if (index >= 0) layers.splice(index, 1)
-    }
-    nodeRef.current = node
-    if (node && enabled) {
-      const last = layers[layers.length - 1]
-      const order = last ? Number(last.style.zIndex) + 1 : 1300
-      if (!layers.length) document.addEventListener('keydown', handleEscape, true)
-      layers.push(node)
-      escapeHandlers.set(node, escapeRef)
-      // 同步設定，Radix Popper 在 layout effect 讀取 computed z-index 時即取得正確值。
-      node.style.zIndex = order
-      setZIndex(order)
-    }
-    if (!layers.length) document.removeEventListener('keydown', handleEscape, true)
-    assignRef(latestRef.current, node)
-  }, [enabled])
+  const ref = React.useCallback(
+    node => {
+      if (nodeRef.current) {
+        const index = layers.indexOf(nodeRef.current)
+        if (index >= 0) layers.splice(index, 1)
+      }
+      nodeRef.current = node
+      if (node && enabled) {
+        const last = layers[layers.length - 1]
+        const order = last ? Number(last.style.zIndex) + 1 : 1300
+        if (!layers.length) document.addEventListener('keydown', handleEscape, true)
+        layers.push(node)
+        escapeHandlers.set(node, escapeRef)
+        // 同步設定，Radix Popper 在 layout effect 讀取 computed z-index 時即取得正確值。
+        node.style.zIndex = order
+        setZIndex(order)
+      }
+      if (!layers.length) document.removeEventListener('keydown', handleEscape, true)
+      assignRef(latestRef.current, node)
+    },
+    [enabled]
+  )
   const isLaterLayerEvent = event => {
     const current = layers.indexOf(nodeRef.current)
     return current >= 0 && layers.slice(current + 1).some(node => node.contains(event.target))

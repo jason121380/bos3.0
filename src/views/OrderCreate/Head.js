@@ -140,16 +140,13 @@ export default function Head() {
     if (!designationSettingForOrderCreateData.loading && !lastOrderStatusData.loading) {
       setDesignateStatus(false)
     }
-  }, [designationSettingForOrderCreateData.loading, lastOrderStatusData.loading]);
+  }, [designationSettingForOrderCreateData.loading, lastOrderStatusData.loading])
   useEffect(() => {
     if (!isAbleToChangeDateTimeInOrder.loading) {
-      const isAbleToChangeDate = idx(
-        isAbleToChangeDateTimeInOrder,
-        _ => _.data.getIsAbleToChangeDateTimeInOrderCreate
-      )
+      const isAbleToChangeDate = idx(isAbleToChangeDateTimeInOrder, _ => _.data.getIsAbleToChangeDateTimeInOrderCreate)
       setIsChangeDateTime(isAbleToChangeDate)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isAbleToChangeDateTimeInOrder.loading])
 
   // 打帳單顯示鎖定checkbox
@@ -158,7 +155,7 @@ export default function Head() {
       const isLockDateDisplay = idx(isLockDateDisplayData, _ => _.data.getIsDateLockDisplay)
       setIsLockDateDisplay(isLockDateDisplay)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isLockDateDisplayData.loading])
 
   // 打帳單鎖定判斷
@@ -168,27 +165,22 @@ export default function Head() {
       setIsLockDate(isLockDate)
     } else {
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isLockDateData.loading])
 
   useEffect(() => {
     if (!getIsAutoSetPreferDesignerForOrderCreate.loading) {
-      const preferDesignerForOrderCreateData = idx(
-        getIsAutoSetPreferDesignerForOrderCreate,
-        _ => _.data.getIsAutoSetPreferDesignerForOrderCreate
-      )
+      const preferDesignerForOrderCreateData = idx(getIsAutoSetPreferDesignerForOrderCreate, _ => _.data.getIsAutoSetPreferDesignerForOrderCreate)
       setGetPreferDesigner(preferDesignerForOrderCreateData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsAutoSetPreferDesignerForOrderCreate.loading])
 
   // fill preference designer and membership card, base on customer
   useEffect(() => {
     if (!getCustomerLazyData.loading && getCustomerLazyData.data !== undefined) {
       if (getPreferDesigner) {
-        const getCustomer = idx(getCustomerLazyData, _ =>
-          _.data.customer.preferDesigner !== null ? _.data.customer.preferDesigner.id : ''
-        )
+        const getCustomer = idx(getCustomerLazyData, _ => (_.data.customer.preferDesigner !== null ? _.data.customer.preferDesigner.id : ''))
         if (getCustomer !== '') {
           setBill({ ...bill, designerId: getCustomer })
         }
@@ -205,22 +197,19 @@ export default function Head() {
         setMembershipPurchase(tmp)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [getCustomerLazyData.loading, setBill, setIsLineBinded] 變動時執行；bill、getCustomerLazyData、getPreferDesigner 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [getCustomerLazyData.loading, setBill, setIsLineBinded] 變動時執行；bill、getCustomerLazyData、getPreferDesigner 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [getCustomerLazyData.loading, setBill, setIsLineBinded])
 
   useEffect(() => {
     if (!orderWithoutCustomerSetting.loading) {
-      const orderWithoutCustomerSettingData = idx(
-        orderWithoutCustomerSetting,
-        _ => _.data.orderWithoutCustomerDefault
-      )
+      const orderWithoutCustomerSettingData = idx(orderWithoutCustomerSetting, _ => _.data.orderWithoutCustomerDefault)
       if (!orderWithoutCustomerSettingData) {
         localStorage.removeItem('stayInCheckoutWithoutCustomer')
         setCheckoutWithoutCustomer(false)
       }
       setOrderWithoutCustomer(orderWithoutCustomerSettingData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [orderWithoutCustomerSetting.loading])
 
   useEffect(() => {
@@ -237,12 +226,12 @@ export default function Head() {
           getCustomerLazy({
             variables: {
               id: d.id,
-            }
+            },
           })
         }
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [options, customers.loading, tmpCustomerKeyword, setBill] 變動時執行；getCustomerLazy、keyCode 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [options, customers.loading, tmpCustomerKeyword, setBill] 變動時執行；getCustomerLazy、keyCode 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [options, customers.loading, tmpCustomerKeyword, setBill])
 
   // delay send query customers
@@ -416,23 +405,26 @@ export default function Head() {
   useEffect(() => {
     let timer
     const scheduleNext = initial => {
-      timer = setTimeout(() => {
-        if (JSON.parse(localStorage.getItem('lockDate')) !== null) {
-          localStorage.removeItem('lockDate')
-          localStorage.removeItem('lockDateTimeStamp')
-          lockDate.setOpen(false)
-          setBill(
-            produce(draft => {
-              draft.date = new Date().getTime()
-            })
-          )
-        }
-        scheduleNext(false)
-      }, msUntilDailyUnlock(new Date(), initial))
+      timer = setTimeout(
+        () => {
+          if (JSON.parse(localStorage.getItem('lockDate')) !== null) {
+            localStorage.removeItem('lockDate')
+            localStorage.removeItem('lockDateTimeStamp')
+            lockDate.setOpen(false)
+            setBill(
+              produce(draft => {
+                draft.date = new Date().getTime()
+              })
+            )
+          }
+          scheduleNext(false)
+        },
+        msUntilDailyUnlock(new Date(), initial)
+      )
     }
     scheduleNext(true)
     return () => clearTimeout(timer)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [setBill] 變動時執行；lockDate 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [setBill] 變動時執行；lockDate 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [setBill])
 
   // customer autocomple press down button
@@ -454,7 +446,7 @@ export default function Head() {
               <Field label="帳單日期" required className="w-full">
                 <DateTimePicker
                   value={bill.date}
-                  format='yyyy/MM/dd HH:mm'
+                  format="yyyy/MM/dd HH:mm"
                   onChange={handleDateChange}
                   className={styles.dateInput}
                   slotProps={{
@@ -462,8 +454,8 @@ export default function Head() {
                       variant: 'outlined',
                       size: 'small',
                       onFocus: handleFocus,
-                      name: 'date'
-                    }
+                      name: 'date',
+                    },
                   }}
                 />
               </Field>
@@ -496,19 +488,53 @@ export default function Head() {
                   onChange={(event, newValue) => {
                     if (newValue && newValue.inputValue) {
                       setValue(newValue.inputValue)
-                      setBill(produce(draft => { draft.customerId = undefined; draft.customerCellphone = newValue.inputValue }))
+                      setBill(
+                        produce(draft => {
+                          draft.customerId = undefined
+                          draft.customerCellphone = newValue.inputValue
+                        })
+                      )
                       setIsLineBinded(false)
                       setMembershipPurchase([])
                       designerRef.current.focus()
                     } else if (newValue !== null) {
-                      setBill(produce(draft => { draft.customerId = newValue.id; draft.customerCellphone = newValue.cellphone }))
+                      setBill(
+                        produce(draft => {
+                          draft.customerId = newValue.id
+                          draft.customerCellphone = newValue.cellphone
+                        })
+                      )
                       setValue(newValue)
                       designerRef.current.focus()
                       getCustomerLazy({ variables: { id: newValue.id } })
                     } else {
-                      setBill(produce(draft => { draft.customerId = undefined; draft.customerCellphone = '' }))
-                      setKeyCode(null); setValue(''); setTmpCustomerKeyword(''); setMembershipPurchase([]); setIsLineBinded(false)
-                      setCustomer({ customerId: '', category: '', name: '', cellphone: '', birthday: { year: '', month: '', day: '' }, OfficialBrandMerchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null, gender: 'MALE', no: '', nickName: '', PreferDesignerId: '', email: '', address: '', lineId: '', remark: '' })
+                      setBill(
+                        produce(draft => {
+                          draft.customerId = undefined
+                          draft.customerCellphone = ''
+                        })
+                      )
+                      setKeyCode(null)
+                      setValue('')
+                      setTmpCustomerKeyword('')
+                      setMembershipPurchase([])
+                      setIsLineBinded(false)
+                      setCustomer({
+                        customerId: '',
+                        category: '',
+                        name: '',
+                        cellphone: '',
+                        birthday: { year: '', month: '', day: '' },
+                        OfficialBrandMerchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
+                        gender: 'MALE',
+                        no: '',
+                        nickName: '',
+                        PreferDesignerId: '',
+                        email: '',
+                        address: '',
+                        lineId: '',
+                        remark: '',
+                      })
                     }
                   }}
                   filterOptions={(options, params) => {
@@ -521,7 +547,15 @@ export default function Head() {
                     return filtered
                   }}
                   options={options}
-                  getOptionLabel={option => typeof option === 'string' ? option : option.inputValue ? option.inputValue : option.name === undefined || option.no === undefined ? option.cellphone : `${option.name}/${option.cellphone}/${option.no}`}
+                  getOptionLabel={option =>
+                    typeof option === 'string'
+                      ? option
+                      : option.inputValue
+                        ? option.inputValue
+                        : option.name === undefined || option.no === undefined
+                          ? option.cellphone
+                          : `${option.name}/${option.cellphone}/${option.no}`
+                  }
                   renderInput={params => (
                     <TextField
                       {...params}
@@ -586,7 +620,7 @@ export default function Head() {
             )}
 
             <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-              {(LBCusDisplay && isLineBinded) && <img style={{ width: 24, height: 24 }} alt='line_icon' src={lineIcon} />}
+              {LBCusDisplay && isLineBinded && <img style={{ width: 24, height: 24 }} alt="line_icon" src={lineIcon} />}
               {membershipPurchase.length > 0 && <MembershipCardList data={membershipPurchase} />}
             </div>
           </div>
@@ -607,7 +641,11 @@ export default function Head() {
                   onChange={value => handleBillChange({ value: idx(value, _ => _.userId), key: 'designerId' })}
                   onKeyDown={e => {
                     if (e.keyCode === 13) {
-                      if (designationSettingForOrderCreate) { designateRef.current.focus() } else { nonDesignateRef.current.focus() }
+                      if (designationSettingForOrderCreate) {
+                        designateRef.current.focus()
+                      } else {
+                        nonDesignateRef.current.focus()
+                      }
                     }
                   }}
                 />
@@ -629,7 +667,7 @@ export default function Head() {
                       ref={data.value ? designateRef : nonDesignateRef}
                       onKeyDown={e => handleDesignateBtnKeyDown(e)}
                       disabled={designateStatus}
-                      onClick={() => data.value ? designateRef.current.focus() : nonDesignateRef.current.focus()}
+                      onClick={() => (data.value ? designateRef.current.focus() : nonDesignateRef.current.focus())}
                     >
                       {data.label}
                     </ToggleGroupItem>

@@ -24,7 +24,7 @@ const FETCH_GET_PICKING = gql`
 export default function useFetchGetPicking(input) {
   return useQuery(FETCH_GET_PICKING, {
     variables: {
-      input
+      input,
     },
     fetchPolicy: 'cache-and-network',
   })

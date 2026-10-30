@@ -16,10 +16,7 @@ function HelperPoint({ className, merchantPointValueSettings }) {
         <CardHeader
           action={
             <Button asChild variant="secondary" size="sm">
-              <RouterLink
-                to={'/helper-point-setting-create'}
-                data-testid="parameter"
-              >
+              <RouterLink to={'/helper-point-setting-create'} data-testid="parameter">
                 新增
               </RouterLink>
             </Button>
@@ -29,11 +26,8 @@ function HelperPoint({ className, merchantPointValueSettings }) {
         </CardHeader>
         <CardContent>
           {!merchantPointValueSettings.loading ? (
-            <HelperPointResults
-              merchantPointValueSettings={merchantPointValueSettings}
-              merchantPointValueData={merchantPointValueData}
-            />
-            ) : (
+            <HelperPointResults merchantPointValueSettings={merchantPointValueSettings} merchantPointValueData={merchantPointValueData} />
+          ) : (
             <Skeleton className="h-24 w-full" />
           )}
         </CardContent>

@@ -9,17 +9,14 @@ import uuid from 'lib/uuid'
 import MerchantSells from './MerchantSells'
 import useOncePerOrder from './useOncePerOrder'
 
-
-export default function PanelMerchantSells({ thirdPartTicket, expanded, setExpanded  }) {
-  const {
-    handleBillChange, orderId, sells, setSells, pData, setPData
-  } = React.useContext(billContext)
+export default function PanelMerchantSells({ thirdPartTicket, expanded, setExpanded }) {
+  const { handleBillChange, orderId, sells, setSells, pData, setPData } = React.useContext(billContext)
   const productOrder = useFetchProductOrder({ id: orderId })
   const isFirstLoad = useOncePerOrder()
   // 要聚焦的列：開頁時 -1（沒有）。帶入既有資料時會自動展開區塊，原本「展開就設第 1 列」的 effect（[expanded]）讓第 1 列的
   // 「展開＋本列要聚焦」effect 一展開就搶走焦點；改為使用者按標題展開、新增／刪除列、換列時才指定（比照打帳單；Jason 2026/10/22 fix all）
   const [focusRow, setFocusRow] = React.useState(-1)
-  
+
   const getData = value => {
     !pData.length && setPData(value)
   }
@@ -30,24 +27,24 @@ export default function PanelMerchantSells({ thirdPartTicket, expanded, setExpan
       const newSells =
         productOrder.data.order.productOrders.length > 0
           ? productOrder.data.order.productOrders.map(data => ({
-            id: data.id,
-            sellerId: data.seller.id,
-            productId: data.product.id,
-            price: data.price,
-            count: data.count,
-            isLocked: data.product.isLocked,
-            thirdPartyCouponMerchantId: data.thirdPartyPayId,
-          }))
+              id: data.id,
+              sellerId: data.seller.id,
+              productId: data.product.id,
+              price: data.price,
+              count: data.count,
+              isLocked: data.product.isLocked,
+              thirdPartyCouponMerchantId: data.thirdPartyPayId,
+            }))
           : [
-            {
-              id: uuid(),
-              sellerId: '',
-              productId: '',
-              price: 0,
-              count: 1,
-              thirdPartyCouponMerchantId: null,
-            },
-          ]
+              {
+                id: uuid(),
+                sellerId: '',
+                productId: '',
+                price: 0,
+                count: 1,
+                thirdPartyCouponMerchantId: null,
+              },
+            ]
 
       if (newSells.length > 0 && newSells[0].productId !== '' && newSells[0].sellerId !== '') {
         setExpanded(true)
@@ -178,10 +175,13 @@ export default function PanelMerchantSells({ thirdPartTicket, expanded, setExpan
         data-testid="merchantSell"
         onClick={handleAccordionClick}
         style={{ width: '100%' }}
-        summaryMeta={!expanded && panelSummary(
-          sells.filter(d => d.productId).length,
-          sells.filter(d => d.productId).reduce((total, d) => total + d.price * d.count, 0)
-        )}
+        summaryMeta={
+          !expanded &&
+          panelSummary(
+            sells.filter(d => d.productId).length,
+            sells.filter(d => d.productId).reduce((total, d) => total + d.price * d.count, 0)
+          )
+        }
       >
         <p className="m-0 !text-[16px] font-bold text-text">店販銷售</p>
       </AccordionSummary>

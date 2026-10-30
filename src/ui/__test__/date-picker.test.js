@@ -6,7 +6,10 @@ import { DateField, parseFormat } from '../date-field'
 
 afterEach(cleanup)
 
-const iso = d => (d instanceof Date && !Number.isNaN(d.getTime()) ? `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}` : String(d))
+const iso = d =>
+  d instanceof Date && !Number.isNaN(d.getTime())
+    ? `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`
+    : String(d)
 
 // 以滑鼠裝置（pointer: fine）渲染：DatePicker 走分段輸入＋月曆鈕
 const withDesktop = fn => {
@@ -155,7 +158,14 @@ describe('ui/date-picker（取代 @mui/x-date-pickers）', () => {
   it('手機版：頁面的 handler 沒有 preventDefault 時 Enter 也不開月曆（頁面用 Enter 跳下一欄）；空白鍵照常開；props.onKeyDown 也會被呼叫', () => {
     const slotKeyDown = jest.fn()
     const propKeyDown = jest.fn()
-    render(<MobileDatePicker value={new Date(2026, 9, 20)} onChange={() => {}} onKeyDown={propKeyDown} slotProps={{ textField: { onKeyDown: slotKeyDown } }} />)
+    render(
+      <MobileDatePicker
+        value={new Date(2026, 9, 20)}
+        onChange={() => {}}
+        onKeyDown={propKeyDown}
+        slotProps={{ textField: { onKeyDown: slotKeyDown } }}
+      />
+    )
     fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' })
     expect(propKeyDown).toHaveBeenCalledTimes(1)
     expect(slotKeyDown).toHaveBeenCalledTimes(1)
@@ -203,7 +213,17 @@ describe('ui/date-picker（取代 @mui/x-date-pickers）', () => {
 
 describe('ui/date-field', () => {
   it('parseFormat 切出年月日時分與分隔字', () => {
-    expect(parseFormat('yyyy/MM/dd HH:mm')).toEqual([{ token: 'yyyy' }, { sep: '/' }, { token: 'MM' }, { sep: '/' }, { token: 'dd' }, { sep: ' ' }, { token: 'HH' }, { sep: ':' }, { token: 'mm' }])
+    expect(parseFormat('yyyy/MM/dd HH:mm')).toEqual([
+      { token: 'yyyy' },
+      { sep: '/' },
+      { token: 'MM' },
+      { sep: '/' },
+      { token: 'dd' },
+      { sep: ' ' },
+      { token: 'HH' },
+      { sep: ':' },
+      { token: 'mm' },
+    ])
   })
 
   // 2/30 這種不存在的日期不可被進位成 3/2 偷偷存進去

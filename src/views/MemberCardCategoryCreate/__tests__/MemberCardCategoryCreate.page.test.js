@@ -70,7 +70,10 @@ describe('新增會員卡分類', () => {
     fireEvent.click(screen.getByTestId('submit-create'))
     await wait(() => expect(window.location.href).toBe('/member-card-categories'))
     expect(callsOf(calls, 'createMembershipCategory')[0].variables.input).toEqual({
-      no: 'B02', name: '銀卡', OfficialBrandMerchantId: null, isUsing: true,
+      no: 'B02',
+      name: '銀卡',
+      OfficialBrandMerchantId: null,
+      isUsing: true,
     })
   })
 })

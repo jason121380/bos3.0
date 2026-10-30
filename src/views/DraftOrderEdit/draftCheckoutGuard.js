@@ -22,7 +22,8 @@ export const DRAFT_STILL_PENDING = gql`
   }
 `
 
-const NETWORK_MESSAGE = /網路連線異常|Failed to fetch|NetworkError|Network error|timeout|timed out|Load failed|ECONNRESET|ECONNABORTED|socket hang up|status code 504|status code 502|status code 408|\b504\b|\b502\b|\b408\b/i
+const NETWORK_MESSAGE =
+  /網路連線異常|Failed to fetch|NetworkError|Network error|timeout|timed out|Load failed|ECONNRESET|ECONNABORTED|socket hang up|status code 504|status code 502|status code 408|\b504\b|\b502\b|\b408\b/i
 
 function isNetworkMessage(message) {
   return NETWORK_MESSAGE.test(String(message || ''))

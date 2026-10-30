@@ -21,9 +21,7 @@ import AboutDeduction from 'views/ServiceShared/AboutDeduction'
 import AboutService from 'views/ServiceShared/AboutService'
 
 function ServiceCategoryCreate() {
-  const merchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
+  const merchantId = localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null
   const merchantCommissions = useFetchMerchantCommissionWay()
   const customerCategory = useFetchMerchantCustomerCategory()
   const merchantJobTitlePoint = useFetchMerchantJobTitlePoint()
@@ -36,24 +34,25 @@ function ServiceCategoryCreate() {
     if (!merchantCommissions.loading && !customerCategory.loading) {
       setService(
         produce(draft => {
-          draft.ServiceDeductionItems = idx(merchantCommissions.data, _ =>
-            _.merchantCommissionWay.map(data => ({
-              type: data.name,
-              itemSettings: [
-                {
-                  isSpecial: false,
-                  name: '材料費',
-                  type: 'onSales',
-                  deductionWay: '',
-                  price: 0,
-                  designatePrice: 0,
-                  nonDesignatePrice: 0,
-                  deductionOrder: 1,
-                  deductionReference: 0,
-                },
-              ],
-            }))
-          ) || [] // 查詢失敗時沒有扣項卡，不整頁錯誤
+          draft.ServiceDeductionItems =
+            idx(merchantCommissions.data, _ =>
+              _.merchantCommissionWay.map(data => ({
+                type: data.name,
+                itemSettings: [
+                  {
+                    isSpecial: false,
+                    name: '材料費',
+                    type: 'onSales',
+                    deductionWay: '',
+                    price: 0,
+                    designatePrice: 0,
+                    nonDesignatePrice: 0,
+                    deductionOrder: 1,
+                    deductionReference: 0,
+                  },
+                ],
+              }))
+            ) || [] // 查詢失敗時沒有扣項卡，不整頁錯誤
           draft.customerSellSetting = idx(customerCategory.data, _ =>
             _.merchantCustomerCategory.map(data => ({
               category: data.name,
@@ -64,12 +63,7 @@ function ServiceCategoryCreate() {
         })
       )
     }
-  }, [
-    merchantCommissions.loading,
-    merchantCommissions.data,
-    customerCategory.data,
-    customerCategory.loading,
-  ])
+  }, [merchantCommissions.loading, merchantCommissions.data, customerCategory.data, customerCategory.loading])
   const [saveBtn, setSaveBtn] = React.useState(false)
   const [service, setService] = React.useState({
     no: '',
@@ -134,36 +128,36 @@ function ServiceCategoryCreate() {
   const handleSubmit = () => {
     setSaveBtn(true)
     const newService = cloneDeep(service)
-    const newHelperDeductionSetting = newService.helperDeductionSetting.map(
-      ({ deductionWay, isDesignate, __typename, ...keepProteries }) => {
-        return {
-          ...keepProteries,
-          point: parseFloat(keepProteries.point) || 0,
-          cash: parseFloat(keepProteries.cash) || 0,
-          percent: parseFloat(keepProteries.percent) || 0,
-          designateCash: parseFloat(keepProteries.designateCash) || 0,
-          nonDesignateCash: parseFloat(keepProteries.nonDesignateCash) || 0,
-          designatePercent: parseFloat(keepProteries.designatePercent) || 0,
-          nonDesignatePercent: parseFloat(keepProteries.nonDesignatePercent) || 0,
-          designatePoint: parseFloat(keepProteries.designatePoint) || 0,
-          nonDesignatePoint: parseFloat(keepProteries.nonDesignatePoint) || 0,
-        }
+    const newHelperDeductionSetting = newService.helperDeductionSetting.map(({ deductionWay, isDesignate, __typename, ...keepProteries }) => {
+      return {
+        ...keepProteries,
+        point: parseFloat(keepProteries.point) || 0,
+        cash: parseFloat(keepProteries.cash) || 0,
+        percent: parseFloat(keepProteries.percent) || 0,
+        designateCash: parseFloat(keepProteries.designateCash) || 0,
+        nonDesignateCash: parseFloat(keepProteries.nonDesignateCash) || 0,
+        designatePercent: parseFloat(keepProteries.designatePercent) || 0,
+        nonDesignatePercent: parseFloat(keepProteries.nonDesignatePercent) || 0,
+        designatePoint: parseFloat(keepProteries.designatePoint) || 0,
+        nonDesignatePoint: parseFloat(keepProteries.nonDesignatePoint) || 0,
       }
-    )
+    })
     newService.helperDeductionSetting = newHelperDeductionSetting
     if (newService.bindedThirdPartTicketId === 'none') {
       newService.bindedThirdPartTicketId = null
     }
     createService({
       input: newService,
-    }).then(() => {
-      services.refetch()
-      openSnackbar({ variant: 'success', message: '成功新增服務' })
-      history.push('/services')
-    }).catch(error => {
-      setSaveBtn(false)
-      openSnackbar({ variant: 'error', message: error.message })
     })
+      .then(() => {
+        services.refetch()
+        openSnackbar({ variant: 'success', message: '成功新增服務' })
+        history.push('/services')
+      })
+      .catch(error => {
+        setSaveBtn(false)
+        openSnackbar({ variant: 'error', message: error.message })
+      })
   }
 
   React.useEffect(() => {
@@ -187,39 +181,27 @@ function ServiceCategoryCreate() {
             if (data2.deductionWay === '扣趴數') {
               if (!data2.isSpecial) {
                 if (data2.type === 'onSales') {
-                  afterDeductionPrice =
-                    A[data2.deductionReference] - A[data2.deductionReference] * (data2.price * 0.01)
+                  afterDeductionPrice = A[data2.deductionReference] - A[data2.deductionReference] * (data2.price * 0.01)
                   A.push(afterDeductionPrice)
                   X.push(A[data2.deductionReference] * (data2.price * 0.01))
                   totalNumDecution = X.reduce((accu, curVal) => (accu += curVal), 0)
                 } else {
-                  afterDeductionPrice =
-                    A[data2.deductionReference] - A[data2.deductionReference] * (data2.price * 0.01)
+                  afterDeductionPrice = A[data2.deductionReference] - A[data2.deductionReference] * (data2.price * 0.01)
                   A.push(afterDeductionPrice)
                   Y.push(A[data2.deductionReference] * (data2.price * 0.01))
                 }
               } else {
                 if (data2.type === 'onSales') {
-                  const numForDeduction =
-                    data2.designatePrice < data2.nonDesignatePrice
-                      ? data2.designatePrice
-                      : data2.nonDesignatePrice
+                  const numForDeduction = data2.designatePrice < data2.nonDesignatePrice ? data2.designatePrice : data2.nonDesignatePrice
 
-                  afterDeductionPrice =
-                    A[data2.deductionReference] -
-                    A[data2.deductionReference] * (numForDeduction * 0.01)
+                  afterDeductionPrice = A[data2.deductionReference] - A[data2.deductionReference] * (numForDeduction * 0.01)
                   A.push(afterDeductionPrice)
                   X.push(A[data2.deductionReference] * (numForDeduction * 0.01))
                   totalNumDecution = X.reduce((accu, curVal) => (accu += curVal), 0)
                 } else {
-                  const numForDeduction =
-                    data2.designatePrice < data2.nonDesignatePrice
-                      ? data2.designatePrice
-                      : data2.nonDesignatePrice
+                  const numForDeduction = data2.designatePrice < data2.nonDesignatePrice ? data2.designatePrice : data2.nonDesignatePrice
 
-                  afterDeductionPrice =
-                    A[data2.deductionReference] -
-                    A[data2.deductionReference] * (numForDeduction * 0.01)
+                  afterDeductionPrice = A[data2.deductionReference] - A[data2.deductionReference] * (numForDeduction * 0.01)
                   A.push(afterDeductionPrice)
                   Y.push(A[data2.deductionReference] * (numForDeduction * 0.01))
                 }
@@ -237,19 +219,13 @@ function ServiceCategoryCreate() {
                 }
               } else {
                 if (data2.type === 'onSales') {
-                  const numForDeduction =
-                    data2.designatePrice < data2.nonDesignatePrice
-                      ? data2.designatePrice
-                      : data2.nonDesignatePrice
+                  const numForDeduction = data2.designatePrice < data2.nonDesignatePrice ? data2.designatePrice : data2.nonDesignatePrice
                   afterDeductionPrice = A[data2.deductionReference] - numForDeduction
                   A.push(afterDeductionPrice)
                   X.push(numForDeduction)
                   totalNumDecution = X.reduce((accu, curVal) => (accu += curVal), 0)
                 } else {
-                  const numForDeduction =
-                    data2.designatePrice < data2.nonDesignatePrice
-                      ? data2.designatePrice
-                      : data2.nonDesignatePrice
+                  const numForDeduction = data2.designatePrice < data2.nonDesignatePrice ? data2.designatePrice : data2.nonDesignatePrice
                   afterDeductionPrice = A[data2.deductionReference] - numForDeduction
                   A.push(afterDeductionPrice)
                   Y.push(numForDeduction)
@@ -269,9 +245,7 @@ function ServiceCategoryCreate() {
   React.useEffect(() => {
     // 計算預估實業績要扣的互助金額
     const newService = cloneDeep(service)
-    const helperDeductionOnSales = newService.helperDeductionSetting.filter(
-      data => data.helperDeductionType === 'onSales'
-    )
+    const helperDeductionOnSales = newService.helperDeductionSetting.filter(data => data.helperDeductionType === 'onSales')
     helperDeduction(helperDeductionOnSales, setHelperPoint, setHelperDeductionNums, newService.price)
   }, [service, merchantJobTitlePoint.loading])
 
@@ -279,12 +253,8 @@ function ServiceCategoryCreate() {
     <Page className="ui-root" title="新增服務項目">
       {/* 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-4xl（與舊版 Container md 相近） */}
       <div className="mx-auto flex max-w-4xl flex-col gap-6">
-        <PageHeader className="pb-0" title='新增服務項目' />
-        <AboutService
-          service={service}
-          onChange={handleOnChange}
-          handleCheckboxChange={handleCheckboxChange}
-        />
+        <PageHeader className="pb-0" title="新增服務項目" />
+        <AboutService service={service} onChange={handleOnChange} handleCheckboxChange={handleCheckboxChange} />
 
         <AboutDeduction
           ServiceDeductionItems={service.ServiceDeductionItems}
@@ -295,14 +265,15 @@ function ServiceCategoryCreate() {
           helperPoint={helperPoint}
         />
 
-        <AboutAssistantSetting
-          merchantHelperItems={merchantHelperItems}
-          support={service.helperDeductionSetting}
-          onChange={handleOnChange}
-        />
+        <AboutAssistantSetting merchantHelperItems={merchantHelperItems} support={service.helperDeductionSetting} onChange={handleOnChange} />
 
         <div className="flex flex-wrap items-center gap-3">
-          <Button variant="primary" disabled={vaild || saveBtn} aria-describedby={vaild ? 'service-create-missing' : undefined} onClick={handleSubmit}>
+          <Button
+            variant="primary"
+            disabled={vaild || saveBtn}
+            aria-describedby={vaild ? 'service-create-missing' : undefined}
+            onClick={handleSubmit}
+          >
             新增
           </Button>
           {/* 停用原因（STYLE.md §6）：依 vaild（名稱、服務類別必填） */}

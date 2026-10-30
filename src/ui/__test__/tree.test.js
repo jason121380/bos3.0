@@ -4,21 +4,32 @@ import { TreeView, TreeItem } from '../tree'
 
 function Fixture({ onToggle = jest.fn(), onSelect = jest.fn(), onClick = jest.fn() }) {
   const [expanded, setExpanded] = React.useState([])
-  return <TreeView aria-label="店家" expanded={expanded} onToggle={(event, ids) => {
-    onToggle(event.currentTarget.querySelector('span').id, ids)
-    setExpanded(ids)
-  }} onSelect={onSelect} defaultExpandIcon={<svg data-testid="expand" />} defaultCollapseIcon={<svg data-testid="collapse" />}>
-    <TreeItem nodeId="group" label={<span id="group">群組</span>}>
-      <TreeItem nodeId="a" label={<span>甲店</span>} onClick={onClick} />
-      <TreeItem nodeId="disabled" label="停用" disabled onClick={onClick} />
-      <TreeItem nodeId="b" label="乙店" />
-    </TreeItem>
-    <TreeItem nodeId="end" label="末項" />
-  </TreeView>
+  return (
+    <TreeView
+      aria-label="店家"
+      expanded={expanded}
+      onToggle={(event, ids) => {
+        onToggle(event.currentTarget.querySelector('span').id, ids)
+        setExpanded(ids)
+      }}
+      onSelect={onSelect}
+      defaultExpandIcon={<svg data-testid="expand" />}
+      defaultCollapseIcon={<svg data-testid="collapse" />}
+    >
+      <TreeItem nodeId="group" label={<span id="group">群組</span>}>
+        <TreeItem nodeId="a" label={<span>甲店</span>} onClick={onClick} />
+        <TreeItem nodeId="disabled" label="停用" disabled onClick={onClick} />
+        <TreeItem nodeId="b" label="乙店" />
+      </TreeItem>
+      <TreeItem nodeId="end" label="末項" />
+    </TreeView>
+  )
 }
 
 test('受控展開、選取、圖示、列事件契約與收合卸載', () => {
-  const onToggle = jest.fn(), onSelect = jest.fn(), onClick = jest.fn()
+  const onToggle = jest.fn(),
+    onSelect = jest.fn(),
+    onClick = jest.fn()
   render(<Fixture {...{ onToggle, onSelect, onClick }} />)
   expect(screen.getByRole('tree', { name: '店家' })).toBeInTheDocument()
   expect(screen.queryByText('甲店')).toBeNull()
@@ -65,8 +76,26 @@ test('方向鍵、Home／End、Enter／Space 走相同選取回呼，略過停�
 })
 
 test('自訂 checkbox 標籤可操作，個別 selected 控制高亮，Esc 不被樹攔截', () => {
-  const change = jest.fn(), click = jest.fn(), key = jest.fn()
-  render(<div onKeyDown={key}><TreeView aria-label="商品"><TreeItem nodeId="p" selected label={<label><input type="checkbox" onChange={change} />商品</label>} onClick={click} /></TreeView></div>)
+  const change = jest.fn(),
+    click = jest.fn(),
+    key = jest.fn()
+  render(
+    <div onKeyDown={key}>
+      <TreeView aria-label="商品">
+        <TreeItem
+          nodeId="p"
+          selected
+          label={
+            <label>
+              <input type="checkbox" onChange={change} />
+              商品
+            </label>
+          }
+          onClick={click}
+        />
+      </TreeView>
+    </div>
+  )
   const item = screen.getByRole('treeitem')
   expect(item).toHaveAttribute('aria-selected', 'true')
   fireEvent.click(screen.getByRole('checkbox'))
@@ -77,12 +106,17 @@ test('自訂 checkbox 標籤可操作，個別 selected 控制高亮，Esc 不�
   expect(key).toHaveBeenLastCalledWith(expect.objectContaining({ key: 'Escape', defaultPrevented: false }))
 })
 
-
 test('同一資料出現在全部與分類時，DOM id 與 Tab 入口仍唯一', () => {
-  render(<TreeView defaultExpanded={['all', 'category']}>
-    <TreeItem nodeId="all" label="全部"><TreeItem nodeId="p" label="商品" /></TreeItem>
-    <TreeItem nodeId="category" label="分類"><TreeItem nodeId="p" label="商品" /></TreeItem>
-  </TreeView>)
+  render(
+    <TreeView defaultExpanded={['all', 'category']}>
+      <TreeItem nodeId="all" label="全部">
+        <TreeItem nodeId="p" label="商品" />
+      </TreeItem>
+      <TreeItem nodeId="category" label="分類">
+        <TreeItem nodeId="p" label="商品" />
+      </TreeItem>
+    </TreeView>
+  )
   const copies = screen.getAllByRole('treeitem', { name: '商品' })
   expect(copies[0].id).not.toBe(copies[1].id)
   copies[1].focus()

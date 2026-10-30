@@ -34,59 +34,59 @@ export const createDefaultMerchantBankSettings = () => ({
 })
 
 export const createDefaultMerchantBookingNotification = () => ({
-  "customerCreateBooking": {
-    "customer": false,
-    "designer": false,
-    "merchant": false
+  'customerCreateBooking': {
+    'customer': false,
+    'designer': false,
+    'merchant': false,
   },
-  "customerCancelBooking": {
-    "customer": false,
-    "designer": false,
-    "merchant": false
+  'customerCancelBooking': {
+    'customer': false,
+    'designer': false,
+    'merchant': false,
   },
-  "designerCreateBooking": {
-    "customer": false,
-    "designer": false,
-    "merchant": false
+  'designerCreateBooking': {
+    'customer': false,
+    'designer': false,
+    'merchant': false,
   },
-  "designerCancelBooking": {
-    "customer": false,
-    "designer": false,
-    "merchant": false
+  'designerCancelBooking': {
+    'customer': false,
+    'designer': false,
+    'merchant': false,
   },
-  "bookingUpdated": {
-    "customer": false,
-    "designer": false,
-    "merchant": false
-  }
+  'bookingUpdated': {
+    'customer': false,
+    'designer': false,
+    'merchant': false,
+  },
 })
 
 export const createDefaultBookingLineNotify = () => ({
-  "cusCreateBooking": {
-    "customer": [],
-    "designer": [],
-    "merchant": []
+  'cusCreateBooking': {
+    'customer': [],
+    'designer': [],
+    'merchant': [],
   },
-  "cusCancelBooking": {
-    "customer": [],
-    "designer": [],
-    "merchant": []
+  'cusCancelBooking': {
+    'customer': [],
+    'designer': [],
+    'merchant': [],
   },
-  "designerCreateBooking": {
-    "customer": [],
-    "designer": [],
-    "merchant": []
+  'designerCreateBooking': {
+    'customer': [],
+    'designer': [],
+    'merchant': [],
   },
-  "designerCancelBooking": {
-    "customer": [],
-    "designer": [],
-    "merchant": []
+  'designerCancelBooking': {
+    'customer': [],
+    'designer': [],
+    'merchant': [],
   },
-  "bookingUpdated": {
-    "customer": [],
-    "designer": [],
-    "merchant": []
-  }
+  'bookingUpdated': {
+    'customer': [],
+    'designer': [],
+    'merchant': [],
+  },
 })
 
 export const createDefaultAboutReport = () => ({
@@ -115,7 +115,7 @@ export const createDefaultAboutReport = () => ({
   isMultiStoreStaffPerfMergedDL: false,
   multiStorePerfRef: 'EACH',
   isTSNoOT: false,
-  nonCashDisplay: false
+  nonCashDisplay: false,
 })
 
 export const createDefaultCheckoutAndSalaryItem = () => ({
@@ -132,12 +132,12 @@ export const createDefaultCheckoutAndSalaryItem = () => ({
 })
 
 export const createDefaultHairCondition = () => ({
-  "hairProperties": [],
-  "scalpProperties": [],
-  "permAppliance": [],
-  "permPotion": [],
-  "hairColorCategory": [],
-  "hairColor": []
+  'hairProperties': [],
+  'scalpProperties': [],
+  'permAppliance': [],
+  'permPotion': [],
+  'hairColorCategory': [],
+  'hairColor': [],
 })
 
 export const createDefaultOrderCreateSetting = () => ({
@@ -163,16 +163,16 @@ export const createDefaultOrderCreateSetting = () => ({
   isCusWalletUsageForOrder: true,
   logoDisplayOnInvoice: {
     isDisplay: false,
-    imageUrl: null
+    imageUrl: null,
   },
   messageDisplayOnInvoice: {
     isDisplay: false,
-    message: null
+    message: null,
   },
   qrcodeDisplayOnInvoice: {
     isDisplay: false,
     url: null,
-    imageUrl: null
+    imageUrl: null,
   },
 })
 
@@ -189,7 +189,7 @@ export const createDefaultAboutSettingFunction = () => ({
   isEmployeeScheduleUndoActive: true,
   isCustomerSelfCreateActive: false,
   isBookingTimeNoLimit: false,
-  designerNameForCustomerSide: "BOTH",
+  designerNameForCustomerSide: 'BOTH',
   actionsBannedAfterDailyCheckout: [],
   isBonusConversion: false,
   bonusConversionRate: 0,
@@ -198,8 +198,8 @@ export const createDefaultAboutSettingFunction = () => ({
   isUnlimProdEmpPrice: false,
   disablePendingOrder: false,
   openingTimeForDisplay: {
-    openingHoursForDisplay: "00:00:00",
-    closingHoursForDisplay: "00:00:00",
+    openingHoursForDisplay: '00:00:00',
+    closingHoursForDisplay: '00:00:00',
   },
   bonusRewardRule: {
     isUsing: false,
@@ -207,67 +207,67 @@ export const createDefaultAboutSettingFunction = () => ({
       price: 0,
       bonus: 0,
       mode: 'ROUNDING',
-    }
-  }
+    },
+  },
 })
 
 export const createDefaultAboutBooking = () => ({
-  "nonDesignationOrderLimit": 0,
-  "designationOrderLimit": 0,
-  "isBookingAutoAccept": false,
-  "isNDBNeedVerify": false,
-  "isCustomerBookedableInSameDay": false,
-  "isRTCUsing": false,
-  "isBookingRemarkDisplay": false,
-  "isCusBookingRemarkDisplay": true,
-  "isBirthdayIconDisplay": false,
-  "bookingLimitPerCellphoneInSameDay": null,
-  "disableBookingDayLimit": null,
-  "createBookingDayLimit": null,
-  "cancelBookingDayLimitByActionDate": null,
-  "cancelBookingDayLimitByServiceDate": null,
-  "bookingTimeSetting": {
-    openingHours: "10:00:00",
-    closingHours: "22:00:00"
+  'nonDesignationOrderLimit': 0,
+  'designationOrderLimit': 0,
+  'isBookingAutoAccept': false,
+  'isNDBNeedVerify': false,
+  'isCustomerBookedableInSameDay': false,
+  'isRTCUsing': false,
+  'isBookingRemarkDisplay': false,
+  'isCusBookingRemarkDisplay': true,
+  'isBirthdayIconDisplay': false,
+  'bookingLimitPerCellphoneInSameDay': null,
+  'disableBookingDayLimit': null,
+  'createBookingDayLimit': null,
+  'cancelBookingDayLimitByActionDate': null,
+  'cancelBookingDayLimitByServiceDate': null,
+  'bookingTimeSetting': {
+    openingHours: '10:00:00',
+    closingHours: '22:00:00',
   },
-  "troubleShooting": '',
-  "SMSAccount": {
-      "account": '',
-      "password": ''
+  'troubleShooting': '',
+  'SMSAccount': {
+    'account': '',
+    'password': '',
   },
-  "bookingNotificationPhone": [''],
-  "bookingNotificationLine": {
-      "isUsing": false,
-      "notifyDayCount": 0
+  'bookingNotificationPhone': [''],
+  'bookingNotificationLine': {
+    'isUsing': false,
+    'notifyDayCount': 0,
   },
-  "inviteRatingDayCount": null,
-  "cusRatingDayLimit": null,
+  'inviteRatingDayCount': null,
+  'cusRatingDayLimit': null,
   isBookingHistoryDisplay: false,
   isDynamicBookingLimitUsing: false,
   cusMaxBookingCount: null,
-  isNDBInLimitCount: false
+  isNDBInLimitCount: false,
 })
 
 export const createDefaultAboutCustomer = () => ({
-  "customerSidePageDisplay": {
-    "ServiceRecord": false,
-    "TicketRecord": true,
-    "WalletRecord": false,
-    "BonusRecord": true,
-    "CustomerMall": false
+  'customerSidePageDisplay': {
+    'ServiceRecord': false,
+    'TicketRecord': true,
+    'WalletRecord': false,
+    'BonusRecord': true,
+    'CustomerMall': false,
   },
-  "isCustomerProfileSync": false,
-  "isArrowDisplayForLine": false,
-  "isNRCDisplayForNewCus": false,
-  "requiredColumnForNewCustomer": [],
-  "isRemarkRequired": true,
-  "isCusBookingPreferDesOnly": false,
-  "isCusNonDesBookingUsing": true,
-  "isBookingItemRequired": false,
-  "closeCustomerBooking": false,
-  "isBookingPeerDisplay": true,
-  "isBookingItemPriceDisplay": true,
-  bookingMinumnTimeCost: 0
+  'isCustomerProfileSync': false,
+  'isArrowDisplayForLine': false,
+  'isNRCDisplayForNewCus': false,
+  'requiredColumnForNewCustomer': [],
+  'isRemarkRequired': true,
+  'isCusBookingPreferDesOnly': false,
+  'isCusNonDesBookingUsing': true,
+  'isBookingItemRequired': false,
+  'closeCustomerBooking': false,
+  'isBookingPeerDisplay': true,
+  'isBookingItemPriceDisplay': true,
+  bookingMinumnTimeCost: 0,
 })
 
 export const createDefaultCheckinSettings = () => ({

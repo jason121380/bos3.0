@@ -8,7 +8,6 @@ import React from 'react'
 
 import CouponUse from './CouponUse'
 
-
 export default function PanelCouponUse() {
   const { handleBillChange, bill, orderId } = React.useContext(billContext)
 
@@ -31,23 +30,23 @@ export default function PanelCouponUse() {
       const newCouponUsage =
         order.data.order.useTicketOrders.length > 0
           ? order.data.order.useTicketOrders.map(data => ({
-            customerTicketId: data.id,
-            price: data.price,
-            useTicketOrderHelpers: data.helperList.map(helper => ({
-              // id: uuid(),
-              type: helper.type,
-              isDesignate: helper.isDesignate,
-              helperId: helper.helper.id,
-              helperDeductiontype: helper.helperDeductiontype,
-            })),
-          }))
+              customerTicketId: data.id,
+              price: data.price,
+              useTicketOrderHelpers: data.helperList.map(helper => ({
+                // id: uuid(),
+                type: helper.type,
+                isDesignate: helper.isDesignate,
+                helperId: helper.helper.id,
+                helperDeductiontype: helper.helperDeductiontype,
+              })),
+            }))
           : [
-            {
-              // id: uuid(),
-              customerTicketId: '',
-              useTicketOrderHelpers: [],
-            },
-          ]
+              {
+                // id: uuid(),
+                customerTicketId: '',
+                useTicketOrderHelpers: [],
+              },
+            ]
       setCouponUsage(newCouponUsage)
       useHandleBillChangeRef.current({
         key: 'useTicketOrders',
@@ -59,7 +58,7 @@ export default function PanelCouponUse() {
           })),
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [order.loading, order.data])
 
   function handleFildChange({ index, value, key }) {
@@ -81,11 +80,7 @@ export default function PanelCouponUse() {
   }
   return (
     <Accordion expanded={expanded}>
-      <AccordionSummary
-        onClick={handleAccordionClick}
-        style={{ width: '100%' }}
-        summaryMeta={!expanded && panelSummary(bill.useTicketOrders.length)}
-      >
+      <AccordionSummary onClick={handleAccordionClick} style={{ width: '100%' }} summaryMeta={!expanded && panelSummary(bill.useTicketOrders.length)}>
         <p className="m-0 !text-[16px] font-bold text-text">使用預收卡</p>
         <p className="m-0 ml-2 !text-[0.75rem] !font-normal text-text-secondary">編輯帳單不得編輯預收卡使用</p>
       </AccordionSummary>
@@ -93,13 +88,7 @@ export default function PanelCouponUse() {
         <div className="flex flex-col items-start justify-start">
           {bill.customerId &&
             couponUsage.map((data, index) => (
-              <CouponUse
-                couponUsage={data}
-                couponUsages={couponUsage}
-                key={`pannel-couponuse-${index}`}
-                index={index}
-                onChange={handleFildChange}
-              />
+              <CouponUse couponUsage={data} couponUsages={couponUsage} key={`pannel-couponuse-${index}`} index={index} onChange={handleFildChange} />
             ))}
         </div>
       </AccordionDetails>

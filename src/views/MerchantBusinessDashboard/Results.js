@@ -18,7 +18,9 @@ function Results({ results }) {
                   <TableRow key={index}>
                     <TableCell>{data.paywayName}</TableCell>
                     <TableCell numeric>{formatNumber(data.usedPrice)}</TableCell>
-                    <TableCell numeric className="text-text-secondary">({formatNumber(data.usedPriceWithNoCash)})</TableCell>
+                    <TableCell numeric className="text-text-secondary">
+                      ({formatNumber(data.usedPriceWithNoCash)})
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -38,7 +40,9 @@ function Results({ results }) {
                   <TableRow key={index}>
                     <TableCell>{data.ticketName}</TableCell>
                     <TableCell numeric>{formatNumber(data.usedPrice)}</TableCell>
-                    <TableCell numeric className="text-text-secondary">({formatNumber(data.usedPriceWithNoCash)})</TableCell>
+                    <TableCell numeric className="text-text-secondary">
+                      ({formatNumber(data.usedPriceWithNoCash)})
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -58,7 +62,9 @@ function Results({ results }) {
                   <TableRow key={index}>
                     <TableCell>{data.paywayName}</TableCell>
                     <TableCell numeric>{formatNumber(data.usedPrice)}</TableCell>
-                    <TableCell numeric className="text-text-secondary">({formatNumber(data.usedPriceWithNoCash)})</TableCell>
+                    <TableCell numeric className="text-text-secondary">
+                      ({formatNumber(data.usedPriceWithNoCash)})
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

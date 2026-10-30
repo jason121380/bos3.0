@@ -7,9 +7,22 @@
 // GraphQL 全由模擬 link 回應，不連後端、不改真實帳單。
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import {
-  setup, pageReady, makeOrder, checkoutAndGetInput, summaryValue, loginForTest, pickEmployee,
-  DESIGNER, ASSISTANT, SERVICE, LOCKED_SERVICE, PRODUCT, TICKET, MEMBERSHIP,
-  findDialog, queryDialog,
+  setup,
+  pageReady,
+  makeOrder,
+  checkoutAndGetInput,
+  summaryValue,
+  loginForTest,
+  pickEmployee,
+  DESIGNER,
+  ASSISTANT,
+  SERVICE,
+  LOCKED_SERVICE,
+  PRODUCT,
+  TICKET,
+  MEMBERSHIP,
+  findDialog,
+  queryDialog,
 } from './orderEditKit.test'
 
 jest.setTimeout(20000)
@@ -24,7 +37,14 @@ afterEach(cleanup)
 
 describe('帳單詳細：抽獎流水號與帳單速查', () => {
   it('有抽獎紀錄：點按鈕列出流水號與規則，再點收起', async () => {
-    const page = setup({ order: makeOrder({ raffleRecord: [{ number: 'R-0001', ruleName: '滿千抽' }, { number: 'R-0002', ruleName: '週年慶' }] }) })
+    const page = setup({
+      order: makeOrder({
+        raffleRecord: [
+          { number: 'R-0001', ruleName: '滿千抽' },
+          { number: 'R-0002', ruleName: '週年慶' },
+        ],
+      }),
+    })
     await pageReady(page)
     const raffle = screen.getByLabelText('抽獎流水號', { selector: 'button' })
     expect(raffle).toHaveAttribute('aria-expanded', 'false')
@@ -113,7 +133,9 @@ describe('帳單詳細：組合商品（快捷組合）', () => {
   }
   const comboFixtures = (overrides = {}) => ({
     ...comboOn,
-    GET_SHORTCUTS_FOR_ORDERCREATE: { shortcuts: [SHORTCUT, { id: 'shortcut-2', name: '只有服務', services: [{ id: SERVICE.id }], products: [], tickets: [], memberships: [] }] },
+    GET_SHORTCUTS_FOR_ORDERCREATE: {
+      shortcuts: [SHORTCUT, { id: 'shortcut-2', name: '只有服務', services: [{ id: SERVICE.id }], products: [], tickets: [], memberships: [] }],
+    },
     ...overrides,
   })
   const comboButton = () => screen.getByText('組合商品', { selector: 'button' })
@@ -153,7 +175,9 @@ describe('帳單詳細：組合商品（快捷組合）', () => {
     expect(input.serviceOrders[1]).toEqual(expect.objectContaining({ price: 1500, thirdPartyCouponMerchantId: 'tp-1' }))
     expect(input.productOrders).toEqual([expect.objectContaining({ productId: PRODUCT.id, price: 1200, count: 1 })])
     expect(input.ticketOrders).toEqual([expect.objectContaining({ serviceId: TICKET.id, price: 6000, availableCount: 10, count: 1 })])
-    expect(input.membershipOrders).toEqual([expect.objectContaining({ membershipUUID: MEMBERSHIP.uuid, price: 3000, expiryDate: expect.any(Number) })])
+    expect(input.membershipOrders).toEqual([
+      expect.objectContaining({ membershipUUID: MEMBERSHIP.uuid, price: 3000, expiryDate: expect.any(Number) }),
+    ])
   })
 
   it('再套一次只含服務的組合：服務加在後面，其他區塊不變', async () => {
@@ -181,7 +205,9 @@ describe('帳單詳細：組合商品（快捷組合）', () => {
     const page = setup(
       comboFixtures({
         order: withHelper,
-        service: v => ({ service: { helperDeductionSetting: v.serviceId === SERVICE.id ? [{ type: '助理', nameList: ['洗髮'], helperDeductionType: 'CASH' }] : [] } }),
+        service: v => ({
+          service: { helperDeductionSetting: v.serviceId === SERVICE.id ? [{ type: '助理', nameList: ['洗髮'], helperDeductionType: 'CASH' }] : [] },
+        }),
       })
     )
     await pageReady(page)
@@ -203,7 +229,9 @@ describe('帳單詳細：組合商品（快捷組合）', () => {
         order: makeOrder({ serviceOrders: [] }),
         FETCH_MEMBERSHIPS_FOR_AUTOCOMPLETE: { memberships: { data: [MEMBERSHIP, LIFETIME] } },
         GET_SHORTCUTS_FOR_ORDERCREATE: {
-          shortcuts: [{ id: 'shortcut-3', name: '終身方案', services: [{ id: SERVICE.id }], products: [], tickets: [], memberships: [{ uuid: LIFETIME.uuid }] }],
+          shortcuts: [
+            { id: 'shortcut-3', name: '終身方案', services: [{ id: SERVICE.id }], products: [], tickets: [], memberships: [{ uuid: LIFETIME.uuid }] },
+          ],
         },
       })
     )

@@ -9,8 +9,19 @@ import { act, cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
 import { loginAs, callsOf, currentLocation, typeLikeBrowser, MERCHANT_ID } from '../../../__tests__/testkit.test'
 import {
-  setupPage, waitPageReady, pickCustomer, pickEmployee, pickService, checkoutButton, sentOrder, button, findButton,
-  CUSTOMER, CUSTOMER_DETAIL, DESIGNER, HELPER,
+  setupPage,
+  waitPageReady,
+  pickCustomer,
+  pickEmployee,
+  pickService,
+  checkoutButton,
+  sentOrder,
+  button,
+  findButton,
+  CUSTOMER,
+  CUSTOMER_DETAIL,
+  DESIGNER,
+  HELPER,
 } from './orderCreateKit.test'
 
 jest.setTimeout(20000)
@@ -31,7 +42,14 @@ const preferDesigner = () => document.querySelector('input[name="preferDesigner"
 // 頁面上的「帳單來源」也叫 source，彈窗的在最後
 const sourceSelect = () => [...document.querySelectorAll('select[name="source"]')].pop()
 
-const ADDED = { id: 'customer-new', name: '林小姐', cellphone: '0933111222', gender: 'FEMALE', category: '', birthday: { year: '85', month: '3', day: '4' } }
+const ADDED = {
+  id: 'customer-new',
+  name: '林小姐',
+  cellphone: '0933111222',
+  gender: 'FEMALE',
+  category: '',
+  birthday: { year: '85', month: '3', day: '4' },
+}
 
 const openNew = async overrides => {
   const page = setupPage({
@@ -128,7 +146,9 @@ describe('新增顧客', () => {
     typeLikeBrowser(input('cellphone'), ADDED.cellphone)
     await wait(() => expect(button('新增')).not.toBeDisabled())
     fireEvent.click(button('新增'))
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('手機已存在') })))
+    await wait(() =>
+      expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('手機已存在') }))
+    )
     expect(screen.getByText('新增客戶')).toBeInTheDocument()
     await wait(() => expect(button('新增')).not.toBeDisabled())
   })
@@ -259,7 +279,9 @@ describe('編輯顧客', () => {
   it('改姓名後儲存：送出 customerId 與生日；成功後提示、關閉，帳單仍帶這位顧客', async () => {
     const { calls } = await openEdit()
     // 編號檢查帶 customerId（排除自己）
-    await wait(() => expect(callsOf(calls, 'GET_CHECK_IS_CUSTOMER_NO_USED')[0].variables).toEqual({ input: CUSTOMER.no, customerId: CUSTOMER.id }), { timeout: 2000 })
+    await wait(() => expect(callsOf(calls, 'GET_CHECK_IS_CUSTOMER_NO_USED')[0].variables).toEqual({ input: CUSTOMER.no, customerId: CUSTOMER.id }), {
+      timeout: 2000,
+    })
     typeLikeBrowser(input('name'), '陳大姐')
     fireEvent.click(button('儲存'))
     await wait(() => expect(callsOf(calls, 'SET_CUSTOMER')).toHaveLength(1))
@@ -280,7 +302,9 @@ describe('編輯顧客', () => {
   it('儲存失敗：提示錯誤，彈窗保留；取消後帳單仍帶這位顧客', async () => {
     const { calls } = await openEdit({ SET_CUSTOMER: new Error('資料格式錯誤') })
     fireEvent.click(button('儲存'))
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('資料格式錯誤') })))
+    await wait(() =>
+      expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('資料格式錯誤') }))
+    )
     expect(screen.getByText('編輯客戶資料')).toBeInTheDocument()
     fireEvent.click(button('取消'))
     await wait(() => expect(screen.queryByText('編輯客戶資料')).toBeNull())

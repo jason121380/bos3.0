@@ -5,12 +5,12 @@ import { TextField } from 'ui/text-field'
 import { useState, useEffect, useRef, Fragment } from 'react'
 import { openSnackbar } from 'elements/snackbars'
 import { Edit as EditIcon } from 'ui/icons'
-import idx from 'idx';
-import cloneDeep from 'lodash/cloneDeep';
+import idx from 'idx'
+import cloneDeep from 'lodash/cloneDeep'
 import PropTypes from 'prop-types'
 import { useFetchGetMerchantHairConditionLazy } from 'hooks/useFetchGetMerchantHairCondition'
 import useFetchSetCustomerHairInfo from 'hooks/useFetchSetCustomerHairInfo'
-import { green } from 'ui/colors';
+import { green } from 'ui/colors'
 // 動作與選項按鈕為 ui/button（選取綠色以 inline style 原樣保留）
 import { Button as UiButton } from 'ui/button'
 
@@ -18,11 +18,12 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
   const submitRef = useRef(null)
   const { setCustomerHairInfo } = useFetchSetCustomerHairInfo()
   const [submitValue, setSubmitValue] = useState({})
-  const [openOption, setOpenOption] = useState(false);
-  const [selectCondition, setSelectCondition] = useState({ key: '', title: '' });
-  const [selectOption, setSelectOption] = useState([]);
-  const [getMerchantHairCondition, merchantHairConditionData]  = useFetchGetMerchantHairConditionLazy()
-  const conditionOptions = !merchantHairConditionData.loading && merchantHairConditionData.data && idx(merchantHairConditionData, _ => _.data.getMerchantHairCondition)
+  const [openOption, setOpenOption] = useState(false)
+  const [selectCondition, setSelectCondition] = useState({ key: '', title: '' })
+  const [selectOption, setSelectOption] = useState([])
+  const [getMerchantHairCondition, merchantHairConditionData] = useFetchGetMerchantHairConditionLazy()
+  const conditionOptions =
+    !merchantHairConditionData.loading && merchantHairConditionData.data && idx(merchantHairConditionData, _ => _.data.getMerchantHairCondition)
 
   const handleOnClose = () => {
     setOpen(false)
@@ -54,12 +55,12 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
     setSubmitValue(newData)
   }
 
-  const handleComfirm = async() => {
-    const value = cloneDeep({...submitValue, customerId: customerId})
+  const handleComfirm = async () => {
+    const value = cloneDeep({ ...submitValue, customerId: customerId })
     submitRef.current.disabled = true
     try {
       const returnData = await setCustomerHairInfo({
-        input: value
+        input: value,
       })
       if (returnData.data.setCustomerHairInfo) {
         openSnackbar({
@@ -104,17 +105,15 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
 
   useEffect(() => {
     open && getMerchantHairCondition()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getMerchantHairCondition）；只在 [open] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getMerchantHairCondition）；只在 [open] 變動時呼叫，補上會每次 render 重跑
   }, [open])
 
   return (
     <Fragment>
       <Dialog open={open} onOpenChange={o => !o && handleOnClose()}>
-        <DialogContent size="lg" aria-describedby={undefined} className='TrackingEditModal [&_textarea]:!p-0'>
+        <DialogContent size="lg" aria-describedby={undefined} className="TrackingEditModal [&_textarea]:!p-0">
           <DialogHeader>
-            <DialogTitle className="flex flex-wrap items-center justify-between">
-              編輯顧客髮況
-            </DialogTitle>
+            <DialogTitle className="flex flex-wrap items-center justify-between">編輯顧客髮況</DialogTitle>
           </DialogHeader>
           <DialogBody>
             <div className="flex flex-col items-center gap-[20px]">
@@ -126,14 +125,17 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
                       style={{ flexGrow: 1 }}
                       label={title}
                       InputProps={{
-                        startAdornment: submitValue?.[key] && submitValue[key].map((value, i) => (
-                          <Tag key={`${value}-${i}`} label={value} onDelete={() => handleDelete(key, i)} />
-                        )),
-                        readOnly: true
+                        startAdornment:
+                          submitValue?.[key] &&
+                          submitValue[key].map((value, i) => <Tag key={`${value}-${i}`} label={value} onDelete={() => handleDelete(key, i)} />),
+                        readOnly: true,
                       }}
                     />
                     <UiButton
-                      variant="ghost" size="icon" aria-label="編輯選項" title="編輯選項"
+                      variant="ghost"
+                      size="icon"
+                      aria-label="編輯選項"
+                      title="編輯選項"
                       disabled={merchantHairConditionData.loading || !merchantHairConditionData.data}
                       onClick={() => handleOpenOptionModal({ key: key, title: title })}
                     >
@@ -146,50 +148,62 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
                 <TextField
                   fullWidth
                   multiline
-                  label='染髮配方'
+                  label="染髮配方"
                   value={submitValue.hairDyeFormula}
                   onChange={e => handleInputChange(e.target.value, 'hairDyeFormula')}
                   InputLabelProps={{
-                    shrink: true
+                    shrink: true,
                   }}
                 />
               </div>
             </div>
           </DialogBody>
           <DialogFooter>
-            <UiButton variant="secondary" onClick={handleOnClose}>關閉</UiButton>
-            <UiButton variant="primary" ref={submitRef} disabled={isLoading} onClick={handleComfirm}>確認</UiButton>
+            <UiButton variant="secondary" onClick={handleOnClose}>
+              關閉
+            </UiButton>
+            <UiButton variant="primary" ref={submitRef} disabled={isLoading} onClick={handleComfirm}>
+              確認
+            </UiButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      {openOption && <Dialog open={openOption} onOpenChange={o => !o && handleOptionOnClose()}>
-        <DialogContent size="md" aria-describedby={undefined}>
-          <DialogHeader>
-            <DialogTitle className="flex flex-wrap items-center justify-between">
-              選擇{selectCondition.title}
-            </DialogTitle>
-          </DialogHeader>
-          <DialogBody>
-            <div className="flex flex-wrap gap-[10px]">
-              {(selectCondition.key && conditionOptions[selectCondition.key].length > 0) ? conditionOptions[selectCondition.key].map((data, index) => {
-                const select = selectOption.includes(data)
-                return (
-                  <UiButton
-                    variant={select ? 'primary' : 'secondary'}
-                    style={{ backgroundColor: select ? green[600] : '' }}
-                    className="flex min-w-[unset] max-w-[unset] items-center justify-center"
-                    onClick={() => handleSelectItem(data, select)}
-                  >{data}</UiButton>
-                )
-              }) : '無資料'}
-            </div>
-          </DialogBody>
-          <DialogFooter>
-            <UiButton variant="secondary" onClick={handleOptionOnClose}>關閉</UiButton>
-            <UiButton variant="primary" onClick={handleComfirmSelect}>確認</UiButton>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>}
+      {openOption && (
+        <Dialog open={openOption} onOpenChange={o => !o && handleOptionOnClose()}>
+          <DialogContent size="md" aria-describedby={undefined}>
+            <DialogHeader>
+              <DialogTitle className="flex flex-wrap items-center justify-between">選擇{selectCondition.title}</DialogTitle>
+            </DialogHeader>
+            <DialogBody>
+              <div className="flex flex-wrap gap-[10px]">
+                {selectCondition.key && conditionOptions[selectCondition.key].length > 0
+                  ? conditionOptions[selectCondition.key].map((data, index) => {
+                      const select = selectOption.includes(data)
+                      return (
+                        <UiButton
+                          variant={select ? 'primary' : 'secondary'}
+                          style={{ backgroundColor: select ? green[600] : '' }}
+                          className="flex min-w-[unset] max-w-[unset] items-center justify-center"
+                          onClick={() => handleSelectItem(data, select)}
+                        >
+                          {data}
+                        </UiButton>
+                      )
+                    })
+                  : '無資料'}
+              </div>
+            </DialogBody>
+            <DialogFooter>
+              <UiButton variant="secondary" onClick={handleOptionOnClose}>
+                關閉
+              </UiButton>
+              <UiButton variant="primary" onClick={handleComfirmSelect}>
+                確認
+              </UiButton>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </Fragment>
   )
 }
@@ -201,7 +215,7 @@ TrackingEditModal.propTypes = {
   setOpen: PropTypes.func,
   refetchHairInfo: PropTypes.func,
   customerId: PropTypes.string,
-  optionsArray: PropTypes.array
+  optionsArray: PropTypes.array,
 }
 
 export default TrackingEditModal

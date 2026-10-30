@@ -8,8 +8,21 @@
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { loginAs, callsOf } from '../../../__tests__/testkit.test'
 import {
-  setupPage, waitPageReady, pickEmployee, pickService, checkoutButton, sentOrder, summaryValue,
-  SERVICE, SERVICE_LOCKED, SERVICE_UNSET, HELPER, button, buttonsIn, currentDialog, findDialog,
+  setupPage,
+  waitPageReady,
+  pickEmployee,
+  pickService,
+  checkoutButton,
+  sentOrder,
+  summaryValue,
+  SERVICE,
+  SERVICE_LOCKED,
+  SERVICE_UNSET,
+  HELPER,
+  button,
+  buttonsIn,
+  currentDialog,
+  findDialog,
 } from './orderCreateKit.test'
 
 jest.setTimeout(20000)
@@ -108,9 +121,7 @@ describe('項目消費：助理', () => {
     await pickEmployee(await screen.findByPlaceholderText('助理-洗髮'), HELPER)
     fireEvent.click(screen.getByTestId('service-0_helper-employee-0-assign'))
     const { serviceOrders } = await checkout(calls)
-    expect(serviceOrders[0].serviceOrderHelpers).toEqual([
-      expect.objectContaining({ type: '助理-洗髮', helperId: HELPER.userId, isDesignate: true }),
-    ])
+    expect(serviceOrders[0].serviceOrderHelpers).toEqual([expect.objectContaining({ type: '助理-洗髮', helperId: HELPER.userId, isDesignate: true })])
   })
 
   it('清除此列：助理與服務一起清掉，帳單不再有服務', async () => {
@@ -175,12 +186,15 @@ describe('項目消費：第三方卡券', () => {
   })
 
   it('綁定設定 UNSET、店家設定比服務晚到：設定到了才套用鎖定', async () => {
-    await prepare({
-      GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true },
-      GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: {
-        getBindedThirdPartTicketLockedSetting: { service: true, product: false, membership: false },
+    await prepare(
+      {
+        GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true },
+        GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: {
+          getBindedThirdPartTicketLockedSetting: { service: true, product: false, membership: false },
+        },
       },
-    }, { delays: { GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: 3000 } })
+      { delays: { GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: 3000 } }
+    )
     await pickService(SERVICE_UNSET)
     // 設定還沒到：先依預設（不鎖定）
     expect(thirdPartyInput()).not.toBeDisabled()

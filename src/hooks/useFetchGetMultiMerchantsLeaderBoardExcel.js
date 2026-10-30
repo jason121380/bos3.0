@@ -7,7 +7,7 @@ const GET_MMULTI_MERCHANTS_LEADER_BOARD_EXCEL = gql`
 `
 
 export default function useFetchGetMultiMerchantsLeaderBoardExcel() {
-  const [getMultiMerchantsLeaderBoardExcelLazy, getMultiMerchantsLeaderBoardExcelLazyData] =  useLazyQuery(GET_MMULTI_MERCHANTS_LEADER_BOARD_EXCEL, {
+  const [getMultiMerchantsLeaderBoardExcelLazy, getMultiMerchantsLeaderBoardExcelLazyData] = useLazyQuery(GET_MMULTI_MERCHANTS_LEADER_BOARD_EXCEL, {
     fetchPolicy: 'cache-and-network',
   })
   return [getMultiMerchantsLeaderBoardExcelLazy, getMultiMerchantsLeaderBoardExcelLazyData]

@@ -27,9 +27,24 @@ describe('消費記錄', () => {
     expect(screen.getByTestId('result-counter')).toHaveTextContent('共 120 筆, 1 / 3')
     const row = screen.getByTestId('order-row')
     expect(screen.getByTestId('order-0')).toHaveAttribute('href', '/order/o1')
-    ;['A001', '2026/10/21', '陳小姐', '0912345678', 'Y', '800', '含 團購券, 含 禮券', '300', '含 禮券', '1,001', '200', '50', '100', 'LINE Pay', '2,150', '剪短'].forEach(
-      text => expect(within(row).getByText(text)).toBeInTheDocument()
-    )
+    ;[
+      'A001',
+      '2026/10/21',
+      '陳小姐',
+      '0912345678',
+      'Y',
+      '800',
+      '含 團購券, 含 禮券',
+      '300',
+      '含 禮券',
+      '1,001',
+      '200',
+      '50',
+      '100',
+      'LINE Pay',
+      '2,150',
+      '剪短',
+    ].forEach(text => expect(within(row).getByText(text)).toBeInTheDocument())
     expect(row).toHaveTextContent('王小美 / /01')
     expect(headers()).not.toContain('活動券')
     expect(headers()).not.toContain('會員卡消費')
@@ -41,7 +56,15 @@ describe('消費記錄', () => {
       route: ROUTE,
       fixtures: {
         GET_CUSTOMER_ORDER_LIST: orders([
-          { ...ORDER, raffleCount: 2, membership: 3000.5, bonusDecountForReport: 30, TPTName: { service: [], product: [], membership: ['團購券'], overAll: [] }, designerNo: null, isDesignate: false },
+          {
+            ...ORDER,
+            raffleCount: 2,
+            membership: 3000.5,
+            bonusDecountForReport: 30,
+            TPTName: { service: [], product: [], membership: ['團購券'], overAll: [] },
+            designerNo: null,
+            isDesignate: false,
+          },
         ]),
       },
     })
@@ -69,7 +92,14 @@ describe('消費記錄', () => {
             {
               orderId: 'o1',
               orderStaticDetail: [
-                { designerName: '王小美', serviceType: '服務', itemName: '精緻剪髮', count: 1, price: 800.555, helperList: [{ helperName: '李助理', helperNo: '02', helperType: '洗髮' }] },
+                {
+                  designerName: '王小美',
+                  serviceType: '服務',
+                  itemName: '精緻剪髮',
+                  count: 1,
+                  price: 800.555,
+                  helperList: [{ helperName: '李助理', helperNo: '02', helperType: '洗髮' }],
+                },
                 { designerName: 'Amy', serviceType: '卡券使用', itemName: '護髮卡', count: 2, price: 199.999, helperList: [] },
               ],
             },

@@ -78,7 +78,7 @@ function Security({ designerId, refetch, ...rest }) {
         }
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designer.loading])
 
   const handleDesignerSettingChange = ({ key, value }) => {
@@ -155,22 +155,10 @@ function Security({ designerId, refetch, ...rest }) {
         <form>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
             <Field label="密碼" htmlFor="security-password">
-              <Input
-                id="security-password"
-                name="password"
-                onChange={handleOnChange}
-                type="password"
-                value={values.password}
-              />
+              <Input id="security-password" name="password" onChange={handleOnChange} type="password" value={values.password} />
             </Field>
             <Field label="確認密碼" htmlFor="security-confirm">
-              <Input
-                id="security-confirm"
-                name="confirm"
-                onChange={handleOnChange}
-                type="password"
-                value={values.confirm}
-              />
+              <Input id="security-confirm" name="confirm" onChange={handleOnChange} type="password" value={values.confirm} />
             </Field>
           </div>
         </form>
@@ -178,14 +166,10 @@ function Security({ designerId, refetch, ...rest }) {
       <CardContent className="pt-0">
         <form>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            <Field label='帳號狀態'>
+            <Field label="帳號狀態">
               <NativeSelect
                 value={designerSetting.status === 'pending' ? 'ok' : designerSetting.status}
-                onChange={event =>
-                  handleDesignerSettingChange(
-                    idx(event, _ => ({ value: _.target.value, key: 'status' }))
-                  )
-                }
+                onChange={event => handleDesignerSettingChange(idx(event, _ => ({ value: _.target.value, key: 'status' })))}
               >
                 {accountStatus.map((data, idx) => (
                   <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
@@ -194,14 +178,10 @@ function Security({ designerId, refetch, ...rest }) {
                 ))}
               </NativeSelect>
             </Field>
-            <Field label='權限設定'>
+            <Field label="權限設定">
               <NativeSelect
                 value={designerSetting.merchantIdentity}
-                onChange={event =>
-                  handleDesignerSettingChange(
-                    idx(event, _ => ({ value: _.target.value, key: 'merchantIdentity' }))
-                  )
-                }
+                onChange={event => handleDesignerSettingChange(idx(event, _ => ({ value: _.target.value, key: 'merchantIdentity' })))}
               >
                 {!authoritiesNameAndIdData.loading &&
                   idx(authoritiesNameAndIdData, _ =>
@@ -219,14 +199,10 @@ function Security({ designerId, refetch, ...rest }) {
       <CardContent className="pt-0">
         <form>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            <Field label='允許登入設計師手機端'>
+            <Field label="允許登入設計師手機端">
               <NativeSelect
                 value={designerSetting.isCellphoneLogin}
-                onChange={event =>
-                  handleDesignerSettingChange(
-                    idx(event, _ => ({ value: _.target.value, key: 'isCellphoneLogin' }))
-                  )
-                }
+                onChange={event => handleDesignerSettingChange(idx(event, _ => ({ value: _.target.value, key: 'isCellphoneLogin' })))}
               >
                 {cellphoneLogin.map((data, idx) => (
                   <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>

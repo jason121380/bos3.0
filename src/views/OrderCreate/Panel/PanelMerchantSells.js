@@ -12,9 +12,7 @@ const styles = {
 }
 
 function PanelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset }) {
-  const {
-    handleBillChange, sells, setSells, bill,
-  } = React.useContext(billContext)
+  const { handleBillChange, sells, setSells, bill } = React.useContext(billContext)
   const [focusRow, setFocusRow] = React.useState(0)
 
   React.useEffect(() => {
@@ -36,14 +34,16 @@ function PanelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset }) 
   }, [setSells])
 
   React.useEffect(() => {
-    if(reset === 'reset'){
-      setSells([{
-        sellerId: '',
-        productId: '',
-        price: 0,
-        count: 1,
-        thirdPartyCouponMerchantId: null,
-      },])
+    if (reset === 'reset') {
+      setSells([
+        {
+          sellerId: '',
+          productId: '',
+          price: 0,
+          count: 1,
+          thirdPartyCouponMerchantId: null,
+        },
+      ])
       setFocusRow(0)
     }
   }, [reset, setSells])
@@ -157,10 +157,13 @@ function PanelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset }) 
     <Accordion key="panelMerchantSells" expanded={expanded}>
       <AccordionSummary
         onClick={onPanelClick}
-        summaryMeta={!expanded && panelSummary(
-          bill.productOrders.filter(d => d.productId).length,
-          bill.productOrders.reduce((total, d) => total + d.price * d.count, 0)
-        )}
+        summaryMeta={
+          !expanded &&
+          panelSummary(
+            bill.productOrders.filter(d => d.productId).length,
+            bill.productOrders.reduce((total, d) => total + d.price * d.count, 0)
+          )
+        }
         data-testid="merchantSell"
         style={{ width: '100%' }}
       >

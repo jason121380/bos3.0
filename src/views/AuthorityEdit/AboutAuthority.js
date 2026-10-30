@@ -6,15 +6,7 @@ import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 
-function AboutAuthority({
-  className,
-  userAuthorityName,
-  setUserAuthorityName,
-  authoritySettings,
-  setAuthoritySettings,
-  onChange,
-  ...rest
-}) {
+function AboutAuthority({ className, userAuthorityName, setUserAuthorityName, authoritySettings, setAuthoritySettings, onChange, ...rest }) {
   const handleChangeAuthority = (authority, index1, index2) => {
     const newAuthoritySettings = cloneDeep(authoritySettings)
     const insideAuthFalseCounter = []
@@ -66,10 +58,7 @@ function AboutAuthority({
         </CardHeader>
         <CardContent>
           <Field label="名稱">
-            <Input
-              value={userAuthorityName}
-              onChange={event => setUserAuthorityName(event.target.value)}
-            />
+            <Input value={userAuthorityName} onChange={event => setUserAuthorityName(event.target.value)} />
           </Field>
         </CardContent>
       </Card>
@@ -77,11 +66,7 @@ function AboutAuthority({
         <Card {...rest} key={index1}>
           <CardHeader
             action={
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => handleClickAll(item.authority, index1)}
-              >
+              <Button variant="secondary" size="sm" onClick={() => handleClickAll(item.authority, index1)}>
                 全選/取消全選
               </Button>
             }

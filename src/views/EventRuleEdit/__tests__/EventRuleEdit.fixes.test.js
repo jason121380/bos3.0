@@ -58,9 +58,7 @@ it('進行中的規則：歸屬多選可修改', async () => {
   CONSUMPTION_TYPES.forEach(([label]) => expect(belongPickerOf(label)).toHaveAttribute('data-readonly', 'false'))
 })
 
-it.each([
-  ['查無規則', { GET_EVENT_RULE_GROUP: { eventRuleGroup: null } }],
-])('%s時不整頁壞，表單空白、沒有可送出的資料', async (_, fixtures) => {
+it.each([['查無規則', { GET_EVENT_RULE_GROUP: { eventRuleGroup: null } }]])('%s時不整頁壞，表單空白、沒有可送出的資料', async (_, fixtures) => {
   const { settle } = renderPage(<EventRuleEdit match={{ params: { id: 'rg1' } }} />, { fixtures, fallback: 'error' })
   await settle()
   expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()

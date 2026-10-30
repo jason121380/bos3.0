@@ -9,7 +9,18 @@ import React from 'react'
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
 import { loginAs, callsOf } from '../../../__tests__/testkit.test'
-import { baseFixtures, renderParameter, openTab, save, sent, checkboxByLabel, controlByLabel, selectValue, typeText, cardOf } from './parameterKit.test'
+import {
+  baseFixtures,
+  renderParameter,
+  openTab,
+  save,
+  sent,
+  checkboxByLabel,
+  controlByLabel,
+  selectValue,
+  typeText,
+  cardOf,
+} from './parameterKit.test'
 
 jest.setTimeout(30000)
 
@@ -72,7 +83,9 @@ describe('顧客端外部連結', () => {
       fixtures: {
         MerchantCusExternalLink: () => {
           listCalls += 1
-          return { merchantCusExternalLink: listCalls === 1 ? links : [...links, { id: 'cl-3', name: '預約須知', url: 'https://n.example', isTop: true }] }
+          return {
+            merchantCusExternalLink: listCalls === 1 ? links : [...links, { id: 'cl-3', name: '預約須知', url: 'https://n.example', isTop: true }],
+          }
         },
         CREATE_MERCHANT_CUS_EXTERNAL_LINK: { createMerchantCusExternalLink: true },
       },

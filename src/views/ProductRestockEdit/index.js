@@ -28,7 +28,7 @@ export default function ProductRestockEdit() {
   const [password, setPassword] = useState('')
   const [isUsing, setIsUsing] = useState({
     stockIn: true,
-    stockInUndo: true
+    stockInUndo: true,
   })
   const getPurchaseRecord = useFetchGetPurchaseRecordForEdit({
     purchaseUUId: params.id,
@@ -71,16 +71,17 @@ export default function ProductRestockEdit() {
     }
 
     updatePurchase({
-      input: submitData
-    }).then(res => {
-      if (res.data.updatePurchase) {
-        openSnackbar({ message: '編輯成功', variant: 'success' })
-        history.push('/product/restock/')
-      } else {
-        openSnackbar({ message: '編輯失敗', variant: 'error' })
-        setCheckPurchaseRecords(false)
-      }
+      input: submitData,
     })
+      .then(res => {
+        if (res.data.updatePurchase) {
+          openSnackbar({ message: '編輯成功', variant: 'success' })
+          history.push('/product/restock/')
+        } else {
+          openSnackbar({ message: '編輯失敗', variant: 'error' })
+          setCheckPurchaseRecords(false)
+        }
+      })
       .catch(error => {
         setCheckPurchaseRecords(false)
       })
@@ -117,17 +118,17 @@ export default function ProductRestockEdit() {
     try {
       await setStockIn({
         purchaseUUId: params.id,
-        pwd: password
+        pwd: password,
       })
       history.push('/product/restock/')
       openSnackbar({
         variant: 'success',
-        message: '入庫成功'
+        message: '入庫成功',
       })
     } catch (error) {
       openSnackbar({
         variant: 'error',
-        message: error.message
+        message: error.message,
       })
       setCheckPurchaseRecords(false)
     }
@@ -138,18 +139,18 @@ export default function ProductRestockEdit() {
     try {
       await setStockInUndo({
         purchaseUUId: params.id,
-        pwd: password
+        pwd: password,
       })
       openSnackbar({
         variant: 'success',
-        message: '取消入庫成功'
+        message: '取消入庫成功',
       })
       onDialogClose()
       getPurchaseRecord.refetch()
     } catch (error) {
       openSnackbar({
         variant: 'error',
-        message: error.message
+        message: error.message,
       })
     } finally {
       setCheckPurchaseRecords(false)
@@ -164,7 +165,7 @@ export default function ProductRestockEdit() {
       setDisabled(!!data.stockInDate)
       setPurchaseRecord(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getPurchaseRecord.loading])
 
   useEffect(() => {
@@ -176,7 +177,7 @@ export default function ProductRestockEdit() {
         }).length > 0
       setCheckPurchaseRecords(operatorId || productList)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [purchaseRecord] 變動時執行；getPurchaseRecord.loading 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [purchaseRecord] 變動時執行；getPurchaseRecord.loading 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [purchaseRecord])
 
   useEffect(() => {
@@ -186,10 +187,10 @@ export default function ProductRestockEdit() {
       const { purchaseStockIn, purchaseStockInUndo } = merchantPassword
       setIsUsing({
         stockIn: purchaseStockIn.isUsing,
-        stockInUndo: purchaseStockInUndo.isUsing
+        stockInUndo: purchaseStockInUndo.isUsing,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getStockInIsUsing.loading])
 
   return (
@@ -198,10 +199,7 @@ export default function ProductRestockEdit() {
         title="編輯進貨單"
         actions={
           !disabled && (
-            <Button
-              variant="danger"
-              onClick={() => setConfirmingDelete(true)}
-            >
+            <Button variant="danger" onClick={() => setConfirmingDelete(true)}>
               刪除
             </Button>
           )
@@ -223,28 +221,18 @@ export default function ProductRestockEdit() {
       ) : (
         <>
           {!getPurchaseRecord.loading && purchaseRecord.uuid && (
-            <General
-              disabled={disabled}
-              purchaseRecord={purchaseRecord}
-              setPurchaseRecord={setPurchaseRecord}
-            />
+            <General disabled={disabled} purchaseRecord={purchaseRecord} setPurchaseRecord={setPurchaseRecord} />
           )}
           <div className="flex items-center justify-end gap-2 pt-6">
             {!disabled ? (
-              <Button
-                variant="primary"
-                disabled={checkPurchaseRecords}
-                onClick={handleUpdate}
-              >
+              <Button variant="primary" disabled={checkPurchaseRecords} onClick={handleUpdate}>
                 儲存
               </Button>
-            ) : <div />}
-            {(!getPurchaseRecord.loading && !getStockInIsUsing.loading) && (
-              <Button
-                variant={disabled ? 'danger' : 'secondary'}
-                disabled={checkPurchaseRecords}
-                onClick={handleCheck}
-              >
+            ) : (
+              <div />
+            )}
+            {!getPurchaseRecord.loading && !getStockInIsUsing.loading && (
+              <Button variant={disabled ? 'danger' : 'secondary'} disabled={checkPurchaseRecords} onClick={handleCheck}>
                 {disabled ? '取消入庫' : '入庫'}
               </Button>
             )}

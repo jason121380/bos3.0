@@ -34,202 +34,200 @@ function Results({ reportData, sort }) {
           )
         })}
       </Fragment>
-
     )
     switch (sort) {
       case 'ALL':
         return (
           <Table dense wrapperClassName="max-h-[calc(100vh-250px)] overflow-auto" className="min-w-[650px]">
-              <TableHeader className="sticky top-0 z-[100]">
-                <TableRow>
-                  <TableHead className={stickyHead}>日期</TableHead>
+            <TableHeader className="sticky top-0 z-[100]">
+              <TableRow>
+                <TableHead className={stickyHead}>日期</TableHead>
+                {serviceIds.map(id => {
+                  const findData = all[0].singleServices.find(d => d.serviceId === id)
+                  return (
+                    <TableHead key={`thead-${findData.serviceId}`}>
+                      <div className="text-center">{findData.serviceNo + ' - ' + findData.serviceName}</div>
+                      <div className={splitCell}>
+                        <div>虛業績</div>
+                        <div>客次</div>
+                      </div>
+                    </TableHead>
+                  )
+                })}
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
+              {all.map(d => (
+                <TableRow key={d.date}>
+                  <TableCell className={stickyCell}>{d.date}</TableCell>
                   {serviceIds.map(id => {
-                    const findData = all[0].singleServices.find(d => d.serviceId === id)
+                    const findData = d.singleServices.find(item => item.serviceId === id)
                     return (
-                      <TableHead key={`thead-${findData.serviceId}`}>
-                        <div className="text-center">{findData.serviceNo + ' - ' + findData.serviceName}</div>
+                      <TableCell key={`${d.date}-${findData.serviceId}`}>
                         <div className={splitCell}>
-                          <div>虛業績</div>
-                          <div>客次</div>
+                          <div>{formatNumber(Math.round(findData.summary.performance * 100) / 100)}</div>
+                          <div>{findData.summary.orderCount}</div>
                         </div>
-                      </TableHead>
+                      </TableCell>
                     )
                   })}
                 </TableRow>
-              </TableHeader>
-
-              <TableBody>
-                {all.map(d => (
-                  <TableRow key={d.date}>
-                    <TableCell className={stickyCell}>{d.date}</TableCell>
-                    {serviceIds.map(id => {
-                      const findData = d.singleServices.find(item => item.serviceId === id)
-                      return (
-                        <TableCell key={`${d.date}-${findData.serviceId}`}>
-                          <div className={splitCell}>
-                            <div>{formatNumber(Math.round(findData.summary.performance * 100) / 100)}</div>
-                            <div>{findData.summary.orderCount}</div>
-                          </div>
-                        </TableCell>
-                      )
-                    })}
-                  </TableRow>
-                ))}
-                <TableRow className="font-bold">
-                  <TableCell className={stickyCell}>合計</TableCell>
-                  <TotalRow />
-                </TableRow>
-              </TableBody>
-            </Table>
+              ))}
+              <TableRow className="font-bold">
+                <TableCell className={stickyCell}>合計</TableCell>
+                <TotalRow />
+              </TableRow>
+            </TableBody>
+          </Table>
         )
       case 'BYDATE':
         return (
           <Table dense wrapperClassName="max-h-[calc(100vh-250px)] overflow-auto" className="min-w-[650px]">
-              <TableHeader className="sticky top-0 z-[100]">
-                <TableRow>
-                  <TableHead className={stickyHead}>日期</TableHead>
-                  <TableHead>設計師編號</TableHead>
-                  <TableHead>設計師名稱</TableHead>
-                  {serviceIds.map(id => {
-                    const findData = date[0].summary.singleServices.find(item => item.serviceId === id)
-                    return (
-                      <TableHead key={`thead-${findData.serviceId}`}>
-                        <div className="text-center">{findData.serviceNo + ' - ' + findData.serviceName}</div>
-                        <div className={splitCell}>
-                          <div>虛業績</div>
-                          <div>客次</div>
-                        </div>
-                      </TableHead>
-                    )
-                  })}
-                </TableRow>
-              </TableHeader>
+            <TableHeader className="sticky top-0 z-[100]">
+              <TableRow>
+                <TableHead className={stickyHead}>日期</TableHead>
+                <TableHead>設計師編號</TableHead>
+                <TableHead>設計師名稱</TableHead>
+                {serviceIds.map(id => {
+                  const findData = date[0].summary.singleServices.find(item => item.serviceId === id)
+                  return (
+                    <TableHead key={`thead-${findData.serviceId}`}>
+                      <div className="text-center">{findData.serviceNo + ' - ' + findData.serviceName}</div>
+                      <div className={splitCell}>
+                        <div>虛業績</div>
+                        <div>客次</div>
+                      </div>
+                    </TableHead>
+                  )
+                })}
+              </TableRow>
+            </TableHeader>
 
-              <TableBody>
-                {date.map(({ date, designerServices, summary }) => (
-                  <Fragment key={date}>
-                    {designerServices.map(item => (
-                      <TableRow key={item.designerId}>
-                        <TableCell className={stickyCell}>{date}</TableCell>
-                        <TableCell>{item.designerNo}</TableCell>
-                        <TableCell>{item.designerName}</TableCell>
-                        {serviceIds.map((id, i) => {
-                          const findData = item.singleServices.find(d => d.serviceId === id)
-                          return (
-                            <TableCell key={`singleServices-${date}=${i}`}>
-                              <div className={splitCell}>
-                                <div>{formatNumber(Math.round(findData.singleServiceItem[0].performance * 100) / 100)}</div>
-                                <div>{findData.singleServiceItem[0].orderCount}</div>
-                              </div>
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    ))}
+            <TableBody>
+              {date.map(({ date, designerServices, summary }) => (
+                <Fragment key={date}>
+                  {designerServices.map(item => (
+                    <TableRow key={item.designerId}>
+                      <TableCell className={stickyCell}>{date}</TableCell>
+                      <TableCell>{item.designerNo}</TableCell>
+                      <TableCell>{item.designerName}</TableCell>
+                      {serviceIds.map((id, i) => {
+                        const findData = item.singleServices.find(d => d.serviceId === id)
+                        return (
+                          <TableCell key={`singleServices-${date}=${i}`}>
+                            <div className={splitCell}>
+                              <div>{formatNumber(Math.round(findData.singleServiceItem[0].performance * 100) / 100)}</div>
+                              <div>{findData.singleServiceItem[0].orderCount}</div>
+                            </div>
+                          </TableCell>
+                        )
+                      })}
+                    </TableRow>
+                  ))}
 
-                    {designerServices.length !== 0 && (
-                      <TableRow className="font-bold [&>td]:bg-surface-hover">
-                        <TableCell className={stickyCell}>{date}</TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>小計</TableCell>
-                        {serviceIds.map((id, i) => {
-                          const { singleServiceItem } = summary.singleServices.find(item => item.serviceId === id)
-                          return (
-                            <TableCell key={`summary-${date}=${i}`}>
-                              <div className={splitCell}>
-                                <div>{formatNumber(singleServiceItem[0] ? Math.round(singleServiceItem[0].performance * 100) / 100 : 0)}</div>
-                                <div>{singleServiceItem[0] ? singleServiceItem[0].orderCount : 0}</div>
-                              </div>
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )}
-                  </Fragment>
-                ))}
-                <TableRow className="font-bold">
-                  <TableCell className={stickyCell}>合計</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TotalRow />
-                </TableRow>
-              </TableBody>
-            </Table>
+                  {designerServices.length !== 0 && (
+                    <TableRow className="font-bold [&>td]:bg-surface-hover">
+                      <TableCell className={stickyCell}>{date}</TableCell>
+                      <TableCell></TableCell>
+                      <TableCell>小計</TableCell>
+                      {serviceIds.map((id, i) => {
+                        const { singleServiceItem } = summary.singleServices.find(item => item.serviceId === id)
+                        return (
+                          <TableCell key={`summary-${date}=${i}`}>
+                            <div className={splitCell}>
+                              <div>{formatNumber(singleServiceItem[0] ? Math.round(singleServiceItem[0].performance * 100) / 100 : 0)}</div>
+                              <div>{singleServiceItem[0] ? singleServiceItem[0].orderCount : 0}</div>
+                            </div>
+                          </TableCell>
+                        )
+                      })}
+                    </TableRow>
+                  )}
+                </Fragment>
+              ))}
+              <TableRow className="font-bold">
+                <TableCell className={stickyCell}>合計</TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TotalRow />
+              </TableRow>
+            </TableBody>
+          </Table>
         )
 
       case 'BYDESIGNER':
         return (
           <Table dense wrapperClassName="max-h-[calc(100vh-250px)] overflow-auto" className="min-w-[650px]">
-              <TableHeader className="sticky top-0 z-[100]">
-                <TableRow>
-                  <TableHead className={stickyHead}>日期</TableHead>
-                  <TableHead>設計師編號</TableHead>
-                  <TableHead>設計師名稱</TableHead>
-                  {serviceIds.map(id => {
-                    const findData = date[0].summary.singleServices.find(item => item.serviceId === id)
-                    return (
-                      <TableHead key={`thead-${findData.serviceId}`}>
-                        <div className="text-center">{findData.serviceNo + ' - ' + findData.serviceName}</div>
-                        <div className={splitCell}>
-                          <div>虛業績</div>
-                          <div>客次</div>
-                        </div>
-                      </TableHead>
-                    )
-                  })}
-                </TableRow>
-              </TableHeader>
+            <TableHeader className="sticky top-0 z-[100]">
+              <TableRow>
+                <TableHead className={stickyHead}>日期</TableHead>
+                <TableHead>設計師編號</TableHead>
+                <TableHead>設計師名稱</TableHead>
+                {serviceIds.map(id => {
+                  const findData = date[0].summary.singleServices.find(item => item.serviceId === id)
+                  return (
+                    <TableHead key={`thead-${findData.serviceId}`}>
+                      <div className="text-center">{findData.serviceNo + ' - ' + findData.serviceName}</div>
+                      <div className={splitCell}>
+                        <div>虛業績</div>
+                        <div>客次</div>
+                      </div>
+                    </TableHead>
+                  )
+                })}
+              </TableRow>
+            </TableHeader>
 
-              <TableBody>
-                {designer.map(({ designerId, designerName, designerNo, datePerformances, summary }) => (
-                  <Fragment key={designerId}>
-                    {datePerformances.map(({ date, singleServices }) => (
-                      <TableRow key={`${date}-${designerId}`}>
-                        <TableCell className={stickyCell}>{date}</TableCell>
-                        <TableCell>{designerNo}</TableCell>
-                        <TableCell>{designerName}</TableCell>
-                        {serviceIds.map(id => {
-                          const findData = singleServices.find(item => item.serviceId === id)
-                          return (
-                            <TableCell key={`${date}-${findData.serviceId}`}>
-                              <div className={splitCell}>
-                                <div>{formatNumber(Math.round(findData.summary.performance * 100) / 100)}</div>
-                                <div>{findData.summary.orderCount}</div>
-                              </div>
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-
-                    ))}
-                    {datePerformances.length !== 0 && (
-                      <TableRow className="font-bold [&>td]:bg-surface-hover">
-                        <TableCell className={stickyCell}></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>小計</TableCell>
-                        {serviceIds.map((id, i) => {
-                          const findData = summary.find(({ serviceId }) => serviceId === id)
-                          return (
-                            <TableCell key={`subTotal-${date}=${i}`}>
-                              <div className={splitCell}>
-                                <div>{formatNumber(findData.summary ? Math.round(findData.summary.performance * 100) / 100 : 0)}</div>
-                                <div>{findData.summary ? findData.summary.orderCount : 0}</div>
-                              </div>
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )}
-                  </Fragment>
-                ))}
-                <TableRow className="font-bold">
-                  <TableCell className={stickyCell}>合計</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TotalRow />
-                </TableRow>
-              </TableBody>
-            </Table>
+            <TableBody>
+              {designer.map(({ designerId, designerName, designerNo, datePerformances, summary }) => (
+                <Fragment key={designerId}>
+                  {datePerformances.map(({ date, singleServices }) => (
+                    <TableRow key={`${date}-${designerId}`}>
+                      <TableCell className={stickyCell}>{date}</TableCell>
+                      <TableCell>{designerNo}</TableCell>
+                      <TableCell>{designerName}</TableCell>
+                      {serviceIds.map(id => {
+                        const findData = singleServices.find(item => item.serviceId === id)
+                        return (
+                          <TableCell key={`${date}-${findData.serviceId}`}>
+                            <div className={splitCell}>
+                              <div>{formatNumber(Math.round(findData.summary.performance * 100) / 100)}</div>
+                              <div>{findData.summary.orderCount}</div>
+                            </div>
+                          </TableCell>
+                        )
+                      })}
+                    </TableRow>
+                  ))}
+                  {datePerformances.length !== 0 && (
+                    <TableRow className="font-bold [&>td]:bg-surface-hover">
+                      <TableCell className={stickyCell}></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell>小計</TableCell>
+                      {serviceIds.map((id, i) => {
+                        const findData = summary.find(({ serviceId }) => serviceId === id)
+                        return (
+                          <TableCell key={`subTotal-${date}=${i}`}>
+                            <div className={splitCell}>
+                              <div>{formatNumber(findData.summary ? Math.round(findData.summary.performance * 100) / 100 : 0)}</div>
+                              <div>{findData.summary ? findData.summary.orderCount : 0}</div>
+                            </div>
+                          </TableCell>
+                        )
+                      })}
+                    </TableRow>
+                  )}
+                </Fragment>
+              ))}
+              <TableRow className="font-bold">
+                <TableCell className={stickyCell}>合計</TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TotalRow />
+              </TableRow>
+            </TableBody>
+          </Table>
         )
       default:
         return sort
@@ -238,7 +236,9 @@ function Results({ reportData, sort }) {
 
   return (
     <Fragment>
-      {reportData?.serviceIds?.length ? renderTable() : (
+      {reportData?.serviceIds?.length ? (
+        renderTable()
+      ) : (
         <Card className="mt-6">
           <EmptyState title="無資料" />
         </Card>

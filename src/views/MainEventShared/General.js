@@ -15,8 +15,12 @@ function General({ dateChange, inputValue, valueChange, isClick, submit, isEdit 
 
   const PrivateToggle = () => (
     <ToggleGroup onChange={(e, v) => v !== null && valueChange('isPublic', v)} value={inputValue.isPublic} exclusive>
-      <ToggleGroupItem disabled={isReadOnly} value={true}>公開</ToggleGroupItem>
-      <ToggleGroupItem disabled={isReadOnly} value={false}>私人</ToggleGroupItem>
+      <ToggleGroupItem disabled={isReadOnly} value={true}>
+        公開
+      </ToggleGroupItem>
+      <ToggleGroupItem disabled={isReadOnly} value={false}>
+        私人
+      </ToggleGroupItem>
     </ToggleGroup>
   )
 
@@ -36,12 +40,12 @@ function General({ dateChange, inputValue, valueChange, isClick, submit, isEdit 
               value={inputValue.startDateDefault}
               format="yyyy/MM/dd"
               localeText={{
-                toolbarTitle: '預設起始時間'
+                toolbarTitle: '預設起始時間',
               }}
               slotProps={{
                 toolbar: {
-                  toolbarFormat: 'M月d日'
-                }
+                  toolbarFormat: 'M月d日',
+                },
               }}
               onChange={value => dateChange(new Date(value).getTime(), 'startDateDefault')}
             />
@@ -53,19 +57,19 @@ function General({ dateChange, inputValue, valueChange, isClick, submit, isEdit 
               value={inputValue.endDateDefault}
               format="yyyy/MM/dd"
               localeText={{
-                toolbarTitle: '預設結束時間'
+                toolbarTitle: '預設結束時間',
               }}
               slotProps={{
                 toolbar: {
-                  toolbarFormat: 'M月d日'
-                }
+                  toolbarFormat: 'M月d日',
+                },
               }}
               onChange={value => dateChange(new Date(value).getTime(), 'endDateDefault')}
             />
           </div>
-          <Field label='活動名稱'>
+          <Field label="活動名稱">
             <Input
-              placeholder='請輸入活動名稱'
+              placeholder="請輸入活動名稱"
               value={inputValue.nameDefault}
               onChange={e => valueChange('nameDefault', e.target.value)}
               readOnly={isReadOnly}
@@ -73,22 +77,13 @@ function General({ dateChange, inputValue, valueChange, isClick, submit, isEdit 
           </Field>
           {isEdit ? (
             <div style={{ display: inputValue.isPublic ? 'none' : '' }}>
-              <MLAutocomplete
-                onEdit
-                selectIds={inputValue.merchantIds}
-                onValueChange={v => valueChange('merchantIds', v)}
-              />
+              <MLAutocomplete onEdit selectIds={inputValue.merchantIds} onValueChange={v => valueChange('merchantIds', v)} />
             </div>
           ) : (
-            !inputValue.isPublic && (
-              <MLAutocomplete
-                selectIds={inputValue.merchantIds}
-                onValueChange={v => valueChange('merchantIds', v)}
-              />
-            )
+            !inputValue.isPublic && <MLAutocomplete selectIds={inputValue.merchantIds} onValueChange={v => valueChange('merchantIds', v)} />
           )}
           <div className="flex flex-col gap-4">
-            <Field label='總張數上限' className='w-40'>
+            <Field label="總張數上限" className="w-40">
               <Input
                 value={inputValue.maxCountDefault}
                 onFocus={e => e.target.select()}
@@ -105,13 +100,15 @@ function General({ dateChange, inputValue, valueChange, isClick, submit, isEdit 
               disabled={isReadOnly}
               style={{ width: 'fit-content' }}
               control={<Checkbox color="primary" />}
-              label='開啟簡訊通知'
+              label="開啟簡訊通知"
               checked={inputValue.isSMSNotifyDefault}
               onChange={(e, v) => valueChange('isSMSNotifyDefault', v)}
             />
           </div>
         </CardContent>
-        {isReadOnly ? '' : (
+        {isReadOnly ? (
+          ''
+        ) : (
           <CardFooter>
             <Button disabled={isClick} onClick={submit} variant="primary">
               {isEdit ? '儲存' : '新增'}

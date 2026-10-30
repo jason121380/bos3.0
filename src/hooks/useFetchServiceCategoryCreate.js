@@ -5,9 +5,7 @@ export const CREATE_SERVICE_CATEGORY = gql`
     createServiceCategory(input: $input)
   }
 `
-const merchantId = window.localStorage.getItem('userMerchant')
-  ? JSON.parse(window.localStorage.getItem('userMerchant')).id
-  : null
+const merchantId = window.localStorage.getItem('userMerchant') ? JSON.parse(window.localStorage.getItem('userMerchant')).id : null
 
 export const mockServiceCreateRes = {
   data: {

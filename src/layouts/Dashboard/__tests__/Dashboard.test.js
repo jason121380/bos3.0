@@ -203,9 +203,7 @@ describe('內容區與頁面權限', () => {
   it('依目前網址檢查頁面權限；沒有權限時導回個人頁', async () => {
     const { calls } = setup({ pageAllowed: false }, { route: '/management/orders' })
     await wait(() => expect(currentLocation()).toBe('/profile/general'))
-    expect(callsOf(calls, 'CHECK_PAGE_AUTHORITY')[0].variables.input).toEqual(
-      expect.objectContaining({ id: 'user-1', url: '/management/orders' })
-    )
+    expect(callsOf(calls, 'CHECK_PAGE_AUTHORITY')[0].variables.input).toEqual(expect.objectContaining({ id: 'user-1', url: '/management/orders' }))
   })
 
   it('工程模式不送頁面權限查詢，未知網址也不導回個人頁', async () => {

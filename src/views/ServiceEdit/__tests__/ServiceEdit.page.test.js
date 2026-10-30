@@ -12,15 +12,7 @@ import React from 'react'
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
 import { deductionDisplayActions } from 'store/deductionDisplay'
-import {
-  renderPage,
-  loginAs,
-  callsOf,
-  currentLocation,
-  createTestStore,
-  MERCHANT_ID,
-  PAGE_CRASH_TEXT,
-} from '../../../__tests__/testkit.test'
+import { renderPage, loginAs, callsOf, currentLocation, createTestStore, MERCHANT_ID, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import {
   settingFixtures,
   typeText,
@@ -102,7 +94,11 @@ const makeService = (overrides = {}) => ({
   ...overrides,
 })
 
-const LIST = [{ id: 's0', name: '洗髮' }, { id: 's1', name: '精緻剪髮' }, { id: 's2', name: '染髮' }]
+const LIST = [
+  { id: 's0', name: '洗髮' },
+  { id: 's1', name: '精緻剪髮' },
+  { id: 's2', name: '染髮' },
+]
 
 const fixtures = ({ service = makeService(), list = LIST, ...overrides } = {}) =>
   settingFixtures({
@@ -359,9 +355,15 @@ describe('編輯服務項目：扣項設定', () => {
     const service = makeService({
       serviceDetail: {
         serviceDeductionItems: [
-          { type: '系統預設', itemSettings: [item({ name: '舊名', deductionOrder: 3, deductionReference: 0 }), item({ deductionOrder: 9, deductionReference: 1 })] },
+          {
+            type: '系統預設',
+            itemSettings: [item({ name: '舊名', deductionOrder: 3, deductionReference: 0 }), item({ deductionOrder: 9, deductionReference: 1 })],
+          },
           { type: '設計師抽成', itemSettings: [] },
-          { type: '助理抽成', itemSettings: [item({ deductionOrder: null, deductionReference: 2 }), item({ deductionOrder: null, deductionReference: 1 })] },
+          {
+            type: '助理抽成',
+            itemSettings: [item({ deductionOrder: null, deductionReference: 2 }), item({ deductionOrder: null, deductionReference: 1 })],
+          },
         ],
       },
     })
@@ -401,9 +403,7 @@ describe('編輯服務項目：扣項設定', () => {
     expect(screen.queryByText(DEFAULT_SECTION)).toBeNull()
     fireEvent.click(button('儲存'))
     await wait(() => expect(callsOf(calls, 'UPDATE_SERVICE')).toHaveLength(1))
-    expect(callsOf(calls, 'UPDATE_SERVICE')[0].variables.input.serviceDeductionItems).toEqual([
-      { type: '設計師抽成', itemSettings: [item()] },
-    ])
+    expect(callsOf(calls, 'UPDATE_SERVICE')[0].variables.input.serviceDeductionItems).toEqual([{ type: '設計師抽成', itemSettings: [item()] }])
   })
 
   it('實業績預估：%數／固定金額 × 分指定與否 × 扣業績／扣薪水，基準點引用前一筆剩餘業績；只有扣薪水的卡等於價格', async () => {

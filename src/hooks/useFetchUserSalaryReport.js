@@ -39,11 +39,8 @@ export default function useFetchUserSalaryReport({ date }) {
 }
 
 export function useFetchUserSalaryReportLazy() {
-  const [fetchUserSalaryReportLazy, userSalaryReportLazyData] = useLazyQuery(
-    FETCH_USER_SALARY_REPORT,
-    {
-      fetchPolicy: 'cache-and-network',
-    }
-  )
+  const [fetchUserSalaryReportLazy, userSalaryReportLazyData] = useLazyQuery(FETCH_USER_SALARY_REPORT, {
+    fetchPolicy: 'cache-and-network',
+  })
   return { fetchUserSalaryReportLazy, userSalaryReportLazyData }
 }

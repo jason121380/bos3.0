@@ -1,7 +1,7 @@
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import { maskCustomerName } from 'helper/exportCustomerMask'
 import { startOfDay } from 'date-fns'
 import paginationLabel from './../../helper/paginationLabel'
@@ -11,15 +11,7 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TablePagination, TableRow } from 'ui/table'
 
-function Results({
-  className,
-  customers,
-  results,
-  handleOnChangePage,
-  handleOnChangeRowsPerPage,
-  sortWay,
-  ...rest
-}) {
+function Results({ className, customers, results, handleOnChangePage, handleOnChangeRowsPerPage, sortWay, ...rest }) {
   const pageRef = useRef(null)
   const [excelData, setExcelData] = useState([])
   const displayResults = []
@@ -43,12 +35,9 @@ function Results({
               小計: result.count * Math.round(result.price),
               手續費: Math.round(result.handlingFee),
               '販賣業績(實)': result.price2,
-              '抽成(方式)': `${Math.round(result.commission)}(${result.rakeType === 'fixed'
-                  ? '固定金額'
-                  : result.rakeType === 'byCost'
-                    ? '毛利'
-                    : '售價'
-                })`,
+              '抽成(方式)': `${Math.round(result.commission)}(${
+                result.rakeType === 'fixed' ? '固定金額' : result.rakeType === 'byCost' ? '毛利' : '售價'
+              })`,
             })
           } else {
             excelData.push({
@@ -62,35 +51,24 @@ function Results({
         })
       })
     }
-    const totalCount = Math.round(
-      results.data.reduce((total, item) => (total = total + item.count), 0)
-    )
-    const totalPrice = Math.round(
-      results.data.reduce(
-        (total, item) => (total = total + item.price * item.count), 0)
-    )
-    const totalHandlingFee = Math.round(
-      results.data.reduce((total, item) => (total = total + item.handlingFee), 0)
-    )
-    const totalPrice2 = Math.round(
-      results.data.reduce((total, item) => (total = total + item.price2), 0)
-    )
-    const totalCommission = Math.round(
-      results.data.reduce((total, item) => (total = total + item.commission), 0)
-    )
+    const totalCount = Math.round(results.data.reduce((total, item) => (total = total + item.count), 0))
+    const totalPrice = Math.round(results.data.reduce((total, item) => (total = total + item.price * item.count), 0))
+    const totalHandlingFee = Math.round(results.data.reduce((total, item) => (total = total + item.handlingFee), 0))
+    const totalPrice2 = Math.round(results.data.reduce((total, item) => (total = total + item.price2), 0))
+    const totalCommission = Math.round(results.data.reduce((total, item) => (total = total + item.commission), 0))
     excelData.push({
       日期: '合計',
       數量: totalCount,
       小計: totalPrice,
       手續費: totalHandlingFee,
       '販賣業績(實)': totalPrice2,
-      '抽成(方式)': totalCommission
+      '抽成(方式)': totalCommission,
     })
     setExcelData(excelData)
     if (pageRef.current) {
       paginationLabel(pageRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [results, sortWay, pageRef.current] 變動時執行；displayResults 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [results, sortWay, pageRef.current] 變動時執行；displayResults 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [results, sortWay, pageRef.current])
   const temp = []
   if (results.data != null && sortWay === 'DESIGNER') {
@@ -248,15 +226,14 @@ function Results({
   return (
     <div {...rest} className={className}>
       <p className="pb-2 text-caption tabular-nums text-text-secondary">
-        {results.totalCount} 筆資料, {results.pageOffset + 1}/
-        {Math.ceil(results.totalCount / results.pageLimit)}
+        {results.totalCount} 筆資料, {results.pageOffset + 1}/{Math.ceil(results.totalCount / results.pageLimit)}
       </p>
       <Card>
         <CardHeader
           className="items-center pb-4"
           action={
             <Button asChild size="sm" variant="secondary">
-              <CSVLink data={excelData} filename="店販抽成明細.csv" >
+              <CSVLink data={excelData} filename="店販抽成明細.csv">
                 <Download strokeWidth={1.75} />
                 報表匯出
               </CSVLink>
@@ -290,21 +267,9 @@ function Results({
                       <TableRow key={index}>
                         <TableCell className="whitespace-nowrap tabular-nums">{format(new Date(data.date), 'yyyy/MM/dd')}</TableCell>
                         <TableCell className="tabular-nums">#{data.no}</TableCell>
-                        <TableCell>
-                          {data.designerNo !== ''
-                            ? data.designerName + ' / ' + data.designerNo
-                            : data.designerName}
-                        </TableCell>
-                        <TableCell>
-                          {data.customerNo
-                            ? data.customerName + ' / ' + data.customerNo
-                            : data.customerName}
-                        </TableCell>
-                        <TableCell>
-                          {data.productNo === null
-                            ? data.productName
-                            : data.productName + ' / ' + data.productNo}
-                        </TableCell>
+                        <TableCell>{data.designerNo !== '' ? data.designerName + ' / ' + data.designerNo : data.designerName}</TableCell>
+                        <TableCell>{data.customerNo ? data.customerName + ' / ' + data.customerNo : data.customerName}</TableCell>
+                        <TableCell>{data.productNo === null ? data.productName : data.productName + ' / ' + data.productNo}</TableCell>
                         <TableCell numeric>{formatNumber(Math.round(data.price))}</TableCell>
                         <TableCell numeric>{formatNumber(data.count)}</TableCell>
                         <TableCell numeric>{formatNumber(data.count * Math.round(data.price))}</TableCell>
@@ -312,30 +277,30 @@ function Results({
                         <TableCell numeric>{formatNumber(Math.round(data.price2))}</TableCell>
                         <TableCell numeric className="whitespace-nowrap">
                           {formatNumber(Math.round(data.commission))}(
-                          {data.rakeType === 'fixed'
-                            ? '固定金額'
-                            : data.rakeType === 'byCost'
-                              ? '毛利'
-                              : '售價'}
-                          )
+                          {data.rakeType === 'fixed' ? '固定金額' : data.rakeType === 'byCost' ? '毛利' : '售價'})
                         </TableCell>
                       </TableRow>
                     )
                   } else {
                     return (
-                      <TableRow
-                        className="moneyFlowCatReportSubtotal bg-surface font-medium"
-                        key={index}
-                      >
+                      <TableRow className="moneyFlowCatReportSubtotal bg-surface font-medium" key={index}>
                         <TableCell colSpan={3} />
                         <TableCell className="font-bold">小計</TableCell>
                         <TableCell />
                         <TableCell />
                         <TableCell />
-                        <TableCell numeric className="font-bold">{formatNumber(data.totalCountPrice)}</TableCell>
-                        <TableCell numeric className="font-bold">{formatNumber(Math.round(data.totalHandlingFee))}</TableCell>
-                        <TableCell numeric className="font-bold">{formatNumber(Math.round(data.totalPrice2))}</TableCell>
-                        <TableCell numeric className="font-bold">{formatNumber(Math.round(data.totalCommission))}</TableCell>
+                        <TableCell numeric className="font-bold">
+                          {formatNumber(data.totalCountPrice)}
+                        </TableCell>
+                        <TableCell numeric className="font-bold">
+                          {formatNumber(Math.round(data.totalHandlingFee))}
+                        </TableCell>
+                        <TableCell numeric className="font-bold">
+                          {formatNumber(Math.round(data.totalPrice2))}
+                        </TableCell>
+                        <TableCell numeric className="font-bold">
+                          {formatNumber(Math.round(data.totalCommission))}
+                        </TableCell>
                       </TableRow>
                     )
                   }
@@ -345,32 +310,19 @@ function Results({
                 <TableCell className="font-bold">合計</TableCell>
                 <TableCell colSpan={5}></TableCell>
                 <TableCell numeric className="font-bold">
-                  {formatNumber(Math.round(
-                    results.data.reduce((total, item) => (total = total + item.count), 0)
-                  ))}
+                  {formatNumber(Math.round(results.data.reduce((total, item) => (total = total + item.count), 0)))}
                 </TableCell>
                 <TableCell numeric className="font-bold">
-                  {formatNumber(Math.round(
-                    results.data.reduce(
-                      (total, item) => (total = total + item.price * item.count),
-                      0
-                    )
-                  ))}
+                  {formatNumber(Math.round(results.data.reduce((total, item) => (total = total + item.price * item.count), 0)))}
                 </TableCell>
                 <TableCell numeric className="font-bold">
-                  {formatNumber(Math.round(
-                    results.data.reduce((total, item) => (total = total + item.handlingFee), 0)
-                  ))}
+                  {formatNumber(Math.round(results.data.reduce((total, item) => (total = total + item.handlingFee), 0)))}
                 </TableCell>
                 <TableCell numeric className="font-bold">
-                  {formatNumber(Math.round(
-                    results.data.reduce((total, item) => (total = total + item.price2), 0)
-                  ))}
+                  {formatNumber(Math.round(results.data.reduce((total, item) => (total = total + item.price2), 0)))}
                 </TableCell>
                 <TableCell numeric className="font-bold">
-                  {formatNumber(Math.round(
-                    results.data.reduce((total, item) => (total = total + item.commission), 0)
-                  ))}
+                  {formatNumber(Math.round(results.data.reduce((total, item) => (total = total + item.commission), 0)))}
                 </TableCell>
               </TableRow>
             </TableBody>

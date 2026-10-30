@@ -38,20 +38,17 @@ function Parameter() {
         <PageHeader title="業績抽成參數設定" />
         {[deduction, merchantCommissionWay, merchantPointValueSettingsForSelect].some(query => query.error) && (
           <QueryFailed
-            onRetry={() => [deduction, merchantCommissionWay, merchantPointValueSettingsForSelect]
-              .filter(query => query.error)
-              .forEach(query => query.refetch())}
+            onRetry={() =>
+              [deduction, merchantCommissionWay, merchantPointValueSettingsForSelect].filter(query => query.error).forEach(query => query.refetch())
+            }
           />
         )}
-        <Tabs
-          className="md:flex md:items-stretch"
-          value={selectTab}
-          onValueChange={value => handleTabsChange(null, value)}
-          activationMode="manual"
-        >
+        <Tabs className="md:flex md:items-stretch" value={selectTab} onValueChange={value => handleTabsChange(null, value)} activationMode="manual">
           <SettingsTabsList>
             {tabs.map((tab, index) => (
-              <SettingsTabsTrigger key={index} value={tab.value} icon={tab.icon}>{tab.label}</SettingsTabsTrigger>
+              <SettingsTabsTrigger key={index} value={tab.value} icon={tab.icon}>
+                {tab.label}
+              </SettingsTabsTrigger>
             ))}
           </SettingsTabsList>
           <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">
@@ -81,14 +78,10 @@ function Parameter() {
               />
             </div>
             <div className={selectTab === 'deduction' ? 'flex flex-col gap-6' : 'hidden'}>
-              <Deduction
-                deduction={deduction}
-              />
+              <Deduction deduction={deduction} />
             </div>
             <div className={selectTab === 'helperPoint' ? 'flex flex-col gap-6' : 'hidden'}>
-              <HelperPoint
-                merchantPointValueSettings={merchantPointValueSettingsForSelect}
-              />
+              <HelperPoint merchantPointValueSettings={merchantPointValueSettingsForSelect} />
             </div>
           </div>
         </Tabs>

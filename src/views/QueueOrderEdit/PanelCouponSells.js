@@ -11,7 +11,6 @@ import idx from 'idx'
 import CouponSells from './CouponSells'
 import CouponSellModal from 'views/OrderShared/EditCouponSellModal'
 
-
 export default function PanelCouponSells() {
   const { handleBillChange, order } = useContext(billContext)
   const [couponSells, setCouponSells] = useState([])
@@ -25,7 +24,7 @@ export default function PanelCouponSells() {
   const [pageSetting, setPageSetting] = useState({
     keyword: '',
     categoryIds: [],
-    isLaunched: true
+    isLaunched: true,
   })
 
   const tickets = useFetchTickets(pageSetting)
@@ -39,7 +38,7 @@ export default function PanelCouponSells() {
       setCouponCategories(couponCategories)
     } else {
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [tickets.loading, serviceCategoriesData.loading])
 
   useEffect(() => {
@@ -92,7 +91,7 @@ export default function PanelCouponSells() {
       }
       setCouponSells(newTicketSells)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [order.loading])
 
   function handleAddCouponSell() {
@@ -189,10 +188,13 @@ export default function PanelCouponSells() {
         data-testid="couponSells"
         onClick={handleAccordionClick}
         // 收合時顯示「已填 N 筆 · 小計」（只讀畫面上的項目列，不參與計算或送出；比照打帳單）
-        summaryMeta={!expanded && panelSummary(
-          couponSells.filter(d => d.serviceId).length,
-          couponSells.filter(d => d.serviceId).reduce((total, d) => total + d.price * d.count, 0)
-        )}
+        summaryMeta={
+          !expanded &&
+          panelSummary(
+            couponSells.filter(d => d.serviceId).length,
+            couponSells.filter(d => d.serviceId).reduce((total, d) => total + d.price * d.count, 0)
+          )
+        }
         style={{ width: '100%' }}
       >
         <p className="m-0 !text-[16px] font-bold text-text">預收卡販賣</p>

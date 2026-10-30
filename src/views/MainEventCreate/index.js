@@ -20,14 +20,11 @@ function MainEventCreate() {
     isSMSNotifyDefault: false,
     maxCountDefault: 0,
     isPublic: true,
-    merchantIds: []
+    merchantIds: [],
   })
 
   const handleSubmit = async () => {
-    const {
-      nameDefault, startDateDefault, endDateDefault, isSMSNotifyDefault,
-      maxCountDefault, isPublic, merchantIds
-    } = cloneDeep(inputValue)
+    const { nameDefault, startDateDefault, endDateDefault, isSMSNotifyDefault, maxCountDefault, isPublic, merchantIds } = cloneDeep(inputValue)
     const submitData = {
       nameDefault: nameDefault.trim(),
       startDateDefault: startOfDay(startDateDefault).getTime(),
@@ -35,7 +32,7 @@ function MainEventCreate() {
       isSMSNotifyDefault,
       maxCountDefault,
       isPublic,
-      merchantIds: isPublic ? [] : merchantIds
+      merchantIds: isPublic ? [] : merchantIds,
     }
 
     try {
@@ -45,21 +42,20 @@ function MainEventCreate() {
       if (res.data.createMainEvent) {
         openSnackbar({
           message: '新增成功',
-          variant: 'success'
+          variant: 'success',
         })
         history.push('/main-event-list')
       } else {
         openSnackbar({
           message: '新增失敗',
-          variant: 'warning'
+          variant: 'warning',
         })
         setIsClick(false)
       }
-
     } catch (error) {
       openSnackbar({
         message: error.message,
-        variant: 'error'
+        variant: 'error',
       })
       setIsClick(false)
     }
@@ -88,13 +84,7 @@ function MainEventCreate() {
     <Page className="ui-root" title="建立活動">
       <div className="mx-auto max-w-3xl">
         <PageHeader title="建立活動" />
-        <General
-          dateChange={handleDateChange}
-          valueChange={handleValueChange}
-          inputValue={inputValue}
-          isClick={isClick}
-          submit={handleSubmit}
-        />
+        <General dateChange={handleDateChange} valueChange={handleValueChange} inputValue={inputValue} isClick={isClick} submit={handleSubmit} />
       </div>
     </Page>
   )

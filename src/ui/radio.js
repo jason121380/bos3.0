@@ -22,7 +22,14 @@ Radio.displayName = 'Radio'
 // onChange(event, value) 與 MUI RadioGroup 的 (event, value) 簽名相同；原 handler 只讀 event.target.value 亦相容
 // checked / value / name / disabled 一律傳給原生 input；同組必須給相同 name，原生互斥與鍵盤行為才成立
 const RadioField = React.forwardRef(({ label, onChange, disabled, className, labelClassName, ...props }, ref) => (
-  <label className={cn('ui-root inline-flex cursor-pointer select-none items-center gap-2 text-body text-text', checkboxHitArea, disabled && 'cursor-not-allowed opacity-60', className)}>
+  <label
+    className={cn(
+      'ui-root inline-flex cursor-pointer select-none items-center gap-2 text-body text-text',
+      checkboxHitArea,
+      disabled && 'cursor-not-allowed opacity-60',
+      className
+    )}
+  >
     <Radio ref={ref} disabled={disabled} onChange={e => onChange && onChange(e, e.target.value)} {...props} />
     <span className={labelClassName}>{label}</span>
   </label>

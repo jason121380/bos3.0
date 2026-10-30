@@ -208,9 +208,7 @@ describe('服務列：原帳單只填了第二個助理名額', () => {
       order: makeOrder({
         serviceOrders: [
           row(A, {
-            helperList: [
-              { id: 'h-1', type: '助理-吹整', isDesignate: true, helperDeductionType: 'CASH', helper: { id: ASSISTANT.userId } },
-            ],
+            helperList: [{ id: 'h-1', type: '助理-吹整', isDesignate: true, helperDeductionType: 'CASH', helper: { id: ASSISTANT.userId } }],
           }),
         ],
       }),

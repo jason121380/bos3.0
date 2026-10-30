@@ -133,12 +133,9 @@ const FETCH_DESIGNER_FIXED_SALARY_ITEMS = gql`
 `
 
 export function useFetcDesignerFixedSalaryItemsLazy() {
-  const [fetcDesignerFixedSalaryItemsLazy, designerFixedSalaryItemsLazyData] = useLazyQuery(
-    FETCH_DESIGNER_FIXED_SALARY_ITEMS,
-    {
-      fetchPolicy: 'cache-and-network',
-    }
-  )
+  const [fetcDesignerFixedSalaryItemsLazy, designerFixedSalaryItemsLazyData] = useLazyQuery(FETCH_DESIGNER_FIXED_SALARY_ITEMS, {
+    fetchPolicy: 'cache-and-network',
+  })
   return { fetcDesignerFixedSalaryItemsLazy, designerFixedSalaryItemsLazyData }
 }
 const FETCH_DESIGNER_IN_ORDER_DETAIL = gql`

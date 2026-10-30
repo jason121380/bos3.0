@@ -1,13 +1,40 @@
 /* ui/icons 的預設樣式（原以 emotion styled 執行期產生）。與 MUI SvgIcon 相同：1em 方框、依 fontSize 取字級、依 color 取 token 色。
    刻意用單一 class 權重、隨 icons.js 打包在 Tailwind（tokens.css）之後：頁面一般 Tailwind class 不會蓋過預設尺寸，要覆蓋需加 !——與原 emotion 行為一致。 */
-.ui-icon { width: 1em; height: 1em; display: inline-block; flex-shrink: 0; }
-.ui-icon-fs-small { font-size: 1.25rem; }
-.ui-icon-fs-medium { font-size: 1.5rem; }
-.ui-icon-fs-large { font-size: 2.1875rem; }
-.ui-icon-fs-inherit { font-size: inherit; }
-.ui-icon-c-primary, .ui-icon-c-info { color: rgb(var(--accent)); }
-.ui-icon-c-secondary, .ui-icon-c-action { color: rgb(var(--text-secondary)); }
-.ui-icon-c-disabled { color: rgb(var(--text-tertiary)); }
-.ui-icon-c-error { color: rgb(var(--danger)); }
-.ui-icon-c-warning { color: rgb(var(--warning)); }
-.ui-icon-c-success { color: rgb(var(--success)); }
+.ui-icon {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.ui-icon-fs-small {
+  font-size: 1.25rem;
+}
+.ui-icon-fs-medium {
+  font-size: 1.5rem;
+}
+.ui-icon-fs-large {
+  font-size: 2.1875rem;
+}
+.ui-icon-fs-inherit {
+  font-size: inherit;
+}
+.ui-icon-c-primary,
+.ui-icon-c-info {
+  color: rgb(var(--accent));
+}
+.ui-icon-c-secondary,
+.ui-icon-c-action {
+  color: rgb(var(--text-secondary));
+}
+.ui-icon-c-disabled {
+  color: rgb(var(--text-tertiary));
+}
+.ui-icon-c-error {
+  color: rgb(var(--danger));
+}
+.ui-icon-c-warning {
+  color: rgb(var(--warning));
+}
+.ui-icon-c-success {
+  color: rgb(var(--success));
+}

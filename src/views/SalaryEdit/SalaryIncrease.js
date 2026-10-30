@@ -7,7 +7,6 @@ import idx from 'idx'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
-
 export default function SalaryIncrease({
   increaseSecondContent,
   increaseCombined,
@@ -119,7 +118,7 @@ export default function SalaryIncrease({
 
   const textFieldRef = useRef()
   useEffect(() => {
-    if(textFieldRef.current && focus.includes('increase')) {
+    if (textFieldRef.current && focus.includes('increase')) {
       textFieldRef.current.focus()
     }
   }, [focus, tabIndex])
@@ -143,28 +142,23 @@ export default function SalaryIncrease({
                 .map((data, index) => {
                   if (data.source === 'parameter') {
                     return (
-                      <div
-                        key={`increase-${index}`}
-                        className="col-span-12 flex items-center sm:col-span-6 md:col-span-4 lg:col-span-3"
-                      >
-                        <span className="mx-1 w-[25px] shrink-0 text-heading tabular-nums text-text-secondary">
-                          {index + 1}
-                        </span>
+                      <div key={`increase-${index}`} className="col-span-12 flex items-center sm:col-span-6 md:col-span-4 lg:col-span-3">
+                        <span className="mx-1 w-[25px] shrink-0 text-heading tabular-nums text-text-secondary">{index + 1}</span>
                         <TextField
                           variant="outlined"
                           label={data.itemName}
                           value={data.price || 0}
                           name="price"
                           fullWidth
-                          inputRef={(focus === 'increaseCombined' && index === tabIndex) ? textFieldRef : ''}
-                          onFocus={event => { 
+                          inputRef={focus === 'increaseCombined' && index === tabIndex ? textFieldRef : ''}
+                          onFocus={event => {
                             event.target.select()
                             setTabIndex(index)
                             setFocus('increaseCombined')
                           }}
                           onKeyDown={event => {
-                            if(event.key === 'Enter') {
-                              if(index < (increaseCombined.length - 1)){
+                            if (event.key === 'Enter') {
+                              if (index < increaseCombined.length - 1) {
                                 setTabIndex(index + 1)
                               } else {
                                 setFocus('increaseItemName')
@@ -183,28 +177,23 @@ export default function SalaryIncrease({
                         .sort((a, b) => a.sorting - b.sorting)
                         .map((data, index) => {
                           return (
-                            <div
-                              key={`increase-${index}`}
-                              className="col-span-12 flex items-center"
-                            >
-                              <span className="mx-1 w-[25px] shrink-0 text-heading tabular-nums text-text-secondary">
-                                {data.sorting}
-                              </span>
+                            <div key={`increase-${index}`} className="col-span-12 flex items-center">
+                              <span className="mx-1 w-[25px] shrink-0 text-heading tabular-nums text-text-secondary">{data.sorting}</span>
                               <TextField
                                 variant="outlined"
                                 label={data.itemName}
                                 value={data.price || 0}
                                 name="price"
                                 fullWidth
-                                inputRef={(focus === 'increaseCombined' && index === tabIndex) ? textFieldRef : ''}
-                                onFocus={event => { 
+                                inputRef={focus === 'increaseCombined' && index === tabIndex ? textFieldRef : ''}
+                                onFocus={event => {
                                   event.target.select()
                                   setTabIndex(index)
                                   setFocus('increaseCombined')
                                 }}
                                 onKeyDown={event => {
-                                  if(event.key === 'Enter') {
-                                    if(index < (salaryIncreaseItemsReformatted.length - 1)){
+                                  if (event.key === 'Enter') {
+                                    if (index < salaryIncreaseItemsReformatted.length - 1) {
                                       setTabIndex(index + 1)
                                     } else {
                                       setFocus('increaseItemName')
@@ -235,14 +224,14 @@ export default function SalaryIncrease({
                     label="薪資加項科目"
                     name="itemName"
                     value={data.itemName}
-                    inputRef={(focus === 'increaseItemName' && index === tabIndex) ? textFieldRef : ''}
+                    inputRef={focus === 'increaseItemName' && index === tabIndex ? textFieldRef : ''}
                     onFocus={event => {
                       event.target.select()
                       setTabIndex(index)
                       setFocus('increaseItemName')
                     }}
                     onKeyDown={event => {
-                      if(event.key === 'Enter') {
+                      if (event.key === 'Enter') {
                         setFocus('increasePrice')
                       }
                     }}
@@ -256,15 +245,15 @@ export default function SalaryIncrease({
                     label="加項金額"
                     name="price"
                     value={data.price || 0}
-                    inputRef={(focus === 'increasePrice' && index === tabIndex) ? textFieldRef : ''}
+                    inputRef={focus === 'increasePrice' && index === tabIndex ? textFieldRef : ''}
                     onFocus={event => {
                       event.target.select()
                       setTabIndex(index)
                       setFocus('increasePrice')
                     }}
                     onKeyDown={event => {
-                      if(event.key === 'Enter') {
-                        if(index < (increaseSecondContent.increaseItems.length - 1)){
+                      if (event.key === 'Enter') {
+                        if (index < increaseSecondContent.increaseItems.length - 1) {
                           setTabIndex(index + 1)
                           setFocus('increaseItemName')
                         } else {
@@ -275,16 +264,17 @@ export default function SalaryIncrease({
                     }}
                     onChange={e => handleIncreaseSecondInput(e, index)}
                     disabled={isSalaryItemsLock}
-                    onWheel={() => document.activeElement.blur()}              
+                    onWheel={() => document.activeElement.blur()}
                   />
                   {increaseSecondContent.increaseItems.length > 1 && !isSalaryItemsLock && (
                     <Button variant="ghost" size="icon" aria-label="刪除此項" onClick={() => handleDeductItem(index)}>
                       <DeleteForeverIcon />
                     </Button>
                   )}
-                  {index === increaseSecondContent.increaseItems.length - 1 &&
-                  !isSalaryItemsLock ? (
-                    <Button variant="ghost" size="icon" aria-label="新增一項" onClick={handleAddItem}><AddIcon /></Button>
+                  {index === increaseSecondContent.increaseItems.length - 1 && !isSalaryItemsLock ? (
+                    <Button variant="ghost" size="icon" aria-label="新增一項" onClick={handleAddItem}>
+                      <AddIcon />
+                    </Button>
                   ) : (
                     <span className="w-9 shrink-0" />
                   )}
@@ -296,9 +286,7 @@ export default function SalaryIncrease({
       </Card>
       <div className="mt-3">
         <span className="text-heading tabular-nums text-text">
-          {`${designer.name} ${
-            designer.designerNo === '' ? '' : `(` + designer.designerNo + `)`
-          } - 薪資加項小計:${
+          {`${designer.name} ${designer.designerNo === '' ? '' : `(` + designer.designerNo + `)`} - 薪資加項小計:${
             increaseCombined.reduce((accu, curVal) => accu + curVal.price, 0) +
               increaseSecondContent.increaseItems.reduce((accu, curVal) => accu + curVal.price, 0) || 0
           }`}

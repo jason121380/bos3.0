@@ -8,7 +8,12 @@ import helperDeduction from '../helperDeduction'
 const run = (rules, servicePrice = 1000) => {
   let point
   let cash
-  helperDeduction(rules, p => (point = p), c => (cash = c), servicePrice)
+  helperDeduction(
+    rules,
+    p => (point = p),
+    c => (cash = c),
+    servicePrice
+  )
   return { point, cash }
 }
 
@@ -63,10 +68,7 @@ describe('helperDeduction：助理扣項計算', () => {
 
   describe('點數', () => {
     it('點數與金額分開累計', () => {
-      const result = run([
-        rule({ deductionWay: '點數', point: 2 }),
-        rule({ deductionWay: '固定金額', cash: 50 }),
-      ])
+      const result = run([rule({ deductionWay: '點數', point: 2 }), rule({ deductionWay: '固定金額', cash: 50 })])
       expect(result).toEqual({ point: 4, cash: 100 })
     })
 

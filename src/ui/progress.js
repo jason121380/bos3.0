@@ -16,10 +16,7 @@ const Progress = React.forwardRef(({ value = 0, className, ...props }, ref) => {
       className={cn('h-1 w-full overflow-hidden rounded-[3px] bg-surface-hover', className)}
       {...props}
     >
-      <div
-        className="h-full rounded-[3px] bg-[rgb(var(--primary))] transition-[width] duration-300 ease-linear"
-        style={{ width: `${clamped}%` }}
-      />
+      <div className="h-full rounded-[3px] bg-[rgb(var(--primary))] transition-[width] duration-300 ease-linear" style={{ width: `${clamped}%` }} />
     </div>
   )
 })

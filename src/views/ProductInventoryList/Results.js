@@ -18,15 +18,13 @@ function Results({ reportData }) {
           <CardHeader className="pb-4">
             <div className="flex items-baseline gap-3">
               <CardTitle>商品庫存列表</CardTitle>
-              <span className="text-label tabular-nums text-text-secondary">
-                共 {reportData.length} 筆
-              </span>
+              <span className="text-label tabular-nums text-text-secondary">共 {reportData.length} 筆</span>
             </div>
           </CardHeader>
           <div>
             <Table
               dense
-              wrapperClassName='ProductInventoryListTable max-h-[calc(100vh-360px)] overflow-y-auto'
+              wrapperClassName="ProductInventoryListTable max-h-[calc(100vh-360px)] overflow-y-auto"
               className="min-w-[650px]"
               aria-label="a dense table"
             >

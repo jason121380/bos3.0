@@ -4,9 +4,16 @@ import { useState, useEffect } from 'react'
 import { Button } from 'ui/button'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { TreeView, TreeItem } from 'ui/tree'
-import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, Inventory2Outlined as Inventory2OutlinedIcon, DashboardOutlined as DashboardOutlinedIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
+import {
+  ExpandMore as ExpandMoreIcon,
+  ChevronRight as ChevronRightIcon,
+  Inventory2Outlined as Inventory2OutlinedIcon,
+  DashboardOutlined as DashboardOutlinedIcon,
+  SearchRounded as SearchRoundedIcon,
+  ClearRounded as ClearRoundedIcon,
+} from 'ui/icons'
 import PropTypes from 'prop-types'
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep'
 
 // 列樣式由 ui/tree 提供；保留群組間距、20px 縮排與子項換行。
 const treeClass = 'gap-5'
@@ -29,13 +36,13 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
     if (open) {
       open && setModalValues(values)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [open] 變動時執行；values 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [open] 變動時執行；values 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [open])
 
   useEffect(() => {
     if (!value) {
-      setFiltIds([]);
-      return;
+      setFiltIds([])
+      return
     }
 
     const filterMerchantsId = productList.all
@@ -43,25 +50,22 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
         const name = `${d.no ? `${d.no} - ` : ''}${d.name}`
         return name.toLowerCase().includes(value.toLowerCase())
       })
-      .map(d => d.id);
+      .map(d => d.id)
 
-    setFiltIds(filterMerchantsId);
+    setFiltIds(filterMerchantsId)
 
     if (filterMerchantsId.length > 0 && !expandedArr.includes('ALL')) {
-      setExpandedArr(prevExpandedArr => [...prevExpandedArr, 'ALL']);
+      setExpandedArr(prevExpandedArr => [...prevExpandedArr, 'ALL'])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [value] 變動時執行；expandedArr、productList.all 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
-  }, [value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [value] 變動時執行；expandedArr、productList.all 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+  }, [value])
 
   const renderGroup = group => {
     return group.map((data, index) => {
       if (!data.products.length) return null
       allNodeIds.push(`${data.name}(${data.products.length})`)
       return (
-        <div
-          key={`${data.name}-${index}`}
-          style={{ display: 'flex', alignItems: 'flex-start' }}
-        >
+        <div key={`${data.name}-${index}`} style={{ display: 'flex', alignItems: 'flex-start' }}>
           <Checkbox
             checked={isCheckedOrIndeterminat(data, 'checked?')}
             indeterminate={isCheckedOrIndeterminat(data, 'indeterminate?')}
@@ -71,7 +75,12 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
           <TreeItem
             groupClassName={ulGroupAllMerchantClass}
             nodeId={`${data.name}(${data.products.length})`}
-            label={<span id={`${data.name}(${data.products.length})`} className={spanClass}><DashboardOutlinedIcon />{`${data.name}(${data.products.length})`}</span>}
+            label={
+              <span id={`${data.name}(${data.products.length})`} className={spanClass}>
+                <DashboardOutlinedIcon />
+                {`${data.name}(${data.products.length})`}
+              </span>
+            }
           >
             {data.products.length ? renderItem(data.products) : ''}
           </TreeItem>
@@ -88,7 +97,12 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
         className={`${isSelect(data.id)} ${itemClass}${filtIds.includes(data.id) ? ` ${outlineClass}` : ''}`}
         selected={!!isSelect(data.id)}
         nodeId={data.id}
-        label={<span className={spanClass}><Inventory2OutlinedIcon />{`${data.no ? `${data.no} - ` : ''}${data.name}`}</span>}
+        label={
+          <span className={spanClass}>
+            <Inventory2OutlinedIcon />
+            {`${data.no ? `${data.no} - ` : ''}${data.name}`}
+          </span>
+        }
       />
     ))
   }
@@ -132,7 +146,6 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
     setValue('')
     setOpen(false)
   }
-
 
   const handleSelectGroup = (checked, data) => {
     const groupMerchants = data.products
@@ -201,73 +214,89 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
 
   return (
     // 舊版 MUI Dialog 有 onClose（點背景／Esc 關閉），以 onOpenChange 轉接；hideClose 不另加 X 鈕，寬度保留 MUI md（960px），className 保留 scss 掛點
-    <Dialog open={open} onOpenChange={o => { if (!o) handleOnClose() }}>
+    <Dialog
+      open={open}
+      onOpenChange={o => {
+        if (!o) handleOnClose()
+      }}
+    >
       <DialogContent size="lg" className="MerchantsListModal max-w-[960px]" hideClose aria-describedby={undefined}>
-      <DialogHeader className="flex-row flex-wrap items-center justify-between gap-4 pr-6">
+        <DialogHeader className="flex-row flex-wrap items-center justify-between gap-4 pr-6">
           <DialogTitle>商品列表</DialogTitle>
-        <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
-          <TextField
-            placeholder="搜尋商品"
-            type="text"
-            variant="standard"
-            fullWidth
-            size="small"
-            onChange={(e) => setValue(e.target.value)}
-            value={value}
-            style={{ width: 150 }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment style={{ padding: 4 }} position="start">
-                  <SearchRoundedIcon style={{ marginLeft: -8 }} />
-                </InputAdornment>
-              ),
-              endAdornment: value && (
-                <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="清除搜尋文字" title="清除搜尋文字" onClick={() => setValue("")}><ClearRoundedIcon /></Button>
-              )
-            }}
-          />
-          <Button className={buttonClass} onClick={() => setModalValues([])} variant="secondary">清除選取</Button>
-          <Button className={buttonClass} onClick={handleExpanedAll} variant="secondary">展開全部</Button>
-        </div>
-      </DialogHeader>
-      <DialogBody>
-        <TreeView
-          aria-label="商品列表"
-          aria-multiselectable="true"
-          className={treeClass}
-          defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpandIcon={<ChevronRightIcon />}
-          selected={null}
-          expanded={expandedArr}
-          onToggle={handleNodeFocus}
-        >
-          <div style={{ display: 'flex', alignItems: 'flex-start'}}>
-            <Checkbox
-              checked={modalValues.length > 0 && modalValues.length === productList.all.length}
-              indeterminate={modalValues.length > 0 && modalValues.length < productList.all.length}
-              onChange={(e, v) => v ? setModalValues(productList.all) : setModalValues([])}
-              style={{ marginTop: -9 }}
+          <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+            <TextField
+              placeholder="搜尋商品"
+              type="text"
+              variant="standard"
+              fullWidth
+              size="small"
+              onChange={e => setValue(e.target.value)}
+              value={value}
+              style={{ width: 150 }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment style={{ padding: 4 }} position="start">
+                    <SearchRoundedIcon style={{ marginLeft: -8 }} />
+                  </InputAdornment>
+                ),
+                endAdornment: value && (
+                  <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="清除搜尋文字" title="清除搜尋文字" onClick={() => setValue('')}>
+                    <ClearRoundedIcon />
+                  </Button>
+                ),
+              }}
             />
-            <TreeItem
-              groupClassName={ulGroupAllMerchantClass}
-              style={{ overflow: 'visible' }}
-              nodeId='ALL'
-              label={
-                <span id='ALL' className={spanClass}>
-                  <DashboardOutlinedIcon />{`全部(${productList.all.length})`}
-                </span>
-              }
-            >
-              {productList.all.length ? renderItem(productList.all) : ''}
-            </TreeItem>
+            <Button className={buttonClass} onClick={() => setModalValues([])} variant="secondary">
+              清除選取
+            </Button>
+            <Button className={buttonClass} onClick={handleExpanedAll} variant="secondary">
+              展開全部
+            </Button>
           </div>
-          {productList.category.length ? renderGroup(productList.category) : ''}
-        </TreeView>
-      </DialogBody>
-      <DialogFooter>
-        <Button variant="secondary" onClick={handleOnClose}>關閉</Button>
-        <Button variant="primary" onClick={handleComfirm}>確認</Button>
-      </DialogFooter>
+        </DialogHeader>
+        <DialogBody>
+          <TreeView
+            aria-label="商品列表"
+            aria-multiselectable="true"
+            className={treeClass}
+            defaultCollapseIcon={<ExpandMoreIcon />}
+            defaultExpandIcon={<ChevronRightIcon />}
+            selected={null}
+            expanded={expandedArr}
+            onToggle={handleNodeFocus}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+              <Checkbox
+                checked={modalValues.length > 0 && modalValues.length === productList.all.length}
+                indeterminate={modalValues.length > 0 && modalValues.length < productList.all.length}
+                onChange={(e, v) => (v ? setModalValues(productList.all) : setModalValues([]))}
+                style={{ marginTop: -9 }}
+              />
+              <TreeItem
+                groupClassName={ulGroupAllMerchantClass}
+                style={{ overflow: 'visible' }}
+                nodeId="ALL"
+                label={
+                  <span id="ALL" className={spanClass}>
+                    <DashboardOutlinedIcon />
+                    {`全部(${productList.all.length})`}
+                  </span>
+                }
+              >
+                {productList.all.length ? renderItem(productList.all) : ''}
+              </TreeItem>
+            </div>
+            {productList.category.length ? renderGroup(productList.category) : ''}
+          </TreeView>
+        </DialogBody>
+        <DialogFooter>
+          <Button variant="secondary" onClick={handleOnClose}>
+            關閉
+          </Button>
+          <Button variant="primary" onClick={handleComfirm}>
+            確認
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
@@ -278,7 +307,7 @@ ProductListModal.propTypes = {
   setOpen: PropTypes.func,
   merchantList: PropTypes.object,
   values: PropTypes.array,
-  setValues: PropTypes.func
+  setValues: PropTypes.func,
 }
 
 export default ProductListModal

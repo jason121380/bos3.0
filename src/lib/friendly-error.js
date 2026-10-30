@@ -27,9 +27,11 @@ const TIMEOUT = /\b(?:timeout|timed out|ETIMEDOUT|ECONNRESET|ECONNABORTED|socket
 // 前後端版本不一致（查了後端沒有的欄位／參數）：使用者改輸入沒用，重新整理載入新版前端多半就好
 const SCHEMA_MISMATCH = /Cannot query field|Unknown argument|Unknown type|is not defined by type|Unknown fragment|Unknown directive|Syntax Error/i
 // 輸入值的型別／必填驗證失敗（例如數字欄位填了文字）：請使用者檢查輸入
-const BAD_REQUEST = /Variable "\$\w+"|got invalid value|Expected (?:type|value of type)|must not be null|was not provided|(?:Int|Float|String|ID|Boolean) cannot represent/i
+const BAD_REQUEST =
+  /Variable "\$\w+"|got invalid value|Expected (?:type|value of type)|must not be null|was not provided|(?:Int|Float|String|ID|Boolean) cannot represent/i
 // 伺服器或程式例外（不該給使用者看的內部訊息）
-const SERVER_ERROR = /Internal server error|Cannot return null for non-nullable|INTERNAL_SERVER_ERROR|Unexpected error|Cannot read propert(?:y|ies)|is not a function|is not defined|Maximum call stack|out of memory|ECONNREFUSED|ER_\w+|SequelizeDatabaseError|Prisma/i
+const SERVER_ERROR =
+  /Internal server error|Cannot return null for non-nullable|INTERNAL_SERVER_ERROR|Unexpected error|Cannot read propert(?:y|ies)|is not a function|is not defined|Maximum call stack|out of memory|ECONNREFUSED|ER_\w+|SequelizeDatabaseError|Prisma/i
 const CJK = /[㐀-鿿豈-﫿]/
 const LETTERS = /[A-Za-z]{3,}/
 

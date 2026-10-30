@@ -11,7 +11,7 @@ const USE_FETCH_DELETE_MONEY_FLOW = gql`
 export default function useFetchDeleteMoneyFlow() {
   const [deleteMoneyFlow] = useMutation(USE_FETCH_DELETE_MONEY_FLOW)
   return {
-    deleteMoneyFlow: (id) =>
+    deleteMoneyFlow: id =>
       deleteMoneyFlow({
         variables: {
           id,

@@ -12,7 +12,14 @@ import ReservationList from '..'
 jest.mock('elements/snackbars', () => ({ openSnackbar: jest.fn() }))
 
 const ORDERS = [
-  { id: 'o-1', date: new Date(2025, 2, 10, 10, 0).getTime(), status: '待審核', isReserved: true, isDesignate: true, designer: { id: 'd-1', name: '王小美' } },
+  {
+    id: 'o-1',
+    date: new Date(2025, 2, 10, 10, 0).getTime(),
+    status: '待審核',
+    isReserved: true,
+    isDesignate: true,
+    designer: { id: 'd-1', name: '王小美' },
+  },
   { id: 'o-2', date: new Date(2025, 2, 11, 14, 30).getTime(), status: '預約成功', isReserved: true, isDesignate: false, designer: null },
   { id: 'o-3', date: new Date(2025, 2, 1, 9, 0).getTime(), status: '已完成', isReserved: true, isDesignate: false, designer: null },
 ]

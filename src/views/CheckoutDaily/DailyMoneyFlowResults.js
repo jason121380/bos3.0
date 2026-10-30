@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import useFetchSetRestoreDailyAccount from 'hooks/useFetchSettingRestoreDailyAccount'
 import idx from 'idx'
 import useFetchMerchantPassword from 'hooks/useFetchMerchantPassword'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import roundDecimal from './../../helper/roundDecimal.js'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
@@ -38,21 +38,16 @@ function Results({
 
   useEffect(() => {
     if (!passwordData.loading) {
-      const disableRestoreCheckout = idx(
-        passwordData,
-        _ => _.data.merchantPassword.restoreCheckout.isUsing
-      )
+      const disableRestoreCheckout = idx(passwordData, _ => _.data.merchantPassword.restoreCheckout.isUsing)
       setDisableRestoreCheckout(disableRestoreCheckout)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [passwordData.loading])
 
   const { setRestoreDailyAccount } = useFetchSetRestoreDailyAccount()
 
   useEffect(() => {
-    const sortByDate = dailyMoneyFlowResult.data
-      .filter(result => result.date)
-      .sort((a, b) => new Date(a.date) - new Date(b.date))
+    const sortByDate = dailyMoneyFlowResult.data.filter(result => result.date).sort((a, b) => new Date(a.date) - new Date(b.date))
     const data = sortByDate.map(result => ({
       營業日期: format(new Date(result.date), 'yyyy/MM/dd'),
       服務消費: Math.round(result.service),
@@ -102,7 +97,7 @@ function Results({
       excelData = excelData.map(({ 會員卡消費, ...rest }) => rest)
     }
     if (!bonusDisplay) {
-      excelData = excelData.map(({ ["點數折抵金額(-)"]: value, ...rest }) => rest)
+      excelData = excelData.map(({ ['點數折抵金額(-)']: value, ...rest }) => rest)
     }
     setExcelData(excelData)
     // 點數設定晚到時也要重算，否則表格有點數欄、匯出檔沒有（Jason 2026/10/22）
@@ -117,9 +112,7 @@ function Results({
   }
 
   const handleRestoreDailyAccount = date => {
-    setRestoreDailyAccount(
-      disableRestoreCheckout ? { date: dateForRestore, password: restorePwd } : { date }
-    )
+    setRestoreDailyAccount(disableRestoreCheckout ? { date: dateForRestore, password: restorePwd } : { date })
       .then(() => {
         openSnackbar({ variant: 'success', message: '日結解除成功' })
         setOpenDialog(false)
@@ -151,7 +144,7 @@ function Results({
           className="items-center pb-4"
           action={
             <Button asChild size="sm" variant="secondary">
-              <CSVLink data={excelData} filename="日結紀錄.csv" >
+              <CSVLink data={excelData} filename="日結紀錄.csv">
                 <Download strokeWidth={1.75} />
                 報表匯出
               </CSVLink>
@@ -160,9 +153,7 @@ function Results({
         >
           <div className="flex items-baseline gap-3">
             <CardTitle>日結紀錄</CardTitle>
-            <span className="text-label text-text-secondary tabular-nums">
-              共 {dailyMoneyFlowResult.data.length} 筆
-            </span>
+            <span className="text-label text-text-secondary tabular-nums">共 {dailyMoneyFlowResult.data.length} 筆</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -171,7 +162,9 @@ function Results({
               <TableRow className="hover:bg-transparent">
                 <TableHead>解除日結</TableHead>
                 <TableHead>營業日期</TableHead>
-                <TableHead numeric className="text-accent">現金結存</TableHead>
+                <TableHead numeric className="text-accent">
+                  現金結存
+                </TableHead>
                 <TableHead numeric>服務消費</TableHead>
                 <TableHead numeric>店販消費</TableHead>
                 {isMemberShipCardActive && <TableHead numeric>會員卡消費</TableHead>}
@@ -185,7 +178,9 @@ function Results({
                 <TableHead numeric>其他付款方式(-)</TableHead>
                 <TableHead numeric>入金使用(-)</TableHead>
                 {bonusDisplay && <TableHead numeric>點數折抵金額(-)</TableHead>}
-                <TableHead numeric className="text-accent">營業現金應收</TableHead>
+                <TableHead numeric className="text-accent">
+                  營業現金應收
+                </TableHead>
                 <TableHead numeric>現金收支收入</TableHead>
                 <TableHead numeric>現金收支支出(-)</TableHead>
                 <TableHead numeric>現金自購收入</TableHead>
@@ -201,11 +196,7 @@ function Results({
                       variant="ghost"
                       size="icon"
                       className="text-accent"
-                      onClick={() =>
-                        disableRestoreCheckout
-                          ? handleOpenDialog(result.date)
-                          : handleRestoreDailyAccount(result.date)
-                      }
+                      onClick={() => (disableRestoreCheckout ? handleOpenDialog(result.date) : handleRestoreDailyAccount(result.date))}
                       title="解除日結"
                       aria-label="解除日結"
                     >
@@ -229,14 +220,14 @@ function Results({
                   <TableCell numeric>{formatNumber(Math.round(result.otherPayWayForDecount))}</TableCell>
                   <TableCell numeric>{formatNumber(Math.round(result.walletUsedForDecount))}</TableCell>
                   {bonusDisplay && <TableCell numeric>{formatNumber(result.bonusDecountForReport)}</TableCell>}
-                  <TableCell numeric className={cash}>{formatNumber(Math.round(result.businessCash))}</TableCell>
+                  <TableCell numeric className={cash}>
+                    {formatNumber(Math.round(result.businessCash))}
+                  </TableCell>
                   <TableCell numeric>{formatNumber(Math.round(result.cashRevenue))}</TableCell>
                   <TableCell numeric>{formatNumber(Math.round(result.cashExpenditure))}</TableCell>
                   <TableCell numeric>{formatNumber(Math.round(result.picking))}</TableCell>
                   <TableCell className="tabular-nums">{format(result.lastCheckoutDateTime, 'yyyy/MM/dd')}</TableCell>
-                  <TableCell>
-                    {result.checkoutStaff === null ? '' : result.checkoutStaff.name}
-                  </TableCell>
+                  <TableCell>{result.checkoutStaff === null ? '' : result.checkoutStaff.name}</TableCell>
                 </TableRow>
               ))}
               <TableRow className="bg-surface font-medium hover:bg-surface">
@@ -249,41 +240,21 @@ function Results({
                 <TableCell numeric>{formatNumber(Math.round(dailyMoneyFlowResult.summary.product))}</TableCell>
                 {isMemberShipCardActive && <TableCell numeric>{formatNumber(Math.round(dailyMoneyFlowResult.summary.membership))}</TableCell>}
                 <TableCell numeric>{formatNumber(Math.round(dailyMoneyFlowResult.summary.usedTicket))}</TableCell>
-                <TableCell numeric>
-                  {formatNumber(Math.round(dailyMoneyFlowResult.summary.ticketSellIntoPerformance))}
-                </TableCell>
-                <TableCell numeric>
-                  {formatNumber(Math.round(dailyMoneyFlowResult.summary.performanceIncome))}
-                </TableCell>
-                <TableCell numeric>
-                  {formatNumber(Math.round(dailyMoneyFlowResult.summary.ticketSellNotIntoPerformance))}
-                </TableCell>
-                <TableCell numeric>
-                  {formatNumber(Math.round(dailyMoneyFlowResult.summary.walletDeposit))}
-                </TableCell>
-                <TableCell numeric>
-                  {formatNumber(Math.round(dailyMoneyFlowResult.summary.usedTicketForDecount))}
-                </TableCell>
-                <TableCell numeric>
-                  {formatNumber(Math.round(dailyMoneyFlowResult.summary.thirdPartTicketForDecount))}
-                </TableCell>
-                <TableCell numeric>
-                  {formatNumber(Math.round(dailyMoneyFlowResult.summary.otherPayWayForDecount))}
-                </TableCell>
-                <TableCell numeric>
-                  {formatNumber(Math.round(dailyMoneyFlowResult.summary.walletUsedForDecount))}
-                </TableCell>
+                <TableCell numeric>{formatNumber(Math.round(dailyMoneyFlowResult.summary.ticketSellIntoPerformance))}</TableCell>
+                <TableCell numeric>{formatNumber(Math.round(dailyMoneyFlowResult.summary.performanceIncome))}</TableCell>
+                <TableCell numeric>{formatNumber(Math.round(dailyMoneyFlowResult.summary.ticketSellNotIntoPerformance))}</TableCell>
+                <TableCell numeric>{formatNumber(Math.round(dailyMoneyFlowResult.summary.walletDeposit))}</TableCell>
+                <TableCell numeric>{formatNumber(Math.round(dailyMoneyFlowResult.summary.usedTicketForDecount))}</TableCell>
+                <TableCell numeric>{formatNumber(Math.round(dailyMoneyFlowResult.summary.thirdPartTicketForDecount))}</TableCell>
+                <TableCell numeric>{formatNumber(Math.round(dailyMoneyFlowResult.summary.otherPayWayForDecount))}</TableCell>
+                <TableCell numeric>{formatNumber(Math.round(dailyMoneyFlowResult.summary.walletUsedForDecount))}</TableCell>
                 {bonusDisplay && <TableCell numeric>{formatNumber(dailyMoneyFlowResult.summary.bonusDecountForReport)}</TableCell>}
                 <TableCell numeric className={cash}>
                   {formatNumber(Math.round(dailyMoneyFlowResult.summary.businessCash))}
                 </TableCell>
                 <TableCell numeric>{formatNumber(Math.round(dailyMoneyFlowResult.summary.cashRevenue))}</TableCell>
-                <TableCell numeric>
-                  {formatNumber(Math.round(dailyMoneyFlowResult.summary.cashExpenditure))}
-                </TableCell>
-                <TableCell numeric>
-                  {formatNumber(Math.round(dailyMoneyFlowResult.summary.picking))}
-                </TableCell>
+                <TableCell numeric>{formatNumber(Math.round(dailyMoneyFlowResult.summary.cashExpenditure))}</TableCell>
+                <TableCell numeric>{formatNumber(Math.round(dailyMoneyFlowResult.summary.picking))}</TableCell>
                 <TableCell />
                 <TableCell />
               </TableRow>
@@ -311,12 +282,7 @@ function Results({
             <Button variant="ghost" onClick={handleCloseDialog}>
               取消
             </Button>
-            <Button
-              variant="primary"
-              autoFocus
-              data-testid="confirm"
-              onClick={handleRestoreDailyAccount}
-            >
+            <Button variant="primary" autoFocus data-testid="confirm" onClick={handleRestoreDailyAccount}>
               確認
             </Button>
           </DialogFooter>

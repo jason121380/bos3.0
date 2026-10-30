@@ -26,22 +26,21 @@ function Performance({ performance }) {
               <TableCell numeric>{formatNumber(Math.round(performance.serviceFake))}</TableCell>
               <TableCell numeric>{formatNumber(Math.round(performance.productSales))}</TableCell>
               <TableCell numeric>{formatNumber(Math.round(performance.useTicketSales))}</TableCell>
-              <TableCell numeric rowSpan={2}>{formatNumber(Math.round(performance.sellTicketSales))}</TableCell>
+              <TableCell numeric rowSpan={2}>
+                {formatNumber(Math.round(performance.sellTicketSales))}
+              </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell numeric className="text-text-secondary">100%</TableCell>
               <TableCell numeric className="text-text-secondary">
-                {(isNaN(performance.serviceFake / fakeSaleAndProductSale)
-                  ? 0
-                  : (performance.serviceFake / fakeSaleAndProductSale) * 100
-                ).toFixed(2)}
-                %
+                100%
               </TableCell>
               <TableCell numeric className="text-text-secondary">
-                {(isNaN(performance.productSales / fakeSaleAndProductSale)
-                  ? 0
-                  : (performance.productSales / fakeSaleAndProductSale) * 100
-                ).toFixed(2)}
+                {(isNaN(performance.serviceFake / fakeSaleAndProductSale) ? 0 : (performance.serviceFake / fakeSaleAndProductSale) * 100).toFixed(2)}%
+              </TableCell>
+              <TableCell numeric className="text-text-secondary">
+                {(isNaN(performance.productSales / fakeSaleAndProductSale) ? 0 : (performance.productSales / fakeSaleAndProductSale) * 100).toFixed(
+                  2
+                )}
                 %
               </TableCell>
               <TableCell numeric className="text-text-secondary">

@@ -27,7 +27,7 @@ const timeCostArray = [
   { label: '6.5小時', value: 13 },
   { label: '7小時', value: 14 },
   { label: '7.5小時', value: 15 },
-  { label: '8小時', value: 16 }
+  { label: '8小時', value: 16 },
 ]
 
 export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck }) {
@@ -37,7 +37,7 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
 
   const [values, setValues] = useState({
     merchantId: JSON.parse(localStorage.getItem('userMerchant')).id,
-    dateTime: setHours(startOfDay(new Date()),10).getTime(),
+    dateTime: setHours(startOfDay(new Date()), 10).getTime(),
     designerId: '',
     name: cellphone,
     cellphone: cellphone,
@@ -47,7 +47,7 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
     remarkForCustomer: '',
     timeCost: 1,
     isBookingCostUsing: true,
-    isCusCheckRequired: false
+    isCusCheckRequired: false,
   })
 
   // 時段依目前選定的日期產生（原本固定為今天，換日後再選時間日期會被換回今天；Jason 2026/10/22 fix all）
@@ -85,16 +85,18 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
     setBtnDisabled(true)
     const submitData = {
       ...values,
-      designerId: values.designerId.id
+      designerId: values.designerId.id,
     }
-    booking(submitData).then((res) => {
-      if (res.data.bookingV2.id) {
-        openSnackbar({ message: '預約成功', variant: 'success' })
-        setModalOpen(false)
-      }
-    }).catch(error => {
-      setBtnDisabled(false)
-    })
+    booking(submitData)
+      .then(res => {
+        if (res.data.bookingV2.id) {
+          openSnackbar({ message: '預約成功', variant: 'success' })
+          setModalOpen(false)
+        }
+      })
+      .catch(error => {
+        setBtnDisabled(false)
+      })
   }
 
   return (
@@ -103,23 +105,23 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
         <MobileDatePicker
           value={values.dateTime}
           className="[&_input]:!px-0 [&_input]:!pb-[7px] [&_input]:!pt-[6px]"
-          label='預約時間'
-          onChange={(value) => {
+          label="預約時間"
+          onChange={value => {
             const data = cloneDeep(values)
             data.dateTime = new Date(value).getTime()
             setValues(data)
           }}
           format="yyyy/MM/dd"
           localeText={{
-            toolbarTitle: '選擇日期'
+            toolbarTitle: '選擇日期',
           }}
           slotProps={{
             toolbar: {
-              toolbarFormat: 'M月d日'
+              toolbarFormat: 'M月d日',
             },
             textField: {
-              variant: 'standard'
-            }
+              variant: 'standard',
+            },
           }}
         />
         {bookTimeOption.length && (
@@ -159,7 +161,9 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
         className="!mb-4"
       >
         {timeCostArray.map(d => (
-          <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
+          <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>
+            {d.label}
+          </NativeSelectOption>
         ))}
       </NativeSelect>
       <TextField

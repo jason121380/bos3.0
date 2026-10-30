@@ -46,13 +46,14 @@ export default function CouponSells({
     // 新增列、展開區塊、從上一列按 Enter 移過來時游標跳到卡券；使用者自己點了這一列的欄位（焦點已在本列欄位上）時不搶焦點
     // （比照店販／會員卡；原本點另一列的欄位會先被拉到該列的卡券欄）
     const active = document.activeElement
-    const fieldFocused = [couponRef, availableCountRef, priceRef, countRef, remarkRef]
-      .some(ref => ref.current && (ref.current === active || (ref.current.contains && ref.current.contains(active))))
+    const fieldFocused = [couponRef, availableCountRef, priceRef, countRef, remarkRef].some(
+      ref => ref.current && (ref.current === active || (ref.current.contains && ref.current.contains(active)))
+    )
     if (expanded && focusFirstField && bill.ticketOrders.length === index && !fieldFocused) {
       idx(couponRef, _ => _.current.focus())
       setFocus('coupon')
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [expanded, focusFirstField] 變動時執行；bill.ticketOrders.length、index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [expanded, focusFirstField] 變動時執行；bill.ticketOrders.length、index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [expanded, focusFirstField])
 
   useEffect(() => {
@@ -114,7 +115,7 @@ export default function CouponSells({
             onKeyDown={event => {
               // 只有 Enter 跳欄（比照帳單詳細 OrderEdit/CouponSells）；打字、退格留在卡券欄
               if (event.key !== 'Enter') return
-              if ((couponSell.isLocked !== 'FALSE' || !isTicketSellingEditable)) {
+              if (couponSell.isLocked !== 'FALSE' || !isTicketSellingEditable) {
                 setFocus('remark')
                 idx(remarkRef, _ => _.current.focus())
               } else {
@@ -165,13 +166,7 @@ export default function CouponSells({
                   onChange({ index, value: newCouponSell })
                 }}
                 data-testid={`couponSells-${index}-count`}
-                disabled={
-                  !!(
-                    couponSell.isLocked === 'TRUE' ||
-                    couponSell.isLocked === 'UNSET' ||
-                    !isTicketSellingEditable
-                  )
-                }
+                disabled={!!(couponSell.isLocked === 'TRUE' || couponSell.isLocked === 'UNSET' || !isTicketSellingEditable)}
               />
             </Field>
             <Field label="價格" className={styles.field}>
@@ -187,13 +182,7 @@ export default function CouponSells({
                   onChange({ index, value: newCouponSell })
                 }}
                 data-testid={`couponSells-${index}-price`}
-                disabled={
-                  !!(
-                    couponSell.isLocked === 'TRUE' ||
-                    couponSell.isLocked === 'UNSET' ||
-                    !isTicketSellingEditable
-                  )
-                }
+                disabled={!!(couponSell.isLocked === 'TRUE' || couponSell.isLocked === 'UNSET' || !isTicketSellingEditable)}
               />
             </Field>
             <Field label="張數" className={styles.priceField}>
@@ -209,13 +198,7 @@ export default function CouponSells({
                   onChange({ index, value: newCouponSell })
                 }}
                 data-testid={`couponSells-${index}-count`}
-                disabled={
-                  !!(
-                    couponSell.isLocked === 'TRUE' ||
-                    couponSell.isLocked === 'UNSET' ||
-                    !isTicketSellingEditable
-                  )
-                }
+                disabled={!!(couponSell.isLocked === 'TRUE' || couponSell.isLocked === 'UNSET' || !isTicketSellingEditable)}
               />
             </Field>
             <Field label="備註" className={styles.field}>

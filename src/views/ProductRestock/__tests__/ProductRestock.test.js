@@ -65,8 +65,7 @@ const fixtures = (overrides = {}) => ({
   ...overrides,
 })
 
-const renderList = (overrides, options) =>
-  renderPage(<ProductRestock />, { fixtures: fixtures(overrides), ...options })
+const renderList = (overrides, options) => renderPage(<ProductRestock />, { fixtures: fixtures(overrides), ...options })
 
 const rowOf = no => screen.getByText(no).closest('tr')
 

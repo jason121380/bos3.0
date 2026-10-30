@@ -1,12 +1,6 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import {
-  emptyCustomerForm,
-  quickAddCustomerInput,
-  customerFilterOptions,
-  getCustomerOptionLabel,
-  renderCustomerOption,
-} from '../customerField'
+import { emptyCustomerForm, quickAddCustomerInput, customerFilterOptions, getCustomerOptionLabel, renderCustomerOption } from '../customerField'
 import { GENDER_OPTIONS, makeFieldChange, makeBirthdayChange } from '../customerFormInput'
 import { SERVICE_COLUMNS, COUPON_COLUMNS, COUPON_COLUMNS_WITH_CATEGORY } from '../pickerColumns'
 import { loginAs, MERCHANT_ID } from '../../../__tests__/testkit.test'
@@ -22,7 +16,9 @@ describe('新增顧客的空白表單與快速新增', () => {
     loginAs()
     const form = emptyCustomerForm()
     expect(form.OfficialBrandMerchantId).toBe(MERCHANT_ID)
-    expect(form).toEqual(expect.objectContaining({ customerId: '', name: '', cellphone: '', gender: 'MALE', birthday: { year: '', month: '', day: '' } }))
+    expect(form).toEqual(
+      expect.objectContaining({ customerId: '', name: '', cellphone: '', gender: 'MALE', birthday: { year: '', month: '', day: '' } })
+    )
   })
 
   it('只輸入手機就按新增：以該手機與目前店家建立顧客', () => {
@@ -91,7 +87,10 @@ describe('顧客自動完成', () => {
 
 describe('新增／編輯顧客彈窗的欄位輸入', () => {
   it('性別選項：男、女', () => {
-    expect(GENDER_OPTIONS.map(o => [o.value, o.label])).toEqual([['MALE', '男'], ['FEMALE', '女']])
+    expect(GENDER_OPTIONS.map(o => [o.value, o.label])).toEqual([
+      ['MALE', '男'],
+      ['FEMALE', '女'],
+    ])
   })
 
   // 欄位處理在 setState 的 updater 內才讀 event.target：React 17 的合成事件會被回收，所以要先 persist
@@ -160,7 +159,13 @@ describe('選擇窗表格欄位', () => {
 
   it('卡券：打帳單多一欄類別，其他頁沒有；價格與可使用次數加千分位', () => {
     const coupon = { no: 'T01', name: '剪髮十次卡', price: 12000, ticketAvailableCount: 10, ServiceCategory: { name: '剪髮' } }
-    expect(cells(COUPON_COLUMNS_WITH_CATEGORY, coupon)).toEqual({ 代號: 'T01', 類別: '剪髮', 名稱: '剪髮十次卡', 參考價格: '12,000', 可使用次數: '10' })
+    expect(cells(COUPON_COLUMNS_WITH_CATEGORY, coupon)).toEqual({
+      代號: 'T01',
+      類別: '剪髮',
+      名稱: '剪髮十次卡',
+      參考價格: '12,000',
+      可使用次數: '10',
+    })
     expect(COUPON_COLUMNS.map(c => c.header)).toEqual(['代號', '名稱', '參考價格', '可使用次數'])
     expect(cells(COUPON_COLUMNS, { ...coupon, ticketAvailableCount: 1000 }).可使用次數).toBe('1,000')
   })

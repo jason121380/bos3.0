@@ -77,12 +77,7 @@ function AboutDeductionEditModal({
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {
           if (index === index2) {
-            return (
-              (data2.isSpecial = !data2.isSpecial),
-              (data2.price = 0),
-              (data2.designatePrice = 0),
-              (data2.nonDesignatePrice = 0)
-            )
+            return ((data2.isSpecial = !data2.isSpecial), (data2.price = 0), (data2.designatePrice = 0), (data2.nonDesignatePrice = 0))
           }
         })
       }
@@ -195,13 +190,16 @@ function AboutDeductionEditModal({
   return (
     <Dialog open={openEditDeductionModal}>
       {/* 保留原表單寬 912px；本批僅替換彈窗外殼。 */}
-      <DialogContent hideClose
+      <DialogContent
+        hideClose
         onOpenAutoFocus={event => {
           // 沿用舊 Modal：已有欄位焦點就保留，否則先聚焦面板，避免選人窗自動叫出手機鍵盤。
           event.preventDefault()
           if (!event.target.contains(document.activeElement)) event.target.focus()
         }}
-        className="sm:max-w-[912px]" aria-describedby={undefined}>
+        className="sm:max-w-[912px]"
+        aria-describedby={undefined}
+      >
         <DialogHeader className="items-center pb-4">
           <div className="flex w-full items-center justify-between gap-4">
             <DialogTitle>扣項項目設定</DialogTitle>
@@ -219,14 +217,8 @@ function AboutDeductionEditModal({
                 {data.itemSettings.map((content, index) => {
                   return (
                     <div className="flex flex-wrap items-center gap-3" key={index}>
-                      <span className="w-6 text-center text-heading tabular-nums text-text-secondary">
-                        {content.deductionOrder}
-                      </span>
-                      <FormControl
-                        variant="outlined"
-                        style={{ width: '6rem' }}
-                        fullWidth
-                      >
+                      <span className="w-6 text-center text-heading tabular-nums text-text-secondary">{content.deductionOrder}</span>
+                      <FormControl variant="outlined" style={{ width: '6rem' }} fullWidth>
                         <NativeSelect
                           labelId="select-item-label"
                           id="select-item"
@@ -282,9 +274,7 @@ function AboutDeductionEditModal({
                             variant="outlined"
                             label={content.deductionWay === '扣固定金額' ? '指定金額' : '指定%'}
                             value={content.designatePrice}
-                            onChange={event =>
-                              handleDeductionNum(data.type, event, index, 'designatePrice')
-                            }
+                            onChange={event => handleDeductionNum(data.type, event, index, 'designatePrice')}
                             onWheel={() => document.activeElement.blur()}
                           />
                           <TextField
@@ -293,9 +283,7 @@ function AboutDeductionEditModal({
                             variant="outlined"
                             label={content.deductionWay === '扣固定金額' ? '不指定金額' : '不指定%'}
                             value={content.nonDesignatePrice}
-                            onChange={event =>
-                              handleDeductionNum(data.type, event, index, 'nonDesignatePrice')
-                            }
+                            onChange={event => handleDeductionNum(data.type, event, index, 'nonDesignatePrice')}
                             onWheel={() => document.activeElement.blur()}
                           />
                         </>

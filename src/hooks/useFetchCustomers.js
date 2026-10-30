@@ -45,12 +45,10 @@ const FETCH_CUSTOMERS = gql`
   }
 `
 
-export default function useFetchCustomers({...data}) {
+export default function useFetchCustomers({ ...data }) {
   return useQuery(FETCH_CUSTOMERS, {
     variables: {
-      input: {...data, merchantId: localStorage.getItem('userMerchant')
-      ? JSON.parse(localStorage.getItem('userMerchant')).id
-      : null,}
+      input: { ...data, merchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null },
     },
     fetchPolicy: 'cache-and-network',
   })
@@ -116,22 +114,12 @@ const FETCH_CUSTOMERS_IN_AUTO_COMPLETE = gql`
   }
 `
 
-export function useFetchCustomersInAutoComplete({
-  pageLimit,
-  pageOffset,
-  keyword = '',
-  customerId,
-  startDate,
-  endDate,
-  employeeId,
-}) {
+export function useFetchCustomersInAutoComplete({ pageLimit, pageOffset, keyword = '', customerId, startDate, endDate, employeeId }) {
   return useQuery(FETCH_CUSTOMERS_IN_AUTO_COMPLETE, {
     variables: {
       input: customerId
         ? {
-            merchantId: localStorage.getItem('userMerchant')
-              ? JSON.parse(localStorage.getItem('userMerchant')).id
-              : null,
+            merchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
             pageLimit,
             keyword,
             pageOffset,
@@ -141,9 +129,7 @@ export function useFetchCustomersInAutoComplete({
             preferDesigner: employeeId,
           }
         : {
-            merchantId: localStorage.getItem('userMerchant')
-              ? JSON.parse(localStorage.getItem('userMerchant')).id
-              : null,
+            merchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
             pageLimit,
             keyword,
             pageOffset,

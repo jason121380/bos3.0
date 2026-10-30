@@ -42,14 +42,22 @@ describe('部署後 chunk 載入失敗', () => {
 
     const hung = loadWithRetry(() => Promise.reject(new Error('Failed to fetch dynamically imported module')))
     let settled = false
-    hung.then(() => { settled = true }, () => { settled = true })
+    hung.then(
+      () => {
+        settled = true
+      },
+      () => {
+        settled = true
+      }
+    )
     await Promise.resolve()
     await Promise.resolve()
     expect(reload).toHaveBeenCalledTimes(2)
     expect(settled).toBe(false)
 
-    await expect(loadWithRetry(() => Promise.reject(new Error('Failed to fetch dynamically imported module'))))
-      .rejects.toThrow(/dynamically imported module/)
+    await expect(loadWithRetry(() => Promise.reject(new Error('Failed to fetch dynamically imported module')))).rejects.toThrow(
+      /dynamically imported module/
+    )
     expect(reload).toHaveBeenCalledTimes(2)
   })
 

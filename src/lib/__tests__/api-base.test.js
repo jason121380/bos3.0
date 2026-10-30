@@ -1,4 +1,13 @@
-import { detectApiEnv, getApiEnvironment, getApiOrigin, getGraphqlUrl, implicitApiNotice, IMPLICIT_API_NOTICE, PROD_ORIGIN, TEST_ORIGIN } from '../api-base'
+import {
+  detectApiEnv,
+  getApiEnvironment,
+  getApiOrigin,
+  getGraphqlUrl,
+  implicitApiNotice,
+  IMPLICIT_API_NOTICE,
+  PROD_ORIGIN,
+  TEST_ORIGIN,
+} from '../api-base'
 
 // 為什麼重要：GraphQL、WebSocket、REST 原本各自判斷環境，部署時只設 REACT_APP_API_URL 會讓 GraphQL 連測試站、
 // WebSocket 卻連正式站（正式店的即時事件被推到測試站）。這些測試確保三者永遠由同一個規則推得同一個後端。

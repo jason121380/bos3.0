@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
-const initialQRcodeClockIn= { key: null };
+const initialQRcodeClockIn = { key: null }
 
 const QRcodeClockInSlice = createSlice({
   name: 'QRcodeClockIn',
@@ -10,8 +10,8 @@ const QRcodeClockInSlice = createSlice({
       state.key = action.payload
     },
   },
-});
+})
 
-export const QRcodeClockInActions = QRcodeClockInSlice.actions;
+export const QRcodeClockInActions = QRcodeClockInSlice.actions
 
-export default QRcodeClockInSlice.reducer;
+export default QRcodeClockInSlice.reducer

@@ -25,22 +25,24 @@ function MerchantBar({ open, onClose, userMerchants }) {
 
     const query = searchQuery.toLowerCase()
 
-    const filterMerchantItem = (merchant) => merchant.name.toLowerCase().includes(query)
+    const filterMerchantItem = merchant => merchant.name.toLowerCase().includes(query)
 
-    const filterGroups = (groups) => {
-      return groups.map(group => {
-        const filteredSubGroups = filterGroups(group.groups || [])
-        const filteredSubMerchants = (group.merchants || []).filter(filterMerchantItem)
+    const filterGroups = groups => {
+      return groups
+        .map(group => {
+          const filteredSubGroups = filterGroups(group.groups || [])
+          const filteredSubMerchants = (group.merchants || []).filter(filterMerchantItem)
 
-        if (group.name.toLowerCase().includes(query) || filteredSubGroups.length > 0 || filteredSubMerchants.length > 0) {
-          return {
-            ...group,
-            groups: filteredSubGroups,
-            merchants: filteredSubMerchants
+          if (group.name.toLowerCase().includes(query) || filteredSubGroups.length > 0 || filteredSubMerchants.length > 0) {
+            return {
+              ...group,
+              groups: filteredSubGroups,
+              merchants: filteredSubMerchants,
+            }
           }
-        }
-        return null
-      }).filter(Boolean)
+          return null
+        })
+        .filter(Boolean)
     }
 
     const filteredAllMerchants = (merchantsData.allMerchants || []).filter(filterMerchantItem)
@@ -51,7 +53,7 @@ function MerchantBar({ open, onClose, userMerchants }) {
       ...merchantsData,
       allMerchants: filteredAllMerchants,
       groups: filteredMainGroups,
-      merchants: filteredMainMerchants
+      merchants: filteredMainMerchants,
     }
   }, [merchantsData, searchQuery])
 
@@ -86,11 +88,13 @@ function MerchantBar({ open, onClose, userMerchants }) {
             <EmptyState
               title="無法載入店家清單"
               description="請再試一次。"
-              action={typeof userMerchants.refetch === 'function' ? (
-                <Button type="button" variant="secondary" onClick={() => userMerchants.refetch()}>
-                  重新查詢
-                </Button>
-              ) : null}
+              action={
+                typeof userMerchants.refetch === 'function' ? (
+                  <Button type="button" variant="secondary" onClick={() => userMerchants.refetch()}>
+                    重新查詢
+                  </Button>
+                ) : null
+              }
             />
           ) : (
             <EmptyState title="沒有可顯示的店家" description="店家資料是空的或格式不正確。" />

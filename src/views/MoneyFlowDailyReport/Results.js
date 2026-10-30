@@ -17,7 +17,7 @@ export default function Results({ moneyFlowDailyReport, displayDate, isMemberShi
     let reportDisplay = []
     let isMembershipShow
     if (moneyFlowDailyReport !== undefined) {
-      const membershipValue = moneyFlowDailyReport.filter(result => result.itemName === "會員卡消費")
+      const membershipValue = moneyFlowDailyReport.filter(result => result.itemName === '會員卡消費')
       membershipValue.forEach(d => {
         const isMembershipIsZero = d.moneyFlowRecord.filter(result => result.price === 0)
         if (isMembershipIsZero.length !== d.moneyFlowRecord.length) {
@@ -29,7 +29,7 @@ export default function Results({ moneyFlowDailyReport, displayDate, isMemberShi
         }
       })
       if (isMembershipShow === false) {
-        const tmp = moneyFlowDailyReport.filter(result => result.itemName !== "會員卡消費")
+        const tmp = moneyFlowDailyReport.filter(result => result.itemName !== '會員卡消費')
         tmp.forEach(d => {
           reportDisplay.push(d)
         })
@@ -43,7 +43,7 @@ export default function Results({ moneyFlowDailyReport, displayDate, isMemberShi
           initRevenueTotals.push(0)
           initExpenditureTotals.push(0)
         })
-        reportDisplay.forEach((data) => {
+        reportDisplay.forEach(data => {
           if (data.type === 'REVENUE') {
             data.moneyFlowRecord.forEach((data2, index2) => {
               initRevenueTotals[index2] += data2.price
@@ -90,63 +90,59 @@ export default function Results({ moneyFlowDailyReport, displayDate, isMemberShi
 
   return (
     <Table dense aria-label="a dense table">
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            <TableHead>科目</TableHead>
-            {displayDate.map((date, index) => (
-              <TableHead numeric key={index}>{date}</TableHead>
-            ))}
-            <TableHead numeric>合計</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {reportDisplay.map((data, index) => (
-            <TableRow key={index}>
-              <TableCell style={{ minWidth: 90, whiteSpace: 'nowrap' }}>{data.itemName}</TableCell>
-              {data.moneyFlowRecord.map((data2, index) => (
-                <TableCell numeric key={index}>
-                  {formatNumber(data.type === 'REVENUE'
-                    ? data2.price
-                    : data2.price > 0
-                      ? `-${data2.price}`
-                      : data2.price)}
-                </TableCell>
-              ))}
-              <TableCell numeric>
-                {formatNumber(data.moneyFlowRecord
-                  .map(data2 => data2.price)
-                  .reduce((accu, curVal) => (accu += curVal), 0))}
-              </TableCell>
-            </TableRow>
+      <TableHeader>
+        <TableRow className="hover:bg-transparent">
+          <TableHead>科目</TableHead>
+          {displayDate.map((date, index) => (
+            <TableHead numeric key={index}>
+              {date}
+            </TableHead>
           ))}
-          <TableRow className="bg-surface/60">
-            <TableCell className="font-bold">收入合計:</TableCell>
-            {revenueTotals.map((num, index) => (
-              <TableCell numeric key={index}>{formatNumber(num)}</TableCell>
+          <TableHead numeric>合計</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {reportDisplay.map((data, index) => (
+          <TableRow key={index}>
+            <TableCell style={{ minWidth: 90, whiteSpace: 'nowrap' }}>{data.itemName}</TableCell>
+            {data.moneyFlowRecord.map((data2, index) => (
+              <TableCell numeric key={index}>
+                {formatNumber(data.type === 'REVENUE' ? data2.price : data2.price > 0 ? `-${data2.price}` : data2.price)}
+              </TableCell>
             ))}
             <TableCell numeric>
-              {formatNumber(revenueTotals.reduce((accu, curVal) => accu + curVal, 0))}
+              {formatNumber(data.moneyFlowRecord.map(data2 => data2.price).reduce((accu, curVal) => (accu += curVal), 0))}
             </TableCell>
           </TableRow>
-          <TableRow className="bg-surface/60">
-            <TableCell className="font-bold">支出合計:</TableCell>
-            {expenditureTotals.map((num, index) => (
-              <TableCell numeric key={index}>{formatNumber(num > 0 ? `-${num}` : num)}</TableCell>
-            ))}
-            <TableCell numeric>
-              {formatNumber(expenditureTotals.reduce((accu, curVal) => accu + curVal, 0))}
+        ))}
+        <TableRow className="bg-surface/60">
+          <TableCell className="font-bold">收入合計:</TableCell>
+          {revenueTotals.map((num, index) => (
+            <TableCell numeric key={index}>
+              {formatNumber(num)}
             </TableCell>
-          </TableRow>
-          <TableRow className="bg-surface/60">
-            <TableCell className="font-bold">結餘合計:</TableCell>
-            {balanceTotals.map((num, index) => (
-              <TableCell numeric key={index}>{formatNumber(num)}</TableCell>
-            ))}
-            <TableCell numeric>
-              {formatNumber(balanceTotals.reduce((accu, curVal) => accu + curVal, 0))}
+          ))}
+          <TableCell numeric>{formatNumber(revenueTotals.reduce((accu, curVal) => accu + curVal, 0))}</TableCell>
+        </TableRow>
+        <TableRow className="bg-surface/60">
+          <TableCell className="font-bold">支出合計:</TableCell>
+          {expenditureTotals.map((num, index) => (
+            <TableCell numeric key={index}>
+              {formatNumber(num > 0 ? `-${num}` : num)}
             </TableCell>
-          </TableRow>
-        </TableBody>
+          ))}
+          <TableCell numeric>{formatNumber(expenditureTotals.reduce((accu, curVal) => accu + curVal, 0))}</TableCell>
+        </TableRow>
+        <TableRow className="bg-surface/60">
+          <TableCell className="font-bold">結餘合計:</TableCell>
+          {balanceTotals.map((num, index) => (
+            <TableCell numeric key={index}>
+              {formatNumber(num)}
+            </TableCell>
+          ))}
+          <TableCell numeric>{formatNumber(balanceTotals.reduce((accu, curVal) => accu + curVal, 0))}</TableCell>
+        </TableRow>
+      </TableBody>
     </Table>
   )
 }

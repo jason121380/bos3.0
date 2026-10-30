@@ -58,22 +58,12 @@ function Consumption({
             <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-body">
               <dt className="text-label text-text-secondary">金額</dt>
               <dd className="m-0 text-right font-medium tabular-nums text-text">
-                {formatMoney(data.productOrders.reduce(
-                  (total, item) => (total = total + item.price),
-                  0
-                ) +
-                  data.serviceOrders.reduce(
-                    (total, item) => (total = total + item.price),
-                    0
-                  ) +
-                  data.ticketOrders.reduce(
-                    (total, item) => (total = total + item.price),
-                    0
-                  ) +
-                  data.useTicketOrders.reduce(
-                    (total, item) => (total = total + item.price),
-                    0
-                  ))}
+                {formatMoney(
+                  data.productOrders.reduce((total, item) => (total = total + item.price), 0) +
+                    data.serviceOrders.reduce((total, item) => (total = total + item.price), 0) +
+                    data.ticketOrders.reduce((total, item) => (total = total + item.price), 0) +
+                    data.useTicketOrders.reduce((total, item) => (total = total + item.price), 0)
+                )}
               </dd>
               <dt className="text-label text-text-secondary">設計師</dt>
               <dd className="m-0 text-right text-text">{idx(data, _ => _.designer.name)}</dd>

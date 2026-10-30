@@ -14,8 +14,26 @@ import { reservationActions } from 'store/reservation'
 import { RESERVATION_COLORS } from 'components/CalendarColorClip'
 import { loginAs, callsOf, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import {
-  setupRecord, pageReady, hasBlock, timeLabels, designerHeaders, designerColumn, designerCell, ndsCell, block, table,
-  reservation, entry, at, AMY, NDS, calendarResponse, DAY, DAY_START, DAY_END, SLOT,
+  setupRecord,
+  pageReady,
+  hasBlock,
+  timeLabels,
+  designerHeaders,
+  designerColumn,
+  designerCell,
+  ndsCell,
+  block,
+  table,
+  reservation,
+  entry,
+  at,
+  AMY,
+  NDS,
+  calendarResponse,
+  DAY,
+  DAY_START,
+  DAY_END,
+  SLOT,
 } from './recordKit.test'
 
 jest.setTimeout(30000)
@@ -24,7 +42,11 @@ jest.mock('elements/snackbars', () => ({ openSnackbar: jest.fn() }))
 // 日期選擇器以簡化版代替：輸入毫秒數即選該日
 jest.mock('ui/date-picker', () => ({
   MobileDatePicker: ({ value, onChange, label, localeText }) => (
-    <input aria-label={label || (localeText && localeText.toolbarTitle)} data-value={value} onChange={e => onChange(new Date(Number(e.target.value)))} />
+    <input
+      aria-label={label || (localeText && localeText.toolbarTitle)}
+      data-value={value}
+      onChange={e => onChange(new Date(Number(e.target.value)))}
+    />
   ),
 }))
 
@@ -46,11 +68,31 @@ const FULL_DAY = base => ({
     reservation(base, 12, 0, 1, { ids: ['b-4'], nameToDisplay: '已完成客', bookingStatus: '已完成' }),
     ...AMY(base).calendar,
     reservation(base, 10, 30, 1, {
-      ids: ['b-3'], nameToDisplay: '黃小姐', bookingStatus: '預約成功', isDesignate: false, isBookingCostUsing: true, isCheckin: true, isNoShow: true,
+      ids: ['b-3'],
+      nameToDisplay: '黃小姐',
+      bookingStatus: '預約成功',
+      isDesignate: false,
+      isBookingCostUsing: true,
+      isCheckin: true,
+      isNoShow: true,
     }),
-    reservation(base, 11, 30, 1, { ids: ['b-9'], nameToDisplay: '已開單客二', bookingStatus: '預約成功', isDone: true, createdOrderId: 'o-10', isBookingCostUsing: true }),
+    reservation(base, 11, 30, 1, {
+      ids: ['b-9'],
+      nameToDisplay: '已開單客二',
+      bookingStatus: '預約成功',
+      isDone: true,
+      createdOrderId: 'o-10',
+      isBookingCostUsing: true,
+    }),
     reservation(base, 13, 0, 1, { ids: ['b-8'], nameToDisplay: '同時段客', bookingStatus: '預約成功', isBookingCostUsing: true }),
-    reservation(base, 13, 0, 1, { ids: ['b-5'], nameToDisplay: '已開單客', bookingStatus: '預約成功', isDone: true, createdOrderId: 'o-9', isBookingCostUsing: true }),
+    reservation(base, 13, 0, 1, {
+      ids: ['b-5'],
+      nameToDisplay: '已開單客',
+      bookingStatus: '預約成功',
+      isDone: true,
+      createdOrderId: 'o-9',
+      isBookingCostUsing: true,
+    }),
     reservation(base, 14, 0, 1, { ids: ['b-6'], nameToDisplay: '待確認客', bookingStatus: '預約成功', isCusCheckRequired: true }),
     reservation(base, 15, 0, 1, { ids: ['b-7'], nameToDisplay: '已取消客', bookingStatus: '設計師已取消' }),
     entry('EVENT', at(base, 16), 2, { ids: ['e-1'], nameToDisplay: '教育訓練', remark: '全員參加' }),
@@ -60,14 +102,25 @@ const FULL_DAY = base => ({
   ],
 })
 const LEE = base => ({
-  designerId: 'd-2', designerName: '李大華', designerNickname: null, designerNo: '02', bookingLimit: 1,
+  designerId: 'd-2',
+  designerName: '李大華',
+  designerNickname: null,
+  designerNo: '02',
+  bookingLimit: 1,
   calendar: [entry('HOLIDAY', at(base, 12), 1, { ids: ['h-2'], nameToDisplay: '請假' })],
 })
 const ZHANG = { designerId: 'd-3', designerName: '張三', designerNickname: '小張', designerNo: '03', bookingLimit: 3, calendar: [] }
 const NDS_TWO = base => ({
   designerName: '不指定',
   calendar: [
-    reservation(base, 10, 0, 1, { ids: ['n-1'], nameToDisplay: '路人甲', bookingStatus: '預約成功', isBookingCostUsing: true, isCheckin: false, remark: '第一次來' }),
+    reservation(base, 10, 0, 1, {
+      ids: ['n-1'],
+      nameToDisplay: '路人甲',
+      bookingStatus: '預約成功',
+      isBookingCostUsing: true,
+      isCheckin: false,
+      remark: '第一次來',
+    }),
     reservation(base, 10, 0, 1, { ids: ['n-2'], nameToDisplay: '路人乙', bookingStatus: '待審核', isCheckin: true }),
   ],
 })
@@ -92,7 +145,11 @@ describe('查詢與時間軸', () => {
 
   it('預約早於開店或晚於打烊時，時間軸往前／往後延伸（公休不影響）', async () => {
     const EARLY = base => ({
-      designerId: 'd-9', designerName: '早鳥', designerNickname: null, designerNo: '09', bookingLimit: 1,
+      designerId: 'd-9',
+      designerName: '早鳥',
+      designerNickname: null,
+      designerNo: '09',
+      bookingLimit: 1,
       calendar: [
         reservation(base, 8, 30, 1, { ids: ['x-1'], nameToDisplay: '早客', bookingStatus: '預約成功' }),
         reservation(base, 21, 0, 1, { ids: ['x-2'], nameToDisplay: '晚客', bookingStatus: '預約成功' }),
@@ -137,9 +194,15 @@ describe('查詢與時間軸', () => {
   // 連日期都無法切換；改以 idx 加預設值（與查詢回來前的初始值相同），失敗的那一項沿用預設、其餘照常。
   it('任一設定查詢失敗：沿用預設值，表格照常顯示', async () => {
     const names = [
-      'getDesignerNameForCustomerSide', 'GET_BOOKING_REMARK_DISPLAY', 'GET_CUS_BOOKING_REMARK_DISPLAY',
-      'GET_PARAMETER_ABOUT_SETTING_FUNCTION', 'GET_CHECKIN_SETTING_FOR_CALENDAR', 'GET_IS_BOOKING_CUS_CHECK_USING',
-      'GET_IS_BOOKING_TYPE_FOR_SOCKET', 'GET_BOOKING_HISTORY_DISPLAY', 'GET_CANCEL_BOOKING_USING',
+      'getDesignerNameForCustomerSide',
+      'GET_BOOKING_REMARK_DISPLAY',
+      'GET_CUS_BOOKING_REMARK_DISPLAY',
+      'GET_PARAMETER_ABOUT_SETTING_FUNCTION',
+      'GET_CHECKIN_SETTING_FOR_CALENDAR',
+      'GET_IS_BOOKING_CUS_CHECK_USING',
+      'GET_IS_BOOKING_TYPE_FOR_SOCKET',
+      'GET_BOOKING_HISTORY_DISPLAY',
+      'GET_CANCEL_BOOKING_USING',
     ]
     for (const name of names) {
       const utils = setupRecord({ fixtures: { [name]: new Error('壞了') } })
@@ -244,7 +307,11 @@ describe('色塊、名額與名稱', () => {
 
   it('重疊判斷：同時開始、一筆接在另一筆結束時（含零時長的紀錄）也正確分組', async () => {
     const EDGE = base => ({
-      designerId: 'd-8', designerName: '邊界', designerNickname: null, designerNo: '08', bookingLimit: 5,
+      designerId: 'd-8',
+      designerName: '邊界',
+      designerNickname: null,
+      designerNo: '08',
+      bookingLimit: 5,
       calendar: [
         // A 10:00–11:00；X 11:00–11:30 不與 A 重疊；Y 11:00（零時長）落在 A 的結束點 → 與 A 同組
         reservation(base, 10, 0, 2, { ids: ['A'], nameToDisplay: 'A客', bookingStatus: '預約成功' }),
@@ -328,7 +395,11 @@ describe('報到、未出席與篩選', () => {
   it('報到功能開啟、預約還沒到：不顯示未報到圖示', async () => {
     const future = new Date(2099, 0, 5)
     const end = new Date(2099, 0, 5, 23, 59, 59, 999)
-    const utils = setupRecord({ designers: [FULL_DAY], settings: { checkin: true }, route: `/r?startDate=${future.getTime()}&endDate=${end.getTime()}` })
+    const utils = setupRecord({
+      designers: [FULL_DAY],
+      settings: { checkin: true },
+      route: `/r?startDate=${future.getTime()}&endDate=${end.getTime()}`,
+    })
     await pageReady(utils)
     expect(lucide(block('陳小姐'), 'square-x')).toBeNull()
   })
@@ -516,7 +587,11 @@ describe('點格子開啟對應彈窗', () => {
 
   it('公休、休息色塊開「編輯公休」，列出該段的每 30 分；預約欄裡 id 標示公休的也是', async () => {
     const MARKED = base => ({
-      designerId: 'd-5', designerName: '標記', designerNickname: null, designerNo: '05', bookingLimit: 1,
+      designerId: 'd-5',
+      designerName: '標記',
+      designerNickname: null,
+      designerNo: '05',
+      bookingLimit: 1,
       calendar: [reservation(base, 11, 0, 2, { ids: ['HOLIDAY-1'], nameToDisplay: '整段公休', bookingStatus: '預約成功' })],
     })
     const utils = setupRecord({ designers: [FULL_DAY, MARKED] })
@@ -579,13 +654,41 @@ describe('格子尺寸與備註顯示', () => {
     afterEach(() => restore())
 
     const REMARKS = base => ({
-      designerId: 'd-4', designerName: '備註', designerNickname: null, designerNo: '04', bookingLimit: 9,
+      designerId: 'd-4',
+      designerName: '備註',
+      designerNickname: null,
+      designerNo: '04',
+      bookingLimit: 9,
       calendar: [
-        reservation(base, 10, 0, 1, { ids: ['r-1'], nameToDisplay: '都很長', bookingStatus: '預約成功', remark: '請準備熱毛巾', remarkForCustomer: '我想要剪短一點' }),
-        reservation(base, 11, 0, 1, { ids: ['r-2'], nameToDisplay: '備註長', bookingStatus: '預約成功', remark: '請準備熱毛巾', remarkForCustomer: '短' }),
-        reservation(base, 12, 0, 1, { ids: ['r-3'], nameToDisplay: '顧客長', bookingStatus: '預約成功', remark: '短', remarkForCustomer: '我想要剪短一點' }),
+        reservation(base, 10, 0, 1, {
+          ids: ['r-1'],
+          nameToDisplay: '都很長',
+          bookingStatus: '預約成功',
+          remark: '請準備熱毛巾',
+          remarkForCustomer: '我想要剪短一點',
+        }),
+        reservation(base, 11, 0, 1, {
+          ids: ['r-2'],
+          nameToDisplay: '備註長',
+          bookingStatus: '預約成功',
+          remark: '請準備熱毛巾',
+          remarkForCustomer: '短',
+        }),
+        reservation(base, 12, 0, 1, {
+          ids: ['r-3'],
+          nameToDisplay: '顧客長',
+          bookingStatus: '預約成功',
+          remark: '短',
+          remarkForCustomer: '我想要剪短一點',
+        }),
         reservation(base, 13, 0, 1, { ids: ['r-4'], nameToDisplay: '都很短', bookingStatus: '預約成功', remark: '短', remarkForCustomer: '短' }),
-        reservation(base, 14, 0, 3, { ids: ['r-5'], nameToDisplay: '大格子', bookingStatus: '預約成功', remark: '請準備熱毛巾', remarkForCustomer: '我想要剪短一點' }),
+        reservation(base, 14, 0, 3, {
+          ids: ['r-5'],
+          nameToDisplay: '大格子',
+          bookingStatus: '預約成功',
+          remark: '請準備熱毛巾',
+          remarkForCustomer: '我想要剪短一點',
+        }),
         // 讓欄位變成「並排」模式，色塊才進入計算
         reservation(base, 14, 0, 3, { ids: ['r-6'], nameToDisplay: '大格子二', bookingStatus: '預約成功', remark: '短', remarkForCustomer: '短' }),
         entry('HOLIDAY', at(base, 18), 1, { ids: ['r-h'], nameToDisplay: '休假', remark: '出國' }),
@@ -594,7 +697,14 @@ describe('格子尺寸與備註顯示', () => {
     const REMARK_NDS = base => ({
       designerName: '不指定',
       calendar: [
-        reservation(base, 10, 0, 1, { ids: ['rn-1'], nameToDisplay: '不指定壽星', bookingStatus: '預約成功', displayBirthdayIcon: true, remark: '請準備熱毛巾', remarkForCustomer: '短' }),
+        reservation(base, 10, 0, 1, {
+          ids: ['rn-1'],
+          nameToDisplay: '不指定壽星',
+          bookingStatus: '預約成功',
+          displayBirthdayIcon: true,
+          remark: '請準備熱毛巾',
+          remarkForCustomer: '短',
+        }),
         reservation(base, 10, 0, 1, { ids: ['rn-2'], nameToDisplay: '不指定二', bookingStatus: '預約成功', remark: '短', remarkForCustomer: '短' }),
       ],
     })

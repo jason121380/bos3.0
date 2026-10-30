@@ -8,7 +8,14 @@ import { Popover, PopoverTrigger, PopoverContent } from '../popover'
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '../dropdown-menu'
 import { NativeSelect, NativeSelectOption } from '../native-select'
 
-const Shell = ({ children, onOpenChange, ...props }) => <Dialog open onOpenChange={onOpenChange}><DialogContent aria-describedby={undefined} {...props}><DialogTitle>下層對話框</DialogTitle>{children}</DialogContent></Dialog>
+const Shell = ({ children, onOpenChange, ...props }) => (
+  <Dialog open onOpenChange={onOpenChange}>
+    <DialogContent aria-describedby={undefined} {...props}>
+      <DialogTitle>下層對話框</DialogTitle>
+      {children}
+    </DialogContent>
+  </Dialog>
+)
 const pressEscape = target => fireEvent.keyDown(target || document.activeElement, { key: 'Escape', code: 'Escape' })
 const clickPointer = target => {
   fireEvent.pointerDown(target, { pointerType: 'mouse', button: 0 })
@@ -30,11 +37,18 @@ afterEach(() => {
 })
 
 describe('共用對話框跨圖層互動', () => {
-  test.each([['桌機', DatePicker], ['手機', MobileDatePicker]])('%s 日期選擇器可選取且不觸發下層外部事件', async (label, Picker) => {
+  test.each([
+    ['桌機', DatePicker],
+    ['手機', MobileDatePicker],
+  ])('%s 日期選擇器可選取且不觸發下層外部事件', async (label, Picker) => {
     const onChange = jest.fn()
     const onOpenChange = jest.fn()
     const outside = jest.fn()
-    render(<Shell onOpenChange={onOpenChange} onPointerDownOutside={outside} onInteractOutside={outside} onFocusOutside={outside}><Picker value={new Date(2026, 9, 20)} onChange={onChange} /></Shell>)
+    render(
+      <Shell onOpenChange={onOpenChange} onPointerDownOutside={outside} onInteractOutside={outside} onFocusOutside={outside}>
+        <Picker value={new Date(2026, 9, 20)} onChange={onChange} />
+      </Shell>
+    )
     clickPointer(label === '桌機' ? screen.getByRole('button', { name: /^選擇日期/ }) : screen.getByRole('textbox'))
     const day = screen.getByRole('gridcell', { name: '2026年10月25日' })
     // jsdom 不計算命中區；瀏覽器測試另驗證實際滑鼠與焦點。
@@ -47,9 +61,16 @@ describe('共用對話框跨圖層互動', () => {
     expect(screen.getByText('下層對話框')).toBeInTheDocument()
   })
 
-  test.each([['桌機', DatePicker], ['手機', MobileDatePicker]])('%s 日期選擇器先接收 Esc，下次才關閉對話框', async (label, Picker) => {
+  test.each([
+    ['桌機', DatePicker],
+    ['手機', MobileDatePicker],
+  ])('%s 日期選擇器先接收 Esc，下次才關閉對話框', async (label, Picker) => {
     const onOpenChange = jest.fn()
-    render(<Shell onOpenChange={onOpenChange}><Picker value={new Date(2026, 9, 20)} onChange={() => {}} /></Shell>)
+    render(
+      <Shell onOpenChange={onOpenChange}>
+        <Picker value={new Date(2026, 9, 20)} onChange={() => {}} />
+      </Shell>
+    )
     const opener = label === '桌機' ? screen.getByRole('button', { name: /^選擇日期/ }) : screen.getByRole('textbox')
     opener.focus()
     clickPointer(opener)
@@ -66,7 +87,11 @@ describe('共用對話框跨圖層互動', () => {
   test('搜尋下拉選單留在對話框內並可選取', () => {
     const onChange = jest.fn()
     const onOpenChange = jest.fn()
-    render(<Shell onOpenChange={onOpenChange}><Autocomplete options={['甲店', '乙店']} onChange={onChange} /></Shell>)
+    render(
+      <Shell onOpenChange={onOpenChange}>
+        <Autocomplete options={['甲店', '乙店']} onChange={onChange} />
+      </Shell>
+    )
     fireEvent.change(screen.getByRole('combobox'), { target: { value: '甲' } })
     const option = screen.getByRole('option', { name: '甲店' })
     expect(screen.getByRole('dialog')).toContainElement(option)
@@ -77,7 +102,11 @@ describe('共用對話框跨圖層互動', () => {
 
   test('搜尋下拉第一次 Esc 關選單，第二次才關對話框', async () => {
     const onOpenChange = jest.fn()
-    render(<Shell onOpenChange={onOpenChange}><Autocomplete options={['甲店', '乙店']} /></Shell>)
+    render(
+      <Shell onOpenChange={onOpenChange}>
+        <Autocomplete options={['甲店', '乙店']} />
+      </Shell>
+    )
     const input = screen.getByRole('combobox')
     input.focus()
     fireEvent.change(input, { target: { value: '甲' } })
@@ -93,7 +122,16 @@ describe('共用對話框跨圖層互動', () => {
   test('Popover 內按鈕可操作，Esc 只關浮層', async () => {
     const action = jest.fn()
     const onOpenChange = jest.fn()
-    render(<Shell onOpenChange={onOpenChange}><Popover><PopoverTrigger>開啟浮層</PopoverTrigger><PopoverContent aria-label="浮層"><button onClick={action}>浮層動作</button></PopoverContent></Popover></Shell>)
+    render(
+      <Shell onOpenChange={onOpenChange}>
+        <Popover>
+          <PopoverTrigger>開啟浮層</PopoverTrigger>
+          <PopoverContent aria-label="浮層">
+            <button onClick={action}>浮層動作</button>
+          </PopoverContent>
+        </Popover>
+      </Shell>
+    )
     clickPointer(screen.getByText('開啟浮層'))
     clickPointer(screen.getByText('浮層動作'))
     expect(action).toHaveBeenCalledTimes(1)
@@ -105,7 +143,13 @@ describe('共用對話框跨圖層互動', () => {
   test('下拉選單可選值且不關閉下層', async () => {
     const onChange = jest.fn()
     const onOpenChange = jest.fn()
-    render(<Shell onOpenChange={onOpenChange}><NativeSelect value="" placeholder="選狀態" onChange={onChange} inputProps={{ 'aria-label': '狀態' }}><NativeSelectOption value="published">已發佈</NativeSelectOption></NativeSelect></Shell>)
+    render(
+      <Shell onOpenChange={onOpenChange}>
+        <NativeSelect value="" placeholder="選狀態" onChange={onChange} inputProps={{ 'aria-label': '狀態' }}>
+          <NativeSelectOption value="published">已發佈</NativeSelectOption>
+        </NativeSelect>
+      </Shell>
+    )
     fireEvent.click(screen.getByRole('combobox'))
     fireEvent.click(within(await screen.findByRole('listbox')).getByRole('option', { name: '已發佈' }))
     expect(onChange.mock.calls[0][0].target.value).toBe('published')
@@ -116,7 +160,19 @@ describe('共用對話框跨圖層互動', () => {
     const lowerClose = jest.fn()
     const Harness = () => {
       const [upper, setUpper] = React.useState(false)
-      return <><Shell onOpenChange={lowerClose}><button onClick={() => setUpper(true)}>開啟上層</button></Shell><Dialog open={upper} onOpenChange={setUpper}><DialogContent aria-describedby={undefined}><DialogTitle>上層對話框</DialogTitle><input aria-label="上層輸入" /></DialogContent></Dialog></>
+      return (
+        <>
+          <Shell onOpenChange={lowerClose}>
+            <button onClick={() => setUpper(true)}>開啟上層</button>
+          </Shell>
+          <Dialog open={upper} onOpenChange={setUpper}>
+            <DialogContent aria-describedby={undefined}>
+              <DialogTitle>上層對話框</DialogTitle>
+              <input aria-label="上層輸入" />
+            </DialogContent>
+          </Dialog>
+        </>
+      )
     }
     render(<Harness />)
     const opener = screen.getByText('開啟上層')
@@ -134,7 +190,11 @@ describe('共用對話框跨圖層互動', () => {
   })
 
   test('受控且沒有 onOpenChange 的對話框不因 Esc 或背景消失', () => {
-    render(<Shell hideClose><button>保留內容</button></Shell>)
+    render(
+      <Shell hideClose>
+        <button>保留內容</button>
+      </Shell>
+    )
     pressEscape(screen.getByText('保留內容'))
     fireEvent.pointerDown(document.body)
     expect(screen.getByText('保留內容')).toBeInTheDocument()
@@ -144,7 +204,11 @@ describe('共用對話框跨圖層互動', () => {
   test('保留不自動聚焦與禁止 Esc／背景關閉的呼叫端設定', () => {
     const onOpenChange = jest.fn()
     const prevent = event => event.preventDefault()
-    render(<Shell onOpenChange={onOpenChange} onOpenAutoFocus={prevent} onEscapeKeyDown={prevent} onPointerDownOutside={prevent}><input aria-label="店家搜尋" /></Shell>)
+    render(
+      <Shell onOpenChange={onOpenChange} onOpenAutoFocus={prevent} onEscapeKeyDown={prevent} onPointerDownOutside={prevent}>
+        <input aria-label="店家搜尋" />
+      </Shell>
+    )
     expect(screen.getByRole('textbox')).not.toHaveFocus()
     pressEscape(screen.getByRole('dialog'))
     fireEvent.pointerDown(document.body)
@@ -156,11 +220,27 @@ describe('圖層重新開啟', () => {
   test.each(['正式彈窗', 'Popover'])('%s 關閉再開啟後仍高於下層', async kind => {
     const Harness = () => {
       const [open, setOpen] = React.useState(false)
-      return <Shell data-testid="順序下層">
-        <button onClick={() => setOpen(true)}>開啟順序上層</button>
-        {kind === '正式彈窗' && <Dialog open={open} onOpenChange={setOpen}><DialogContent data-testid="順序上層" aria-describedby={undefined}><DialogTitle>順序上層</DialogTitle><button onClick={() => setOpen(false)}>關閉順序上層</button></DialogContent></Dialog>}
-        {kind === 'Popover' && <Popover open={open} onOpenChange={setOpen}><PopoverTrigger>浮層錨點</PopoverTrigger><PopoverContent data-testid="順序上層"><button onClick={() => setOpen(false)}>關閉順序上層</button></PopoverContent></Popover>}
-      </Shell>
+      return (
+        <Shell data-testid="順序下層">
+          <button onClick={() => setOpen(true)}>開啟順序上層</button>
+          {kind === '正式彈窗' && (
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogContent data-testid="順序上層" aria-describedby={undefined}>
+                <DialogTitle>順序上層</DialogTitle>
+                <button onClick={() => setOpen(false)}>關閉順序上層</button>
+              </DialogContent>
+            </Dialog>
+          )}
+          {kind === 'Popover' && (
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger>浮層錨點</PopoverTrigger>
+              <PopoverContent data-testid="順序上層">
+                <button onClick={() => setOpen(false)}>關閉順序上層</button>
+              </PopoverContent>
+            </Popover>
+          )}
+        </Shell>
+      )
     }
     render(<Harness />)
     const lower = screen.getByTestId('順序下層')
@@ -173,12 +253,23 @@ describe('圖層重新開啟', () => {
       expect(lower).toBeInTheDocument()
     }
   })
-
 })
 
 describe('正式對話框內層互動', () => {
   test('正式 Dialog 內 Popover 點回下層內容會關閉浮層', async () => {
-    render(<Dialog open><DialogContent hideClose aria-label="下層對話框" aria-labelledby={undefined} aria-describedby={undefined}><button>浮層外動作</button><Popover><PopoverTrigger>開啟內層浮層</PopoverTrigger><PopoverContent><button>內層內容</button></PopoverContent></Popover></DialogContent></Dialog>)
+    render(
+      <Dialog open>
+        <DialogContent hideClose aria-label="下層對話框" aria-labelledby={undefined} aria-describedby={undefined}>
+          <button>浮層外動作</button>
+          <Popover>
+            <PopoverTrigger>開啟內層浮層</PopoverTrigger>
+            <PopoverContent>
+              <button>內層內容</button>
+            </PopoverContent>
+          </Popover>
+        </DialogContent>
+      </Dialog>
+    )
     clickPointer(screen.getByText('開啟內層浮層'))
     expect(screen.getByText('內層內容')).toBeInTheDocument()
     // Radix 的 pointerdown outside listener 於下一個 task 安裝。
@@ -188,7 +279,18 @@ describe('正式對話框內層互動', () => {
   })
 
   test('正式 Dialog 內 Dropdown 開啟時禁用下層 pointer，關閉後還原', async () => {
-    render(<Dialog open><DialogContent hideClose aria-label="下層對話框" aria-labelledby={undefined} aria-describedby={undefined} data-testid="下拉相容根"><DropdownMenu><DropdownMenuTrigger>開啟操作選單</DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem>操作項目</DropdownMenuItem></DropdownMenuContent></DropdownMenu></DialogContent></Dialog>)
+    render(
+      <Dialog open>
+        <DialogContent hideClose aria-label="下層對話框" aria-labelledby={undefined} aria-describedby={undefined} data-testid="下拉相容根">
+          <DropdownMenu>
+            <DropdownMenuTrigger>開啟操作選單</DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>操作項目</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </DialogContent>
+      </Dialog>
+    )
     const root = screen.getByTestId('下拉相容根')
     fireEvent.keyDown(screen.getByText('開啟操作選單'), { key: 'ArrowDown' })
     const item = await screen.findByRole('menuitem')
@@ -201,7 +303,17 @@ describe('正式對話框內層互動', () => {
   test('Popover 內日期浮層不觸發下層關閉，點回對話框可關閉 Popover', async () => {
     const lowerClose = jest.fn()
     const onChange = jest.fn()
-    render(<Shell onOpenChange={lowerClose}><button>日期浮層外動作</button><Popover><PopoverTrigger>開啟日期浮層</PopoverTrigger><PopoverContent data-testid="日期Popover"><DatePicker value={new Date(2026, 9, 20)} onChange={onChange} /></PopoverContent></Popover></Shell>)
+    render(
+      <Shell onOpenChange={lowerClose}>
+        <button>日期浮層外動作</button>
+        <Popover>
+          <PopoverTrigger>開啟日期浮層</PopoverTrigger>
+          <PopoverContent data-testid="日期Popover">
+            <DatePicker value={new Date(2026, 9, 20)} onChange={onChange} />
+          </PopoverContent>
+        </Popover>
+      </Shell>
+    )
     clickPointer(screen.getByText('開啟日期浮層'))
     clickPointer(screen.getByRole('button', { name: /^選擇日期/ }))
     await new Promise(resolve => setTimeout(resolve, 0))
@@ -215,13 +327,18 @@ describe('正式對話框內層互動', () => {
     await waitFor(() => expect(screen.queryByTestId('日期Popover')).toBeNull())
     expect(lowerClose).not.toHaveBeenCalled()
   })
-
 })
 
 test('正式對話框更換 ref 時清除舊 ref 並交出同一個面板', () => {
   const first = jest.fn()
   const second = React.createRef()
-  const panel = ref => <Dialog open><DialogContent ref={ref} aria-describedby={undefined}><DialogTitle>保留參照</DialogTitle></DialogContent></Dialog>
+  const panel = ref => (
+    <Dialog open>
+      <DialogContent ref={ref} aria-describedby={undefined}>
+        <DialogTitle>保留參照</DialogTitle>
+      </DialogContent>
+    </Dialog>
+  )
   const view = render(panel(first))
   const content = screen.getByRole('dialog', { name: '保留參照' })
   view.rerender(panel(second))
@@ -232,7 +349,14 @@ test('正式對話框更換 ref 時清除舊 ref 並交出同一個面板', () =
 test('非受控 DialogTrigger 開窗後 Esc 只通知一次並還原觸發鈕', async () => {
   const changed = jest.fn()
   const escaped = jest.fn()
-  render(<Dialog onOpenChange={changed}><DialogTrigger>非受控開窗</DialogTrigger><DialogContent onEscapeKeyDown={escaped} aria-describedby={undefined}><DialogTitle>非受控測試</DialogTitle></DialogContent></Dialog>)
+  render(
+    <Dialog onOpenChange={changed}>
+      <DialogTrigger>非受控開窗</DialogTrigger>
+      <DialogContent onEscapeKeyDown={escaped} aria-describedby={undefined}>
+        <DialogTitle>非受控測試</DialogTitle>
+      </DialogContent>
+    </Dialog>
+  )
   const opener = screen.getByText('非受控開窗')
   opener.focus()
   clickPointer(opener)
@@ -249,11 +373,25 @@ test('實際 PasswordDialog 在正式窗內開關兩次，Esc 不關窗且每次
   const Harness = () => {
     const [open, setOpen] = React.useState(false)
     const [password, setPassword] = React.useState('')
-    return <Dialog open onOpenChange={closeLower}><DialogContent hideClose aria-label="下層對話框" aria-labelledby={undefined} aria-describedby={undefined}>
-      <Autocomplete options={['剪髮', '染髮']} />
-      <button onClick={() => setOpen(true)}>開啟真實密碼窗</button>
-      <PasswordDialog open={open} title="真實密碼" inputLabel="操作密碼" inputOnChange={setPassword} handleOnCancel={() => setOpen(false)} handleOnConfirm={() => { confirm(password); setOpen(false) }} />
-    </DialogContent></Dialog>
+    return (
+      <Dialog open onOpenChange={closeLower}>
+        <DialogContent hideClose aria-label="下層對話框" aria-labelledby={undefined} aria-describedby={undefined}>
+          <Autocomplete options={['剪髮', '染髮']} />
+          <button onClick={() => setOpen(true)}>開啟真實密碼窗</button>
+          <PasswordDialog
+            open={open}
+            title="真實密碼"
+            inputLabel="操作密碼"
+            inputOnChange={setPassword}
+            handleOnCancel={() => setOpen(false)}
+            handleOnConfirm={() => {
+              confirm(password)
+              setOpen(false)
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+    )
   }
   render(<Harness />)
   const opener = screen.getByText('開啟真實密碼窗')
@@ -275,7 +413,11 @@ test('實際 PasswordDialog 在正式窗內開關兩次，Esc 不關窗且每次
 
 test('搜尋選單選值後可重開兩次，每次 Esc 只關選單', async () => {
   const lowerClose = jest.fn()
-  render(<Shell onOpenChange={lowerClose}><Autocomplete options={['剪髮', '染髮']} /></Shell>)
+  render(
+    <Shell onOpenChange={lowerClose}>
+      <Autocomplete options={['剪髮', '染髮']} />
+    </Shell>
+  )
   const input = screen.getByRole('combobox')
   input.focus()
   clickPointer(input)
@@ -295,7 +437,13 @@ test('搜尋選單選值後可重開兩次，每次 Esc 只關選單', async () 
 test('下拉選單選值關閉後解除圖層，下次 Esc 關下層', async () => {
   const lowerClose = jest.fn()
   const selected = jest.fn()
-  render(<Shell onOpenChange={lowerClose}><NativeSelect defaultValue="" onChange={selected} inputProps={{ 'aria-label': '重開選項' }}><NativeSelectOption value="染髮">染髮</NativeSelectOption></NativeSelect></Shell>)
+  render(
+    <Shell onOpenChange={lowerClose}>
+      <NativeSelect defaultValue="" onChange={selected} inputProps={{ 'aria-label': '重開選項' }}>
+        <NativeSelectOption value="染髮">染髮</NativeSelectOption>
+      </NativeSelect>
+    </Shell>
+  )
   const trigger = screen.getByRole('combobox')
   fireEvent.click(trigger)
   fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: '染髮' }))

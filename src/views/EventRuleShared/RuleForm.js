@@ -23,13 +23,13 @@ import { Field, Input } from 'ui/input'
 // 已結束規則的歸屬多選一律以 isReadOnly 唯讀（Jason 2026/10/22 授權修正：服務／賣卡先入／賣卡後入原本傳成 readOnly，被元件的 isReadOnly=false 蓋掉而仍可修改）
 const editPickerToolbar = title => ({
   localeText: {
-    toolbarTitle: title
+    toolbarTitle: title,
   },
   slotProps: {
     toolbar: {
-      toolbarFormat: 'M月d日'
-    }
-  }
+      toolbarFormat: 'M月d日',
+    },
+  },
 })
 
 function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isClick, mainEvent, isReadOnly, eventId, isEdit = false, submitLabel }) {
@@ -77,12 +77,12 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
     <Fragment>
       <Card>
         <CardHeader>
-          <CardTitle>{`${mainEvent.name} ${format(mainEvent.start, "yyyy/MM/dd")} ~ ${format(mainEvent.end, "yyyy/MM/dd")}`}</CardTitle>
+          <CardTitle>{`${mainEvent.name} ${format(mainEvent.start, 'yyyy/MM/dd')} ~ ${format(mainEvent.end, 'yyyy/MM/dd')}`}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
-          <Field label='規則名稱'>
+          <Field label="規則名稱">
             <Input
-              placeholder='請輸入規則名稱'
+              placeholder="請輸入規則名稱"
               value={inputValue.nameForGroup}
               onChange={e => handleValueChange('nameForGroup', e.target.value)}
               readOnly={isReadOnly}
@@ -132,8 +132,12 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                 value={inputValue.consumptionTypeUsing}
                 onChange={(e, v) => v && handleValueChange('consumptionTypeUsing', v)}
               >
-                <ToggleGroupItem disabled={isReadOnly} value='ALL'>全部套用</ToggleGroupItem>
-                <ToggleGroupItem disabled={isReadOnly} value='CUSTOMIZE'>自訂</ToggleGroupItem>
+                <ToggleGroupItem disabled={isReadOnly} value="ALL">
+                  全部套用
+                </ToggleGroupItem>
+                <ToggleGroupItem disabled={isReadOnly} value="CUSTOMIZE">
+                  自訂
+                </ToggleGroupItem>
               </ToggleGroup>
             </div>
             {inputValue.consumptionTypeUsing === 'CUSTOMIZE' && (
@@ -192,8 +196,8 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                         fullWidth={false}
                         className="min-w-[120px] align-top w-[150px]"
                       >
-                        <NativeSelectOption value='ALL'>全部套用</NativeSelectOption>
-                        <NativeSelectOption value='SPECIFIC'>自訂</NativeSelectOption>
+                        <NativeSelectOption value="ALL">全部套用</NativeSelectOption>
+                        <NativeSelectOption value="SPECIFIC">自訂</NativeSelectOption>
                       </NativeSelect>
                     )}
                   </div>
@@ -202,7 +206,7 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                       optionData={attributions}
                       isloading={attributions.langth === 0}
                       value={inputValue.service.belong}
-                      className='Autocomplete'
+                      className="Autocomplete"
                       isReadOnly={isReadOnly}
                       onChange={value => handleTypeChange('service', 'belong', value)}
                     />
@@ -236,8 +240,8 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                           fullWidth={false}
                           className="min-w-[120px] align-top w-[150px]"
                         >
-                          <NativeSelectOption value='ALL'>全部套用</NativeSelectOption>
-                          <NativeSelectOption value='SPECIFIC'>自訂</NativeSelectOption>
+                          <NativeSelectOption value="ALL">全部套用</NativeSelectOption>
+                          <NativeSelectOption value="SPECIFIC">自訂</NativeSelectOption>
                         </NativeSelect>
                       </>
                     )}
@@ -247,7 +251,7 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                       optionData={attributions}
                       isloading={attributions.langth === 0}
                       value={inputValue.ticketSellInPerformance.belong}
-                      className='Autocomplete'
+                      className="Autocomplete"
                       isReadOnly={isReadOnly}
                       onChange={value => handleTypeChange('ticketSellInPerformance', 'belong', value)}
                     />
@@ -280,8 +284,8 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                           fullWidth={false}
                           className="min-w-[120px] align-top w-[150px]"
                         >
-                          <NativeSelectOption value='ALL'>全部套用</NativeSelectOption>
-                          <NativeSelectOption value='SPECIFIC'>自訂</NativeSelectOption>
+                          <NativeSelectOption value="ALL">全部套用</NativeSelectOption>
+                          <NativeSelectOption value="SPECIFIC">自訂</NativeSelectOption>
                         </NativeSelect>
                       </>
                     )}
@@ -291,7 +295,7 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                       optionData={attributions}
                       isloading={attributions.langth === 0}
                       value={inputValue.ticketSellNotInPerformance.belong}
-                      className='Autocomplete'
+                      className="Autocomplete"
                       isReadOnly={isReadOnly}
                       onChange={value => handleTypeChange('ticketSellNotInPerformance', 'belong', value)}
                     />
@@ -325,8 +329,8 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                           fullWidth={false}
                           className="min-w-[120px] align-top w-[150px]"
                         >
-                          <NativeSelectOption value='ALL'>全部套用</NativeSelectOption>
-                          <NativeSelectOption value='SPECIFIC'>自訂</NativeSelectOption>
+                          <NativeSelectOption value="ALL">全部套用</NativeSelectOption>
+                          <NativeSelectOption value="SPECIFIC">自訂</NativeSelectOption>
                         </NativeSelect>
                       </>
                     )}
@@ -336,7 +340,7 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                       optionData={attributions}
                       isloading={attributions.langth === 0}
                       value={inputValue.ticketUsePerformanceEntered.belong}
-                      className='Autocomplete'
+                      className="Autocomplete"
                       onChange={value => handleTypeChange('ticketUsePerformanceEntered', 'belong', value)}
                       isReadOnly={isReadOnly}
                     />
@@ -369,8 +373,8 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                           fullWidth={false}
                           className="min-w-[120px] align-top w-[150px]"
                         >
-                          <NativeSelectOption value='ALL'>全部套用</NativeSelectOption>
-                          <NativeSelectOption value='SPECIFIC'>自訂</NativeSelectOption>
+                          <NativeSelectOption value="ALL">全部套用</NativeSelectOption>
+                          <NativeSelectOption value="SPECIFIC">自訂</NativeSelectOption>
                         </NativeSelect>
                       </>
                     )}
@@ -380,7 +384,7 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                       optionData={attributions}
                       isloading={attributions.langth === 0}
                       value={inputValue.ticketUsePerformanceNotEntered.belong}
-                      className='Autocomplete'
+                      className="Autocomplete"
                       onChange={value => handleTypeChange('ticketUsePerformanceNotEntered', 'belong', value)}
                       isReadOnly={isReadOnly}
                     />
@@ -397,7 +401,7 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
               <PaywayAutocomplete
                 value={inputValue.payTypeUsing}
                 onChange={value => handleValueChange('payTypeUsing', value)}
-                className='Autocomplete'
+                className="Autocomplete"
                 isReadOnly={isReadOnly}
               />
             </div>
@@ -408,7 +412,7 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
             </div>
             <div className="flex flex-col gap-5">
               <div className="flex flex-wrap gap-5">
-                <Field label='門檻' className='w-40'>
+                <Field label="門檻" className="w-40">
                   <Input
                     value={inputValue.thresholdPrice}
                     onFocus={e => e.target.select()}
@@ -421,7 +425,7 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                     readOnly={isReadOnly}
                   />
                 </Field>
-                <Field label='每單發券上限' className='w-40'>
+                <Field label="每單發券上限" className="w-40">
                   <Input
                     value={inputValue.maxCountPerOrder}
                     onFocus={e => e.target.select()}
@@ -434,7 +438,7 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                     readOnly={isReadOnly}
                   />
                 </Field>
-                <Field label='總張數上限' className='w-40'>
+                <Field label="總張數上限" className="w-40">
                   <Input
                     value={inputValue.maxCountForGroup}
                     onFocus={e => e.target.select()}
@@ -444,7 +448,7 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                         if (Number(value) > mainEvent.maxCount) {
                           openSnackbar({
                             message: `張數上限為${mainEvent.maxCount}`,
-                            variant: 'warning'
+                            variant: 'warning',
                           })
                         } else {
                           handleValueChange('maxCountForGroup', Number(value))
@@ -480,7 +484,7 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                   <NativeSelectOption value={true}>套用</NativeSelectOption>
                 </NativeSelect>
                 {inputValue.walletDepositForCash.using && (
-                  <Field label='金額門檻' className='w-40'>
+                  <Field label="金額門檻" className="w-40">
                     <Input
                       value={inputValue.walletDepositForCash.price}
                       onFocus={e => e.target.select()}
@@ -512,7 +516,7 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                   <NativeSelectOption value={true}>套用</NativeSelectOption>
                 </NativeSelect>
                 {inputValue.walletDepositForOtherPay.using && (
-                  <Field label='金額門檻' className='w-40'>
+                  <Field label="金額門檻" className="w-40">
                     <Input
                       value={inputValue.walletDepositForOtherPay.price}
                       onFocus={e => e.target.select()}
@@ -534,12 +538,14 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
             disabled={isReadOnly}
             style={{ width: 'fit-content' }}
             control={<Checkbox color="primary" />}
-            label='開啟簡訊通知'
+            label="開啟簡訊通知"
             checked={inputValue.isSMSNotifyForGroup}
             onChange={(e, v) => handleValueChange('isSMSNotifyForGroup', v)}
           />
         </CardContent>
-        {isReadOnly ? '' : (
+        {isReadOnly ? (
+          ''
+        ) : (
           <CardFooter>
             <Button disabled={isClick} onClick={handleSubmit} variant="primary">
               {submitLabel}

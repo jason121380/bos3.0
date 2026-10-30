@@ -2,10 +2,7 @@ import React from 'react'
 import CustomMockedProvider from '__tests__/CustomMockedProvider.test'
 import { render, fireEvent } from '@testing-library/react'
 import { mockedServiceCateResp } from 'hooks/useFetchServiceCategories'
-import {
-  DEL_SERVICE_CATEGORIES,
-  mockedDeleteServiceCategory,
-} from 'hooks/useFetchDeleteServiceCategories'
+import { DEL_SERVICE_CATEGORIES, mockedDeleteServiceCategory } from 'hooks/useFetchDeleteServiceCategories'
 
 import Results from '../Results'
 
@@ -14,10 +11,7 @@ const refetchCategories = jest.fn()
 const createWrapper = mocks => {
   return render(
     <CustomMockedProvider mocks={mocks}>
-      <Results
-        categories={mockedServiceCateResp.data.serviceCategories}
-        refetchCategories={refetchCategories}
-      />
+      <Results categories={mockedServiceCateResp.data.serviceCategories} refetchCategories={refetchCategories} />
     </CustomMockedProvider>
   )
 }

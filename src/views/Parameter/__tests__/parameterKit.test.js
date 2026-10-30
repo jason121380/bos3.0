@@ -168,7 +168,12 @@ export const baseFixtures = () => ({
       { id: 'u-3', name: '設計師丙' },
     ],
   },
-  GET_NONDESIGNATE_BOOKING_RECIOIENTS: { nonDesignateBookingRecipients: [{ id: 'u-2', name: '設計師乙' }, { id: 'u-9', name: '已解除綁定' }] },
+  GET_NONDESIGNATE_BOOKING_RECIOIENTS: {
+    nonDesignateBookingRecipients: [
+      { id: 'u-2', name: '設計師乙' },
+      { id: 'u-9', name: '已解除綁定' },
+    ],
+  },
   GET_PARAMETER_ORDER_CREATE_SETTING: {
     getParameterOrderCreateSetting: {
       isHelperDesignationDisplay: true,
@@ -292,7 +297,12 @@ export const baseFixtures = () => ({
   GET_IS_BOOKING_TYPE_FOR_SOCKET: { getBookingTypeForSocket: ['RESERVATION'] },
   GET_UES_USEING_SETTING: { getUESUsingSetting: false },
   GET_IS_CBRD_STYLIST: { getIsCBRDStylist: true },
-  GET_MERCHANT_AUTHORITIES: { getMerchantAuthorities: [{ id: 'auth-1', authorityName: '店長' }, { id: 'auth-2', authorityName: '設計師' }] },
+  GET_MERCHANT_AUTHORITIES: {
+    getMerchantAuthorities: [
+      { id: 'auth-1', authorityName: '店長' },
+      { id: 'auth-2', authorityName: '設計師' },
+    ],
+  },
 })
 
 // 存檔送出的 29 支 mutation
@@ -388,7 +398,9 @@ export const sent = (calls, operationName) => {
 
 // 勾選框（CheckboxField／FormControlLabel：label 內含 input）
 export function checkboxByLabel(labelText, root = document.body, index = 0) {
-  const labels = [...root.querySelectorAll('label')].filter(l => l.textContent.trim() === labelText.trim() && l.querySelector('input[type="checkbox"]'))
+  const labels = [...root.querySelectorAll('label')].filter(
+    l => l.textContent.trim() === labelText.trim() && l.querySelector('input[type="checkbox"]')
+  )
   if (!labels[index]) throw new Error(`找不到勾選框「${labelText}」(#${index})`)
   return labels[index].querySelector('input[type="checkbox"]')
 }

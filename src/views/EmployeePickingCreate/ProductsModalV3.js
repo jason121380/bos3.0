@@ -55,7 +55,7 @@ function ProductsModal({
     if (productList.length > 0) {
       setSelectedCategorieId(productList)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productList.loading])
   const handleProductInputOnChange = (e, index, id) => {
     const productForModified = cloneDeep(selectedCategorieId)
@@ -77,8 +77,7 @@ function ProductsModal({
         const existedIndex1 = selectedProducts.map(d => d.productId).indexOf(id)
         if (existedIndex1 !== -1) {
           selectedProducts[existedIndex1].count = parseInt(e.target.value, 10) || 1
-          selectedProducts[existedIndex1].total =
-            parseInt(e.target.value, 10) * selectedProducts[existedIndex1].price
+          selectedProducts[existedIndex1].total = parseInt(e.target.value, 10) * selectedProducts[existedIndex1].price
         }
         break
       case 'selected':
@@ -168,20 +167,12 @@ function ProductsModal({
     <Dialog open={productsModalOpen}>
       <DialogContent size="md" className="EmployeePickingCreateProductsModal max-w-[700px]" hideClose aria-describedby={undefined}>
         <DialogHeader className="flex-row items-center justify-between pr-6">
-          <DialogTitle>
-            所有商品
-          </DialogTitle>
+          <DialogTitle>所有商品</DialogTitle>
           <div className="flex items-center gap-2">
-            <Button
-              variant="primary"
-              onClick={handleSelectProductsConfirm}
-            >
+            <Button variant="primary" onClick={handleSelectProductsConfirm}>
               確定
             </Button>
-            <Button
-              variant="ghost"
-              onClick={closeModal}
-            >
+            <Button variant="ghost" onClick={closeModal}>
               關閉
             </Button>
           </div>
@@ -200,20 +191,14 @@ function ProductsModal({
                 {productCategory.name}
               </Button>
             ))}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-danger"
-              onClick={() => handleClickCategorie(null, null)}
-            >
+            <Button variant="ghost" size="sm" className="text-danger" onClick={() => handleClickCategorie(null, null)}>
               清除篩選
             </Button>
           </div>
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
-                <TableHead className="w-12">
-                </TableHead>
+                <TableHead className="w-12"></TableHead>
                 <TableHead>代號</TableHead>
                 <TableHead>價格</TableHead>
                 <TableHead>數量</TableHead>
@@ -234,11 +219,7 @@ function ProductsModal({
                       value={product.selected}
                     />
                   </TableCell>
-                  <TableCell>
-                    {product.productNo === null || product.productNo === ''
-                      ? '無代號'
-                      : product.productNo}
-                  </TableCell>
+                  <TableCell>{product.productNo === null || product.productNo === '' ? '無代號' : product.productNo}</TableCell>
                   <TableCell>
                     <Input
                       type="number"
@@ -261,9 +242,7 @@ function ProductsModal({
                       onWheel={() => document.activeElement.blur()}
                     />
                   </TableCell>
-                  <TableCell className="text-text-secondary">
-                    {product.productCategory !== null ? product.productCategory.name : ''}
-                  </TableCell>
+                  <TableCell className="text-text-secondary">{product.productCategory !== null ? product.productCategory.name : ''}</TableCell>
                   <TableCell>{product.productName}</TableCell>
                   <TableCell numeric>{formatNumber(product.total)}</TableCell>
                 </TableRow>
@@ -272,16 +251,10 @@ function ProductsModal({
           </Table>
         </DialogBody>
         <DialogFooter>
-          <Button
-            variant="ghost"
-            onClick={closeModal}
-          >
+          <Button variant="ghost" onClick={closeModal}>
             關閉
           </Button>
-          <Button
-            variant="primary"
-            onClick={handleSelectProductsConfirm}
-          >
+          <Button variant="primary" onClick={handleSelectProductsConfirm}>
             確定
           </Button>
         </DialogFooter>

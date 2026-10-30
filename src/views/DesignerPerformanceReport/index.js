@@ -19,199 +19,182 @@ import { Skeleton } from 'ui/skeleton'
 import QueryFailed from 'components/QueryFailed'
 
 const DesignerPerformanceReport = () => {
-	const [type, setType] = useState('FAKE')
-	const [sort, setSort] = useState('DESIGNERNO')
-	const [date, setDate] = useState({
-		startDate: startOfDay(new Date()).getTime(),
-		endDate: endOfDay(new Date()).getTime(),
-	})
-	const [designerPerformance, setDesignerPerformance] = useState([])
-	const [serviceCategory, setServiceCategory] = useState([])
-	const [membershipDisplay, setMembershipDisplay] = useState(false)
-	const [isDisplayTogglePerformanceButton, setIsDisplayTogglePerformanceButton] = useState(false)
-	const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
-	const isDisplayTogglePerformanceButtonData = useFetchGetIsDisplayTogglePerformanceButton()
-	const [getDesignerPerformanceExcel, designerPerformanceExcelData] = useFetchGetDesignerPerformanceExcel()
-	const getDesignerPerformance = useFetchGetDesignerPerformance({
-		input: {
-			date: date,
-			performanceReference: type,
-		}
-	})
+  const [type, setType] = useState('FAKE')
+  const [sort, setSort] = useState('DESIGNERNO')
+  const [date, setDate] = useState({
+    startDate: startOfDay(new Date()).getTime(),
+    endDate: endOfDay(new Date()).getTime(),
+  })
+  const [designerPerformance, setDesignerPerformance] = useState([])
+  const [serviceCategory, setServiceCategory] = useState([])
+  const [membershipDisplay, setMembershipDisplay] = useState(false)
+  const [isDisplayTogglePerformanceButton, setIsDisplayTogglePerformanceButton] = useState(false)
+  const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
+  const isDisplayTogglePerformanceButtonData = useFetchGetIsDisplayTogglePerformanceButton()
+  const [getDesignerPerformanceExcel, designerPerformanceExcelData] = useFetchGetDesignerPerformanceExcel()
+  const getDesignerPerformance = useFetchGetDesignerPerformance({
+    input: {
+      date: date,
+      performanceReference: type,
+    },
+  })
 
-	useEffect(() => {
-		if (!designerPerformanceExcelData.loading && designerPerformanceExcelData.data) {
-			const url = idx(designerPerformanceExcelData, _ => _.data.designerPerformanceExcel)
-			const link = document.createElement('a')
-			link.href = url
-			link.click()
-		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-	}, [designerPerformanceExcelData.loading])
+  useEffect(() => {
+    if (!designerPerformanceExcelData.loading && designerPerformanceExcelData.data) {
+      const url = idx(designerPerformanceExcelData, _ => _.data.designerPerformanceExcel)
+      const link = document.createElement('a')
+      link.href = url
+      link.click()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+  }, [designerPerformanceExcelData.loading])
 
-	useEffect(() => {
-		if (!isDisplayTogglePerformanceButtonData.loading) {
-			const isDisplayTogglePerformanceButton = idx(
-				isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
-			setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
-		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-	}, [isDisplayTogglePerformanceButtonData.loading])
+  useEffect(() => {
+    if (!isDisplayTogglePerformanceButtonData.loading) {
+      const isDisplayTogglePerformanceButton = idx(isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
+      setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+  }, [isDisplayTogglePerformanceButtonData.loading])
 
-	useEffect(() => {
-		// 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
-		if (!getDesignerPerformance.loading && !isMemberShipCardActiveData.loading && idx(getDesignerPerformance, _ => _.data.designerPerformance)) {
-			let performanceData = cloneDeep(getDesignerPerformance.data.designerPerformance)
-			const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
-			if (performanceData.length > 0) {
-				const category = performanceData[0].designerPerformancePercented[0].serviceCategory.map(d => d.categoryName)
-				const showMembership = isMemberShipCardActive || performanceData[0].designerPerformanceSum[0].membershipPerformance !== 0
+  useEffect(() => {
+    // 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
+    if (!getDesignerPerformance.loading && !isMemberShipCardActiveData.loading && idx(getDesignerPerformance, _ => _.data.designerPerformance)) {
+      let performanceData = cloneDeep(getDesignerPerformance.data.designerPerformance)
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
+      if (performanceData.length > 0) {
+        const category = performanceData[0].designerPerformancePercented[0].serviceCategory.map(d => d.categoryName)
+        const showMembership = isMemberShipCardActive || performanceData[0].designerPerformanceSum[0].membershipPerformance !== 0
 
-				// 四捨五入
-				for (let i in performanceData[0]) {
-					if (i === 'designerPerformanceData') {
-						performanceData[0][i].forEach(d => {
-							for (let j in d) {
-								if (j !== 'designerName') {
-									if (j === 'serviceCategory') {
-										d[j].forEach(e => {
-											for (let k in e) {
-												if (k !== 'categoryName' && e[k] !== null) {
-													e[k] = Math.round(e[k])
-												}
-											}
-										})
-									} else if (d[j] !== null) {
-										d[j] = Math.round(d[j])
-									}
-								}
-							}
-						})
-					} else {
-						performanceData[0][i].forEach(d => {
-							for (let j in d) {
-								if (j === 'serviceCategory') {
-									d[j].forEach(e => {
-										for (let k in e) {
-											if (k !== 'categoryName' && e[k] !== null) {
-												e[k] = Math.round(e[k])
-											}
-										}
-									})
-								} else if (j !== 'designerName' && d[j] !== null) {
-									d[j] = Math.round(d[j])
-								}
-							}
-						})
-					}
-				}
-				if (sort === 'PERFORMANCE') {
-					performanceData[0].designerPerformanceData = performanceData[0].designerPerformanceData.sort((a, b) => b.totalPerformance - a.totalPerformance)
-				}
-				setDesignerPerformance(performanceData)
-				setServiceCategory(category)
-				setMembershipDisplay(showMembership)
-			} else {
-				setDesignerPerformance([])
-			}
-		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-	}, [getDesignerPerformance.loading, isMemberShipCardActiveData.loading, sort])
+        // 四捨五入
+        for (let i in performanceData[0]) {
+          if (i === 'designerPerformanceData') {
+            performanceData[0][i].forEach(d => {
+              for (let j in d) {
+                if (j !== 'designerName') {
+                  if (j === 'serviceCategory') {
+                    d[j].forEach(e => {
+                      for (let k in e) {
+                        if (k !== 'categoryName' && e[k] !== null) {
+                          e[k] = Math.round(e[k])
+                        }
+                      }
+                    })
+                  } else if (d[j] !== null) {
+                    d[j] = Math.round(d[j])
+                  }
+                }
+              }
+            })
+          } else {
+            performanceData[0][i].forEach(d => {
+              for (let j in d) {
+                if (j === 'serviceCategory') {
+                  d[j].forEach(e => {
+                    for (let k in e) {
+                      if (k !== 'categoryName' && e[k] !== null) {
+                        e[k] = Math.round(e[k])
+                      }
+                    }
+                  })
+                } else if (j !== 'designerName' && d[j] !== null) {
+                  d[j] = Math.round(d[j])
+                }
+              }
+            })
+          }
+        }
+        if (sort === 'PERFORMANCE') {
+          performanceData[0].designerPerformanceData = performanceData[0].designerPerformanceData.sort(
+            (a, b) => b.totalPerformance - a.totalPerformance
+          )
+        }
+        setDesignerPerformance(performanceData)
+        setServiceCategory(category)
+        setMembershipDisplay(showMembership)
+      } else {
+        setDesignerPerformance([])
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+  }, [getDesignerPerformance.loading, isMemberShipCardActiveData.loading, sort])
 
-	return (
-		<Page className='designerPerformanceReport ui-root' title="設計師業績表">
-			<div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
-				<div className="merchantNamePrint">
-					{JSON.parse(localStorage.getItem('userMerchant')).name +
-						'   ' +
-						format(new Date(date.startDate), 'yyyy-MM').toLocaleString() +
-						'   ' +
-						'設計師業績表'}
-				</div>
-				<div className="merchantNamePrint">
-					{'列印時間： ' +
-						format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-				</div>
-			</div>
-			<PageHeader
-				title="設計師業績表"
-				actions={
-					<>
-						<Button
-							variant="secondary"
-							disabled={designerPerformanceExcelData.loading}
-							onClick={() => {
-								getDesignerPerformanceExcel({
-									variables: {
-										input: {
-											date: date,
-											performanceReference: type,
-											sortType: sort
-										}
-									}
-								})
-							}}
-						>
-							<Download strokeWidth={1.75} />
-							報表匯出
-						</Button>
-						<Button
-							variant="secondary"
-							onClick={() => window.print()}
-							disabled={getDesignerPerformance.loading}
-						>
-							<Printer strokeWidth={1.75} />
-							列印
-						</Button>
-					</>
-				}
-			/>
-			<ReportToolbar
-				date={
-					<DateSelector
-						date={date}
-						attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-						dateChange={value => setDate(value)}
-					/>
-				}
-				filters={
-					<div className="flex w-full min-w-0 flex-wrap items-end gap-3 sm:w-auto sm:shrink-0">
-						{!isDisplayTogglePerformanceButton && <div className="flex flex-col gap-1.5">
-							<div className="divText text-label text-text-secondary">業績類型</div>
-							<ReferToggleButton
-								value={type}
-								onChange={value => value !== null && setType(value)}
-							/>
-						</div>
-						}
-						<div className="flex flex-col gap-1.5">
-							<div className="divText text-label text-text-secondary">排序依據</div>
-							<ToggleGroup
-								size="small"
-								value={sort}
-								onChange={(event, value) => value !== null && setSort(value)}
-								exclusive
-							>
-								<ToggleGroupItem value='DESIGNERNO'>代號</ToggleGroupItem>
-								<ToggleGroupItem value="PERFORMANCE">業績</ToggleGroupItem>
-							</ToggleGroup>
-						</div>
-					</div>
-				}
-			/>
-			{getDesignerPerformance.error ? (
-          <QueryFailed onRetry={() => getDesignerPerformance.refetch()} />
-        ) : getDesignerPerformance.loading ?
-				<Skeleton className="h-96" aria-busy="true" />
-				:
-				<Results
-					designerPerformance={designerPerformance}
-					serviceCategory={serviceCategory}
-					membershipDisplay={membershipDisplay}
-				/>
-			}
-		</Page>
-	)
+  return (
+    <Page className="designerPerformanceReport ui-root" title="設計師業績表">
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'none', justifyContent: 'space-between' }}>
+        <div className="merchantNamePrint">
+          {JSON.parse(localStorage.getItem('userMerchant')).name +
+            '   ' +
+            format(new Date(date.startDate), 'yyyy-MM').toLocaleString() +
+            '   ' +
+            '設計師業績表'}
+        </div>
+        <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
+      </div>
+      <PageHeader
+        title="設計師業績表"
+        actions={
+          <>
+            <Button
+              variant="secondary"
+              disabled={designerPerformanceExcelData.loading}
+              onClick={() => {
+                getDesignerPerformanceExcel({
+                  variables: {
+                    input: {
+                      date: date,
+                      performanceReference: type,
+                      sortType: sort,
+                    },
+                  },
+                })
+              }}
+            >
+              <Download strokeWidth={1.75} />
+              報表匯出
+            </Button>
+            <Button variant="secondary" onClick={() => window.print()} disabled={getDesignerPerformance.loading}>
+              <Printer strokeWidth={1.75} />
+              列印
+            </Button>
+          </>
+        }
+      />
+      <ReportToolbar
+        date={
+          <DateSelector
+            date={date}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            dateChange={value => setDate(value)}
+          />
+        }
+        filters={
+          <div className="flex w-full min-w-0 flex-wrap items-end gap-3 sm:w-auto sm:shrink-0">
+            {!isDisplayTogglePerformanceButton && (
+              <div className="flex flex-col gap-1.5">
+                <div className="divText text-label text-text-secondary">業績類型</div>
+                <ReferToggleButton value={type} onChange={value => value !== null && setType(value)} />
+              </div>
+            )}
+            <div className="flex flex-col gap-1.5">
+              <div className="divText text-label text-text-secondary">排序依據</div>
+              <ToggleGroup size="small" value={sort} onChange={(event, value) => value !== null && setSort(value)} exclusive>
+                <ToggleGroupItem value="DESIGNERNO">代號</ToggleGroupItem>
+                <ToggleGroupItem value="PERFORMANCE">業績</ToggleGroupItem>
+              </ToggleGroup>
+            </div>
+          </div>
+        }
+      />
+      {getDesignerPerformance.error ? (
+        <QueryFailed onRetry={() => getDesignerPerformance.refetch()} />
+      ) : getDesignerPerformance.loading ? (
+        <Skeleton className="h-96" aria-busy="true" />
+      ) : (
+        <Results designerPerformance={designerPerformance} serviceCategory={serviceCategory} membershipDisplay={membershipDisplay} />
+      )}
+    </Page>
+  )
 }
 
 export default DesignerPerformanceReport

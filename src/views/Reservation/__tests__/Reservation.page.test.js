@@ -15,7 +15,11 @@ jest.setTimeout(30000)
 jest.mock('elements/snackbars', () => ({ openSnackbar: jest.fn() }))
 jest.mock('ui/date-picker', () => ({
   DatePicker: ({ value, onChange, label }) => (
-    <input aria-label={label} data-value={value} onChange={e => onChange(e.target.value === '' ? null : new Date(Number(e.target.value) || e.target.value))} />
+    <input
+      aria-label={label}
+      data-value={value}
+      onChange={e => onChange(e.target.value === '' ? null : new Date(Number(e.target.value) || e.target.value))}
+    />
   ),
 }))
 
@@ -28,7 +32,9 @@ const DESIGNERS = [
 ]
 
 // 兩支沒有名稱的查詢（設計師清單、店家 LIFF）共用 'undefined' 鍵：回應同時含兩者，依查詢欄位各取所需
-const anonymous = { viewer: { anonymous: { designers: { totalCount: 2, data: DESIGNERS }, merchant: { id: MERCHANT, reservationLiff: 'liff-123' } } } }
+const anonymous = {
+  viewer: { anonymous: { designers: { totalCount: 2, data: DESIGNERS }, merchant: { id: MERCHANT, reservationLiff: 'liff-123' } } },
+}
 const fixtures = (extra = {}) => ({
   undefined: anonymous,
   designerBookingTimes: ({ GetBookingTimesInput }) => ({
@@ -64,7 +70,10 @@ const fillCustomer = (name, phone) => {
 }
 const submit = () => screen.getByTestId('booking-submit')
 // 服務設計師是可打字搜尋的 combobox（Jason 2026/10/30）：打字篩選後點清單裡的設計師；清空用欄位的「清除」鈕
-const designerOptions = () => within(screen.getByRole('listbox')).queryAllByRole('option').map(o => o.textContent)
+const designerOptions = () =>
+  within(screen.getByRole('listbox'))
+    .queryAllByRole('option')
+    .map(o => o.textContent)
 const pickDesigner = (text, typed = text) => {
   const input = screen.getByTestId('designer-name')
   // 先清空再打字：欄位已顯示同一個名字時，相同的值不會觸發 change
@@ -216,7 +225,10 @@ describe('指定設計師', () => {
   })
 
   it('切換指定／不指定：再按已選的不變；切回不指定時隱藏設計師並改送不指定預約', async () => {
-    const utils = setup({ search: '?usingLineLogin=0&designerId=d-1', extra: { NON_DESIGNATION_BOOKING: { nonDesignationBooking: { id: 'nd-1', status: '預約成功' } } } })
+    const utils = setup({
+      search: '?usingLineLogin=0&designerId=d-1',
+      extra: { NON_DESIGNATION_BOOKING: { nonDesignationBooking: { id: 'nd-1', status: '預約成功' } } },
+    })
     await utils.settle()
     fireEvent.click(screen.getByTestId('designer-assigned'))
     expect(screen.getByTestId('designer-assigned')).toHaveAttribute('aria-pressed', 'true')
@@ -378,7 +390,10 @@ describe('失敗與版面', () => {
     liff.sendMessages.mockImplementation(() => {
       throw new Error('LINE 傳送失敗')
     })
-    const assigned = setup({ search: `?usingLineLogin=1&designerId=d-1&date=${at(10)}`, extra: { bookingV2: { bookingV2: { id: 'b-1', status: '預約成功' } } } })
+    const assigned = setup({
+      search: `?usingLineLogin=1&designerId=d-1&date=${at(10)}`,
+      extra: { bookingV2: { bookingV2: { id: 'b-1', status: '預約成功' } } },
+    })
     await assigned.settle()
     fillCustomer('吳小姐', '0912345678')
     fireEvent.click(submit())
@@ -386,7 +401,10 @@ describe('失敗與版面', () => {
     await wait(() => expect(submit()).not.toBeDisabled())
     cleanup()
     openSnackbar.mockClear()
-    const nds = setup({ search: '?usingLineLogin=1', extra: { NON_DESIGNATION_BOOKING: { nonDesignationBooking: { id: 'nd-1', status: '預約成功' } } } })
+    const nds = setup({
+      search: '?usingLineLogin=1',
+      extra: { NON_DESIGNATION_BOOKING: { nonDesignationBooking: { id: 'nd-1', status: '預約成功' } } },
+    })
     await nds.settle()
     choose(screen.getByTestId('service-time'), '14:00')
     fillCustomer('吳小姐', '0912345678')

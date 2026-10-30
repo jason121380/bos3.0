@@ -2,7 +2,7 @@ import { TextField } from 'ui/text-field'
 import { useFetchTHirdPartys } from 'hooks/useFetchMerchant'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
-import React, {useEffect, Fragment, useState} from 'react'
+import React, { useEffect, Fragment, useState } from 'react'
 import { Autocomplete } from 'ui/combobox'
 
 function ThirdPartyAutoCompleteforQueueOrder(
@@ -31,7 +31,7 @@ function ThirdPartyAutoCompleteforQueueOrder(
       setThirdPartyAlready(!designers.loading)
     }
   }, [designers.loading, setThirdPartyAlready])
-  
+
   useEffect(() => {
     if (initFirst && designers.data && !designers.loading) {
       onChange(designers.data.merchant.thirdpartyCoupons[0])
@@ -42,16 +42,15 @@ function ThirdPartyAutoCompleteforQueueOrder(
     if (!designers.loading) {
       setOptions(idx(designers, _ => _.data.merchant.thirdpartyCoupons))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-  }, [designers.loading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+  }, [designers.loading])
 
   useEffect(() => {
     if (!designers.loading) {
-      const tmpSelectValue = idx(designers, _ =>
-        _.data.merchant.thirdpartyCoupons.find(d => d.id === value))
+      const tmpSelectValue = idx(designers, _ => _.data.merchant.thirdpartyCoupons.find(d => d.id === value))
       setSelectedValue(tmpSelectValue)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designers.loading, value])
   return (
     <Autocomplete
@@ -63,10 +62,14 @@ function ThirdPartyAutoCompleteforQueueOrder(
       value={selectedValue || null}
       options={options}
       autoHighlight
-      getOptionLabel={option =>  !!option ? option.name : ''}
+      getOptionLabel={option => (!!option ? option.name : '')}
       loading={designers.loading}
       onChange={(_event, value) => onChange(idx(value, _ => value))}
-      renderOption={(props, option) => <span {...props} data-testid={option.name}>{option.name}</span>}
+      renderOption={(props, option) => (
+        <span {...props} data-testid={option.name}>
+          {option.name}
+        </span>
+      )}
       renderInput={params => (
         <TextField
           {...params}

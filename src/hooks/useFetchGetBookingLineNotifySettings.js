@@ -35,6 +35,6 @@ const GET_BOOKING_LINE_NOTIFY_SETTINGS = settingsQuery(gql`
 
 export default function useFetchGetBookingLineNotifySettings() {
   return useQuery(GET_BOOKING_LINE_NOTIFY_SETTINGS, {
-    fetchPolicy: SETTINGS_FETCH_POLICY
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

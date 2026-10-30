@@ -101,11 +101,8 @@ export default function useFetchDesignerReport({ date, designerIds }) {
   })
 }
 export function useFetchDesignerReportLazy() {
-  const [fetchDesignerReportLazy, designerReportLazyData] = useLazyQuery(
-    FETCH_DESIGNER_DAILY_REPORT,
-    {
-      fetchPolicy: 'cache-and-network',
-    }
-  )
+  const [fetchDesignerReportLazy, designerReportLazyData] = useLazyQuery(FETCH_DESIGNER_DAILY_REPORT, {
+    fetchPolicy: 'cache-and-network',
+  })
   return { fetchDesignerReportLazy, designerReportLazyData }
 }

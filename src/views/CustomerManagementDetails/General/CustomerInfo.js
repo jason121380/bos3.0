@@ -33,26 +33,26 @@ function CustomerInfo({ customer, className, isLoading, bookingCusCheck, ...rest
     try {
       const returnData = await setCustomerIsUnwelcome({
         input: !customer.isUnwelcome,
-        customerId: customer.id
+        customerId: customer.id,
       })
       // 依 mutation 回傳的實際結果判斷（原本判斷整個回應物件，後端回 false 仍提示成功；Jason 2026/10/22 fix all）
       if (idx(returnData, _ => _.data.setCustomerIsUnwelcome)) {
         openSnackbar({
           message: '設定成功',
-          variant: 'success'
+          variant: 'success',
         })
         refetch()
       } else {
         openSnackbar({
           message: '設定失敗',
-          variant: 'warning'
+          variant: 'warning',
         })
       }
       setIsClick(false)
     } catch (error) {
       openSnackbar({
         message: error.message,
-        variant: 'error'
+        variant: 'error',
       })
       setIsClick(false)
     }
@@ -94,7 +94,9 @@ function CustomerInfo({ customer, className, isLoading, bookingCusCheck, ...rest
           <Pencil strokeWidth={1.75} />
           編輯
         </Button>
-        <Button variant="primary" onClick={() => setModalOpen(true)}>建立預約</Button>
+        <Button variant="primary" onClick={() => setModalOpen(true)}>
+          建立預約
+        </Button>
         <Button
           variant={!customer.isUnwelcome ? 'ghost' : 'danger'}
           className={!customer.isUnwelcome ? 'text-danger hover:bg-danger/8' : undefined}
@@ -104,27 +106,23 @@ function CustomerInfo({ customer, className, isLoading, bookingCusCheck, ...rest
           {customer.isUnwelcome ? '解除黑名單' : '設為黑名單'}
         </Button>
       </CardFooter>
-      {openEdit ? (
-        <CustomerEditModal customer={customer} onClose={handleEditClose} open={openEdit} />
-      ) : (
-        ''
-      )}
+      {openEdit ? <CustomerEditModal customer={customer} onClose={handleEditClose} open={openEdit} /> : ''}
       {/* 保留原預設 600px 寬度；原無 onClose，不增加關閉路徑。 */}
       <Dialog open={modalOpen}>
-        <DialogContent hideClose
+        <DialogContent
+          hideClose
           onOpenAutoFocus={event => {
             // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
             event.preventDefault()
             if (!event.target.contains(document.activeElement)) event.target.focus()
-          }} aria-describedby={undefined} className="!max-w-[600px] overflow-y-auto">
-        <DialogTitle className="sr-only">選擇活動</DialogTitle>
-        <ChoseEvent
-          bookingCusCheck={bookingCusCheck}
-          modalOpen={modalOpen}
-          cellphone={customer.cellphone}
-          setModalOpen={setModalOpen}
-        />
-      </DialogContent></Dialog>
+          }}
+          aria-describedby={undefined}
+          className="!max-w-[600px] overflow-y-auto"
+        >
+          <DialogTitle className="sr-only">選擇活動</DialogTitle>
+          <ChoseEvent bookingCusCheck={bookingCusCheck} modalOpen={modalOpen} cellphone={customer.cellphone} setModalOpen={setModalOpen} />
+        </DialogContent>
+      </Dialog>
     </Card>
   )
 }

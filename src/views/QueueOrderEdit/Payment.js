@@ -35,15 +35,9 @@ export default function Payment() {
 
   const serviceTotalPrice = bill.serviceOrders.reduce((total, item) => total + item.price, 0)
 
-  const merchantSellTotalPrice = bill.productOrders.reduce(
-    (total, item) => (total = total + item.price * item.count),
-    0
-  )
+  const merchantSellTotalPrice = bill.productOrders.reduce((total, item) => (total = total + item.price * item.count), 0)
 
-  const couponSellPrice = bill.ticketOrders.reduce(
-    (total, item) => (total = total + item.price * item.count),
-    0
-  )
+  const couponSellPrice = bill.ticketOrders.reduce((total, item) => (total = total + item.price * item.count), 0)
 
   const memberShipCardOrdersPrice = bill.membershipOrders
     .filter(d => typeof d.thirdPartyCouponMerchantId !== 'string')
@@ -54,10 +48,8 @@ export default function Payment() {
       bill.productOrders.length +
       bill.ticketOrders.length +
       bill.membershipOrders.length -
-      (servicesWithThirdPartyCount.length +
-        productsWithThirdPartyCount.length +
-        memberShipCardWithThirdPartyCount.length) >=
-      1
+      (servicesWithThirdPartyCount.length + productsWithThirdPartyCount.length + memberShipCardWithThirdPartyCount.length) >=
+    1
       ? serviceTotalPrice + merchantSellTotalPrice + couponSellPrice + memberShipCardOrdersPrice
       : 0
 
@@ -96,12 +88,7 @@ export default function Payment() {
       return !data.ticketOrders
     })
 
-    if (
-      serviceCoupon.length === 0 &&
-      productCoupon.length === 0 &&
-      ticketOrders.length === 0 &&
-      membershipCoupon.length === 0
-    ) {
+    if (serviceCoupon.length === 0 && productCoupon.length === 0 && ticketOrders.length === 0 && membershipCoupon.length === 0) {
       handleBillChange({
         key: 'amountByOtherPay',
         value: 0,
@@ -111,7 +98,7 @@ export default function Payment() {
         value: 0,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleBillChange）；只在 [bill.serviceOrders, bill.productOrders, bill.ticketOrders, bill.membershipOrders] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleBillChange）；只在 [bill.serviceOrders, bill.productOrders, bill.ticketOrders, bill.membershipOrders] 變動時呼叫，補上會每次 render 重跑
   }, [bill.serviceOrders, bill.productOrders, bill.ticketOrders, bill.membershipOrders])
   const amountByOtherPay = value => {
     if (value <= otherPayLimit && totalShouldPay > 0 && value <= totalShouldPay) {

@@ -51,7 +51,8 @@ const SettingsTabsList = React.forwardRef(({ className, style, ...props }, ref) 
       }
       const next = { left: slotBox.left, width, height }
       setFixedBox(prev => {
-        if (prev && Math.abs(prev.left - next.left) < 0.5 && Math.abs(prev.width - next.width) < 0.5 && Math.abs(prev.height - next.height) < 0.5) return prev
+        if (prev && Math.abs(prev.left - next.left) < 0.5 && Math.abs(prev.width - next.width) < 0.5 && Math.abs(prev.height - next.height) < 0.5)
+          return prev
         return next
       })
     }
@@ -96,14 +97,18 @@ const SettingsTabsList = React.forwardRef(({ className, style, ...props }, ref) 
           'md:h-fit md:max-h-[calc(100dvh-2rem)] md:w-full md:flex-col md:items-stretch md:gap-1 md:overflow-x-visible md:overflow-y-auto md:rounded-2xl md:border-b-0 md:bg-surface md:p-3',
           className
         )}
-        style={fixedBox ? {
-          position: 'fixed',
-          top: STICKY_TOP,
-          left: fixedBox.left,
-          width: fixedBox.width,
-          maxHeight: 'calc(100dvh - 2rem)',
-          zIndex: 10,
-        } : (style || {})}
+        style={
+          fixedBox
+            ? {
+                position: 'fixed',
+                top: STICKY_TOP,
+                left: fixedBox.left,
+                width: fixedBox.width,
+                maxHeight: 'calc(100dvh - 2rem)',
+                zIndex: 10,
+              }
+            : style || {}
+        }
       />
     </div>
   )
@@ -130,9 +135,7 @@ SettingsTabsTrigger.displayName = 'SettingsTabsTrigger'
 // 右側內容區的分段標題：只呈現目前分類，不帶說明文案（說明留給各卡片既有標題／描述）。
 function SettingsSectionHeading({ title, className }) {
   if (!title) return null
-  return (
-    <h2 className={cn('m-0 mb-6 mt-6 text-heading text-text md:mt-0', className)}>{title}</h2>
-  )
+  return <h2 className={cn('m-0 mb-6 mt-6 text-heading text-text md:mt-0', className)}>{title}</h2>
 }
 
 export { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading }

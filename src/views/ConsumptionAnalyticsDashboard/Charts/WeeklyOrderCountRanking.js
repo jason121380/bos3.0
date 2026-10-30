@@ -1,10 +1,7 @@
 import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import React from 'react'
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-  ResponsiveContainer, LabelList
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts'
 import { formatNumber } from 'ui/format'
 
 const WeeklyOrderCountRanking = ({ display, data }) => {
@@ -13,10 +10,10 @@ const WeeklyOrderCountRanking = ({ display, data }) => {
     return (
       <text
         x={x + 10}
-        y={(y + d.height / 2 + 5)}
-        fontSize='12px'
-        position='insideRight'
-        fill='#eee'
+        y={y + d.height / 2 + 5}
+        fontSize="12px"
+        position="insideRight"
+        fill="#eee"
         style={{ textShadow: '0.5px 0.5px 1px #000', fontWeight: '500' }}
       >{`${formatNumber(orderCount)}單/${formatNumber(pricePerCount)}`}</text>
     )
@@ -29,10 +26,10 @@ const WeeklyOrderCountRanking = ({ display, data }) => {
           <p>{`帳單數:${formatNumber(payload[0].payload.orderCount)}`}</p>
           <p>{`單均價:${formatNumber(payload[0].payload.pricePerCount)}`}</p>
         </div>
-      );
+      )
     }
-    return null;
-  };
+    return null
+  }
   return (
     <div className="min-w-0">
       <Card className="h-full min-h-[390px]">
@@ -41,27 +38,24 @@ const WeeklyOrderCountRanking = ({ display, data }) => {
             <CardTitle className="whitespace-nowrap">週間來客數排行</CardTitle>
             <CardDescription className="whitespace-nowrap text-caption">期間內星期一到日，帳單數比較</CardDescription>
           </div>
-          {display ?
+          {display ? (
             <div style={{ width: '100%', height: '320px', marginLeft: '-20px' }}>
               <ResponsiveContainer>
-                <BarChart
-                  data={data}
-                  layout='vertical'
-                  margin={{ top: 16 }}
-                >
+                <BarChart data={data} layout="vertical" margin={{ top: 16 }}>
                   <CartesianGrid horizontal={false} strokeDasharray="3 3" />
-                  <XAxis type='number' />
+                  <XAxis type="number" />
                   <YAxis label={{ fill: '#faf' }} tickSize={15} dataKey="name" type="category" />
                   <Tooltip cursor={{ fill: 'rgba(0, 136, 254, .2)' }} content={<CustomWeeklyOrderCountTooltip />} />
                   <Legend wrapperStyle={{ maxHeight: 200, overflowY: 'auto' }} />
-                  <Bar name='來客數' dataKey="orderCount" fill="#0088FE">
-                    <LabelList fill='#fff' content={renderOrderCountLabel} />
+                  <Bar name="來客數" dataKey="orderCount" fill="#0088FE">
+                    <LabelList fill="#fff" content={renderOrderCountLabel} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
-            </div> :
+            </div>
+          ) : (
             <EmptyState title="無資料" className="h-[350px]" />
-          }
+          )}
         </CardContent>
       </Card>
     </div>

@@ -44,7 +44,7 @@ export default function useFetchMerchantLeaderBoard({
   merchantId,
   reference,
   isIncludeProductPerformance,
-  isIncludeMembershipPerformance
+  isIncludeMembershipPerformance,
 }) {
   return useQuery(SET_MERCHANT_LEARDER_BOARD, {
     variables: {
@@ -53,7 +53,7 @@ export default function useFetchMerchantLeaderBoard({
       merchantId,
       reference,
       isIncludeProductPerformance,
-      isIncludeMembershipPerformance
+      isIncludeMembershipPerformance,
     },
     fetchPolicy: 'cache-and-network',
   })

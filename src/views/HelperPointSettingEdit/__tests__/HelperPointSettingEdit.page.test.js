@@ -96,7 +96,13 @@ describe('編輯互助點數設定', () => {
     fireEvent.click(screen.getByText('固定金額'))
     fireEvent.click(save())
     await wait(() => expect(callsOf(calls, 'UPDATE_MERCHANT_POINT_VALUE_SETTING')).toHaveLength(1))
-    expect(sent(calls).updateSettingData).toEqual({ name: '分段互助', paidFixed: 30, retrievePointWay: 'FIXED', isAccordingToHelper: true, retrieveFixed: 9 })
+    expect(sent(calls).updateSettingData).toEqual({
+      name: '分段互助',
+      paidFixed: 30,
+      retrievePointWay: 'FIXED',
+      isAccordingToHelper: true,
+      retrieveFixed: 9,
+    })
     cleanup()
 
     const second = setup({ data: setting({ retrievePointWay: 'FIXED', retrieveFixed: 8, retrieveSegmentSetting: [] }) })

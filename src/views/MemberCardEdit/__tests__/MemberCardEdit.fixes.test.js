@@ -10,9 +10,7 @@ jest.setTimeout(20000)
 beforeEach(() => loginAs())
 afterEach(cleanup)
 
-it.each([
-  ['查無此卡', { fixtures: { FETCH_MEMBERSHIP: { membership: null } } }],
-])('%s時不整頁壞，表單空白、不能儲存', async (_, options) => {
+it.each([['查無此卡', { fixtures: { FETCH_MEMBERSHIP: { membership: null } } }]])('%s時不整頁壞，表單空白、不能儲存', async (_, options) => {
   const { settle } = renderPage(<MemberCardEdit match={{ params: { id: 'm1' } }} />, options)
   await settle()
   expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()

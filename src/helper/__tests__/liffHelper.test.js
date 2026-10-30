@@ -75,7 +75,10 @@ describe('liffHelper：LINE 前台登入', () => {
     const helper = loadHelper(liff)
     await helper.sendMessages({ type: 'text', text: '預約成功' })
     expect(liff.sendMessages).toHaveBeenCalledWith([{ type: 'text', text: '預約成功' }])
-    await helper.sendMessages([{ type: 'text', text: 'a' }, { type: 'text', text: 'b' }])
+    await helper.sendMessages([
+      { type: 'text', text: 'a' },
+      { type: 'text', text: 'b' },
+    ])
     expect(liff.sendMessages).toHaveBeenLastCalledWith([
       { type: 'text', text: 'a' },
       { type: 'text', text: 'b' },

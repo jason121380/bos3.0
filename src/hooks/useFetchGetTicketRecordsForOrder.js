@@ -17,7 +17,7 @@ const GET_TICKET_RECORDS_FOR_ORDERS = gql`
 `
 
 export default function useFetchGetTicketRecordsForOrder() {
-  const [ticketRecordsForOrderLazy, ticketRecordsForOrderLazyData] =  useLazyQuery(GET_TICKET_RECORDS_FOR_ORDERS, {
+  const [ticketRecordsForOrderLazy, ticketRecordsForOrderLazyData] = useLazyQuery(GET_TICKET_RECORDS_FOR_ORDERS, {
     fetchPolicy: 'cache-and-network',
   })
   return [ticketRecordsForOrderLazy, ticketRecordsForOrderLazyData]

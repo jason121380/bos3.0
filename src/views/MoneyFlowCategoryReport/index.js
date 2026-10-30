@@ -3,7 +3,7 @@ import Page from 'components/Page'
 import idx from 'idx'
 import { startOfMonth, format } from 'date-fns'
 import useFetchMoneyFlowCategoryReport from 'hooks/useFetchMoneyFlowCategoryReport'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import DateSelector from 'components/DateSelector'
 import roundDecimal from './../../helper/roundDecimal.js'
 import { Download } from 'lucide-react'
@@ -32,10 +32,7 @@ const MoneyFlowCategoryReport = () => {
     if (moneyFlowCategoryReportData.loading || moneyFlowCategoryReportData.error) return
     if (!moneyFlowCategoryReportData.loading) {
       // 複製再加「小結」列（查詢結果唯讀）；下面的匯出也用這份，才有各分類的小結
-      const reportList = cloneDeep(idx(
-        moneyFlowCategoryReportData,
-        _ => _.data.moneyFlowCategoryReport.moneyFlowCategoryReport
-      ))
+      const reportList = cloneDeep(idx(moneyFlowCategoryReportData, _ => _.data.moneyFlowCategoryReport.moneyFlowCategoryReport))
       if (!reportList) return
 
       reportList.forEach((data, index) => {
@@ -46,10 +43,7 @@ const MoneyFlowCategoryReport = () => {
           revenue: 0,
           subjectName: '小結',
           subjectNo: '',
-          amount:
-            reportList[index].revenueSummary > 0
-              ? reportList[index].revenueSummary
-              : -Math.abs(reportList[index].expenditureSummary),
+          amount: reportList[index].revenueSummary > 0 ? reportList[index].revenueSummary : -Math.abs(reportList[index].expenditureSummary),
         })
       })
       setReportWithAmount(reportList)
@@ -90,21 +84,17 @@ const MoneyFlowCategoryReport = () => {
 
       setExcelData(excelData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [moneyFlowCategoryReportData.loading])
 
   return (
     <Page className="ui-root" title="收支分類明細表">
       <div>
         <PageHeader
-          title='收支分類明細表'
+          title="收支分類明細表"
           actions={
             <>
-              <CSVLink
-                data={excelData}
-                filename="收支分類明細表.csv"
-                style={{ display: 'inline' }}
-              >
+              <CSVLink data={excelData} filename="收支分類明細表.csv" style={{ display: 'inline' }}>
                 <Button variant="secondary">
                   <Download strokeWidth={1.75} />
                   報表匯出
@@ -124,9 +114,7 @@ const MoneyFlowCategoryReport = () => {
         />
         {moneyFlowCategoryReportData.error ? (
           <QueryFailed onRetry={() => moneyFlowCategoryReportData.refetch()} />
-        ) : !moneyFlowCategoryReportData.loading &&
-          reportForDisplay !== null &&
-          reportWithAmount !== null ? (
+        ) : !moneyFlowCategoryReportData.loading && reportForDisplay !== null && reportWithAmount !== null ? (
           <Results report={reportForDisplay} reportWithAmount={reportWithAmount} roundDecimal={roundDecimal} />
         ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示

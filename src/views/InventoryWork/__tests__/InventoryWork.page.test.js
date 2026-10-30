@@ -24,14 +24,20 @@ const CHECKED = [
 ]
 
 const renderList = overrides =>
-  renderPage(<><CustomizedSnackbars /><InventoryWork /></>, {
-    fixtures: {
-      GET_USERS_FOR_CREATE_PICKING: { users: { users: USERS } },
-      GET_INVENTORYS: { getInventorys: { draft: null, checked: CHECKED } },
-      ...overrides,
-    },
-    route: '/inventory-work',
-  })
+  renderPage(
+    <>
+      <CustomizedSnackbars />
+      <InventoryWork />
+    </>,
+    {
+      fixtures: {
+        GET_USERS_FOR_CREATE_PICKING: { users: { users: USERS } },
+        GET_INVENTORYS: { getInventorys: { draft: null, checked: CHECKED } },
+        ...overrides,
+      },
+      route: '/inventory-work',
+    }
+  )
 
 const lastInput = calls => {
   const list = callsOf(calls, 'GET_INVENTORYS')
@@ -119,13 +125,19 @@ describe('盤點作業列表', () => {
   })
 
   it('查詢失敗：顯示錯誤與重新查詢，不是一直載入、也不進錯誤畫面', async () => {
-    const { settle, calls } = renderPage(<><CustomizedSnackbars /><InventoryWork /></>, {
-      fixtures: {
-        GET_USERS_FOR_CREATE_PICKING: { users: { users: USERS } },
-        GET_INVENTORYS: new Error('盤點查詢失敗'),
-      },
-      route: '/inventory-work',
-    })
+    const { settle, calls } = renderPage(
+      <>
+        <CustomizedSnackbars />
+        <InventoryWork />
+      </>,
+      {
+        fixtures: {
+          GET_USERS_FOR_CREATE_PICKING: { users: { users: USERS } },
+          GET_INVENTORYS: new Error('盤點查詢失敗'),
+        },
+        route: '/inventory-work',
+      }
+    )
     await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
     expect(screen.queryByLabelText('載入中')).toBeNull()
@@ -140,13 +152,19 @@ describe('盤點作業列表', () => {
   })
 
   it('盤點人員查詢失敗：篩選區顯示錯誤與重查，列表仍可依盤點單結果顯示', async () => {
-    const { settle } = renderPage(<><CustomizedSnackbars /><InventoryWork /></>, {
-      fixtures: {
-        GET_USERS_FOR_CREATE_PICKING: new Error('人員查詢失敗'),
-        GET_INVENTORYS: { getInventorys: { draft: null, checked: CHECKED } },
-      },
-      route: '/inventory-work',
-    })
+    const { settle } = renderPage(
+      <>
+        <CustomizedSnackbars />
+        <InventoryWork />
+      </>,
+      {
+        fixtures: {
+          GET_USERS_FOR_CREATE_PICKING: new Error('人員查詢失敗'),
+          GET_INVENTORYS: { getInventorys: { draft: null, checked: CHECKED } },
+        },
+        route: '/inventory-work',
+      }
+    )
     await settle()
     expect(screen.getByText('共 2 筆資料')).toBeInTheDocument()
     expect(screen.queryByLabelText('載入中')).toBeNull()

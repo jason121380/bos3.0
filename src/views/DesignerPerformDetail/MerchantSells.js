@@ -30,46 +30,29 @@ function MerchantSells({ merchantSells }) {
                 <TableCell numeric>{formatNumber(Math.round(data.analytics.productAmountTotal))}</TableCell>
                 <TableCell numeric>
                   {(isNaN(
-                    data.analytics.productAmountTotal /
-                    merchantSells.reduce(
-                      (total, item) => (total = total + item.analytics.productAmountTotal),
-                      0
-                    )
+                    data.analytics.productAmountTotal / merchantSells.reduce((total, item) => (total = total + item.analytics.productAmountTotal), 0)
                   )
                     ? 0
                     : (data.analytics.productAmountTotal /
-                      merchantSells.reduce(
-                        (total, item) => (total = total + item.analytics.productAmountTotal),
-                        0
-                      )) *
-                    100
+                        merchantSells.reduce((total, item) => (total = total + item.analytics.productAmountTotal), 0)) *
+                      100
                   ).toFixed(2)}
                   %
                 </TableCell>
                 <TableCell numeric>{formatNumber(data.analytics.customerCount)}</TableCell>
                 <TableCell numeric>
-                  {(isNaN(
-                    data.analytics.customerCount /
-                    merchantSells.reduce(
-                      (total, item) => (total = total + item.analytics.customerCount),
-                      0
-                    )
-                  )
+                  {(isNaN(data.analytics.customerCount / merchantSells.reduce((total, item) => (total = total + item.analytics.customerCount), 0))
                     ? 0
-                    : (data.analytics.customerCount /
-                      merchantSells.reduce(
-                        (total, item) => (total = total + item.analytics.customerCount),
-                        0
-                      )) *
-                    100
+                    : (data.analytics.customerCount / merchantSells.reduce((total, item) => (total = total + item.analytics.customerCount), 0)) * 100
                   ).toFixed(2)}
                   %
                 </TableCell>
                 <TableCell numeric>
-                  {formatNumber(isNaN(data.analytics.productAmountTotal / data.analytics.customerCount)
-                    ? 0
-                    : Math.round(data.analytics.productAmountTotal) /
-                    data.analytics.customerCount)}
+                  {formatNumber(
+                    isNaN(data.analytics.productAmountTotal / data.analytics.customerCount)
+                      ? 0
+                      : Math.round(data.analytics.productAmountTotal) / data.analytics.customerCount
+                  )}
                 </TableCell>
               </TableRow>
             ))}

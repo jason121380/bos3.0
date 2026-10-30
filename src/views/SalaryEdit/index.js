@@ -7,7 +7,7 @@ import { useFetchUsersMonthCheckout, useFetchUsersSalaryItems } from 'hooks/useF
 import useFetchSettingUserSalaryItem from 'hooks/useFetchSettingUserSalaryItem'
 import useFetchUserSalaryItem from 'hooks/useFetchUserSalaryItemRecord'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
-import { useFetchGetAttendanceStatistics }  from 'hooks/useFetchGetParameterCheckoutAndSalaryItemsSetting'
+import { useFetchGetAttendanceStatistics } from 'hooks/useFetchGetParameterCheckoutAndSalaryItemsSetting'
 import idx from 'idx'
 import React from 'react'
 import useFetchUserSalaryMonthlyCheckoutRecordV2 from 'hooks/useFetchUserSalaryMonthlyCheckoutRecordV2'
@@ -67,7 +67,7 @@ export default React.memo(function SalaryEdit(props) {
     dateRange: {
       startDate: startOfMonth(date).getTime(),
       endDate: endOfMonth(date).getTime(),
-    }
+    },
   })
   const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
 
@@ -117,9 +117,8 @@ export default React.memo(function SalaryEdit(props) {
         setAttStatus(data[0])
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [attendanceStatus.loading])
-  
 
   React.useEffect(() => {
     if (!usersMonthCheckoutData.loading) {
@@ -131,7 +130,7 @@ export default React.memo(function SalaryEdit(props) {
       })
       setUsersIsSalaryChecked(correctData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [usersMonthCheckoutData.loading])
 
   React.useEffect(() => {
@@ -139,7 +138,7 @@ export default React.memo(function SalaryEdit(props) {
       const isUserSalaryItemLock = idx(isUserSalaryCheckedData, _ => _.data.user.isSalaryItemLocked)
       setIsSalaryItemsLock(isUserSalaryItemLock)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isUserSalaryCheckedData.data, isUserSalaryCheckedData.loading])
 
   React.useEffect(() => {
@@ -147,7 +146,7 @@ export default React.memo(function SalaryEdit(props) {
       const remark = idx(userSalary, _ => _.data.user.remarkForSalary)
       setRemark(remark)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [userSalary.loading])
 
   React.useEffect(() => {
@@ -167,7 +166,7 @@ export default React.memo(function SalaryEdit(props) {
         })
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [usersSalayItemData.loading, designerMonthlyCheckoutRedor…] 變動時執行；match.params.id、usersSalayItemData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [usersSalayItemData.loading, designerMonthlyCheckoutRedor…] 變動時執行；match.params.id、usersSalayItemData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [usersSalayItemData.loading, designerMonthlyCheckoutRedordData.loading])
   React.useEffect(() => {
     if (
@@ -233,19 +232,19 @@ export default React.memo(function SalaryEdit(props) {
       idx(userSalayItemData, _ =>
         _.data.userSalaryItemRecord.decreaseItem.length > 0
           ? _.data.userSalaryItemRecord.decreaseItem.map(data => {
-            decreaseReformatted.forEach(data2 => {
-              if (data.itemName === data2.itemName && data.price !== 0) {
-                initDecrease.push({
-                  itemName: data.itemName,
-                  price: data.price,
-                  type: data.type,
-                  sorting: data2.sorting,
-                  source: 'parameter',
-                })
-              }
+              decreaseReformatted.forEach(data2 => {
+                if (data.itemName === data2.itemName && data.price !== 0) {
+                  initDecrease.push({
+                    itemName: data.itemName,
+                    price: data.price,
+                    type: data.type,
+                    sorting: data2.sorting,
+                    source: 'parameter',
+                  })
+                }
+              })
+              return undefined
             })
-            return undefined
-          })
           : [{ itemName: '', price: 0, type: 'DECREASE', source: 'optional' }]
       )
 
@@ -282,7 +281,7 @@ export default React.memo(function SalaryEdit(props) {
       setSalaryIncreaseItemsReformatted(increaseReformatted)
       setSalaryDecreaseItemsReformatted(decreaseReformatted)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ userSalayItemData.loading, merchantSalaryIncreaseItems.…] 變動時執行；decreaseReformatted、increaseReformatted、isMemberShipCardActiveData、userSalayItemData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ userSalayItemData.loading, merchantSalaryIncreaseItems.…] 變動時執行；decreaseReformatted、increaseReformatted、isMemberShipCardActiveData、userSalayItemData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [
     userSalayItemData.loading,
     merchantSalaryIncreaseItems.loading,
@@ -290,7 +289,7 @@ export default React.memo(function SalaryEdit(props) {
     designerMonthlyCheckoutRedordData.loading,
     isMemberShipCardActiveData.loading,
     usersSalayItemData.loading,
-    userIndex
+    userIndex,
   ])
 
   React.useEffect(() => {
@@ -298,17 +297,12 @@ export default React.memo(function SalaryEdit(props) {
       const data = idx(getAttendanceStatistics, _ => _.data.getParameterCheckoutAndSalaryItemsSetting.isAttendanceStatisticsDisplayOnUserSalary)
       setAttendanceDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAttendanceStatistics.loading])
-  
 
   const handleSave = () => {
-    const filteredIncreaseCombined = increaseCombined.map(
-      ({ source, ...keepProteries }) => keepProteries
-    )
-    const filteredDecreaseCombined = decreaseCombined.map(
-      ({ source, ...keepProteries }) => keepProteries
-    )
+    const filteredIncreaseCombined = increaseCombined.map(({ source, ...keepProteries }) => keepProteries)
+    const filteredDecreaseCombined = decreaseCombined.map(({ source, ...keepProteries }) => keepProteries)
 
     // delete if optional increase item repeat
     increaseCombined.forEach(data => {
@@ -355,12 +349,8 @@ export default React.memo(function SalaryEdit(props) {
   }
 
   const handleToLastUser = () => {
-    const filteredIncreaseCombined = increaseCombined.map(
-      ({ source, ...keepProteries }) => keepProteries
-    )
-    const filteredDecreaseCombined = decreaseCombined.map(
-      ({ source, ...keepProteries }) => keepProteries
-    )
+    const filteredIncreaseCombined = increaseCombined.map(({ source, ...keepProteries }) => keepProteries)
+    const filteredDecreaseCombined = decreaseCombined.map(({ source, ...keepProteries }) => keepProteries)
 
     // delete if optional increase item repeat
     increaseCombined.forEach(data => {
@@ -418,12 +408,8 @@ export default React.memo(function SalaryEdit(props) {
   }
 
   const handleToNextUser = () => {
-    const filteredIncreaseCombined = increaseCombined.map(
-      ({ source, ...keepProteries }) => keepProteries
-    )
-    const filteredDecreaseCombined = decreaseCombined.map(
-      ({ source, ...keepProteries }) => keepProteries
-    )
+    const filteredIncreaseCombined = increaseCombined.map(({ source, ...keepProteries }) => keepProteries)
+    const filteredDecreaseCombined = decreaseCombined.map(({ source, ...keepProteries }) => keepProteries)
 
     // delete if optional increase item repeat
     increaseCombined.forEach(data => {
@@ -448,9 +434,7 @@ export default React.memo(function SalaryEdit(props) {
       ...increaseSecondContent.increaseItems,
       ...decreaseSecondContent.decreaseItems,
     ]
-    const result = increaseDecreaseCombined.filter(
-      data => data.itemName !== '' && data.price !== 0 && data.price !== null
-    )
+    const result = increaseDecreaseCombined.filter(data => data.itemName !== '' && data.price !== 0 && data.price !== null)
 
     const inputData = {
       userId: match.params.id,
@@ -498,7 +482,7 @@ export default React.memo(function SalaryEdit(props) {
           <h1 className="m-0 text-title !font-bold text-text">{`${userSalary.data ? userSalary.data.user.name : ''} ${format(date, 'yyyy/MM')} 薪資表`}</h1>
           <Header remark={remark} setRemark={setRemark} />
         </div>
-        {(attendanceDisplay && !attendanceStatus.loading && attStatus) && (
+        {attendanceDisplay && !attendanceStatus.loading && attStatus && (
           <div className="flex flex-col gap-1 text-body tabular-nums text-text-secondary">
             <p>總打卡天數：{attStatus.totalClockInDays}</p>
             <p>總曠職天數：{attStatus.absenteeismDays}</p>
@@ -508,11 +492,11 @@ export default React.memo(function SalaryEdit(props) {
       </div>
       <div className="flex flex-col gap-4">
         {!designerMonthlyCheckoutRedordData.loading &&
-          !isMemberShipCardActiveData.loading &&
-          increaseCombined !== undefined &&
-          increaseSecondContent !== undefined &&
-          decreaseCombined !== undefined &&
-          decreaseSecondContent !== undefined ? (
+        !isMemberShipCardActiveData.loading &&
+        increaseCombined !== undefined &&
+        increaseSecondContent !== undefined &&
+        decreaseCombined !== undefined &&
+        decreaseSecondContent !== undefined ? (
           <div>
             <DesignerSalaryReportV2
               userSalary={userSalary}
@@ -580,10 +564,7 @@ export default React.memo(function SalaryEdit(props) {
                 返回
               </Button>
               {!isSalaryItemsLock && (
-                <Button
-                  variant="primary"
-                  onClick={handleSave}
-                >
+                <Button variant="primary" onClick={handleSave}>
                   儲存
                 </Button>
               )}
@@ -593,22 +574,14 @@ export default React.memo(function SalaryEdit(props) {
                 {userIndex === 0 ? (
                   ''
                 ) : (
-                  <Button
-                    variant="secondary"
-                    disabled={userIndex === 0}
-                    onClick={handleToLastUser}
-                  >
+                  <Button variant="secondary" disabled={userIndex === 0} onClick={handleToLastUser}>
                     儲存並上一筆
                   </Button>
                 )}
                 {userIndex === usersArr.length - 1 ? (
                   ''
                 ) : (
-                  <Button
-                    variant="secondary"
-                    disabled={userIndex === usersArr.length - 1}
-                    onClick={handleToNextUser}
-                  >
+                  <Button variant="secondary" disabled={userIndex === usersArr.length - 1} onClick={handleToNextUser}>
                     儲存並下一筆
                   </Button>
                 )}

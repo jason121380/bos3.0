@@ -18,13 +18,12 @@ function Results({ className, categories, refetchCategories, ...rest }) {
   // 只有啟用中的分類可勾選；全選框以可選取的筆數判斷
   const selectableCount = categories.filter(category => category.isUsing).length
   const handleSelectAll = event => {
-    const selectedCategories = event.target.checked
-      ? categories.filter(category => category.isUsing).map(category => category.id)
-      : []
+    const selectedCategories = event.target.checked ? categories.filter(category => category.isUsing).map(category => category.id) : []
     setSelectedCategories(selectedCategories)
   }
   const handleSelectOne = id => {
-    const newSelect = [...selectedCategories], index = newSelect.indexOf(id)
+    const newSelect = [...selectedCategories],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -52,12 +51,8 @@ function Results({ className, categories, refetchCategories, ...rest }) {
       <Card>
         <CardHeader>
           <div className="flex items-baseline gap-3">
-            <CardTitle>
-              所有服務類別
-            </CardTitle>
-            <span className="text-label tabular-nums text-text-secondary">
-              共 {categories.length} 筆
-            </span>
+            <CardTitle>所有服務類別</CardTitle>
+            <span className="text-label tabular-nums text-text-secondary">共 {categories.length} 筆</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5 pt-4">
@@ -68,10 +63,7 @@ function Results({ className, categories, refetchCategories, ...rest }) {
                   <Checkbox
                     aria-label="全選"
                     checked={selectedCategories.length === selectableCount && selectableCount > 0}
-                    indeterminate={
-                      selectedCategories.length > 0 &&
-                      selectedCategories.length < selectableCount
-                    }
+                    indeterminate={selectedCategories.length > 0 && selectedCategories.length < selectableCount}
                     onChange={handleSelectAll}
                   />
                 </TableHead>

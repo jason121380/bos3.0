@@ -35,17 +35,14 @@ const EmployeeDailyReport = () => {
   const isZeroValueHiddenOnDailyReportData = useFetchGetIsZeroValueHiddenOnDailyReport()
   const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
   const optimizationPrintMode = useFetchGetIsOptimizationPrintModeOn()
-  const isHiddenZero = idx(
-    isZeroValueHiddenOnDailyReportData,
-    _ => _.data.getIsZeroValueHiddenOnDailyReport
-  )
+  const isHiddenZero = idx(isZeroValueHiddenOnDailyReportData, _ => _.data.getIsZeroValueHiddenOnDailyReport)
 
   useEffect(() => {
     if (!optimizationPrintMode.loading) {
       const data = idx(optimizationPrintMode, _ => _.data.getIsOptimizationPrintModeOn)
       setPrintMode(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [optimizationPrintMode.loading])
 
   useEffect(() => {
@@ -55,29 +52,26 @@ const EmployeeDailyReport = () => {
       const report = []
       const dailyReport = data || []
       dailyReport.forEach((d, index) => {
-        group.push((d))
+        group.push(d)
         if (group.length === 4) {
           report.push(group)
           group = []
-        } else if (index === (data.length - 1)) {
+        } else if (index === data.length - 1) {
           report.push(group)
           group = []
         }
       })
       setPrintData(report)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designerReportData.loading])
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading) {
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       setIsMemberShipCardActive(isMemberShipCardActive)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
 
   useEffect(() => {
@@ -93,11 +87,11 @@ const EmployeeDailyReport = () => {
       setPriceDisplayOnReport(isPriceDisplayOnDailyReport)
       setIsHelperPointPriceDisplay(isHelperPointPriceDisplay)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isPriceDisplayOnDailyReportData.loading])
   return (
     <Page className="ui-root" title="設計師日報表">
-      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'none', justifyContent: 'space-between' }}>
         <div className="merchantNamePrint">
           {JSON.parse(localStorage.getItem('userMerchant')).name +
             '   ' +
@@ -105,20 +99,13 @@ const EmployeeDailyReport = () => {
             '   ' +
             '設計師日報表'}
         </div>
-        <div className="merchantNamePrint">
-          {'列印時間： ' +
-            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-        </div>
+        <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
       </div>
       <PageHeader
-        title='設計師日報表'
+        title="設計師日報表"
         actions={
           <>
-            <Button
-              className="noprint shrink-0"
-              variant="secondary"
-              onClick={() => window.print()}
-            >
+            <Button className="noprint shrink-0" variant="secondary" onClick={() => window.print()}>
               <Printer strokeWidth={1.75} />
               列印
             </Button>
@@ -127,18 +114,13 @@ const EmployeeDailyReport = () => {
       />
       <ReportToolbar
         date={
-          <DateSelector
-            date={date}
-            attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
-            onlyStart
-            dateChange={value => setDate(value)}
-          />
+          <DateSelector date={date} attributes={['dbyesterday', 'yesterday', 'today', 'startDate']} onlyStart dateChange={value => setDate(value)} />
         }
       />
 
       {designerReportData.error ? (
-          <QueryFailed onRetry={() => designerReportData.refetch()} />
-        ) : !designerReportData.loading && !isPriceDisplayOnDailyReportData.loading ? (
+        <QueryFailed onRetry={() => designerReportData.refetch()} />
+      ) : !designerReportData.loading && !isPriceDisplayOnDailyReportData.loading ? (
         idx(designerReportData, _ =>
           _.data.designerDailyReport.length > 0 ? (
             <div className="box-border flex flex-wrap -mt-6 -ml-6 w-[calc(100%+24px)] EmployeeDailyReport">

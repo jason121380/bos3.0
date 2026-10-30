@@ -17,14 +17,7 @@ const styles = {
   formControl: '!mb-[24px]',
 }
 
-export default function General({
-  className,
-  formState,
-  changeHandler,
-  productHandler,
-  dateHandler,
-  purpose
-}) {
+export default function General({ className, formState, changeHandler, productHandler, dateHandler, purpose }) {
   const products = useFetchProductsInEmployeePickingEdit()
   const users = useFetchUsersForCreatePicking()
   const [focus, setFocus] = useState('')
@@ -42,7 +35,7 @@ export default function General({
       return data.filter(d => d.isPublished || d.name === formState.productName)
     }
     return []
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading, formState.productName])
 
   useEffect(() => {
@@ -78,21 +71,21 @@ export default function General({
       </CardHeader>
       <CardContent>
         <DatePicker
-          format='yyyy/MM/dd'
-          label='日期'
+          format="yyyy/MM/dd"
+          label="日期"
           className={styles.formControl}
           value={idx(formState, _ => _.date)}
           localeText={{
-            toolbarTitle: '選擇日期'
+            toolbarTitle: '選擇日期',
           }}
           slotProps={{
             toolbar: {
-              toolbarFormat: 'yyyy年M月d日'
+              toolbarFormat: 'yyyy年M月d日',
             },
             textField: {
               variant: 'standard',
-              fullWidth: true
-            }
+              fullWidth: true,
+            },
           }}
           onChange={e => dateHandler(e)}
           onKeyDown={event => {
@@ -126,7 +119,7 @@ export default function General({
             })
             return filterOptions
           }}
-          isOptionEqualToValue={(option) => option.name === formState.productName}
+          isOptionEqualToValue={option => option.name === formState.productName}
           renderOption={(props, option) => (
             <li {...props} key={option.id}>
               <span>{option.no}</span>
@@ -156,7 +149,7 @@ export default function General({
           type="number"
           className={styles.formControl}
           onChange={e => changeHandler('price', parseInt(e.target.value, 10))}
-          value={idx(formState, _ => _.price ? _.price : '')}
+          value={idx(formState, _ => (_.price ? _.price : ''))}
           onWheel={() => document.activeElement.blur()}
           inputRef={priceRef}
           onFocus={() => setFocus('price')}
@@ -203,7 +196,7 @@ export default function General({
               {option.name}
             </li>
           )}
-          isOptionEqualToValue={(option) => {
+          isOptionEqualToValue={option => {
             return option.id === formState.PickerId
           }}
           onChange={(e, value) => changeHandler('PickerId', value)}
@@ -250,7 +243,9 @@ export default function General({
             label="用途"
           >
             {purpose.map(data => (
-              <NativeSelectOption key={data} value={data}>{data}</NativeSelectOption>
+              <NativeSelectOption key={data} value={data}>
+                {data}
+              </NativeSelectOption>
             ))}
           </NativeSelect>
         </FormControl>
@@ -263,10 +258,12 @@ export default function General({
           className={styles.formControl}
           inputRef={remarkRef}
           onChange={event => changeHandler('remark', event.target.value)}
-          value={idx(formState, _ => _.remark ? _.remark : '')}
+          value={idx(formState, _ => (_.remark ? _.remark : ''))}
         />
       </CardContent>
-      <CardFooter className="justify-start text-body font-medium tabular-nums">合計：{formatNumber(idx(formState, _ => _.price * _.count))}</CardFooter>
+      <CardFooter className="justify-start text-body font-medium tabular-nums">
+        合計：{formatNumber(idx(formState, _ => _.price * _.count))}
+      </CardFooter>
     </Card>
   )
 }

@@ -5,10 +5,7 @@
 // 「從清單選擇」換頁會以新頁碼查詢。GraphQL 全由模擬 link 回應，不連後端、不建立或修改真實帳單。
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { loginAs } from '../../../__tests__/testkit.test'
-import {
-  setupDraft, pageReady, pick, saveDraft, makeOrder, serviceOrder,
-  SERVICE, SERVICE2, HELPER,
-} from './draftPageKit.test'
+import { setupDraft, pageReady, pick, saveDraft, makeOrder, serviceOrder, SERVICE, SERVICE2, HELPER } from './draftPageKit.test'
 
 jest.setTimeout(20000)
 
@@ -159,9 +156,11 @@ describe('服務列 Enter 跳欄：一般價格的服務', () => {
 
 describe('服務列 Enter 跳欄：卡券被服務鎖定（ticketDisabled）', () => {
   it('卡券欄停用時跳過：價格、最後一位助理、最後一位「指定」的 Enter 都直接跳下一列', async () => {
-    await setup(
-      { helperDesignation: true, thirdPartTicket: true, order: makeOrder({ serviceOrders: [serviceOrder(SERVICE2, { thirdPartyPayId: 'tp-1' })] }) }
-    )
+    await setup({
+      helperDesignation: true,
+      thirdPartTicket: true,
+      order: makeOrder({ serviceOrders: [serviceOrder(SERVICE2, { thirdPartyPayId: 'tp-1' })] }),
+    })
     const thirdParty = screen.getByPlaceholderText('第三方卡券')
     await wait(() => expect(thirdParty).toBeDisabled())
     const price = screen.getByTestId('service-0-price')
@@ -213,18 +212,24 @@ describe('服務列 Enter 跳欄：卡券被服務鎖定（ticketDisabled）', (
     const lockedSetting = service => ({
       getBindedThirdPartTicketLockedSetting: { service, product: false, membership: false },
     })
-    await setup({
-      thirdPartTicket: true,
-      order: makeOrder({ serviceOrders: [serviceOrder(UNSET)] }),
-      GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: lockedSetting(true),
-    }, { FETRCH_SERVICE_ORDER: 50 })
+    await setup(
+      {
+        thirdPartTicket: true,
+        order: makeOrder({ serviceOrders: [serviceOrder(UNSET)] }),
+        GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: lockedSetting(true),
+      },
+      { FETRCH_SERVICE_ORDER: 50 }
+    )
     await wait(() => expect(screen.getByPlaceholderText('第三方卡券')).toBeDisabled())
     cleanup()
-    await setup({
-      thirdPartTicket: true,
-      order: makeOrder({ serviceOrders: [serviceOrder(UNSET)] }),
-      GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: lockedSetting(false),
-    }, { FETRCH_SERVICE_ORDER: 50 })
+    await setup(
+      {
+        thirdPartTicket: true,
+        order: makeOrder({ serviceOrders: [serviceOrder(UNSET)] }),
+        GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: lockedSetting(false),
+      },
+      { FETRCH_SERVICE_ORDER: 50 }
+    )
     expect(screen.getByPlaceholderText('第三方卡券')).not.toBeDisabled()
   })
 })
@@ -265,7 +270,10 @@ describe('服務列 Enter 跳欄：價格鎖定的服務', () => {
     await wait(() => expect(services()).toHaveLength(2))
     await expectFocused(screen.getAllByPlaceholderText('第三方卡券')[1])
     const input = await saveDraft(page.calls)
-    expect(input.serviceOrders.map(s => [s.serviceId, s.price])).toEqual([[SERVICE.id, 800], [LOCKED.id, 3000]])
+    expect(input.serviceOrders.map(s => [s.serviceId, s.price])).toEqual([
+      [SERVICE.id, 800],
+      [LOCKED.id, 3000],
+    ])
   })
 
   it('在價格欄時刪除該列：遞補的下一列（價格鎖定、有助理）助理照舊保留', async () => {
@@ -275,7 +283,9 @@ describe('服務列 Enter 跳欄：價格鎖定的服務', () => {
         serviceOrders: [
           serviceOrder(SERVICE),
           serviceOrder(SERVICE, { id: 'so-2' }),
-          serviceOrder(LOCKED, { helperList: [{ id: 'h', type: '洗髮-A', isDesignate: false, helperDeductionType: 'FIXED', helper: { id: HELPER.userId } }] }),
+          serviceOrder(LOCKED, {
+            helperList: [{ id: 'h', type: '洗髮-A', isDesignate: false, helperDeductionType: 'FIXED', helper: { id: HELPER.userId } }],
+          }),
         ],
       }),
     })
@@ -295,7 +305,9 @@ describe('服務列：改動某一列時其他列的助理不受影響', () => {
   const twoRowsWithHelper = () =>
     makeOrder({
       serviceOrders: [
-        serviceOrder(SERVICE, { helperList: [{ id: 'h', type: '洗髮-A', isDesignate: false, helperDeductionType: 'FIXED', helper: { id: HELPER.userId } }] }),
+        serviceOrder(SERVICE, {
+          helperList: [{ id: 'h', type: '洗髮-A', isDesignate: false, helperDeductionType: 'FIXED', helper: { id: HELPER.userId } }],
+        }),
         serviceOrder(SERVICE, { id: 'so-2' }),
       ],
     })
@@ -357,8 +369,6 @@ describe('從清單選擇服務：換頁與載入中', () => {
     fireEvent.click(screen.getByRole('button', { name: '從清單選擇服務' }))
     const dialog = within(await screen.findByRole('dialog'))
     fireEvent.click(dialog.getByRole('button', { name: '下一頁' }))
-    await wait(() =>
-      expect(page.calls.filter(c => c.operationName === 'FETCH_SERVICES').pop().variables.input.pageOffset).toBe(1)
-    )
+    await wait(() => expect(page.calls.filter(c => c.operationName === 'FETCH_SERVICES').pop().variables.input.pageOffset).toBe(1))
   })
 })

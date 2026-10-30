@@ -32,7 +32,7 @@ function ServiceCategoryEdit(props) {
       const found = list.find(data => data.id === props.match.params.id)
       if (found) setThirdPartyCouponDetail(found)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [thirdPartyCouponsData.loading] 變動時執行；props.match.params.id、thirdPartyCouponsData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [thirdPartyCouponsData.loading] 變動時執行；props.match.params.id、thirdPartyCouponsData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [thirdPartyCouponsData.loading])
 
   React.useEffect(() => {
@@ -72,11 +72,7 @@ function ServiceCategoryEdit(props) {
       openSnackbar({ message: '更新第三方卡券成功', variant: 'success' })
     })
   }
-  const vaild = !(
-    thirdPartyCoupon.type &&
-    thirdPartyCoupon.name &&
-    thirdPartyCoupon.handlingFee >= 0
-  )
+  const vaild = !(thirdPartyCoupon.type && thirdPartyCoupon.name && thirdPartyCoupon.handlingFee >= 0)
   // 停用原因（STYLE.md §6）：依 vaild 的三個欄位，依畫面順序列出目前缺的
   const missing = [
     !thirdPartyCoupon.name && '名稱',
@@ -88,17 +84,19 @@ function ServiceCategoryEdit(props) {
     <Page className="ui-root" title="編輯第三方卡券">
       {/* 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-3xl */}
       <div className="mx-auto flex max-w-3xl flex-col gap-6">
-        <PageHeader className="pb-0" title='編輯第三方卡券' />
+        <PageHeader className="pb-0" title="編輯第三方卡券" />
         {thirdPartyCouponsData.error ? (
           <QueryFailed onRetry={() => thirdPartyCouponsData.refetch()} />
         ) : (
           <>
-            <AboutThirdPartyCoupon
-              thirdPartyCoupon={thirdPartyCoupon}
-              onChange={handleOnchange}
-            />
+            <AboutThirdPartyCoupon thirdPartyCoupon={thirdPartyCoupon} onChange={handleOnchange} />
             <div className="flex flex-wrap items-center gap-3">
-              <Button variant="primary" disabled={vaild} aria-describedby={vaild ? 'third-party-coupon-edit-missing' : undefined} onClick={handleSubmit}>
+              <Button
+                variant="primary"
+                disabled={vaild}
+                aria-describedby={vaild ? 'third-party-coupon-edit-missing' : undefined}
+                onClick={handleSubmit}
+              >
                 儲存
               </Button>
               {vaild && (

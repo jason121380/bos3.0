@@ -14,18 +14,7 @@ import SourceSelect from 'components/SourceSelect'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
-function AboutProject({
-  className,
-  customer,
-  onChange,
-  birthdayObj,
-  handleOnClick,
-  handleBirthdayChange,
-  lastNo,
-  isLoading,
-  submitting,
-  ...rest
-}) {
+function AboutProject({ className, customer, onChange, birthdayObj, handleOnClick, handleBirthdayChange, lastNo, isLoading, submitting, ...rest }) {
   const designers = useFetchMerchantDesigners()
 
   const vaild = !customer.cellphone
@@ -38,7 +27,7 @@ function AboutProject({
     checkIsCustomerNoUsedLazy({
       variables: {
         input: customer.no,
-      }
+      },
     })
   }
 
@@ -48,11 +37,11 @@ function AboutProject({
       setIsSetTime(false)
       setNoVerify(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [checkIsCustomerNoUsedLazyData.loading])
 
   React.useEffect(() => {
-    if (customer.no !== "") {
+    if (customer.no !== '') {
       setIsSetTime(true)
       const timer = setTimeout(() => {
         checkNo()
@@ -63,7 +52,7 @@ function AboutProject({
     } else {
       setNoVerify(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（checkNo）；只在 [customer.no] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（checkNo）；只在 [customer.no] 變動時呼叫，補上會每次 render 重跑
   }, [customer.no])
 
   return (
@@ -74,7 +63,12 @@ function AboutProject({
           <div className="flex flex-wrap items-center gap-2.5">
             {!isLoading && <span className="text-body tabular-nums text-text-secondary">{`最新顧客編號: ${lastNo}`}</span>}
             {/* 與下方新增鈕共用送出中停用，連按不重複建立（Jason 2026/10/22 fix all） */}
-            <Button variant="secondary" onClick={handleOnClick} disabled={vaild || submitting} aria-describedby={vaild ? 'customer-create-missing' : undefined}>
+            <Button
+              variant="secondary"
+              onClick={handleOnClick}
+              disabled={vaild || submitting}
+              aria-describedby={vaild ? 'customer-create-missing' : undefined}
+            >
               新增
             </Button>
           </div>
@@ -93,33 +87,29 @@ function AboutProject({
           onChange={event => onChange({ event, key: 'no' })}
           className="w-full !mb-[24px]"
           InputProps={{
-            endAdornment: (
-              (customer.no === '') ? '' :
-                isSetTime ?
-                  <InputAdornment position="start">
-                    <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
-                  </InputAdornment> :
-                  !noVerify ?
-                    <InputAdornment position="start">
-                      <CheckRoundedIcon color='success' />
-                    </InputAdornment> :
-                    <InputAdornment position="start">
-                      <WarningAmberRoundedIcon color='error' />
-                    </InputAdornment>
-            ),
+            endAdornment:
+              customer.no === '' ? (
+                ''
+              ) : isSetTime ? (
+                <InputAdornment position="start">
+                  <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
+                </InputAdornment>
+              ) : !noVerify ? (
+                <InputAdornment position="start">
+                  <CheckRoundedIcon color="success" />
+                </InputAdornment>
+              ) : (
+                <InputAdornment position="start">
+                  <WarningAmberRoundedIcon color="error" />
+                </InputAdornment>
+              ),
           }}
         />
         <Field label="姓名" className="mb-6">
-          <Input
-            value={customer.name}
-            onChange={event => onChange({ event, key: 'name' })}
-          />
+          <Input value={customer.name} onChange={event => onChange({ event, key: 'name' })} />
         </Field>
         <Field label="暱稱" className="mb-6">
-          <Input
-            value={customer.nickName}
-            onChange={event => onChange({ event, key: 'nickName' })}
-          />
+          <Input value={customer.nickName} onChange={event => onChange({ event, key: 'nickName' })} />
         </Field>
         <TextField
           label="手機"
@@ -157,16 +147,10 @@ function AboutProject({
           />
         </div>
         <Field label="Email" className="mb-6">
-          <Input
-            value={customer.email}
-            onChange={event => onChange({ event, key: 'email' })}
-          />
+          <Input value={customer.email} onChange={event => onChange({ event, key: 'email' })} />
         </Field>
         <Field label="聯絡地址" className="mb-6">
-          <Input
-            value={customer.address}
-            onChange={event => onChange({ event, key: 'address' })}
-          />
+          <Input value={customer.address} onChange={event => onChange({ event, key: 'address' })} />
         </Field>
         <ToggleGroup
           size="medium"
@@ -194,10 +178,7 @@ function AboutProject({
           </ToggleGroupItem>
         </ToggleGroup>
         <Field label="LINE ID" className="mb-6">
-          <Input
-            value={customer.lineId}
-            onChange={event => onChange({ event, key: 'lineId' })}
-          />
+          <Input value={customer.lineId} onChange={event => onChange({ event, key: 'lineId' })} />
         </Field>
         <NativeSelect
           value={customer.DesignerId}
@@ -219,17 +200,9 @@ function AboutProject({
             ))
           )}
         </NativeSelect>
-        <SourceSelect
-          emptyOption
-          className="w-full !mb-[24px]"
-          value={customer.source}
-          onChange={event => onChange({ event, key: 'source' })}
-        />
+        <SourceSelect emptyOption className="w-full !mb-[24px]" value={customer.source} onChange={event => onChange({ event, key: 'source' })} />
         <Field label="備註" className="mb-6">
-          <Input
-            value={customer.remark}
-            onChange={event => onChange({ event, key: 'remark' })}
-          />
+          <Input value={customer.remark} onChange={event => onChange({ event, key: 'remark' })} />
         </Field>
       </CardContent>
     </Card>

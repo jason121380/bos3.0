@@ -23,19 +23,13 @@ function EditMemberCardRecordModal({
       <DialogContent size="md" hideClose aria-describedby={undefined}>
         <DialogHeader className="flex-row items-center justify-between pr-6">
           <DialogTitle>編輯會員卡</DialogTitle>
-          <Button
-            variant="secondary"
-            onClick={onClose}
-          >
+          <Button variant="secondary" onClick={onClose}>
             關閉
           </Button>
         </DialogHeader>
         <DialogBody>
           <Field label="會員卡">
-            <NativeSelect
-              value={selectedCategoryId}
-              onChange={event => handleSelectCategoryId(event)}
-            >
+            <NativeSelect value={selectedCategoryId} onChange={event => handleSelectCategoryId(event)}>
               {(categories || []).map((data, idx) => (
                 <NativeSelectOption key={`${data.uuid}-${idx}`} value={data.uuid}>
                   {data.no} {data.name}
@@ -45,10 +39,7 @@ function EditMemberCardRecordModal({
           </Field>
         </DialogBody>
         <DialogFooter>
-          <Button
-            variant="primary"
-            onClick={handleUpdateMembershipsCategory}
-          >
+          <Button variant="primary" onClick={handleUpdateMembershipsCategory}>
             儲存
           </Button>
         </DialogFooter>

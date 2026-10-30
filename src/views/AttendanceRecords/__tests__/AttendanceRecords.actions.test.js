@@ -102,7 +102,11 @@ const RECORDS = [
         isLate: false,
         isLeaveEarly: false,
         clockInRecord: [
-          { in: { ...punch('COMPUTER', 12, 9, 0), uuid: null }, out: punch('COMPUTER', 12, 18, 0), breakRecord: [{ start: null, end: { ...punch('COMPUTER', 12, 13, 0), uuid: null } }] },
+          {
+            in: { ...punch('COMPUTER', 12, 9, 0), uuid: null },
+            out: punch('COMPUTER', 12, 18, 0),
+            breakRecord: [{ start: null, end: { ...punch('COMPUTER', 12, 13, 0), uuid: null } }],
+          },
           { in: { uuid: null, time: null }, out: { uuid: null, time: null }, breakRecord: [{ start: { uuid: null, time: null }, end: null }] },
           { in: null, out: null, breakRecord: [] },
           { in: null, out: null, breakRecord: [{ start: null, end: { uuid: null, time: null } }] },
@@ -135,7 +139,12 @@ const setup = ({ add = true, edit = true, del = true, fixtures = {} } = {}) => {
         getMerchantAuthorities: [{ id: 'auth-1', authorityName: '店長', authoritySettings: JSON.stringify([clockInSection({ add, edit, del })]) }],
       },
       GET_USERS_FOR_CREATE_PICKING: {
-        users: { users: [{ id: 'u2', name: '設計師小美', designerNo: '02' }, { id: 'u3', name: '助理阿明', designerNo: null }] },
+        users: {
+          users: [
+            { id: 'u2', name: '設計師小美', designerNo: '02' },
+            { id: 'u3', name: '助理阿明', designerNo: null },
+          ],
+        },
       },
       GET_ALL_ATTENDANCE: { attendanceRecords: RECORDS },
       ...fixtures,
@@ -215,11 +224,13 @@ describe('查詢與顯示', () => {
     expect(dayCell(12).textContent).toBe('下18:00')
     expect(dayCell(13).textContent).toBe('')
     // 遲到又早退：各種打卡方式的上班與下班都標紅
-    Object.keys(KINDS).filter(k => k !== 'OTHER').forEach((kind, i) => {
-      const cellEl = dayCell(14 + Object.keys(KINDS).indexOf(kind))
-      const red = [...cellEl.querySelectorAll('[class*="text-danger"]')]
-      expect(red.length).toBeGreaterThanOrEqual(2)
-    })
+    Object.keys(KINDS)
+      .filter(k => k !== 'OTHER')
+      .forEach((kind, i) => {
+        const cellEl = dayCell(14 + Object.keys(KINDS).indexOf(kind))
+        const red = [...cellEl.querySelectorAll('[class*="text-danger"]')]
+        expect(red.length).toBeGreaterThanOrEqual(2)
+      })
   })
 
   it('篩選：選員工與距離條件後按搜尋，送出員工 id 與勾選的條件；清除員工後送空字串', async () => {
@@ -282,9 +293,7 @@ describe('編輯與刪除打卡', () => {
     const before = searches(utils.calls).length
     fireEvent.click(screen.getByRole('button', { name: '確認' }))
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '修改成功', variant: 'success' }))
-    expect(callsOf(utils.calls, 'UPDATA_ATTENDANT_RECORD').map(c => c.variables)).toEqual([
-      { input: { uuid: 'COMPUTER-5-9', date: at(5, 8, 45) } },
-    ])
+    expect(callsOf(utils.calls, 'UPDATA_ATTENDANT_RECORD').map(c => c.variables)).toEqual([{ input: { uuid: 'COMPUTER-5-9', date: at(5, 8, 45) } }])
     await wait(() => expect(searches(utils.calls).length).toBe(before + 1))
   })
 
@@ -458,14 +467,18 @@ describe('報表匯出', () => {
       await wait(() => expect(click).toHaveBeenCalledTimes(1))
       expect(click.mock.instances[0].href).toBe('https://files.example/a.xlsx')
       expect(callsOf(utils.calls, 'FETCH_ATTENDANCE_RECORDS_EXCELV2')[0].variables.input).toMatchObject({
-        userId: '', distanceFilter: ALL_FILTERS, isTypeDisplay: true,
+        userId: '',
+        distanceFilter: ALL_FILTERS,
+        isTypeDisplay: true,
       })
       fireEvent.click(screen.getByLabelText('匯出打卡類型'))
       fireEvent.click(screen.getByRole('button', { name: '報表匯出(人資格式)' }))
       await wait(() => expect(click).toHaveBeenCalledTimes(2))
       expect(click.mock.instances[1].href).toBe('https://files.example/hr.xlsx')
       expect(callsOf(utils.calls, 'FETCH_ATTENDANCE_RECORDS_EXCELV2_FOR_HR')[0].variables.input).toMatchObject({
-        userId: '', distanceFilter: ALL_FILTERS, isTypeDisplay: false,
+        userId: '',
+        distanceFilter: ALL_FILTERS,
+        isTypeDisplay: false,
         dateRange: { startDate: MONTH.getTime(), endDate: new Date(2025, 2, 31, 23, 59, 59, 999).getTime() },
       })
     } finally {

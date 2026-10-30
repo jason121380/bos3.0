@@ -22,8 +22,8 @@ import { getMissingForOrder } from './orderRequirements'
 
 function Header({ forceUpdate, ...rest }) {
   const location = useLocation()
-  const history = useHistory();
-  const { createOrder } = useFetchCreateOrder();
+  const history = useHistory()
+  const { createOrder } = useFetchCreateOrder()
   const { setOpen } = useToggle()
   const {
     bill,
@@ -46,33 +46,24 @@ function Header({ forceUpdate, ...rest }) {
     disablePendingOrder,
   } = useContext(billContext)
   const useCreateOrder = useRef(createOrder)
-  const stayInCreateOrderInMemory = JSON.parse(
-    localStorage.getItem("stayInCreateOrder")
-  );
-  const stayInCheckOrderDetailMemory = JSON.parse(
-    localStorage.getItem("stayInCheckOrderDetail")
-  );
-  const [checkOrderDetail, setCheckOrderDetail] = useState(
-    stayInCheckOrderDetailMemory !== null ? stayInCheckOrderDetailMemory : false
-  );
-  const merchantOrderDetailPrintLayoutData = useFetchMerchantOrderDetailPrintLayout();
-  const userOrderableList = useFetchUsersOrderableList();
-  const getHelperForPrint = idx(userOrderableList, (_) => _.data.getUserOrderableList);
-  const [orderDetailPrintLayout, setOrderDetailPrintLayout] = useState("A4");
+  const stayInCreateOrderInMemory = JSON.parse(localStorage.getItem('stayInCreateOrder'))
+  const stayInCheckOrderDetailMemory = JSON.parse(localStorage.getItem('stayInCheckOrderDetail'))
+  const [checkOrderDetail, setCheckOrderDetail] = useState(stayInCheckOrderDetailMemory !== null ? stayInCheckOrderDetailMemory : false)
+  const merchantOrderDetailPrintLayoutData = useFetchMerchantOrderDetailPrintLayout()
+  const userOrderableList = useFetchUsersOrderableList()
+  const getHelperForPrint = idx(userOrderableList, _ => _.data.getUserOrderableList)
+  const [orderDetailPrintLayout, setOrderDetailPrintLayout] = useState('A4')
   const [lastOrderStatus, setLastOrderStatus] = useState()
   const [openModal, setOpenModal] = useState(false)
   const [route, setRoute] = useState()
 
   useEffect(() => {
     if (!merchantOrderDetailPrintLayoutData.loading) {
-      const merchantOrderDetailPrintLayout = idx(
-        merchantOrderDetailPrintLayoutData,
-        (_) => _.data.getMerchantPrintFormatSettings
-      );
-      setOrderDetailPrintLayout(merchantOrderDetailPrintLayout);
+      const merchantOrderDetailPrintLayout = idx(merchantOrderDetailPrintLayoutData, _ => _.data.getMerchantPrintFormatSettings)
+      setOrderDetailPrintLayout(merchantOrderDetailPrintLayout)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-  }, [merchantOrderDetailPrintLayoutData.loading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+  }, [merchantOrderDetailPrintLayoutData.loading])
 
   useEffect(() => {
     if (!lastOrderStatusData.loading) {
@@ -80,7 +71,7 @@ function Header({ forceUpdate, ...rest }) {
       const status = idx(lastOrderStatusData, _ => _.data.getLatestOrderStatus)
       setLastOrderStatus(status)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [lastOrderStatusData.loading])
 
   useEffect(() => {
@@ -90,9 +81,7 @@ function Header({ forceUpdate, ...rest }) {
   const valid = !(
     bill.date &&
     bill.designerId &&
-    (bill.customerId !== undefined ||
-      bill.withoutCustomerData ||
-      bill.customerCellphone.length > 0) &&
+    (bill.customerId !== undefined || bill.withoutCustomerData || bill.customerCellphone.length > 0) &&
     (bill.serviceOrders.length > 0 ||
       bill.productOrders.length > 0 ||
       bill.ticketOrders.length > 0 ||
@@ -102,13 +91,13 @@ function Header({ forceUpdate, ...rest }) {
 
   const handleBtnDisabled = type => {
     if (type) {
-      setCheckoutBtn(true);
+      setCheckoutBtn(true)
       setCheckoutBtnClick(true)
-      setIsClick(true);
+      setIsClick(true)
       setOpen(true)
     } else {
-      setCheckoutBtn(false);
-      setIsClick(false);
+      setCheckoutBtn(false)
+      setIsClick(false)
       setCheckoutBtnClick(false)
       setOpen(false)
     }
@@ -124,64 +113,64 @@ function Header({ forceUpdate, ...rest }) {
     if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       handleBtnDisabled(false)
-      return;
+      return
     } else if (!checkMember.verify) {
       openSnackbar({
         message: checkMember.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       handleBtnDisabled(false)
-      return;
+      return
     } else {
       useCreateOrder
         .current(tmp)
         .then(() => {
           openSnackbar({
-            message: "帳單新增成功",
-            variant: "success",
-          });
-          setCheckoutBtn(false);
-          setIsClick(false);
+            message: '帳單新增成功',
+            variant: 'success',
+          })
+          setCheckoutBtn(false)
+          setIsClick(false)
           if (stayInCreateOrderInMemory) {
             openSnackbar({
-              message: "帳單新增成功",
-              variant: "success",
-            });
+              message: '帳單新增成功',
+              variant: 'success',
+            })
             setReset('reset')
             setTimeout(() => {
-              setCheckoutBtn(false);
+              setCheckoutBtn(false)
               setCheckoutBtnClick(false)
-              setIsClick(false);
+              setIsClick(false)
               setReset('')
               clearTimeout()
-            }, 500);
+            }, 500)
           } else {
             openSnackbar({
-              message: "帳單新增成功",
-              variant: "success",
-            });
+              message: '帳單新增成功',
+              variant: 'success',
+            })
             setTimeout(() => {
-              history.push("/management/orders");
-            }, 250);
+              history.push('/management/orders')
+            }, 250)
           }
         })
-        .catch((err) => {
+        .catch(err => {
           handleBtnDisabled(false)
         })
         .finally(() => {
           setOpen(false)
-        });
+        })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleBtnDisabled）；只在 [bill, history, stayInCreateOrderInMemory, setCheckoutBtn, setCheckoutBtnClick, setIsClick, setOpen, setReset] 變動時呼叫，補上會每次 render 重跑
-  }, [bill, history, stayInCreateOrderInMemory, setCheckoutBtn, setCheckoutBtnClick, setIsClick, setOpen, setReset]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleBtnDisabled）；只在 [bill, history, stayInCreateOrderInMemory, setCheckoutBtn, setCheckoutBtnClick, setIsClick, setOpen, setReset] 變動時呼叫，補上會每次 render 重跑
+  }, [bill, history, stayInCreateOrderInMemory, setCheckoutBtn, setCheckoutBtnClick, setIsClick, setOpen, setReset])
 
   // 掛單mutation
   const usehandleCreateDraftOrder = useCallback(() => {
-    setIsClick(true);
-    setCheckoutBtn(true);
+    setIsClick(true)
+    setCheckoutBtn(true)
     setOpen(true)
     const tmp = handleTidyBill(bill)
     const checkProduct = checkProductOrders(tmp.productOrders)
@@ -189,73 +178,69 @@ function Header({ forceUpdate, ...rest }) {
     if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       handleBtnDisabled(false)
-      return;
+      return
     } else if (!checkMember.verify) {
       openSnackbar({
         message: checkMember.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       handleBtnDisabled(false)
-      return;
+      return
     } else {
       useCreateOrder
         .current({ ...tmp, isPending: true })
         .then(() => {
           openSnackbar({
-            message: "掛單新增成功",
-            variant: "success",
-          });
-          setIsClick(false);
-          setCheckoutBtn(false);
-          history.push("/management/draft-orders");
+            message: '掛單新增成功',
+            variant: 'success',
+          })
+          setIsClick(false)
+          setCheckoutBtn(false)
+          history.push('/management/draft-orders')
         })
-        .catch((err) => {
-          setIsClick(false);
-          setCheckoutBtn(false);
+        .catch(err => {
+          setIsClick(false)
+          setCheckoutBtn(false)
         })
         .finally(() => {
           setOpen(false)
-        });
+        })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleBtnDisabled）；只在 [bill, history, setCheckoutBtn, setIsClick, setOpen] 變動時呼叫，補上會每次 render 重跑
-  }, [bill, history, setCheckoutBtn, setIsClick, setOpen]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleBtnDisabled）；只在 [bill, history, setCheckoutBtn, setIsClick, setOpen] 變動時呼叫，補上會每次 render 重跑
+  }, [bill, history, setCheckoutBtn, setIsClick, setOpen])
 
   // 連續打單結帳
   const handleStayInCreateOrderBtn = () => {
     if (!stayInCreateOrder) {
-      setStayInCreateOrder(true);
-      localStorage.setItem("stayInCreateOrder", true);
+      setStayInCreateOrder(true)
+      localStorage.setItem('stayInCreateOrder', true)
     } else {
-      localStorage.removeItem("stayInCreateOrder");
-      setStayInCreateOrder(false);
+      localStorage.removeItem('stayInCreateOrder')
+      setStayInCreateOrder(false)
     }
   }
 
   // 結帳前確認明細
   const handleCheckoutOrderDetail = () => {
-    if (
-      stayInCheckOrderDetailMemory !== null
-        ? stayInCheckOrderDetailMemory
-        : checkOrderDetail
-    ) {
-      localStorage.removeItem("stayInCheckOrderDetail");
-      setCheckOrderDetail(!checkOrderDetail);
-      setCheckOrderDetailSwitch(!checkOrderDetail);
+    if (stayInCheckOrderDetailMemory !== null ? stayInCheckOrderDetailMemory : checkOrderDetail) {
+      localStorage.removeItem('stayInCheckOrderDetail')
+      setCheckOrderDetail(!checkOrderDetail)
+      setCheckOrderDetailSwitch(!checkOrderDetail)
     } else {
-      localStorage.setItem("stayInCheckOrderDetail", true);
-      setCheckOrderDetail(!checkOrderDetail);
-      setCheckOrderDetailSwitch(!checkOrderDetail);
+      localStorage.setItem('stayInCheckOrderDetail', true)
+      setCheckOrderDetail(!checkOrderDetail)
+      setCheckOrderDetailSwitch(!checkOrderDetail)
     }
-  };
+  }
 
   // 掛單跳彈窗
   const handleOrderPendingConfirm = () => {
     openSnackbar({
       message: `確認要掛單嗎，掛單只會紀錄此筆帳單的紀錄，不會正式成立帳單唷`,
-      variant: "error",
+      variant: 'error',
       disableHide: true,
       resign: true,
       orderPending: true,
@@ -307,11 +292,7 @@ function Header({ forceUpdate, ...rest }) {
             {/* 停用原因只在下方文字（role="status"）出現一次：三顆按鈕各自再掛 title 會讓讀屏重複播報同一句 */}
             <div className="flex items-center gap-3">
               {!disablePendingOrder && (
-                <Button
-                  variant="secondary"
-                  onClick={handleOrderPendingConfirm}
-                  disabled={valid || isClick || checkoutBtn || checkoutBtnClick}
-                >
+                <Button variant="secondary" onClick={handleOrderPendingConfirm} disabled={valid || isClick || checkoutBtn || checkoutBtnClick}>
                   掛單
                 </Button>
               )}
@@ -322,7 +303,7 @@ function Header({ forceUpdate, ...rest }) {
               <Button
                 variant="primary"
                 className="px-8 disabled:bg-surface-active disabled:text-text-secondary disabled:opacity-100"
-                onClick={() => checkOrderDetail ? handleDisplayOrderDetail() : usehandleCreateOrder()}
+                onClick={() => (checkOrderDetail ? handleDisplayOrderDetail() : usehandleCreateOrder())}
                 disabled={actionDisabled}
               >
                 結帳
@@ -345,7 +326,7 @@ function Header({ forceUpdate, ...rest }) {
         />
       )}
     </Fragment>
-  );
+  )
 }
 
-export default Header;
+export default Header

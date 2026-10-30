@@ -48,15 +48,15 @@ export default function useDraftPrint() {
   const ticketRecordData = useFetchTicketRecordsInOrderDetail(
     bill.customerId === undefined
       ? {
-        pageOffset: 0,
-        pageLimit: 0,
-      }
+          pageOffset: 0,
+          pageLimit: 0,
+        }
       : {
-        pageOffset: 0,
-        pageLimit: 20,
-        customerId: bill.customerId,
-        isUseTicket: false,
-      }
+          pageOffset: 0,
+          pageLimit: 20,
+          customerId: bill.customerId,
+          isUseTicket: false,
+        }
   )
   const userOrderableList = useFetchUsersOrderableList()
   const getHelperForPrint = idx(userOrderableList, _ => _.data.getUserOrderableList)
@@ -68,17 +68,14 @@ export default function useDraftPrint() {
     return helper[0].userNo || helper[0].userName
   }
   // 收據上方的 Logo／QR code／訊息（與打帳單的明細彈窗共用）
-  const {
-    detailInfo, qrcodeUrl, imgUrl,
-    getLogoDisplayOnInvoice, getQrcodeDisplayOnInvoice, getMessageDisplayOnInvoice,
-  } = useInvoiceDecorations()
+  const { detailInfo, qrcodeUrl, imgUrl, getLogoDisplayOnInvoice, getQrcodeDisplayOnInvoice, getMessageDisplayOnInvoice } = useInvoiceDecorations()
 
   useEffect(() => {
     if (!getDesignerNameDisplayOnInvoice.loading) {
       const data = idx(getDesignerNameDisplayOnInvoice, _ => _.data.getDesignerNameDisplayOnInvoice)
       setNameDisplayOnInvoice(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getDesignerNameDisplayOnInvoice.loading])
   useEffect(() => {
     if (
@@ -192,7 +189,7 @@ export default function useDraftPrint() {
         membershipsDetail: membershipsArr,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ servicesData.loading, thirdPartyCouponData.loading, pro…] 變動時執行；membershipData、orderDetail、productsData、servicesData、thirdPartyCouponData、ticketRecordData、ticketsData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ servicesData.loading, thirdPartyCouponData.loading, pro…] 變動時執行；membershipData、orderDetail、productsData、servicesData、thirdPartyCouponData、ticketRecordData、ticketsData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [
     servicesData.loading,
     thirdPartyCouponData.loading,
@@ -209,29 +206,21 @@ export default function useDraftPrint() {
     var newWin = window.open('', 'Print-Window')
 
     if (orderDetailPrintLayout === 'A4') {
-      newWin.document.write(
-        '<html><body onload="window.print()" style="margin: 0mm 5mm;">' +
-        printMain.innerHTML +
-        '</body></html>'
-      )
+      newWin.document.write('<html><body onload="window.print()" style="margin: 0mm 5mm;">' + printMain.innerHTML + '</body></html>')
     } else if (orderDetailPrintLayout === '感熱紙(80mm)') {
       newWin.document.write(
         '<html style="width: 78mm;"><style>@page {margin: 1mm; width:78mm;}</style><body onload="window.print()">' +
-        printThermal.innerHTML +
-        '</body></html>'
+          printThermal.innerHTML +
+          '</body></html>'
       )
     } else if (orderDetailPrintLayout === '感熱紙(57mm)') {
       newWin.document.write(
         '<html style="width: 56mm;"><style>@page {margin: 1mm; width:56mm;}</style><body onload="window.print()">' +
-        printThermal.innerHTML +
-        '</body></html>'
+          printThermal.innerHTML +
+          '</body></html>'
       )
     } else {
-      newWin.document.write(
-        '<html><style>@page {margin: 1mm;}</style><body onload="window.print()">' +
-        printThermal.innerHTML +
-        '</body></html>'
-      )
+      newWin.document.write('<html><style>@page {margin: 1mm;}</style><body onload="window.print()">' + printThermal.innerHTML + '</body></html>')
     }
 
     if (closureDelayed) {
@@ -240,7 +229,7 @@ export default function useDraftPrint() {
       }, 100)
       setTimeout(() => {
         newWin.close()
-      }, 10000);
+      }, 10000)
     } else {
       newWin.document.close()
       setTimeout(function () {
@@ -251,13 +240,10 @@ export default function useDraftPrint() {
 
   useEffect(() => {
     if (!merchantOrderDetailPrintLayoutData.loading) {
-      const merchantOrderDetailPrintLayout = idx(
-        merchantOrderDetailPrintLayoutData,
-        _ => _.data.getMerchantPrintFormatSettings
-      )
+      const merchantOrderDetailPrintLayout = idx(merchantOrderDetailPrintLayoutData, _ => _.data.getMerchantPrintFormatSettings)
       setOrderDetailPrintLayout(merchantOrderDetailPrintLayout)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantOrderDetailPrintLayoutData.loading])
 
   return {

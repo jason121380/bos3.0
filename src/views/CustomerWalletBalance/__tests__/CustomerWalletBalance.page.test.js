@@ -11,14 +11,22 @@ jest.setTimeout(20000)
 
 jest.mock('components/EmployeeAutoComplete', () => ({ value, onChange }) => (
   <div data-testid="designer" data-value={String(value)}>
-    <button type="button" onClick={() => onChange({ userId: 'designer-1', userName: '王小美' })}>選設計師</button>
-    <button type="button" onClick={() => onChange({ id: '' })}>清除設計師</button>
+    <button type="button" onClick={() => onChange({ userId: 'designer-1', userName: '王小美' })}>
+      選設計師
+    </button>
+    <button type="button" onClick={() => onChange({ id: '' })}>
+      清除設計師
+    </button>
   </div>
 ))
 jest.mock('components/CustomerAutoComplete', () => ({ value, onChange }) => (
   <div data-testid="customer" data-value={value}>
-    <button type="button" onClick={() => onChange({ id: 'customer-1', name: '陳小姐' })}>選顧客</button>
-    <button type="button" onClick={() => onChange({ id: '' })}>清除顧客</button>
+    <button type="button" onClick={() => onChange({ id: 'customer-1', name: '陳小姐' })}>
+      選顧客
+    </button>
+    <button type="button" onClick={() => onChange({ id: '' })}>
+      清除顧客
+    </button>
   </div>
 ))
 

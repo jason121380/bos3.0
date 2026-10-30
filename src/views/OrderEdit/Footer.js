@@ -19,10 +19,8 @@ import ReCheckoutPasswordDialog from 'views/OrderShared/ReCheckoutPasswordDialog
 import { getMissingForCheckout, getMissingForSave, getDisabledReason } from './orderRequirements'
 
 export default function Footer({ enable }) {
-  const {
-    bill, orderSetting, orderStatus, setBill, bonusSetting,
-    isLineBinded, bonusRewardWithLINE, disablePendingOrder
-  } = React.useContext(billContext)
+  const { bill, orderSetting, orderStatus, setBill, bonusSetting, isLineBinded, bonusRewardWithLINE, disablePendingOrder } =
+    React.useContext(billContext)
   const [reCheckoutPwd, setReCheckoutPwd] = useState('')
   const [openDialog, setOpenDialog] = useState(false)
   const [disableRecheckoutOrders, setDisableRecheckoutOrders] = useState(false)
@@ -30,13 +28,10 @@ export default function Footer({ enable }) {
 
   useEffect(() => {
     if (!passwordData.loading) {
-      const disableRecheckoutOrders = idx(
-        passwordData,
-        _ => _.data.merchantPassword.reCheckoutOrder.isUsing
-      )
+      const disableRecheckoutOrders = idx(passwordData, _ => _.data.merchantPassword.reCheckoutOrder.isUsing)
       setDisableRecheckoutOrders(disableRecheckoutOrders)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [passwordData.loading])
 
   const { fetchReCheckoutOrder } = useFetchReCheckoutOrder()
@@ -59,24 +54,24 @@ export default function Footer({ enable }) {
     if (!checkService.verify) {
       openSnackbar({
         message: checkService.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       setOpen(false)
-      return;
+      return
     } else if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       setOpen(false)
-      return;
+      return
     } else if (!checkMember.verify) {
       openSnackbar({
         message: checkMember.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       setOpen(false)
-      return;
+      return
     } else {
       tmp.isPending = isPending
       fetchReCheckoutOrder({
@@ -97,15 +92,15 @@ export default function Footer({ enable }) {
             history.push('/management/orders')
           } else {
             history.push(
-              `/management/${location.search.length > 0
-                ? `orders?startDate=${location.search.split('=')[1].substring(0, 13)}&endDate=${location.search.split('=')[2]
-                }`
-                : 'orders'
+              `/management/${
+                location.search.length > 0
+                  ? `orders?startDate=${location.search.split('=')[1].substring(0, 13)}&endDate=${location.search.split('=')[2]}`
+                  : 'orders'
               }`
             )
           }
         })
-        .catch((error) => {
+        .catch(error => {
           setOpen(false)
           setReCheckoutPwd('')
         })
@@ -115,60 +110,31 @@ export default function Footer({ enable }) {
     ids: bill.useTicketOrders.map(d => d.customerTicketId),
   })
 
-  const updateVaild = !(
-    bill.date &&
-    bill.customerId &&
-    bill.designerId &&
-    !orderSetting.isCloseAccount
-  )
+  const updateVaild = !(bill.date && bill.customerId && bill.designerId && !orderSetting.isCloseAccount)
 
   const serviceTotalPriceArray = idx(bill, _ =>
-    _.serviceOrders.map(d =>
-      d.thirdPartyCouponMerchantId === null || d.thirdPartyCouponMerchantId === undefined
-        ? d.price : 0
-    )
+    _.serviceOrders.map(d => (d.thirdPartyCouponMerchantId === null || d.thirdPartyCouponMerchantId === undefined ? d.price : 0))
   )
   const productTotalPriceArray = idx(bill, _ =>
     _.productOrders.map(d =>
-      (d.thirdPartyCouponMerchantId === null || d.thirdPartyCouponMerchantId === undefined) &&
-        d.productId !== ''
-        ? d.price * d.count
-        : 0
+      (d.thirdPartyCouponMerchantId === null || d.thirdPartyCouponMerchantId === undefined) && d.productId !== '' ? d.price * d.count : 0
     )
   )
   // 沒第三方卡券會員卡price array
   const memberShipCardWithIntoPerformPriceArray = idx(bill, _ =>
-    _.membershipOrders.map(d =>
-      d.thirdPartyCouponMerchantId === null || d.thirdPartyCouponMerchantId === undefined
-        ? d.price
-        : 0
-    )
+    _.membershipOrders.map(d => (d.thirdPartyCouponMerchantId === null || d.thirdPartyCouponMerchantId === undefined ? d.price : 0))
   )
-  const serviceTotalPriceWithoutThirdPartyCoupon = serviceTotalPriceArray.reduce(
-    (total, item) => (total = total + item),
-    0
-  )
-  const productTotalPriceWithoutThirdPartyCoupon = productTotalPriceArray.reduce(
-    (total, item) => (total = total + item),
-    0
-  )
+  const serviceTotalPriceWithoutThirdPartyCoupon = serviceTotalPriceArray.reduce((total, item) => (total = total + item), 0)
+  const productTotalPriceWithoutThirdPartyCoupon = productTotalPriceArray.reduce((total, item) => (total = total + item), 0)
   // 沒有第三方卡券會員卡的價格合計
-  const merberShipCardTotalPriceWithoutThirdPartyCoupon = memberShipCardWithIntoPerformPriceArray.reduce(
-    (total, item) => (total = total + item),
-    0
-  )
-  const serviceTotalPrice =
-    bill.serviceOrders.length > 0 ? bill.serviceOrders.reduce((a, b) => a + b.price, 0) : 0
+  const merberShipCardTotalPriceWithoutThirdPartyCoupon = memberShipCardWithIntoPerformPriceArray.reduce((total, item) => (total = total + item), 0)
+  const serviceTotalPrice = bill.serviceOrders.length > 0 ? bill.serviceOrders.reduce((a, b) => a + b.price, 0) : 0
 
   const merchantSellTotalPrice =
     bill.productOrders.length > 1
-      ? bill.productOrders.reduce(
-        (a, b) => (a += b.count * (b.price === undefined ? 0 : b.price)),
-        0
-      )
+      ? bill.productOrders.reduce((a, b) => (a += b.count * (b.price === undefined ? 0 : b.price)), 0)
       : bill.productOrders.length === 1
-        ? bill.productOrders[0].count *
-        (bill.productOrders[0].price === undefined ? 0 : bill.productOrders[0].price)
+        ? bill.productOrders[0].count * (bill.productOrders[0].price === undefined ? 0 : bill.productOrders[0].price)
         : 0
 
   const couponSellPrice =
@@ -178,17 +144,15 @@ export default function Footer({ enable }) {
         ? bill.ticketOrders[0].count * bill.ticketOrders[0].price
         : 0
 
-  const couponUsageTotalPrice = idx(customerTicketRecords, _ =>
-    _.data.ticketRecords.data.length > 1
-      ? _.data.ticketRecords.data.reduce((r, b) => r + b.price, 0)
-      : _.data.ticketRecords.data.length === 1
-        ? _.data.ticketRecords.data[0].price
-        : 0
-  ) ?? 0
-  const merberShipCardTotalPrice = bill.membershipOrders.reduce(
-    (total, item) => (total = total + item.price),
-    0
-  )
+  const couponUsageTotalPrice =
+    idx(customerTicketRecords, _ =>
+      _.data.ticketRecords.data.length > 1
+        ? _.data.ticketRecords.data.reduce((r, b) => r + b.price, 0)
+        : _.data.ticketRecords.data.length === 1
+          ? _.data.ticketRecords.data[0].price
+          : 0
+    ) ?? 0
+  const merberShipCardTotalPrice = bill.membershipOrders.reduce((total, item) => (total = total + item.price), 0)
 
   const vaild = !(
     (bill.date && // 有訂單日期
@@ -248,24 +212,24 @@ export default function Footer({ enable }) {
     if (!checkService.verify) {
       openSnackbar({
         message: checkService.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       setOpen(false)
-      return;
+      return
     } else if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       setOpen(false)
-      return;
+      return
     } else if (!checkMember.verify) {
       openSnackbar({
         message: checkMember.message,
-        variant: "error",
-      });
+        variant: 'error',
+      })
       setOpen(false)
-      return;
+      return
     } else {
       updateOrder({
         updateOrderId: orderSetting.orderId,
@@ -294,12 +258,12 @@ export default function Footer({ enable }) {
   useEffect(() => {
     if (
       serviceTotalPriceWithoutThirdPartyCoupon +
-      productTotalPriceWithoutThirdPartyCoupon +
-      couponSellPrice +
-      merberShipCardTotalPriceWithoutThirdPartyCoupon -
-      bill.walletPay -
-      bill.amountByOtherPay -
-      bill.bonusDecount <
+        productTotalPriceWithoutThirdPartyCoupon +
+        couponSellPrice +
+        merberShipCardTotalPriceWithoutThirdPartyCoupon -
+        bill.walletPay -
+        bill.amountByOtherPay -
+        bill.bonusDecount <
       0
     ) {
       setBill(
@@ -311,13 +275,18 @@ export default function Footer({ enable }) {
       )
     }
   }, [
-    serviceTotalPriceWithoutThirdPartyCoupon, productTotalPriceWithoutThirdPartyCoupon,
-    couponSellPrice, merberShipCardTotalPriceWithoutThirdPartyCoupon, bill.walletPay,
-    bill.amountByOtherPay, bill.bonusDecount, setBill
+    serviceTotalPriceWithoutThirdPartyCoupon,
+    productTotalPriceWithoutThirdPartyCoupon,
+    couponSellPrice,
+    merberShipCardTotalPriceWithoutThirdPartyCoupon,
+    bill.walletPay,
+    bill.amountByOtherPay,
+    bill.bonusDecount,
+    setBill,
   ])
   useEffect(() => {
     if (bonusSetting.isUsing) {
-      let bonusDeposit = 0; // 預設為 0
+      let bonusDeposit = 0 // 預設為 0
       if (!bonusRewardWithLINE || (bonusRewardWithLINE && isLineBinded)) {
         const total =
           serviceTotalPriceWithoutThirdPartyCoupon +
@@ -326,14 +295,14 @@ export default function Footer({ enable }) {
           merberShipCardTotalPriceWithoutThirdPartyCoupon -
           bill.walletPay -
           bill.amountByOtherPay -
-          bill.bonusDecount;
-        bonusDeposit = giveBonus[bonusSetting.rule.mode](total, bonusSetting.rule.price, bonusSetting.rule.bonus);
+          bill.bonusDecount
+        bonusDeposit = giveBonus[bonusSetting.rule.mode](total, bonusSetting.rule.price, bonusSetting.rule.bonus)
       }
       setBill(
         produce(draft => {
-          draft.bonusDeposit = bonusDeposit;
+          draft.bonusDeposit = bonusDeposit
         })
-      );
+      )
     }
     /* if (bonusSetting.isUsing) {
       const total = serviceTotalPriceWithoutThirdPartyCoupon +
@@ -352,10 +321,17 @@ export default function Footer({ enable }) {
       )
     } */
   }, [
-    serviceTotalPriceWithoutThirdPartyCoupon, productTotalPriceWithoutThirdPartyCoupon,
-    couponSellPrice, merberShipCardTotalPriceWithoutThirdPartyCoupon, bill.walletPay,
-    bill.amountByOtherPay, bill.bonusDecount, bill.customerId, bonusRewardWithLINE,
-    isLineBinded, setBill,
+    serviceTotalPriceWithoutThirdPartyCoupon,
+    productTotalPriceWithoutThirdPartyCoupon,
+    couponSellPrice,
+    merberShipCardTotalPriceWithoutThirdPartyCoupon,
+    bill.walletPay,
+    bill.amountByOtherPay,
+    bill.bonusDecount,
+    bill.customerId,
+    bonusRewardWithLINE,
+    isLineBinded,
+    setBill,
     // 給點規則比帳單晚到時（規則只在查詢回來時設定一次），到了也要依規則重算
     bonusSetting,
   ])
@@ -365,12 +341,7 @@ export default function Footer({ enable }) {
   // - 業績合計：會員卡用第三方卡券時照樣計入售價全額（原本排除，與打帳單、掛單詳細不一致）
   // - 現金應收：與打帳單、明細、收據共用 billPaymentSummary（未選商品的店販列價格是 0，與舊式排除 productId 空白列的結果相同）
   // 上方「付款超過應付時歸零」與紅利給點的 effect 用的是各自的運算式，不受影響
-  const performanceTotal = Math.round(
-    serviceTotalPrice +
-    merchantSellTotalPrice +
-    couponUsageTotalPrice +
-    merberShipCardTotalPrice
-  )
+  const performanceTotal = Math.round(serviceTotalPrice + merchantSellTotalPrice + couponUsageTotalPrice + merberShipCardTotalPrice)
   const { cashDue } = billPaymentSummary(bill)
 
   // 按鈕停用時說明原因（只用於顯示）：開關就是下方按鈕的 disabled 條件本身，見 orderRequirements.js
@@ -421,49 +392,43 @@ export default function Footer({ enable }) {
         details={details}
         performanceTotal={performanceTotal}
         cashDue={cashDue}
-        actions={orderStatus && (
-          <BillActions reason={disabledReason}>
-            <div className="orderButtonGroup flex flex-wrap items-center justify-end gap-2">
-              {orderStatus === '預約成功' && status !== 'checkout' && (
-                <span title={saveDisabledReason || undefined} className="inline-flex">
-                  <Button
-                    variant="secondary"
-                    size="lg"
-                    onClick={handleSaveOrder}
-                    disabled={open || updateVaild}
-                  >
-                    儲存
-                  </Button>
-                </span>
-              )}
-              {!disablePendingOrder && bill.isReserved && (
-                <span title={checkoutDisabledReason || undefined} className="inline-flex">
-                  <Button
-                    variant="secondary"
-                    size="lg"
-                    onClick={() => handleReCheckoutOrder(true)}
-                    disabled={open || vaild || !enable}
-                  >掛單</Button>
-                </span>
-              )}
-              {renderActionText() && status !== 'edit' && (
-                <span title={checkoutDisabledReason || undefined} className="inline-flex">
-                  {/* 停用時改成深字灰底（比照打帳單；原本淡藍底白字對比不足） */}
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    className="px-6 disabled:bg-surface-active disabled:text-text-secondary disabled:opacity-100"
-                    onClick={() => disableRecheckoutOrders ? handleOpenReCheckout() : handleReCheckoutOrder()}
-                    disabled={open || vaild || !enable}
-                    data-testid="checkout"
-                  >
-                    {renderActionText()}
-                  </Button>
-                </span>
-              )}
-            </div>
-          </BillActions>
-        )}
+        actions={
+          orderStatus && (
+            <BillActions reason={disabledReason}>
+              <div className="orderButtonGroup flex flex-wrap items-center justify-end gap-2">
+                {orderStatus === '預約成功' && status !== 'checkout' && (
+                  <span title={saveDisabledReason || undefined} className="inline-flex">
+                    <Button variant="secondary" size="lg" onClick={handleSaveOrder} disabled={open || updateVaild}>
+                      儲存
+                    </Button>
+                  </span>
+                )}
+                {!disablePendingOrder && bill.isReserved && (
+                  <span title={checkoutDisabledReason || undefined} className="inline-flex">
+                    <Button variant="secondary" size="lg" onClick={() => handleReCheckoutOrder(true)} disabled={open || vaild || !enable}>
+                      掛單
+                    </Button>
+                  </span>
+                )}
+                {renderActionText() && status !== 'edit' && (
+                  <span title={checkoutDisabledReason || undefined} className="inline-flex">
+                    {/* 停用時改成深字灰底（比照打帳單；原本淡藍底白字對比不足） */}
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      className="px-6 disabled:bg-surface-active disabled:text-text-secondary disabled:opacity-100"
+                      onClick={() => (disableRecheckoutOrders ? handleOpenReCheckout() : handleReCheckoutOrder())}
+                      disabled={open || vaild || !enable}
+                      data-testid="checkout"
+                    >
+                      {renderActionText()}
+                    </Button>
+                  </span>
+                )}
+              </div>
+            </BillActions>
+          )
+        }
       >
         <ReCheckoutPasswordDialog
           open={openDialog}

@@ -39,7 +39,7 @@ export default function PanelMerchantSells({ thirdPartTicket }) {
       }
       setSells(newSells)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [order.loading])
   function handleClear({ index }) {
     let newSells = cloneDeep(sells)
@@ -147,10 +147,13 @@ export default function PanelMerchantSells({ thirdPartTicket }) {
         data-testid="merchantSell"
         onClick={handleAccordionClick}
         // 收合時顯示「已填 N 筆 · 小計」（只讀畫面上的項目列，不參與計算或送出；比照打帳單）
-        summaryMeta={!expanded && panelSummary(
-          sells.filter(d => d.productId).length,
-          sells.filter(d => d.productId).reduce((total, d) => total + d.price * d.count, 0)
-        )}
+        summaryMeta={
+          !expanded &&
+          panelSummary(
+            sells.filter(d => d.productId).length,
+            sells.filter(d => d.productId).reduce((total, d) => total + d.price * d.count, 0)
+          )
+        }
         style={{ width: '100%' }}
       >
         <p className="m-0 !text-[16px] font-bold text-text">店販銷售</p>

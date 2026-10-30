@@ -6,22 +6,20 @@ import produce from 'immer'
 
 const options = {
   des: [
-    { value: 'VALUE', label: '總金額'},
-    { value: 'FAKE', label: '總虛業績'},
-    { value: 'TRUTH', label: '總實業績'},
-    { value: 'DESIGNATETRUTH', label: '指定實業績'}
+    { value: 'VALUE', label: '總金額' },
+    { value: 'FAKE', label: '總虛業績' },
+    { value: 'TRUTH', label: '總實業績' },
+    { value: 'DESIGNATETRUTH', label: '指定實業績' },
   ],
   nonDes: [
-    { value: 'VALUE', label: '總金額'},
-    { value: 'FAKE', label: '總虛業績'},
-    { value: 'TRUTH', label: '總實業績'},
-    { value: 'NONDESIGNATETRUTH', label: '不指定實業績'}
-  ]
+    { value: 'VALUE', label: '總金額' },
+    { value: 'FAKE', label: '總虛業績' },
+    { value: 'TRUTH', label: '總實業績' },
+    { value: 'NONDESIGNATETRUTH', label: '不指定實業績' },
+  ],
 }
 
-function AboutMerchantRakePerformanceRefer({
-  className, merchantRakeReferemce, setMerchantRakeReferemce, inputEnable,
-}) {
+function AboutMerchantRakePerformanceRefer({ className, merchantRakeReferemce, setMerchantRakeReferemce, inputEnable }) {
   const handleValueChange = (e, key) => {
     setMerchantRakeReferemce(
       produce(draft => {
@@ -37,7 +35,7 @@ function AboutMerchantRakePerformanceRefer({
       <CardContent>
         <div className="flex items-center">
           <div className="flex flex-wrap items-center gap-2 p-2">
-            <Field label='指定'>
+            <Field label="指定">
               <NativeSelect
                 disabled={!inputEnable}
                 fullWidth={false}
@@ -52,7 +50,7 @@ function AboutMerchantRakePerformanceRefer({
                 ))}
               </NativeSelect>
             </Field>
-            <Field label='不指定'>
+            <Field label="不指定">
               <NativeSelect
                 disabled={!inputEnable}
                 fullWidth={false}

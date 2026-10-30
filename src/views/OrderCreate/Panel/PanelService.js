@@ -21,10 +21,7 @@ const styles = {
 }
 
 function PanelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
-  const {
-    handleBillChange, bindedThirdPart, bill,
-    services, setServices,
-  } = useContext(billContext)
+  const { handleBillChange, bindedThirdPart, bill, services, setServices } = useContext(billContext)
   const techingModeContext = useContext(TeachingModeContext)
   const { teachingMode } = techingModeContext
 
@@ -51,7 +48,7 @@ function PanelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
   const [helperFromModal, setHelperFromModal] = useState([])
 
   useEffect(() => {
-    if(reset === 'reset'){
+    if (reset === 'reset') {
       setFocusRow(0)
       setServices([
         {
@@ -59,11 +56,11 @@ function PanelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
           price: 0,
           thirdPartyCouponMerchantId: null,
           serviceOrderHelpers: [],
-        }
+        },
       ])
     }
   }, [reset, setServices])
-  
+
   useEffect(() => {
     if (!serviceCategoriesData.loading && !servicesData.loading) {
       const serviceCategories = idx(serviceCategoriesData, _ => _.data.serviceCategories)
@@ -73,19 +70,16 @@ function PanelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
       setServicesInModal(servicesInModal)
     } else {
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [serviceCategoriesData.loading, servicesData.loading])
   // 打帳單判斷指定助理服務顯示checkbox變數
   useEffect(() => {
     if (!isHelperDesignationData.loading) {
-      const isHelperDesignation = idx(
-        isHelperDesignationData,
-        _ => _.data.getIsHelperDesignationDisplay
-      )
+      const isHelperDesignation = idx(isHelperDesignationData, _ => _.data.getIsHelperDesignationDisplay)
 
       setIsHelperDesignationData(isHelperDesignation)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isHelperDesignationData.loading])
 
   useEffect(() => {
@@ -93,7 +87,7 @@ function PanelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
       setFocusRow(0)
     }
   }, [expanded])
-  
+
   const handleAddService = () => {
     const newServices = cloneDeep(services)
     newServices.push({
@@ -254,16 +248,17 @@ function PanelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
       <AccordionSummary
         style={{ width: '100%' }}
         onClick={onPanelClick}
-        summaryMeta={!expanded && panelSummary(
-          bill.serviceOrders.filter(d => d.serviceId).length,
-          bill.serviceOrders.reduce((total, d) => total + d.price, 0)
-        )}
+        summaryMeta={
+          !expanded &&
+          panelSummary(
+            bill.serviceOrders.filter(d => d.serviceId).length,
+            bill.serviceOrders.reduce((total, d) => total + d.price, 0)
+          )
+        }
         data-testid="panelService"
       >
         <p className={`m-0 ${styles.heading}`}>項目消費</p>
-        {teachingMode && (
-          <p className={`m-0 ${styles.heading2}`}>服務項目必須設定好助理才能輸入助理**</p>
-        )}
+        {teachingMode && <p className={`m-0 ${styles.heading2}`}>服務項目必須設定好助理才能輸入助理**</p>}
       </AccordionSummary>
       <AccordionDetails className={styles.details}>
         <div className={styles.fieldOutter}>

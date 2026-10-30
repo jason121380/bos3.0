@@ -19,15 +19,88 @@ const generate = require('@babel/generator').default
 const t = require('@babel/types')
 
 const PRESENTATIONAL = new Set([
-  'className', 'css', 'sx', 'style', 'variant', 'color', 'size', 'fontSize', 'elevation', 'square', 'disableGutters',
-  'xs', 'sm', 'md', 'lg', 'xl', 'spacing', 'item', 'container', 'direction', 'justifyContent', 'justify', 'alignItems',
-  'alignContent', 'wrap', 'zeroMinWidth', 'columns', 'rowSpacing', 'columnSpacing', 'maxWidth', 'fixed', 'component',
-  'align', 'gutterBottom', 'noWrap', 'paragraph', 'display', 'edge', 'disableElevation', 'disableRipple', 'fullWidth',
-  'margin', 'dense', 'padding', 'stickyHeader', 'orientation', 'flexItem', 'textAlign', 'startIcon', 'endIcon', 'icon',
-  'avatar', 'action', 'titleTypographyProps', 'subheaderTypographyProps', 'primaryTypographyProps', 'secondaryTypographyProps',
-  'PaperProps', 'TransitionComponent', 'timeout', 'unmountOnExit', 'scroll', 'aria-labelledby', 'aria-describedby',
-  'aria-label', 'id', 'data-testid', 'underline', 'thickness', 'disableTypography', 'role', 'tabIndex', 'inputProps',
-  'InputLabelProps', 'InputProps', 'shrink', 'autoFocus', 'placement', 'arrow', 'classes', 'divider', 'square',
+  'className',
+  'css',
+  'sx',
+  'style',
+  'variant',
+  'color',
+  'size',
+  'fontSize',
+  'elevation',
+  'square',
+  'disableGutters',
+  'xs',
+  'sm',
+  'md',
+  'lg',
+  'xl',
+  'spacing',
+  'item',
+  'container',
+  'direction',
+  'justifyContent',
+  'justify',
+  'alignItems',
+  'alignContent',
+  'wrap',
+  'zeroMinWidth',
+  'columns',
+  'rowSpacing',
+  'columnSpacing',
+  'maxWidth',
+  'fixed',
+  'component',
+  'align',
+  'gutterBottom',
+  'noWrap',
+  'paragraph',
+  'display',
+  'edge',
+  'disableElevation',
+  'disableRipple',
+  'fullWidth',
+  'margin',
+  'dense',
+  'padding',
+  'stickyHeader',
+  'orientation',
+  'flexItem',
+  'textAlign',
+  'startIcon',
+  'endIcon',
+  'icon',
+  'avatar',
+  'action',
+  'titleTypographyProps',
+  'subheaderTypographyProps',
+  'primaryTypographyProps',
+  'secondaryTypographyProps',
+  'PaperProps',
+  'TransitionComponent',
+  'timeout',
+  'unmountOnExit',
+  'scroll',
+  'aria-labelledby',
+  'aria-describedby',
+  'aria-label',
+  'id',
+  'data-testid',
+  'underline',
+  'thickness',
+  'disableTypography',
+  'role',
+  'tabIndex',
+  'inputProps',
+  'InputLabelProps',
+  'InputProps',
+  'shrink',
+  'autoFocus',
+  'placement',
+  'arrow',
+  'classes',
+  'divider',
+  'square',
 ])
 const PARSE_OPTS = { sourceType: 'module', plugins: ['jsx', 'classProperties', 'optionalChaining', 'nullishCoalescingOperator'] }
 
@@ -38,14 +111,22 @@ function codeWithoutJsx(node) {
   const clone = t.cloneNode(node, true)
   const file = t.file(t.program([t.isStatement(clone) ? clone : t.expressionStatement(clone)]))
   traverse(file, {
-    JSXElement(p) { p.replaceWith(t.identifier('__JSX__')) },
-    JSXFragment(p) { p.replaceWith(t.identifier('__JSX__')) },
+    JSXElement(p) {
+      p.replaceWith(t.identifier('__JSX__'))
+    },
+    JSXFragment(p) {
+      p.replaceWith(t.identifier('__JSX__'))
+    },
   })
   return compact(file.program.body[0]).replace(/;$/, '')
 }
 
 // 含 __JSX__ 的運算式：拆成非 JSX 片段逐段比對（允許外層多包一層呼叫，如 section('標題', <…/>)）
-const fragments = code => code.split('__JSX__').map(s => s.replace(/^[\s,)(]+|[\s,(]+$/g, '')).filter(s => s.length > 1)
+const fragments = code =>
+  code
+    .split('__JSX__')
+    .map(s => s.replace(/^[\s,)(]+|[\s,(]+$/g, ''))
+    .filter(s => s.length > 1)
 const present = (code, corpus) => corpus.includes(code) || (code.includes('__JSX__') && fragments(code).every(f => corpus.includes(f)))
 
 function analyze(code) {
@@ -57,13 +138,17 @@ function analyze(code) {
     // 非 JSX 敘述：函式內與頂層的每一句（import 與 styles 物件除外）
     Statement(p) {
       const n = p.node
-      if (t.isImportDeclaration(n) || t.isBlockStatement(n) || t.isProgram(p.parent) && t.isExportDefaultDeclaration(n)) return
+      if (t.isImportDeclaration(n) || t.isBlockStatement(n) || (t.isProgram(p.parent) && t.isExportDefaultDeclaration(n))) return
       if (t.isVariableDeclaration(n) && n.declarations.every(d => t.isIdentifier(d.id) && /^(styles?|useStyles|classes|.*Styles)$/.test(d.id.name))) {
-        p.skip(); return
+        p.skip()
+        return
       }
       // 只收「最內層」敘述：含函式本體的宣告不整句比對，交給內部敘述
       if (t.isFunctionDeclaration(n) || t.isClassDeclaration(n)) return
-      if (t.isVariableDeclaration(n) && n.declarations.some(d => t.isFunction(d.init) || (t.isCallExpression(d.init) && d.init.arguments.some(a => t.isFunction(a))))) {
+      if (
+        t.isVariableDeclaration(n) &&
+        n.declarations.some(d => t.isFunction(d.init) || (t.isCallExpression(d.init) && d.init.arguments.some(a => t.isFunction(a))))
+      ) {
         // 例如 const handleX = () => {...}、useEffect 包在變數中：比對宣告名稱＋函式內部敘述
         n.declarations.forEach(d => {
           if (!t.isIdentifier(d.id)) return
@@ -78,11 +163,29 @@ function analyze(code) {
       if (t.isExpressionStatement(n) && t.isCallExpression(n.expression) && n.expression.arguments.some(a => t.isFunction(a))) {
         // 例如 useEffect(() => {...}, [deps])：比對呼叫名稱與依賴陣列，函式內部敘述另外收
         const c = n.expression
-        statements.push(`call:${compact(c.callee)}(${c.arguments.filter(a => !t.isFunction(a)).map(compact).join(',')})`)
+        statements.push(
+          `call:${compact(c.callee)}(${c.arguments
+            .filter(a => !t.isFunction(a))
+            .map(compact)
+            .join(',')})`
+        )
         return
       }
-      if (t.isReturnStatement(n) && n.argument && (t.isJSXElement(n.argument) || t.isJSXFragment(n.argument) || t.isParenthesizedExpression(n.argument))) return
-      if (t.isIfStatement(n) || t.isForStatement(n) || t.isForOfStatement(n) || t.isForInStatement(n) || t.isWhileStatement(n) || t.isSwitchStatement(n) || t.isTryStatement(n)) {
+      if (
+        t.isReturnStatement(n) &&
+        n.argument &&
+        (t.isJSXElement(n.argument) || t.isJSXFragment(n.argument) || t.isParenthesizedExpression(n.argument))
+      )
+        return
+      if (
+        t.isIfStatement(n) ||
+        t.isForStatement(n) ||
+        t.isForOfStatement(n) ||
+        t.isForInStatement(n) ||
+        t.isWhileStatement(n) ||
+        t.isSwitchStatement(n) ||
+        t.isTryStatement(n)
+      ) {
         statements.push(`ctrl:${codeWithoutJsx(n.test || n.discriminant || n.right || t.identifier('try'))}`)
         return
       }
@@ -100,7 +203,7 @@ function analyze(code) {
     JSXExpressionContainer(p) {
       if (t.isJSXAttribute(p.parent) || t.isJSXEmptyExpression(p.node.expression)) return
       const e = p.node.expression
-      if (t.isStringLiteral(e) || t.isTemplateLiteral(e) && !e.expressions.length) return
+      if (t.isStringLiteral(e) || (t.isTemplateLiteral(e) && !e.expressions.length)) return
       exprs.push({ name: 'children', code: codeWithoutJsx(e) })
     },
     JSXText(p) {
@@ -115,21 +218,45 @@ const args = process.argv.slice(2)
 let base = 'HEAD'
 let head = null // 預設讀工作目錄；指定 --head <ref> 時讀該版本（用於回頭驗證歷史 commit）
 const bi = args.indexOf('--base')
-if (bi >= 0) { base = args[bi + 1]; args.splice(bi, 2) }
+if (bi >= 0) {
+  base = args[bi + 1]
+  args.splice(bi, 2)
+}
 const hi = args.indexOf('--head')
-if (hi >= 0) { head = args[hi + 1]; args.splice(hi, 2) }
-const readNew = f => head
-  ? execFileSync('git', ['show', `${head}:${f}`], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, stdio: ['pipe', 'pipe', 'ignore'] })
-  : fs.readFileSync(f, 'utf8')
+if (hi >= 0) {
+  head = args[hi + 1]
+  args.splice(hi, 2)
+}
+const readNew = f =>
+  head
+    ? execFileSync('git', ['show', `${head}:${f}`], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, stdio: ['pipe', 'pipe', 'ignore'] })
+    : fs.readFileSync(f, 'utf8')
 
 let failed = 0
 for (const f of args) {
   let before
-  try { before = execFileSync('git', ['show', `${base}:${f}`], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, stdio: ['pipe', 'pipe', 'ignore'] }) } catch (e) { console.log(`SKIP（無基準版本）${f}`); continue }
+  try {
+    before = execFileSync('git', ['show', `${base}:${f}`], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, stdio: ['pipe', 'pipe', 'ignore'] })
+  } catch (e) {
+    console.log(`SKIP（無基準版本）${f}`)
+    continue
+  }
   let after
-  try { after = readNew(f) } catch (e) { console.log(`SKIP（已刪除）${f}`); continue }
+  try {
+    after = readNew(f)
+  } catch (e) {
+    console.log(`SKIP（已刪除）${f}`)
+    continue
+  }
   let A, B
-  try { A = analyze(before); B = analyze(after) } catch (e) { console.log(`FAIL ${f}：無法解析 ${e.message}`); failed++; continue }
+  try {
+    A = analyze(before)
+    B = analyze(after)
+  } catch (e) {
+    console.log(`FAIL ${f}：無法解析 ${e.message}`)
+    failed++
+    continue
+  }
   const missingStmts = A.statements.filter(s => !B.statements.includes(s))
   const missingExprs = A.exprs.filter(e => !present(e.code, B.corpus))
   const newTexts = new Set(B.texts.join('\n').split('\n'))

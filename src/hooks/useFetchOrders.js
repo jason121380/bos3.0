@@ -120,7 +120,7 @@ export const useFetchDesignerOrderRecords = input => {
   }
 }
 
-  const FETCH_ORDERS_FOR_FAST_CHECK = gql`
+const FETCH_ORDERS_FOR_FAST_CHECK = gql`
   query FETCH_ORDERS_FOR_FAST_CHECK($input: OrdersInput!) {
     orders(input: $input) {
       intervalSummary {
@@ -183,7 +183,7 @@ export const useFetchDesignerOrderRecords = input => {
 export function useFetchOrdersFastCheckLazy() {
   const [ordersFastCheckLazy, ordersFastCheckLazyData] = useLazyQuery(FETCH_ORDERS_FOR_FAST_CHECK, {
     fetchPolicy: 'cache-and-network',
-  }) 
+  })
   return [ordersFastCheckLazy, ordersFastCheckLazyData]
 }
 

@@ -4,9 +4,7 @@ import { Tabs } from 'ui/tabs'
 import { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
 import { CalendarDays, ChartColumn, Clock, FileText, KeyRound, Percent, Receipt, User, Wallet } from 'lucide-react'
 import { Provider } from 'context/designerContext'
-import useFetchMerchantDesigner, {
-  useFetcDesignerFixedSalaryItemsLazy,
-} from 'hooks/useFetchMerchantDesigner'
+import useFetchMerchantDesigner, { useFetcDesignerFixedSalaryItemsLazy } from 'hooks/useFetchMerchantDesigner'
 import { useFetchOrdersLazy } from 'hooks/useFetchOrders'
 import { useFetchGetIsCustomerBonusActiveLazy } from 'hooks/useFetchGetIsCustomerBonusActive'
 import { useFetchGetOrderListLazy } from 'hooks/useFetchGetOrderList'
@@ -85,9 +83,7 @@ function Settings({ match, history }) {
     startDate: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).getTime(),
   })
   const [rakeReportDate, setRakeReportDate] = useState({
-    startDate: urlParams.has('startDate')
-      ? +urlParams.get('startDate')
-      : startOfDay(new Date()).getTime(),
+    startDate: urlParams.has('startDate') ? +urlParams.get('startDate') : startOfDay(new Date()).getTime(),
     endDate: urlParams.has('endDate') ? +urlParams.get('endDate') : endOfDay(new Date()).getTime(),
   })
   const [userPaySlip, setUserPaySlip] = useState([])
@@ -117,31 +113,17 @@ function Settings({ match, history }) {
 
   const { memberActiveLazy, memberActiveLazyData } = useFetchGetIsMemberShipCardActiveLazy()
   const { getOrderListLazy, getOrderListLazyData } = useFetchGetOrderListLazy()
-  const {
-    fetchDesignerRakeReportLazy,
-    designerRakeReportLazyData,
-  } = useFetchDesignerRakeReportLazy()
-  const {
-    fetchMerchantSalaryIncreaseItemsLazy,
-    merchantSalaryIncreaseItemsLazyData,
-  } = useFetchMerchantSalaryIncreaseItemsLazy()
+  const { fetchDesignerRakeReportLazy, designerRakeReportLazyData } = useFetchDesignerRakeReportLazy()
+  const { fetchMerchantSalaryIncreaseItemsLazy, merchantSalaryIncreaseItemsLazyData } = useFetchMerchantSalaryIncreaseItemsLazy()
 
-  const {
-    fetchMerchantSalaryDecreaseItemsLazy,
-    merchantSalaryDecreaseItemsLazyData,
-  } = useFetchMerchantSalaryDecreaseItemsLazy()
+  const { fetchMerchantSalaryDecreaseItemsLazy, merchantSalaryDecreaseItemsLazyData } = useFetchMerchantSalaryDecreaseItemsLazy()
 
-  const {
-    fetcDesignerFixedSalaryItemsLazy,
-    designerFixedSalaryItemsLazyData,
-  } = useFetcDesignerFixedSalaryItemsLazy()
+  const { fetcDesignerFixedSalaryItemsLazy, designerFixedSalaryItemsLazyData } = useFetcDesignerFixedSalaryItemsLazy()
 
   const { fetchUserSalaryReportLazy, userSalaryReportLazyData } = useFetchUserSalaryReportLazy()
 
-  const {
-    fetchGetIsDisplayFakePerformanceInSalaryReportLazy,
-    getIsDisplayFakePerformanceInSalaryReportLazyData,
-  } = useFetchGetIsDisplayFakePerformanceInSalaryReportLazy()
+  const { fetchGetIsDisplayFakePerformanceInSalaryReportLazy, getIsDisplayFakePerformanceInSalaryReportLazyData } =
+    useFetchGetIsDisplayFakePerformanceInSalaryReportLazy()
   const { fetchUserAttendanceLazy, uerAttendanceLazyData } = useFetchUserAttendanceLazy()
   const [getIsEPWDDisplayLazy, getIsEPWDDisplayLazyData] = useFetchGetIsEPWDDisplayLazy()
 
@@ -153,7 +135,7 @@ function Settings({ match, history }) {
       const data = idx(getIsBookingCusCheckUsing, _ => _.data.getIsBookingCusCheckUsing)
       setBookingCusCheck(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBookingCusCheckUsing.loading])
 
   useEffect(() => {
@@ -185,7 +167,7 @@ function Settings({ match, history }) {
         // 其他值不處理（與原本沒有 default 時相同）
         break
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [currentTab] 變動時執行；attendance.length、getAttendanceRecord、getOrderRecordsData、getRakeReport、getSalaryItems、getSalaryReport、orderRecords.length、rakeReport.length、salaryIncreaseItemsReformatted.length、userPaySlip.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [currentTab] 變動時執行；attendance.length、getAttendanceRecord、getOrderRecordsData、getRakeReport、getSalaryItems、getSalaryReport、orderRecords.length、rakeReport.length、salaryIncreaseItemsReformatted.length、userPaySlip.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [currentTab])
 
   useEffect(() => {
@@ -202,7 +184,7 @@ function Settings({ match, history }) {
       default:
         break
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [resultsSetting, getLastMonth] 變動時執行；currentTab、getAttendanceRecord、getOrderRecordsData、getSalaryReport 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [resultsSetting, getLastMonth] 變動時執行；currentTab、getAttendanceRecord、getOrderRecordsData、getSalaryReport 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [resultsSetting, getLastMonth])
 
   const getOrderRecordsData = () => {
@@ -219,9 +201,12 @@ function Settings({ match, history }) {
 
   useEffect(() => {
     if (
-      !getOrderListLazyData.loading && getOrderListLazyData.data !== undefined &&
-      !memberActiveLazyData.loading && memberActiveLazyData.data !== undefined &&
-      !customerBonusActiveData.loading && customerBonusActiveData.data !== undefined
+      !getOrderListLazyData.loading &&
+      getOrderListLazyData.data !== undefined &&
+      !memberActiveLazyData.loading &&
+      memberActiveLazyData.data !== undefined &&
+      !customerBonusActiveData.loading &&
+      customerBonusActiveData.data !== undefined
     ) {
       const performance = idx(getOrderListLazyData, _ => _.data.getOrderList.intervalSummary.membership)
       const active = idx(memberActiveLazyData, _ => _.data.getIsMemberShipCardActive)
@@ -230,7 +215,7 @@ function Settings({ match, history }) {
       setMembershipDisplay(active || performance !== 0)
       setOrderRecords(getOrderListLazyData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getOrderListLazyData.loading, memberActiveLazyData.loading, customerBonusActiveData.loading])
 
   const getRakeReport = () => {
@@ -248,12 +233,12 @@ function Settings({ match, history }) {
     if (!designerRakeReportLazyData.loading && designerRakeReportLazyData.data !== undefined) {
       setRakeReport(designerRakeReportLazyData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designerRakeReportLazyData.loading])
 
   useEffect(() => {
     getRakeReport()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getRakeReport）；只在 [rakeReportDate] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getRakeReport）；只在 [rakeReportDate] 變動時呼叫，補上會每次 render 重跑
   }, [rakeReportDate])
 
   const getSalaryItems = () => {
@@ -285,15 +270,12 @@ function Settings({ match, history }) {
       !getIsDisplayFakePerformanceInSalaryReportLazyData.loading &&
       getIsDisplayFakePerformanceInSalaryReportLazyData.data !== undefined
     ) {
-      const FakePerformance = idx(
-        getIsDisplayFakePerformanceInSalaryReportLazyData,
-        _ => _.data.getIsDisplayFakePerformanceInSalaryReport
-      )
+      const FakePerformance = idx(getIsDisplayFakePerformanceInSalaryReportLazyData, _ => _.data.getIsDisplayFakePerformanceInSalaryReport)
 
       setIsDisplayFakePerformance(FakePerformance)
       setUserPaySlip(userSalaryReportLazyData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [userSalaryReportLazyData.loading, getIsDisplayFakePerformanceInSalaryReportLazyData.loading])
 
   // 初始化薪資加項需要的state
@@ -314,18 +296,12 @@ function Settings({ match, history }) {
           sorting: data.sorting,
         }))
       )
-      const increaseFixeSalaryItems = idx(
-        designerFixedSalaryItemsLazyData,
-        _ => _.data.merchantDesigner.fixedSalaryItem.increaseItem
-      )
+      const increaseFixeSalaryItems = idx(designerFixedSalaryItemsLazyData, _ => _.data.merchantDesigner.fixedSalaryItem.increaseItem)
       if (increaseFixeSalaryItems !== undefined && increaseReformatted !== undefined) {
         increaseReformatted.forEach(data => {
-          if (
-            increaseFixeSalaryItems.find(data2 => data2.itemName === data.itemName) !== undefined
-          ) {
+          if (increaseFixeSalaryItems.find(data2 => data2.itemName === data.itemName) !== undefined) {
             initIncrease.push({
-              itemName: increaseFixeSalaryItems.find(data2 => data2.itemName === data.itemName)
-                .itemName,
+              itemName: increaseFixeSalaryItems.find(data2 => data2.itemName === data.itemName).itemName,
               price: increaseFixeSalaryItems.find(data2 => data2.itemName === data.itemName).price,
               type: 'INCREASE',
               sorting: data.sorting,
@@ -363,7 +339,7 @@ function Settings({ match, history }) {
         })
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantSalaryIncreaseItemsLazyData.loading, designerFixedSalaryItemsLazyData.loading])
 
   // 初始化薪資扣項需要的state
@@ -384,18 +360,12 @@ function Settings({ match, history }) {
           sorting: data.sorting,
         }))
       )
-      const decreaseFixeSalaryItems = idx(
-        designerFixedSalaryItemsLazyData,
-        _ => _.data.merchantDesigner.fixedSalaryItem.decreaseItem
-      )
+      const decreaseFixeSalaryItems = idx(designerFixedSalaryItemsLazyData, _ => _.data.merchantDesigner.fixedSalaryItem.decreaseItem)
       if (decreaseFixeSalaryItems !== undefined && decreaseReformatted !== undefined) {
         decreaseReformatted.forEach(data => {
-          if (
-            decreaseFixeSalaryItems.find(data2 => data2.itemName === data.itemName) !== undefined
-          ) {
+          if (decreaseFixeSalaryItems.find(data2 => data2.itemName === data.itemName) !== undefined) {
             initDecrease.push({
-              itemName: decreaseFixeSalaryItems.find(data2 => data2.itemName === data.itemName)
-                .itemName,
+              itemName: decreaseFixeSalaryItems.find(data2 => data2.itemName === data.itemName).itemName,
               price: decreaseFixeSalaryItems.find(data2 => data2.itemName === data.itemName).price,
               type: 'DECREASE',
               sorting: data.sorting,
@@ -431,7 +401,7 @@ function Settings({ match, history }) {
         })
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantSalaryDecreaseItemsLazyData.loading, designerFixedSalaryItemsLazyData.loading])
 
   useEffect(() => {
@@ -439,18 +409,15 @@ function Settings({ match, history }) {
       const loginUserAuthName = idx(profile, _ => _.data.me.merchantIdentity.authorityName)
       setLoginUserAuthName(loginUserAuthName)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [profile.loading])
   useEffect(() => {
     if (!designer.loading) {
       setDesignerName(idx(designer, _ => _.data.merchantDesigner.name))
-      const clickedUserAuthName = idx(
-        designer,
-        _ => _.data.merchantDesigner.merchantIdentity.authorityName
-      )
+      const clickedUserAuthName = idx(designer, _ => _.data.merchantDesigner.merchantIdentity.authorityName)
       setClickedUserAuthName(clickedUserAuthName)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designer.loading])
 
   useEffect(() => {
@@ -460,7 +427,7 @@ function Settings({ match, history }) {
       const tmpArr = roleSectionAuthority(merchantAuth, loginUserAuthId, '編輯員工')
       setItemAuthority(tmpArr)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantAuthData.loading, profile.loading])
   const tabValue = [
     { value: 'general', label: '基本資料' },
@@ -512,7 +479,7 @@ function Settings({ match, history }) {
     if (!uerAttendanceLazyData.loading && uerAttendanceLazyData.data !== undefined) {
       setAttendance(uerAttendanceLazyData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [uerAttendanceLazyData.loading])
 
   const handleTabsChange = (event, newValue) => {
@@ -537,9 +504,8 @@ function Settings({ match, history }) {
       // 報到設定查詢失敗時保留預設值，不讓整頁拋錯（2026/10/30 自動掃描發現）
       if (data) setCheckinSettings(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantCheckinSettings.loading])
-
 
   useEffect(() => {
     if (!getBookinHistoryDisplay.loading) {
@@ -547,28 +513,23 @@ function Settings({ match, history }) {
       const data = Boolean(idx(getBookinHistoryDisplay, _ => _.data.getParameterAboutBookingSetting.isBookingHistoryDisplay))
       setBookingHistoryDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBookinHistoryDisplay.loading])
 
   if (!currentTabItem) return <Redirect to={`/management/employee/${id}/general`} />
 
   return (
     <Page className="ui-root min-h-screen" title={`${designerName} - ${findTabName()}`}>
-      <PageHeader
-        title={`${designerName} - 個人設定`}
-      />
+      <PageHeader title={`${designerName} - 個人設定`} />
 
       {/* 設定頁樣板（STYLE §12，比照顧客詳細資料）：桌機左選單＋右內容、手機頂部橫向捲動分頁；
           分頁切換仍是 history.push(分頁值)（同舊版點選），activationMode="manual"：方向鍵只移動焦點，Enter／點擊才切換；分頁內容元件不動 */}
-      <Tabs
-        className="md:flex md:items-stretch"
-        onValueChange={value => handleTabsChange(null, value)}
-        value={currentTab}
-        activationMode="manual"
-      >
+      <Tabs className="md:flex md:items-stretch" onValueChange={value => handleTabsChange(null, value)} value={currentTab} activationMode="manual">
         <SettingsTabsList aria-label="員工設定分類" className="noprint">
           {itemValue.map(item => (
-            <SettingsTabsTrigger key={item.value} value={item.value} icon={tabIcons[item.value]}>{item.label}</SettingsTabsTrigger>
+            <SettingsTabsTrigger key={item.value} value={item.value} icon={tabIcons[item.value]}>
+              {item.label}
+            </SettingsTabsTrigger>
           ))}
         </SettingsTabsList>
 
@@ -577,166 +538,168 @@ function Settings({ match, history }) {
           {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
             <div className="mb-4 flex items-center gap-3">
               <span className="text-label text-text-secondary">報到模式</span>
-              <Switch
-                aria-label="報到模式"
-                checked={checkinMode}
-                onChange={(e, v) => setCheckinMode(v)}
-              />
+              <Switch aria-label="報到模式" checked={checkinMode} onChange={(e, v) => setCheckinMode(v)} />
             </div>
           )}
           <div>
-              {currentTab === 'general' && (
-                <General
-                  designerId={id}
-                  setNameInHeader={setNameInHeader}
-                  itemAuthority={itemAuthority}
-                />
-              )}
-              {
-                currentTab === 'orderRecord' && (getOrderListLazyData.error ? <QueryFailed onRetry={getOrderRecordsData} /> : orderRecords.loading || orderRecords.data === undefined ?
-                  <TabLoading /> :
-                  idx(
-                    orderRecords,
-                    _ =>
-                      _.data.getOrderList.orderList && (
-                        <OrderRecord
-                          bonusDisplay={bonusDisplay}
-                          results={_.data.getOrderList.orderList}
-                          membershipDisplay={membershipDisplay}
-                          onChangePage={(_event, page) =>
-                            handlePageChange({
-                              value: page,
-                              key: 'pageOffset',
-                              name: 'orders',
-                            })
-                          }
-                          onChangeRowsPerPage={event => {
-                            handlePageChange({
-                              value: idx(event, _ => _.target.value),
-                              key: 'pageLimit',
-                              name: 'orders',
-                            })
-                          }}
-                          page={{
-                            limit: resultsSetting.orders.pageLimit,
-                            offset: resultsSetting.orders.pageOffset,
-                            count: _.data.getOrderList.orderList.length,
-                          }}
-                        />
-                      )
-                  ))}
-              {currentTab === 'AttendanceRecord' && (uerAttendanceLazyData.error ? <QueryFailed onRetry={getAttendanceRecord} /> : uerAttendanceLazyData.loading || uerAttendanceLazyData.data === undefined ?
-                <TabLoading /> : idx(attendance, _ =>
-                  _.data.user.attendanceRecords && (
-                    <AttendanceRecord
-                      results={_.data.user.attendanceRecords.records}
-                      onChangePage={(_event, page) =>
-                        handlePageChange({
-                          value: page,
-                          key: 'pageOffset',
-                          name: 'attendanceRecords',
-                        })
-                      }
-                      onChangeRowsPerPage={event => {
-                        handlePageChange({
-                          value: idx(event, _ => _.target.value),
-                          key: 'pageLimit',
-                          name: 'attendanceRecords',
-                        })
-                      }}
-                      page={{
-                        limit: _.data.user.attendanceRecords.pageLimit,
-                        offset: _.data.user.attendanceRecords.pageOffset,
-                        count: _.data.user.attendanceRecords.totalCount,
-                      }}
-                    />
-                  )
-                ))}
-              {currentTab === 'rakeReport' && (
-                designerRakeReportLazyData.error ? <QueryFailed onRetry={getRakeReport} /> :
+            {currentTab === 'general' && <General designerId={id} setNameInHeader={setNameInHeader} itemAuthority={itemAuthority} />}
+            {currentTab === 'orderRecord' &&
+              (getOrderListLazyData.error ? (
+                <QueryFailed onRetry={getOrderRecordsData} />
+              ) : orderRecords.loading || orderRecords.data === undefined ? (
+                <TabLoading />
+              ) : (
+                idx(
+                  orderRecords,
+                  _ =>
+                    _.data.getOrderList.orderList && (
+                      <OrderRecord
+                        bonusDisplay={bonusDisplay}
+                        results={_.data.getOrderList.orderList}
+                        membershipDisplay={membershipDisplay}
+                        onChangePage={(_event, page) =>
+                          handlePageChange({
+                            value: page,
+                            key: 'pageOffset',
+                            name: 'orders',
+                          })
+                        }
+                        onChangeRowsPerPage={event => {
+                          handlePageChange({
+                            value: idx(event, _ => _.target.value),
+                            key: 'pageLimit',
+                            name: 'orders',
+                          })
+                        }}
+                        page={{
+                          limit: resultsSetting.orders.pageLimit,
+                          offset: resultsSetting.orders.pageOffset,
+                          count: _.data.getOrderList.orderList.length,
+                        }}
+                      />
+                    )
+                )
+              ))}
+            {currentTab === 'AttendanceRecord' &&
+              (uerAttendanceLazyData.error ? (
+                <QueryFailed onRetry={getAttendanceRecord} />
+              ) : uerAttendanceLazyData.loading || uerAttendanceLazyData.data === undefined ? (
+                <TabLoading />
+              ) : (
+                idx(
+                  attendance,
+                  _ =>
+                    _.data.user.attendanceRecords && (
+                      <AttendanceRecord
+                        results={_.data.user.attendanceRecords.records}
+                        onChangePage={(_event, page) =>
+                          handlePageChange({
+                            value: page,
+                            key: 'pageOffset',
+                            name: 'attendanceRecords',
+                          })
+                        }
+                        onChangeRowsPerPage={event => {
+                          handlePageChange({
+                            value: idx(event, _ => _.target.value),
+                            key: 'pageLimit',
+                            name: 'attendanceRecords',
+                          })
+                        }}
+                        page={{
+                          limit: _.data.user.attendanceRecords.pageLimit,
+                          offset: _.data.user.attendanceRecords.pageOffset,
+                          count: _.data.user.attendanceRecords.totalCount,
+                        }}
+                      />
+                    )
+                )
+              ))}
+            {currentTab === 'rakeReport' &&
+              (designerRakeReportLazyData.error ? (
+                <QueryFailed onRetry={getRakeReport} />
+              ) : (
                 <RakeReport
                   rakeReportDate={rakeReportDate}
                   setRakeReportDate={setRakeReportDate}
                   designerRakeReport={idx(designerRakeReportLazyData, _ => _.data.userRakeReport)}
-                  loading={
-                    designerRakeReportLazyData.loading || designerRakeReportLazyData.data === undefined
-                  }
+                  loading={designerRakeReportLazyData.loading || designerRakeReportLazyData.data === undefined}
                 />
-              )}
-              {idx(
-                designer,
-                _ =>
-                  _.data.merchantDesigner && (
-                    <Provider value={{ designer: _.data.merchantDesigner }}>
-                      {currentTab === 'reservation' && (
-                        <DesignerWeekReservation
-                          className="pt-4"
+              ))}
+            {idx(
+              designer,
+              _ =>
+                _.data.merchantDesigner && (
+                  <Provider value={{ designer: _.data.merchantDesigner }}>
+                    {currentTab === 'reservation' && (
+                      <DesignerWeekReservation
+                        className="pt-4"
+                        designerId={id}
+                        checkinSettings={checkinSettings}
+                        bookingCusCheck={bookingCusCheck}
+                        checkinMode={checkinMode}
+                        bookingHistoryDisplay={bookingHistoryDisplay}
+                      />
+                    )}
+                    {currentTab === 'security' && <Security designerId={id} refetch={designer.refetch} />}
+                    {currentTab === 'permission' && <Permission designerId={id} />}
+                    {currentTab === 'profitSharing' && (
+                      <ProfitSharing
+                        designerId={id}
+                        refetch={designer.refetch}
+                        designerDataLoading={designer.loading}
+                        itemAuthority={itemAuthority}
+                      />
+                    )}
+                    {currentTab === 'paySlip' && (
+                      <PaySlip
+                        userPaySlip={idx(userPaySlip, _ =>
+                          _.data.userSalaryReport.filter(d => {
+                            return d.userId === id
+                          })
+                        )}
+                        date={getLastMonth}
+                        setGetLastMonth={setGetLastMonth}
+                        isDisplayFakePerformance={isDisplayFakePerformance}
+                        EPWDDisplay={getIsEPWDDisplayLazyData.data.getIsEPWDDisplay}
+                        loading={
+                          !userSalaryReportLazyData.loading &&
+                          userSalaryReportLazyData.data !== undefined &&
+                          !getIsDisplayFakePerformanceInSalaryReportLazyData.loading &&
+                          getIsDisplayFakePerformanceInSalaryReportLazyData.data !== undefined &&
+                          !getIsEPWDDisplayLazyData.loading &&
+                          getIsEPWDDisplayLazyData.loading !== undefined
+                        }
+                      />
+                    )}
+                    {currentTab === 'salaryItems' &&
+                      (merchantSalaryIncreaseItemsLazyData.loading ||
+                      merchantSalaryIncreaseItemsLazyData.data === undefined ||
+                      designerFixedSalaryItemsLazyData.loading ||
+                      designerFixedSalaryItemsLazyData.data === undefined ? (
+                        merchantSalaryIncreaseItemsLazyData.error || designerFixedSalaryItemsLazyData.error ? (
+                          <QueryFailed onRetry={getSalaryItems} />
+                        ) : (
+                          <TabLoading />
+                        )
+                      ) : (
+                        <SalaryItems
+                          salaryIncreaseItemsReformatted={salaryIncreaseItemsReformatted}
+                          setSalaryIncreaseItemsReformatted={setSalaryIncreaseItemsReformatted}
+                          salaryDecreaseItemsReformatted={salaryDecreaseItemsReformatted}
+                          setSalaryDecreaseItemsReformatted={setSalaryDecreaseItemsReformatted}
+                          increaseSecondContent={increaseSecondContent}
+                          setIncreaseSecondContent={setIncreaseSecondContent}
+                          decreaseSecondContent={decreaseSecondContent}
+                          setDecreaseSecondContent={setDecreaseSecondContent}
+                          setUserFixedSalaryItem={setUserFixedSalaryItem}
                           designerId={id}
-                          checkinSettings={checkinSettings}
-                          bookingCusCheck={bookingCusCheck}
-                          checkinMode={checkinMode}
-                          bookingHistoryDisplay={bookingHistoryDisplay}
+                          salaryDecreaseItemsReformatted2={salaryDecreaseItemsReformatted2}
                         />
-                      )}
-                      {currentTab === 'security' && (
-                        <Security designerId={id} refetch={designer.refetch} />
-                      )}
-                      {currentTab === 'permission' && <Permission designerId={id} />}
-                      {currentTab === 'profitSharing' && (
-                        <ProfitSharing
-                          designerId={id}
-                          refetch={designer.refetch}
-                          designerDataLoading={designer.loading}
-                          itemAuthority={itemAuthority}
-                        />
-                      )}
-                      {currentTab === 'paySlip' && (
-                        <PaySlip
-                          userPaySlip={idx(userPaySlip, _ =>
-                            _.data.userSalaryReport.filter(d => {
-                              return d.userId === id
-                            })
-                          )}
-                          date={getLastMonth}
-                          setGetLastMonth={setGetLastMonth}
-                          isDisplayFakePerformance={isDisplayFakePerformance}
-                          EPWDDisplay={getIsEPWDDisplayLazyData.data.getIsEPWDDisplay}
-                          loading={
-                            !userSalaryReportLazyData.loading &&
-                            userSalaryReportLazyData.data !== undefined &&
-                            !getIsDisplayFakePerformanceInSalaryReportLazyData.loading &&
-                            getIsDisplayFakePerformanceInSalaryReportLazyData.data !== undefined &&
-                            !getIsEPWDDisplayLazyData.loading &&
-                            getIsEPWDDisplayLazyData.loading !== undefined
-                          }
-                        />
-                      )}
-                      {currentTab === 'salaryItems' && (
-                        (
-                          merchantSalaryIncreaseItemsLazyData.loading ||
-                          merchantSalaryIncreaseItemsLazyData.data === undefined ||
-                          designerFixedSalaryItemsLazyData.loading ||
-                          designerFixedSalaryItemsLazyData.data === undefined
-                        ) ? (merchantSalaryIncreaseItemsLazyData.error || designerFixedSalaryItemsLazyData.error
-                          ? <QueryFailed onRetry={getSalaryItems} />
-                          : <TabLoading />)
-                          : <SalaryItems
-                            salaryIncreaseItemsReformatted={salaryIncreaseItemsReformatted}
-                            setSalaryIncreaseItemsReformatted={setSalaryIncreaseItemsReformatted}
-                            salaryDecreaseItemsReformatted={salaryDecreaseItemsReformatted}
-                            setSalaryDecreaseItemsReformatted={setSalaryDecreaseItemsReformatted}
-                            increaseSecondContent={increaseSecondContent}
-                            setIncreaseSecondContent={setIncreaseSecondContent}
-                            decreaseSecondContent={decreaseSecondContent}
-                            setDecreaseSecondContent={setDecreaseSecondContent}
-                            setUserFixedSalaryItem={setUserFixedSalaryItem}
-                            designerId={id}
-                            salaryDecreaseItemsReformatted2={salaryDecreaseItemsReformatted2}
-                          />
-                      )}
-                    </Provider>
-                  )
-              )}
+                      ))}
+                  </Provider>
+                )
+            )}
           </div>
         </div>
       </Tabs>

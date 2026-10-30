@@ -17,9 +17,7 @@ const GET_MERCHANT_JOBTITLE_POINT = settingsQuery(gql`
 `)
 
 export default function useFetchMerchantJobTitlePoint() {
-  const merchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
+  const merchantId = localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null
   return useQuery(GET_MERCHANT_JOBTITLE_POINT, {
     variables: {
       merchantId,
@@ -38,9 +36,7 @@ const GET_MERCHANT_JOBTITLE = settingsQuery(gql`
 `)
 
 export function useFetchMerchantJobTitleForEmployeeList() {
-  const merchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
+  const merchantId = localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null
   const [getJobTitle, jobTitleData] = useLazyQuery(GET_MERCHANT_JOBTITLE, {
     variables: {
       merchantId,

@@ -31,8 +31,8 @@ export default function BoughtResults({
   }
 
   useEffect(() => {
-    setReportData(results.slice(pageOffset * pageLimit, (pageOffset * pageLimit) + pageLimit))
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [results, page] 變動時執行；pageLimit、pageOffset 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    setReportData(results.slice(pageOffset * pageLimit, pageOffset * pageLimit + pageLimit))
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [results, page] 變動時執行；pageLimit、pageOffset 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [results, page])
 
   useEffect(() => {
@@ -41,17 +41,15 @@ export default function BoughtResults({
       csvData.push({
         '帳單編號/時間': `#${data.orderNo}_${format(data.orderDate, 'yyyy/MM/dd')}`,
         // 依店家設定遮罩姓名與手機（helper/exportCustomerMask，與帳單列表相同）
-        '客戶': isCustomerDataMarked
-          ? maskCustomerForExport(data.customerName, data.customerPhone)
-          : `${data.customerName} ${data.customerPhone}`,
+        '客戶': isCustomerDataMarked ? maskCustomerForExport(data.customerName, data.customerPhone) : `${data.customerName} ${data.customerPhone}`,
         '設計師': `${data.designerName} ${data.designerNo}`,
         '卡券代號': `${data.ticketNo}`,
         '卡券販賣': `${data.ticketName}`,
         '卡券販賣金額': `${roundDecimal(data.price)}`,
         '總張數': `${data.totalCount}`,
-        '剩餘張數': `${data.leftCount}`
+        '剩餘張數': `${data.leftCount}`,
       })
-    });
+    })
     csvData.push({
       '帳單編號/時間': '',
       '客戶': '',
@@ -60,12 +58,11 @@ export default function BoughtResults({
       '卡券販賣': '合計',
       '卡券販賣金額': `${handleCountTotal('price')}`,
       '總張數': `${handleCountTotal('totalCount')}`,
-      '剩餘張數': `${handleCountTotal('leftCount')}`
+      '剩餘張數': `${handleCountTotal('leftCount')}`,
     })
     setCsvData(csvData)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleCountTotal、roundDecimal）；只在 [reportData, isCustomerDataMarked] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleCountTotal、roundDecimal）；只在 [reportData, isCustomerDataMarked] 變動時呼叫，補上會每次 render 重跑
   }, [reportData, isCustomerDataMarked])
-
 
   return (
     <div {...rest} className={className}>
@@ -79,7 +76,7 @@ export default function BoughtResults({
         rowsPerPageOptions={[5, 10, 25, 50, 1000]}
         excelData={csvData}
         excelFilename="卡券販賣紀錄.csv"
-        tableHead={(
+        tableHead={
           <>
             <TableHead className="!px-2 !py-1">操作</TableHead>
             <TableHead className="!px-2 !py-1">帳單編號/時間</TableHead>
@@ -91,35 +88,27 @@ export default function BoughtResults({
             <TableHead className="!px-2 !py-1">總張數</TableHead>
             <TableHead className="!px-2 !py-1">現餘</TableHead>
           </>
-        )}
+        }
       >
         <TableBody>
           {reportData.map((data, index) => (
             <TableRow key={`${data.id}-${index}`}>
               <TableCell className="!px-2 !py-1">
                 <Button asChild size="sm" variant="secondary">
-                  <RouterLink to={`/order/${data.orderId}`}>
-                    詳情
-                  </RouterLink>
+                  <RouterLink to={`/order/${data.orderId}`}>詳情</RouterLink>
                 </Button>
               </TableCell>
               <TableCell className="!px-2 !py-1">
                 {data.orderNo}
-                <div className="text-caption tabular-nums text-text-secondary">
-                  {format(data.orderDate, 'yyyy/MM/dd')}
-                </div>
+                <div className="text-caption tabular-nums text-text-secondary">{format(data.orderDate, 'yyyy/MM/dd')}</div>
               </TableCell>
               <TableCell className="!px-2 !py-1">
                 {data.customerName}
-                <div className="text-caption tabular-nums text-text-secondary">
-                  {data.customerPhone}
-                </div>
+                <div className="text-caption tabular-nums text-text-secondary">{data.customerPhone}</div>
               </TableCell>
               <TableCell className="!px-2 !py-1">
                 {data.designerName}
-                <div className="text-caption tabular-nums text-text-secondary">
-                  {data.designerNo}
-                </div>
+                <div className="text-caption tabular-nums text-text-secondary">{data.designerNo}</div>
               </TableCell>
               <TableCell className="!px-2 !py-1">{data.ticketNo}</TableCell>
               <TableCell className="!px-2 !py-1">{data.ticketName}</TableCell>
@@ -137,6 +126,6 @@ export default function BoughtResults({
           </TableRow>
         </TableBody>
       </ManagementTable>
-    </div >
+    </div>
   )
 }

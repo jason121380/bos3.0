@@ -4,7 +4,7 @@ import idx from 'idx'
 import useFetchCustomerWalletBalance from 'hooks/useFetchCustomerWalletReport'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader, Toolbar } from 'ui/page-header'
@@ -36,10 +36,7 @@ const CustomerWalletBalance = () => {
   useEffect(() => {
     if (!customerWalletBalanceData.loading) {
       const excelData = []
-      const report = idx(
-        customerWalletBalanceData,
-        _ => _.data.customerWalletReport.customerWalletReport
-      ) || [] // 查詢失敗時以空陣列處理（原本 reduce 拋錯整頁錯誤；Jason 2026/10/22 fix all）
+      const report = idx(customerWalletBalanceData, _ => _.data.customerWalletReport.customerWalletReport) || [] // 查詢失敗時以空陣列處理（原本 reduce 拋錯整頁錯誤；Jason 2026/10/22 fix all）
       const sum = report.reduce((accu, curVal) => accu + curVal.leftWallet, 0)
       setReportForDisplay(report)
       report.forEach(data => {
@@ -56,7 +53,7 @@ const CustomerWalletBalance = () => {
       })
       setExcelData(excelData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerWalletBalanceData.loading, isCustomerDataMarked])
   let customerIdValue = ''
   if (pageSetting.customerId.length > 0) {
@@ -78,10 +75,7 @@ const CustomerWalletBalance = () => {
         title="顧客入金餘額表"
         actions={
           <Button asChild variant="secondary">
-            <CSVLink
-              data={excelData}
-              filename="顧客入金餘額表.csv"
-            >
+            <CSVLink data={excelData} filename="顧客入金餘額表.csv">
               <Download strokeWidth={1.75} />
               報表匯出
             </CSVLink>
@@ -109,8 +103,8 @@ const CustomerWalletBalance = () => {
         </div>
       </Toolbar>
       {customerWalletBalanceData.error ? (
-          <QueryFailed onRetry={() => customerWalletBalanceData.refetch()} />
-        ) : !customerWalletBalanceData.loading && reportForDisplay !== null ? (
+        <QueryFailed onRetry={() => customerWalletBalanceData.refetch()} />
+      ) : !customerWalletBalanceData.loading && reportForDisplay !== null ? (
         <Results report={reportForDisplay} />
       ) : (
         <Skeleton className="h-96" aria-busy="true" />

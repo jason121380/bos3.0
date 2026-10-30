@@ -42,12 +42,12 @@ const DecreaseDailyReport = () => {
     input: {
       date: date.startDate,
       identity: sortJobTitle,
-    }
+    },
   })
 
   useEffect(() => {
     isPriceDisplayOnDailyReportData.refetch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [date.startDate, sortJobTitle] 變動時執行；isPriceDisplayOnDailyReportData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [date.startDate, sortJobTitle] 變動時執行；isPriceDisplayOnDailyReportData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [date.startDate, sortJobTitle])
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const DecreaseDailyReport = () => {
       const data = idx(getHelperDailyReport, _ => _.data.helperDailyReport)
       setHelperReport(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getHelperDailyReport.loading])
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const DecreaseDailyReport = () => {
       const data = idx(designerNameForReportType, _ => _.data.getDesignerNameForReportType)
       setDesignerNameForReportTypeData(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designerNameForReportType.loading])
 
   useEffect(() => {
@@ -71,18 +71,15 @@ const DecreaseDailyReport = () => {
       const data = idx(optimizationPrintMode, _ => _.data.getIsOptimizationPrintModeOn)
       setPrintMode(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [optimizationPrintMode.loading])
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading) {
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       setIsMemberShipCardActive(isMemberShipCardActive)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
 
   useEffect(() => {
@@ -93,7 +90,7 @@ const DecreaseDailyReport = () => {
       )
       setPriceDisplayOnReport(isPriceDisplayOnDailyReport)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isPriceDisplayOnDailyReportData.loading])
 
   // Autocomplete元件的選項
@@ -111,7 +108,7 @@ const DecreaseDailyReport = () => {
       })
       setJobTitle(title)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantJobTitlePoint.loading])
 
   const handleChecked = value => {
@@ -123,7 +120,7 @@ const DecreaseDailyReport = () => {
   }
   return (
     <Page className="ui-root" title="互助日報表">
-      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'none', justifyContent: 'space-between' }}>
         <div className="merchantNamePrint">
           {JSON.parse(localStorage.getItem('userMerchant')).name +
             '   ' +
@@ -131,10 +128,7 @@ const DecreaseDailyReport = () => {
             '   ' +
             '互助日報表'}
         </div>
-        <div className="merchantNamePrint">
-          {'列印時間： ' +
-            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-        </div>
+        <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
       </div>
       <PageHeader
         title="互助日報表"
@@ -147,12 +141,7 @@ const DecreaseDailyReport = () => {
       />
       <ReportToolbar
         date={
-          <DateSelector
-            date={date}
-            attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
-            onlyStart
-            dateChange={value => setDate(value)}
-          />
+          <DateSelector date={date} attributes={['dbyesterday', 'yesterday', 'today', 'startDate']} onlyStart dateChange={value => setDate(value)} />
         }
       />
       <div className="noprint pb-6">
@@ -164,23 +153,16 @@ const DecreaseDailyReport = () => {
           onChange={(event, value) => handleChecked(value)}
           renderOption={(props, option, { selected }) => (
             <li {...props}>
-              <Checkbox
-                style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                icon={icon}
-                checkedIcon={checkedIcon}
-                checked={selected}
-              />
+              <Checkbox style={{ color: 'rgb(var(--text))', marginRight: 8 }} icon={icon} checkedIcon={checkedIcon} checked={selected} />
               {option.jobTitle}
             </li>
           )}
-          renderInput={params => (
-            <TextField {...params} variant="outlined" label="人員類別" placeholder="人員名稱" />
-          )}
+          renderInput={params => <TextField {...params} variant="outlined" label="人員類別" placeholder="人員名稱" />}
         />
       </div>
       {getHelperDailyReport.error ? (
-          <QueryFailed onRetry={() => getHelperDailyReport.refetch()} />
-        ) : !getHelperDailyReport.loading ? (
+        <QueryFailed onRetry={() => getHelperDailyReport.refetch()} />
+      ) : !getHelperDailyReport.loading ? (
         helperReport.length > 0 ? (
           <div className="DecreaseDailyReport grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 print:block">
             <Results

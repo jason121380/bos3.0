@@ -24,7 +24,7 @@ function EventRuleCreate({ match }) {
     name: '',
     start: new Date().getTime(),
     end: new Date().getTime(),
-    maxCount: 0
+    maxCount: 0,
   })
   const [inputValue, setInputValue] = useState(createRuleInput())
 
@@ -34,7 +34,7 @@ function EventRuleCreate({ match }) {
       const data = (idx(getAttribution, _ => _.data.getAttribution) || []).map(({ name }) => name)
       setAttributions(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAttribution.loading])
 
   useEffect(() => {
@@ -42,10 +42,7 @@ function EventRuleCreate({ match }) {
       const main = idx(getMainEvent, _ => _.data.mainEvent)
       // 主活動查詢失敗或查無主活動時不帶入（原本解構 undefined 整頁進入錯誤畫面）
       if (!main) return
-      const {
-        nameDefault, startDateDefault, endDateDefault,
-        isSMSNotifyDefault, maxCountDefault
-      } = main
+      const { nameDefault, startDateDefault, endDateDefault, isSMSNotifyDefault, maxCountDefault } = main
 
       const cloneData = cloneDeep(inputValue)
 
@@ -60,10 +57,10 @@ function EventRuleCreate({ match }) {
         name: nameDefault,
         start: startDateDefault,
         end: endDateDefault,
-        maxCount: maxCountDefault
+        maxCount: maxCountDefault,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [getMainEvent.loading] 變動時執行；getMainEvent、inputValue 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [getMainEvent.loading] 變動時執行；getMainEvent、inputValue 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [getMainEvent.loading])
 
   const handleSubmit = async () => {
@@ -75,21 +72,20 @@ function EventRuleCreate({ match }) {
       if (res.data.createEventRuleGroup) {
         openSnackbar({
           message: '建立成功',
-          variant: 'success'
+          variant: 'success',
         })
         history.push('/main-event-list')
       } else {
         openSnackbar({
           message: '建立失敗',
-          variant: 'warning'
+          variant: 'warning',
         })
         setIsClick(false)
       }
-
     } catch (error) {
       openSnackbar({
         message: error.message,
-        variant: 'error'
+        variant: 'error',
       })
       setIsClick(false)
     }

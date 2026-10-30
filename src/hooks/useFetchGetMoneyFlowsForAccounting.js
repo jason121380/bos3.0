@@ -32,7 +32,7 @@ const GET_MONEY_FLOW_FOR_ACCOUNTING = gql`
   }
 `
 
-export default function useFetchGetMoneyFlowsForAccounting ({ input }) {
+export default function useFetchGetMoneyFlowsForAccounting({ input }) {
   return useQuery(GET_MONEY_FLOW_FOR_ACCOUNTING, {
     variables: {
       input,

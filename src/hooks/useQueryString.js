@@ -5,15 +5,7 @@ export default function useQueryString() {
 
   const getQueryString = query => {
     return decodeURIComponent(
-      location.search.replace(
-        new RegExp(
-          '^(?:.*[&\\?]' +
-            encodeURIComponent(query).replace(/[.+*]/g, '\\$&') +
-            '(?:\\=([^&]*))?)?.*$',
-          'i'
-        ),
-        '$1'
-      )
+      location.search.replace(new RegExp('^(?:.*[&\\?]' + encodeURIComponent(query).replace(/[.+*]/g, '\\$&') + '(?:\\=([^&]*))?)?.*$', 'i'), '$1')
     )
   }
   return [getQueryString]

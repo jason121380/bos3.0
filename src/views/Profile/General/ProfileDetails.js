@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import { Fragment, useState, useRef, useCallback, useEffect } from 'react'
 import Cropper from 'react-easy-crop'
 import CropImage from './CropImage'
-import Resizer from "react-image-file-resizer";
+import Resizer from 'react-image-file-resizer'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchSetUserAvatar from 'hooks/useFetchSetUserAvatar'
 import { EditRounded as EditRoundedIcon } from 'ui/icons'
@@ -14,14 +14,9 @@ import { Avatar } from 'ui/avatar'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 
-function ProfileDetails({
-  profile,
-  refetchProfile,
-  className,
-  ...rest
-}) {
-  const [imageSrc, setImageSrc] = useState('');
-  const [avatarSrc, setAvatarSrc] = useState(profile.avatar);
+function ProfileDetails({ profile, refetchProfile, className, ...rest }) {
+  const [imageSrc, setImageSrc] = useState('')
+  const [avatarSrc, setAvatarSrc] = useState(profile.avatar)
   // 上傳成功後重抓個人資料，新的頭像網址要跟著換上（原本靠整頁 reload）
   useEffect(() => {
     setAvatarSrc(profile.avatar)
@@ -35,21 +30,21 @@ function ProfileDetails({
   const inputRef = useRef(null)
   const { setUserAvatar } = useFetchSetUserAvatar()
 
-  const resizeFile = (file) =>
-    new Promise((resolve) => {
+  const resizeFile = file =>
+    new Promise(resolve => {
       Resizer.imageFileResizer(
         file,
         300,
         300,
-        "jpeg",
+        'jpeg',
         70,
         0,
-        (uri) => {
-          resolve(uri);
+        uri => {
+          resolve(uri)
         },
-        "file"
-      );
-    });
+        'file'
+      )
+    })
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels)
@@ -58,36 +53,33 @@ function ProfileDetails({
   const showCroppedImage = useCallback(async () => {
     setBtnDisabled(true)
     try {
-      const croppedImage = await CropImage(
-        imageSrc,
-        croppedAreaPixels,
-        rotation
-      )
+      const croppedImage = await CropImage(imageSrc, croppedAreaPixels, rotation)
       const compressImg = await resizeFile(croppedImage)
       if (typeof compressImg === 'object') {
         setUserAvatar({
           file: compressImg,
-        }).then(res => {
-          if (res.data.setUserAvatar) {
-            openSnackbar({
-              message: '頭像上傳成功',
-              variant: 'success'
-            })
-            // 原本整頁 reload：改為關閉裁切窗並重抓個人資料，本頁與側欄的頭像一起更新（同一支 PROFILE 查詢，2026/10/28）
-            handleClose()
-            if (refetchProfile) refetchProfile()
-          } else {
-            openSnackbar({
-              message: '頭像上傳失敗',
-              variant: 'error'
-            })
-            setBtnDisabled(false)
-          }
         })
+          .then(res => {
+            if (res.data.setUserAvatar) {
+              openSnackbar({
+                message: '頭像上傳成功',
+                variant: 'success',
+              })
+              // 原本整頁 reload：改為關閉裁切窗並重抓個人資料，本頁與側欄的頭像一起更新（同一支 PROFILE 查詢，2026/10/28）
+              handleClose()
+              if (refetchProfile) refetchProfile()
+            } else {
+              openSnackbar({
+                message: '頭像上傳失敗',
+                variant: 'error',
+              })
+              setBtnDisabled(false)
+            }
+          })
           .catch(error => {
             openSnackbar({
               message: error.message,
-              variant: 'error'
+              variant: 'error',
             })
             setBtnDisabled(false)
           })
@@ -96,21 +88,25 @@ function ProfileDetails({
       setBtnDisabled(false)
       openSnackbar({
         message: error.message,
-        variant: 'error'
+        variant: 'error',
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [croppedAreaPixels] 變動時執行；imageSrc、refetchProfile、rotation、setUserAvatar 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [croppedAreaPixels] 變動時執行；imageSrc、refetchProfile、rotation、setUserAvatar 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [croppedAreaPixels])
 
   const onSelectFile = event => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.addEventListener("load", function () {
-      setImageSrc(reader.result)
-    }, false);
+    const file = event.target.files[0]
+    const reader = new FileReader()
+    reader.addEventListener(
+      'load',
+      function () {
+        setImageSrc(reader.result)
+      },
+      false
+    )
     setOpen(true)
     if (file) {
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file)
     }
   }
 
@@ -127,55 +123,49 @@ function ProfileDetails({
       {/* 裁切窗：只有裁切區與原生滑桿（無下拉／日期彈層），改用 ui Dialog；舊版沒有關閉鈕（Esc／點背景關閉），故 hideClose。
           裁切區高 300px、相對定位（原 initialize.scss .ProfileDetails .MuiDialog-paperWidthSm 規則）改在 DialogBody 上以 Tailwind 指定（選 react-easy-crop 容器的 data-testid="container"，即 .reactEasyCrop_Container） */}
       <Dialog open={open} onOpenChange={o => !o && handleClose()}>
-        <DialogContent size="md" hideClose aria-describedby={undefined} className='ProfileDetails'>
-        <DialogHeader className="pb-0">
-          <DialogTitle>選取頭像範圍</DialogTitle>
-        </DialogHeader>
-        <DialogBody className="[&_[data-testid=container]]:!relative [&_[data-testid=container]]:h-[300px] [&_[data-testid=container]]:w-full">
-          <Cropper
-            rotation={rotation}
-            image={imageSrc}
-            crop={crop}
-            zoom={zoom}
-            maxZoom={10}
-            aspect={1 / 1}
-            onCropChange={setCrop}
-            onCropComplete={onCropComplete}
-            onZoomChange={setZoom}
-          />
-          <div className="mt-[10px] flex flex-wrap gap-x-[20px] gap-y-[10px]">
-            <div className="flex min-w-[180px] grow items-center justify-end">
-              <div style={{ width: '50px' }}>旋轉</div>
-              <Slider value={rotation} min={0} max={360} step={1} onChange={(e, value) => setRotation(value)} />
+        <DialogContent size="md" hideClose aria-describedby={undefined} className="ProfileDetails">
+          <DialogHeader className="pb-0">
+            <DialogTitle>選取頭像範圍</DialogTitle>
+          </DialogHeader>
+          <DialogBody className="[&_[data-testid=container]]:!relative [&_[data-testid=container]]:h-[300px] [&_[data-testid=container]]:w-full">
+            <Cropper
+              rotation={rotation}
+              image={imageSrc}
+              crop={crop}
+              zoom={zoom}
+              maxZoom={10}
+              aspect={1 / 1}
+              onCropChange={setCrop}
+              onCropComplete={onCropComplete}
+              onZoomChange={setZoom}
+            />
+            <div className="mt-[10px] flex flex-wrap gap-x-[20px] gap-y-[10px]">
+              <div className="flex min-w-[180px] grow items-center justify-end">
+                <div style={{ width: '50px' }}>旋轉</div>
+                <Slider value={rotation} min={0} max={360} step={1} onChange={(e, value) => setRotation(value)} />
+              </div>
+              <div className="flex min-w-[180px] grow items-center justify-end">
+                <div style={{ width: '50px' }}>縮放</div>
+                <Slider value={zoom} min={1} max={10} step={0.1} onChange={(e, value) => setZoom(value)} />
+              </div>
             </div>
-            <div className="flex min-w-[180px] grow items-center justify-end">
-              <div style={{ width: '50px' }}>縮放</div>
-              <Slider value={zoom} min={1} max={10} step={0.1} onChange={(e, value) => setZoom(value)} />
-            </div>
-          </div>
 
-          <div className="my-2.5 flex justify-end gap-2">
-            <Button disabled={btnDisable} variant='ghost' onClick={handleClose}>取消</Button>
-            <Button disabled={btnDisable} onClick={showCroppedImage} variant='primary'>確認上傳</Button>
-          </div>
-        </DialogBody>
+            <div className="my-2.5 flex justify-end gap-2">
+              <Button disabled={btnDisable} variant="ghost" onClick={handleClose}>
+                取消
+              </Button>
+              <Button disabled={btnDisable} onClick={showCroppedImage} variant="primary">
+                確認上傳
+              </Button>
+            </div>
+          </DialogBody>
         </DialogContent>
       </Dialog>
       <Card {...rest} className={className}>
         <div className="flex flex-col items-center p-5 text-center">
           <div style={{ position: 'relative' }}>
-            <Avatar
-              className="h-[100px] w-[100px]"
-              src={avatarSrc}
-            />
-            <input
-              id='upload'
-              type="file"
-              accept=".jpg, .png, .webp"
-              style={{ display: "none" }}
-              onChange={onSelectFile}
-              ref={inputRef}
-            />
+            <Avatar className="h-[100px] w-[100px]" src={avatarSrc} />
+            <input id="upload" type="file" accept=".jpg, .png, .webp" style={{ display: 'none' }} onChange={onSelectFile} ref={inputRef} />
             <label
               className="absolute bottom-0 right-[-15px] flex cursor-pointer items-center text-text-secondary hover:text-text"
               htmlFor="upload"
@@ -184,15 +174,9 @@ function ProfileDetails({
               <EditRoundedIcon />
             </label>
           </div>
-          <h3 className="mt-3 text-heading text-text">
-            {idx(profile, _ => _.name)}
-          </h3>
-          <p className="mt-1 text-body text-text-secondary">
-            {idx(profile, _ => _.userGroup)}
-          </p>
-          <p className="text-caption text-text-secondary">
-            {idx(profile, _ => _.merchantIdentity.authorityName)}
-          </p>
+          <h3 className="mt-3 text-heading text-text">{idx(profile, _ => _.name)}</h3>
+          <p className="mt-1 text-body text-text-secondary">{idx(profile, _ => _.userGroup)}</p>
+          <p className="text-caption text-text-secondary">{idx(profile, _ => _.merchantIdentity.authorityName)}</p>
         </div>
       </Card>
     </Fragment>

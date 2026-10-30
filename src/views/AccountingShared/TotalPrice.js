@@ -15,14 +15,18 @@ export default function TotalPrice({ startDate, endDate, rev, exp }) {
             <TableRow className="hover:bg-transparent">
               <TableHead numeric>收入</TableHead>
               <TableHead numeric>支出</TableHead>
-              <TableHead numeric className="text-text">合計</TableHead>
+              <TableHead numeric className="text-text">
+                合計
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow>
               <TableCell numeric>{formatNumber(rev)}</TableCell>
               <TableCell numeric>{formatNumber(exp)}</TableCell>
-              <TableCell numeric className="font-medium">{formatNumber(rev - exp)}</TableCell>
+              <TableCell numeric className="font-medium">
+                {formatNumber(rev - exp)}
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>

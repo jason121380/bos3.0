@@ -141,7 +141,15 @@ function createPicker({ displayName, withTime, mobileOnly }) {
     const value = toDate(valueProp)
     const views = viewsProp || (withTime ? ['year', 'day', 'hours', 'minutes'] : ['year', 'day'])
     const firstView = openTo || (views.includes('day') ? 'day' : views[0])
-    const constraints = { minDate: minDate != null ? toDate(minDate) : minDate, maxDate: maxDate != null ? toDate(maxDate) : maxDate, disableFuture, disablePast, shouldDisableDate, maxDateTime, minDateTime }
+    const constraints = {
+      minDate: minDate != null ? toDate(minDate) : minDate,
+      maxDate: maxDate != null ? toDate(maxDate) : maxDate,
+      disableFuture,
+      disablePast,
+      shouldDisableDate,
+      maxDateTime,
+      minDateTime,
+    }
 
     const [openState, setOpenState] = React.useState(false)
     const open = openProp !== undefined ? openProp : openState
@@ -337,7 +345,12 @@ function createPicker({ displayName, withTime, mobileOnly }) {
           fullWidth
           className={tfRest.className}
           InputProps={{ ...tfInputProps, readOnly: true }}
-          inputProps={{ 'aria-label': ariaLabel, ...tfInputProps2, onChange: () => {}, className: cn('cursor-pointer', tfInputProps2 && tfInputProps2.className) }}
+          inputProps={{
+            'aria-label': ariaLabel,
+            ...tfInputProps2,
+            onChange: () => {},
+            className: cn('cursor-pointer', tfInputProps2 && tfInputProps2.className),
+          }}
           onClick={openPicker}
           onKeyDown={openOnKey}
         />
@@ -348,12 +361,19 @@ function createPicker({ displayName, withTime, mobileOnly }) {
     const toolbar = slotProps.toolbar || {}
     const title = localeText.toolbarTitle || (withTime ? '選擇日期與時間' : '選擇日期')
     // 未指定時：有日期視圖顯示「10月20日」（含時間加 HH:mm）；只有年月視圖時同 MUI 顯示「十月 2026」
-    const toolbarFormat = toolbar.toolbarFormat || (!views.includes('day') ? (views.includes('month') ? 'LLLL yyyy' : 'yyyy') : withTime ? 'M月d日 HH:mm' : 'M月d日')
+    const toolbarFormat =
+      toolbar.toolbarFormat || (!views.includes('day') ? (views.includes('month') ? 'LLLL yyyy' : 'yyyy') : withTime ? 'M月d日 HH:mm' : 'M月d日')
     const panel = (
       <div className="flex">
         {view === 'year' && <YearView value={value} month={month} constraints={constraints} onSelect={next => selectFrom('year', next)} />}
         {view === 'month' && (
-          <MonthView value={value} month={month} constraints={constraints} onOpenYear={() => views.includes('year') && setView('year')} onSelect={next => selectFrom('month', next)} />
+          <MonthView
+            value={value}
+            month={month}
+            constraints={constraints}
+            onOpenYear={() => views.includes('year') && setView('year')}
+            onSelect={next => selectFrom('month', next)}
+          />
         )}
         {view === 'day' && (
           <DayView
@@ -367,7 +387,13 @@ function createPicker({ displayName, withTime, mobileOnly }) {
           />
         )}
         {(view === 'hours' || view === 'minutes') && (
-          <TimeView value={isValidDate(value) ? value : reference()} maxDateTime={maxDateTime} minutesStep={minutesStep} onSelectHour={next => publish(next)} onSelectMinute={next => selectFrom('minutes', next)} />
+          <TimeView
+            value={isValidDate(value) ? value : reference()}
+            maxDateTime={maxDateTime}
+            minutesStep={minutesStep}
+            onSelectHour={next => publish(next)}
+            onSelectMinute={next => selectFrom('minutes', next)}
+          />
         )}
       </div>
     )
@@ -375,9 +401,20 @@ function createPicker({ displayName, withTime, mobileOnly }) {
     let overlay = null
     if (open && desktop) {
       overlay = (
-        <Popover open onOpenChange={next => { if (!next) dismiss() }}>
+        <Popover
+          open
+          onOpenChange={next => {
+            if (!next) dismiss()
+          }}
+        >
           <PopoverAnchor virtualRef={rootRef} />
-          <PopoverContent ref={paperRef} role="dialog" aria-label={title} side="bottom" align="start" sideOffset={4}
+          <PopoverContent
+            ref={paperRef}
+            role="dialog"
+            aria-label={title}
+            side="bottom"
+            align="start"
+            sideOffset={4}
             // 保留原 mousedown 外點規則：欄位、焦點移出及 pointerdown 均不額外關閉。
             onInteractOutside={event => event.preventDefault()}
             onOpenAutoFocus={event => {
@@ -387,22 +424,36 @@ function createPicker({ displayName, withTime, mobileOnly }) {
               const day = paperRef.current && paperRef.current.querySelector('[role="gridcell"][tabindex="0"]:not(:disabled)')
               if (day) day.focus()
             }}
-            onEscapeKeyDown={event => { event.preventDefault(); dismiss() }}
+            onEscapeKeyDown={event => {
+              event.preventDefault()
+              dismiss()
+            }}
             onCloseAutoFocus={event => {
               event.preventDefault()
               const target = openerRef.current
               // 外點已聚焦其他欄位時不搶回焦點；Esc／選值後則回到開啟欄位。
               if (target && target.isConnected && document.activeElement === document.body) target.focus()
             }}
-            className="ui-root overflow-hidden rounded-xl border border-solid border-border bg-background shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
+            className="ui-root overflow-hidden rounded-xl border border-solid border-border bg-background shadow-[0_4px_16px_rgba(0,0,0,0.08)]"
+          >
             {panel}
           </PopoverContent>
         </Popover>
       )
     } else if (open) {
       overlay = (
-        <Dialog open onOpenChange={next => { if (!next) dismiss() }}>
-          <DialogContent ref={paperRef} hideClose aria-label={title} aria-labelledby={undefined} aria-describedby={undefined}
+        <Dialog
+          open
+          onOpenChange={next => {
+            if (!next) dismiss()
+          }}
+        >
+          <DialogContent
+            ref={paperRef}
+            hideClose
+            aria-label={title}
+            aria-labelledby={undefined}
+            aria-describedby={undefined}
             onOpenAutoFocus={event => {
               if (view !== 'day') return
               event.preventDefault()
@@ -413,7 +464,8 @@ function createPicker({ displayName, withTime, mobileOnly }) {
               event.preventDefault()
               if (openerRef.current && openerRef.current.isConnected) openerRef.current.focus()
             }}
-            className="ui-dialog-centered min-w-[320px] w-auto max-w-[calc(100vw-32px)] max-sm:inset-x-auto max-sm:bottom-auto max-sm:left-1/2 max-sm:top-1/2 max-sm:w-auto max-sm:max-w-[calc(100vw-32px)] max-sm:-translate-x-1/2 max-sm:-translate-y-1/2 max-sm:rounded-2xl max-sm:border max-sm:pb-0 max-sm:data-[state=open]:slide-in-from-bottom-0 max-sm:data-[state=closed]:slide-out-to-bottom-0 [&>div[aria-hidden]]:hidden">
+            className="ui-dialog-centered min-w-[320px] w-auto max-w-[calc(100vw-32px)] max-sm:inset-x-auto max-sm:bottom-auto max-sm:left-1/2 max-sm:top-1/2 max-sm:w-auto max-sm:max-w-[calc(100vw-32px)] max-sm:-translate-x-1/2 max-sm:-translate-y-1/2 max-sm:rounded-2xl max-sm:border max-sm:pb-0 max-sm:data-[state=open]:slide-in-from-bottom-0 max-sm:data-[state=closed]:slide-out-to-bottom-0 [&>div[aria-hidden]]:hidden"
+          >
             {!toolbar.hidden && (
               <div className="flex flex-col gap-1 border-0 border-b border-solid border-border px-6 pb-4 pt-4">
                 <span className="text-caption font-medium text-text-secondary">{title}</span>
@@ -422,10 +474,18 @@ function createPicker({ displayName, withTime, mobileOnly }) {
             )}
             {panel}
             <div className="flex justify-end gap-2 px-4 pb-3 pt-1">
-              <button type="button" onClick={cancel} className={cn('h-10 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover', focusRing)}>
+              <button
+                type="button"
+                onClick={cancel}
+                className={cn('h-10 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover', focusRing)}
+              >
                 {DEFAULT_ACTIONS_TEXT.cancel}
               </button>
-              <button type="button" onClick={() => accept(published.current)} className={cn('h-10 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover', focusRing)}>
+              <button
+                type="button"
+                onClick={() => accept(published.current)}
+                className={cn('h-10 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover', focusRing)}
+              >
                 {DEFAULT_ACTIONS_TEXT.ok}
               </button>
             </div>
@@ -441,7 +501,11 @@ function createPicker({ displayName, withTime, mobileOnly }) {
           if (typeof ref === 'function') ref(node)
           else if (ref) ref.current = node
         }}
-        className={cn('ui-root ui-date-picker inline-flex min-w-0 max-w-full flex-col', slots.field ? null : textField.fullWidth ? 'w-full' : !className && 'w-[220px]', slots.field ? null : className)}
+        className={cn(
+          'ui-root ui-date-picker inline-flex min-w-0 max-w-full flex-col',
+          slots.field ? null : textField.fullWidth ? 'w-full' : !className && 'w-[220px]',
+          slots.field ? null : className
+        )}
         onFocus={onFocus}
         {...domProps}
       >

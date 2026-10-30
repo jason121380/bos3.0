@@ -19,7 +19,7 @@ export default function DecreaseDetail({ history, location }) {
     endDate: endOfDay(new Date()).getTime(),
     employeeId: '',
     productId: '',
-    customerId: ''
+    customerId: '',
   })
   const [sortWay, setSortWay] = useState('DESIGNER')
   const [sortTime, setSortTime] = useState('ASC')
@@ -115,12 +115,7 @@ export default function DecreaseDetail({ history, location }) {
             />
             <div className="flex flex-col gap-1.5">
               <div className="divText text-label text-text-secondary">分類依據</div>
-              <ToggleGroup
-                size="small"
-                value={sortWay}
-                onChange={handleToggleButtonChange}
-                exclusive
-              >
+              <ToggleGroup size="small" value={sortWay} onChange={handleToggleButtonChange} exclusive>
                 {sortBy.map((data, idx) => (
                   <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                     {data.label}
@@ -130,12 +125,7 @@ export default function DecreaseDetail({ history, location }) {
             </div>
             <div className="flex flex-col gap-1.5">
               <div className="divText text-label text-text-secondary">時間排序依據</div>
-              <ToggleGroup
-                size="small"
-                value={sortTime}
-                onChange={handleToggleButtonTimeChange}
-                exclusive
-              >
+              <ToggleGroup size="small" value={sortTime} onChange={handleToggleButtonTimeChange} exclusive>
                 {sortByTime.map((data, idx) => (
                   <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                     {data.label}
@@ -148,8 +138,8 @@ export default function DecreaseDetail({ history, location }) {
       />
 
       {productOrders.error ? (
-          <QueryFailed onRetry={() => productOrders.refetch()} />
-        ) : !productOrders.loading ? (
+        <QueryFailed onRetry={() => productOrders.refetch()} />
+      ) : !productOrders.loading ? (
         idx(
           productOrders,
           _ =>
@@ -157,9 +147,7 @@ export default function DecreaseDetail({ history, location }) {
               <Results
                 className="mt-3"
                 results={_.data.productOrders}
-                handleOnChangePage={(_event, page) =>
-                  handleOnChangePage({ page, key: 'merchantSell' })
-                }
+                handleOnChangePage={(_event, page) => handleOnChangePage({ page, key: 'merchantSell' })}
                 sortWay={sortWay}
                 handleOnChangeRowsPerPage={event =>
                   handleOnChangeRowsPerPage({

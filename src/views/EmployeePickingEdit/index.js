@@ -42,7 +42,7 @@ export default function EmployeePickingCreate() {
       const data = idx(getEmployeePickingPurpose, _ => _.data.getEmployeePickingPurpose)
       setPurpose(data || [])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getEmployeePickingPurpose.loading])
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function EmployeePickingCreate() {
         PickerName: getPicking.data.picking.Picker.name,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getPicking.loading])
 
   const dateHandler = value => {
@@ -100,7 +100,7 @@ export default function EmployeePickingCreate() {
         remark: formState.remark,
         PickerId: formState.PickerId,
         total,
-      }
+      },
     })
       .then(() => {
         openSnackbar({ message: '更新領料成功', variant: 'success' })
@@ -123,12 +123,9 @@ export default function EmployeePickingCreate() {
       <div className="mx-auto max-w-3xl">
         <Provider value={value}>
           <PageHeader
-            title='編輯材料自購'
+            title="編輯材料自購"
             actions={
-              <Button
-                variant="danger"
-                onClick={() => setConfirmingDelete(true)}
-              >
+              <Button variant="danger" onClick={() => setConfirmingDelete(true)}>
                 刪除
               </Button>
             }
@@ -156,10 +153,7 @@ export default function EmployeePickingCreate() {
           )}
         </Provider>
         <div className="mt-6 flex justify-end" hidden={Boolean(getPicking.error)}>
-          <Button
-            variant="primary"
-            onClick={submitHandler}
-          >
+          <Button variant="primary" onClick={submitHandler}>
             儲存
           </Button>
         </div>

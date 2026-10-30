@@ -21,7 +21,9 @@ let store
 beforeEach(() => {
   store = {}
   jest.spyOn(window.localStorage, 'getItem').mockImplementation(k => (k in store ? store[k] : null))
-  jest.spyOn(window.localStorage, 'setItem').mockImplementation((k, v) => { store[k] = String(v) })
+  jest.spyOn(window.localStorage, 'setItem').mockImplementation((k, v) => {
+    store[k] = String(v)
+  })
 })
 
 test('只留 id、name、isAdmin、isNeedChangePassword，不含手機號碼與 solmateKey', () => {

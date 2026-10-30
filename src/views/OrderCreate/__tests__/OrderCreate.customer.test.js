@@ -8,8 +8,19 @@
 import { act, cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { loginAs, callsOf, typeLikeBrowser } from '../../../__tests__/testkit.test'
 import {
-  setupPage, waitPageReady, pickEmployee, pickService, pickCustomer, checkoutButton, sentOrder,
-  CUSTOMER, CUSTOMER_DETAIL, DESIGNER, button, queryButton, findButton,
+  setupPage,
+  waitPageReady,
+  pickEmployee,
+  pickService,
+  pickCustomer,
+  checkoutButton,
+  sentOrder,
+  CUSTOMER,
+  CUSTOMER_DETAIL,
+  DESIGNER,
+  button,
+  queryButton,
+  findButton,
 } from './orderCreateKit.test'
 
 jest.setTimeout(20000)
@@ -153,20 +164,24 @@ describe('打帳單：顧客欄位', () => {
       FETCH_CUSTOMER_DETAIL: v => ({
         customer: v.id
           ? {
-            ...CUSTOMER_DETAIL,
-            membershipPurchaseRecord: [
-              // 後端回傳時間戳記（毫秒）
-              { expiryDay: new Date(2027, 9, 22).getTime(), membershipName: '金卡', purchaseDate: new Date(2026, 9, 22).getTime(), remark: '生日禮', validityDay: 365 },
-            ],
-          }
+              ...CUSTOMER_DETAIL,
+              membershipPurchaseRecord: [
+                // 後端回傳時間戳記（毫秒）
+                {
+                  expiryDay: new Date(2027, 9, 22).getTime(),
+                  membershipName: '金卡',
+                  purchaseDate: new Date(2026, 9, 22).getTime(),
+                  remark: '生日禮',
+                  validityDay: 365,
+                },
+              ],
+            }
           : null,
       }),
     })
     await waitPageReady()
     await pickCustomer(calls)
-    await wait(() =>
-      expect(screen.getAllByPlaceholderText('服務人員姓名/編號')[0]).toHaveValue(`${DESIGNER.userNickName}-${DESIGNER.userNo}`)
-    )
+    await wait(() => expect(screen.getAllByPlaceholderText('服務人員姓名/編號')[0]).toHaveValue(`${DESIGNER.userNickName}-${DESIGNER.userNo}`))
     // 會員卡清單按鈕：點開列出卡名與效期
     fireEvent.click(await findButton('會員卡清單'))
     expect(await screen.findByText('金卡')).toBeInTheDocument()
@@ -198,7 +213,14 @@ describe('打帳單：新增／編輯顧客', () => {
     const { calls } = setupPage({
       FETCH_CUSTOMERS_IN_AUTO_COMPLETE: { customers: { customers: [] } },
       FETCH_ADD_CUSTOMER: {
-        addCustomer: { id: 'customer-new', name: '0988777666', cellphone: '0988777666', gender: 'UNKNOWN', category: '', birthday: { year: '', month: '', day: '' } },
+        addCustomer: {
+          id: 'customer-new',
+          name: '0988777666',
+          cellphone: '0988777666',
+          gender: 'UNKNOWN',
+          category: '',
+          birthday: { year: '', month: '', day: '' },
+        },
       },
     })
     await waitPageReady()
@@ -232,7 +254,9 @@ describe('打帳單：新增／編輯顧客', () => {
   it('選定顧客後按「編輯顧客資料」：彈窗帶入該顧客現有資料', async () => {
     const { calls } = setupPage({
       FETCH_CUSTOMER_DETAIL: v => ({
-        customer: v.id ? { ...CUSTOMER_DETAIL, remark: '過敏', source: '網路', latestDesigner: { id: DESIGNER.userId, name: DESIGNER.userName } } : null,
+        customer: v.id
+          ? { ...CUSTOMER_DETAIL, remark: '過敏', source: '網路', latestDesigner: { id: DESIGNER.userId, name: DESIGNER.userName } }
+          : null,
       }),
     })
     await waitPageReady()
@@ -258,7 +282,9 @@ describe('打帳單：顧客欄位（邊界情況）', () => {
     fireEvent.change(input, { target: { value: '0912' } })
     fireEvent.keyDown(input, { key: 'Enter', keyCode: 13 })
     // 等防抖後的搜尋回來（結果有這位顧客，但手機不完全相符）
-    await wait(() => expect(callsOf(calls, 'FETCH_CUSTOMERS_IN_AUTO_COMPLETE').some(c => c.variables.input.keyword === '0912')).toBe(true), { timeout: 3000 })
+    await wait(() => expect(callsOf(calls, 'FETCH_CUSTOMERS_IN_AUTO_COMPLETE').some(c => c.variables.input.keyword === '0912')).toBe(true), {
+      timeout: 3000,
+    })
     await settle()
     expect(queryButton('編輯顧客資料')).toBeNull()
     expect(callsOf(calls, 'FETCH_CUSTOMER_DETAIL').some(c => c.variables.id === CUSTOMER.id)).toBe(false)
@@ -309,7 +335,9 @@ describe('打帳單：顧客欄位（邊界情況）', () => {
   it('還沒選店家（本機沒有店家資料）：清除顧客、新增顧客都不出錯，新增時不帶店家', async () => {
     loginAs({ merchant: null })
     const { calls } = setupPage({
-      FETCH_ADD_CUSTOMER: { addCustomer: { id: 'customer-new', name: '林小姐', cellphone: '0933111222', gender: 'MALE', birthday: { year: '', month: '', day: '' } } },
+      FETCH_ADD_CUSTOMER: {
+        addCustomer: { id: 'customer-new', name: '林小姐', cellphone: '0933111222', gender: 'MALE', birthday: { year: '', month: '', day: '' } },
+      },
     })
     await waitPageReady()
     await pickCustomer(calls)

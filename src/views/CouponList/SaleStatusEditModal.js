@@ -4,16 +4,15 @@ import { Button } from 'ui/button'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
-const SaleStatusEditModal = ({
-  openEditSaleStatusModal,
-  saleStatus,
-  setSaleStatus,
-  onClose,
-  handleUpdateLaunchedStatus
-}) => {
+const SaleStatusEditModal = ({ openEditSaleStatusModal, saleStatus, setSaleStatus, onClose, handleUpdateLaunchedStatus }) => {
   return (
     // 舊版 MUI Modal 有 onClose（點背景／Esc 關閉），以 onOpenChange 轉接；hideClose 保留原「關閉」按鈕為唯一關閉鈕外觀
-    <Dialog open={openEditSaleStatusModal} onOpenChange={o => { if (!o) onClose() }}>
+    <Dialog
+      open={openEditSaleStatusModal}
+      onOpenChange={o => {
+        if (!o) onClose()
+      }}
+    >
       <DialogContent size="sm" hideClose aria-describedby={undefined}>
         <DialogHeader className="flex-row items-center justify-between pr-6">
           <DialogTitle>卡券上架狀態設定</DialogTitle>
@@ -39,7 +38,7 @@ const SaleStatusEditModal = ({
 
 SaleStatusEditModal.propTypes = {
   onClose: PropTypes.func.isRequired,
-  saleStatus: PropTypes.bool
+  saleStatus: PropTypes.bool,
 }
 
 export default SaleStatusEditModal

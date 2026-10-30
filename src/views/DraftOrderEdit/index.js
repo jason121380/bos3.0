@@ -51,7 +51,7 @@ export default function KeyIn({ match }) {
     bonusDeposit: 0,
     bonusUsed: 0,
     source: null,
-    serialNumber: null
+    serialNumber: null,
   })
   const getBindedThirdPartTicketLockedSetting = useFetchGetBindedThirdPartTicketLockedSetting()
   const getIsPrintWindowClosureDelayed = useFetchGetIsPrintWindowClosureDelayed()
@@ -82,7 +82,7 @@ export default function KeyIn({ match }) {
       price: 0,
       bonus: 0,
       mode: 'ROUNDING',
-    }
+    },
   })
 
   const handleBillChange = ({ value, key }) => {
@@ -94,7 +94,7 @@ export default function KeyIn({ match }) {
   const [closureDelayed, setClosureDelayed] = useState(false)
   const [bonusConversion, setBonusConversion] = useState({
     isBonusConversion: false,
-    bonusConversionRate: 0
+    bonusConversionRate: 0,
   })
   const [LBCusDisplay, setLBCusDisplay] = useState(false)
   const [bonusRewardWithLINE, setBonusRewardWithLINE] = useState(false)
@@ -107,7 +107,7 @@ export default function KeyIn({ match }) {
       const data = idx(getIsBonusRewardWithLine, _ => _.data.getParameterAboutSettingFunction.isBonusRewardWithLine)
       setBonusRewardWithLINE(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBonusRewardWithLine.loading])
 
   useEffect(() => {
@@ -115,7 +115,7 @@ export default function KeyIn({ match }) {
       const data = idx(getIsLBCusDisplay, _ => _.data.getParameterOrderCreateSetting.isLBCusDisplay)
       setLBCusDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsLBCusDisplay.loading])
 
   useEffect(() => {
@@ -123,15 +123,16 @@ export default function KeyIn({ match }) {
       const data = idx(getIsPrintWindowClosureDelayed, _ => _.data.getParameterOrderCreateSetting.isPrintWindowClosureDelayed)
       setClosureDelayed(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsPrintWindowClosureDelayed.loading])
 
   useEffect(() => {
     if (!customerBonusActive.loading && onceRef.current) {
-      const active = idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) || bill.bonusDecount > 0 || bill.bonusDeposit > 0 || bill.bonusUsed > 0
+      const active =
+        idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) || bill.bonusDecount > 0 || bill.bonusDeposit > 0 || bill.bonusUsed > 0
       setBonusActive(active)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerBonusActive.loading, bill])
 
   useEffect(() => {
@@ -139,7 +140,7 @@ export default function KeyIn({ match }) {
       const data = idx(getBindedThirdPartTicketLockedSetting, _ => _.data.getBindedThirdPartTicketLockedSetting)
       setBindedThirdPart(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBindedThirdPartTicketLockedSetting.loading])
 
   useEffect(() => {
@@ -147,7 +148,7 @@ export default function KeyIn({ match }) {
       const thirdPartyCoupons = idx(thirdPartyCouponsData, _ => _.data.merchant.thirdpartyCoupons)
       setThirdPartyCoupons(thirdPartyCoupons)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [thirdPartyCouponsData.loading])
 
   useEffect(() => {
@@ -169,10 +170,8 @@ export default function KeyIn({ match }) {
           draft.payType = order.data.order.payType
           draft.amountByOtherPay = order.data.order.amountByOtherPay
           draft.walletPay = order.data.order.walletPay === null ? 0 : order.data.order.walletPay
-          draft.customerId =
-            order.data.order.customer.name !== '不留客資' ? order.data.order.customer.id : undefined
-          draft.customerCellphone =
-            order.data.order.customer.name !== '不留客資' ? order.data.order.customer.cellphone : ''
+          draft.customerId = order.data.order.customer.name !== '不留客資' ? order.data.order.customer.id : undefined
+          draft.customerCellphone = order.data.order.customer.name !== '不留客資' ? order.data.order.customer.cellphone : ''
           draft.designerId = order.data.order.designer ? order.data.order.designer.id : ''
           draft.serviceOrders = order.data.order.serviceOrders.map(data => ({
             price: data.price,
@@ -231,7 +230,7 @@ export default function KeyIn({ match }) {
         isTicketUsageEditable: order.data.order.isTicketUsageEditable,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [order.loading, order.data])
 
   useEffect(() => {
@@ -239,7 +238,7 @@ export default function KeyIn({ match }) {
       const data = idx(getBonusRewardRule, _ => _.data.getParameterAboutSettingFunction.bonusRewardRule)
       setBonusSetting(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBonusRewardRule.loading])
 
   useEffect(() => {
@@ -247,7 +246,7 @@ export default function KeyIn({ match }) {
       const data = idx(getIsBonusConversion, _ => _.data.getParameterAboutSettingFunction)
       setBonusConversion(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBonusConversion.loading])
 
   useEffect(() => {
@@ -266,11 +265,7 @@ export default function KeyIn({ match }) {
   if (!order.loading && !idx(order, _ => _.data.order)) {
     return (
       <Page title="掛單詳細" className="ui-root">
-        <QueryFailed
-          title="無法載入掛單"
-          description="這張掛單不存在、已被刪除，或查詢失敗。"
-          onRetry={() => order.refetch()}
-        />
+        <QueryFailed title="無法載入掛單" description="這張掛單不存在、已被刪除，或查詢失敗。" onRetry={() => order.refetch()} />
       </Page>
     )
   }
@@ -278,42 +273,42 @@ export default function KeyIn({ match }) {
   return (
     <Page title={`掛單詳細 ${orderNo && `(${orderNo})`}`} className="ui-root">
       <>
-      <Provider
-        value={{
-          handleBillChange,
-          bill,
-          setBill,
-          orderId: match.params.id,
-          orderSetting,
-          orderStatus,
-          orderNo,
-          pannelEditable,
-          thirdPartyCoupons,
-          focus,
-          setFocus,
-          bindedThirdPart,
-          order: order.data != null && order.data.order,
-          orderDetail: order,
-          bonusActive,
-          customerBonus,
-          setCustomerBonus,
-          onceRef,
-          closureDelayed,
-          bonusSetting,
-          bonusConversion,
-          LBCusDisplay,
-          isLineBinded,
-          setIsLineBinded,
-          bonusRewardWithLINE
-        }}
-      >
-        <Header />
-        <Head />
-        {/* 版面比照打帳單：金額彙總卡與動作按鈕（Footer）放在 Panel 下方的右欄；Footer 仍在這裡建立、props 不變 */}
-        <Panel>
-          <Footer />
-        </Panel>
-      </Provider>
+        <Provider
+          value={{
+            handleBillChange,
+            bill,
+            setBill,
+            orderId: match.params.id,
+            orderSetting,
+            orderStatus,
+            orderNo,
+            pannelEditable,
+            thirdPartyCoupons,
+            focus,
+            setFocus,
+            bindedThirdPart,
+            order: order.data != null && order.data.order,
+            orderDetail: order,
+            bonusActive,
+            customerBonus,
+            setCustomerBonus,
+            onceRef,
+            closureDelayed,
+            bonusSetting,
+            bonusConversion,
+            LBCusDisplay,
+            isLineBinded,
+            setIsLineBinded,
+            bonusRewardWithLINE,
+          }}
+        >
+          <Header />
+          <Head />
+          {/* 版面比照打帳單：金額彙總卡與動作按鈕（Footer）放在 Panel 下方的右欄；Footer 仍在這裡建立、props 不變 */}
+          <Panel>
+            <Footer />
+          </Panel>
+        </Provider>
       </>
     </Page>
   )

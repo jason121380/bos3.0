@@ -32,7 +32,7 @@ function ServicesIncludesTicketsAutoComplete(
       setServicesKeyword(_.target.value)
     })
   }
-  
+
   useEffect(() => {
     if (setServiceAlready !== undefined && !services.loading) {
       setServiceAlready(!services.loading)
@@ -41,12 +41,12 @@ function ServicesIncludesTicketsAutoComplete(
 
   const options = idx(services, _ => _.data.getServiecAndTicketList) || []
   const selectedValue = idx(services, _ => _.data.getServiecAndTicketList.find(d => d.id === value)) || null
-  
+
   useEffect(() => {
     if (selectedValue?.no === servicesKeyword || selectedValue?.name.includes(servicesKeyword)) {
       setServicesKeyword(selectedValue.name)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [selectedValue] 變動時執行；servicesKeyword 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [selectedValue] 變動時執行；servicesKeyword 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [selectedValue])
 
   useEffect(() => {
@@ -69,11 +69,7 @@ function ServicesIncludesTicketsAutoComplete(
         return false
       })
       filterByName = newOptions.filter((data, index) => {
-        if (
-          data.name !== '' &&
-          data.name !== null &&
-          data.name.toLowerCase().includes(keyWord.toLowerCase())
-        ) {
+        if (data.name !== '' && data.name !== null && data.name.toLowerCase().includes(keyWord.toLowerCase())) {
           return data.name.toLowerCase().includes(keyWord.toLowerCase())
         }
         return false
@@ -102,14 +98,14 @@ function ServicesIncludesTicketsAutoComplete(
       // 沒有代號（空字串或 null）時只顯示名稱（原本只排除空字串，null 顯示成「名稱(null)」；比照 ServicesAutoComplete，Jason 2026/10/22 fix all）
       getOptionLabel={option =>
         servicesKeyword === option.no
-          ? option.no === '' ? `${option.name}${option.no ? `(${option.no})` : ''}` : option.no
+          ? option.no === ''
+            ? `${option.name}${option.no ? `(${option.no})` : ''}`
+            : option.no
           : `${option.name}${option.no ? `(${option.no})` : ''}`
       }
       loading={services.loading}
       onChange={(_event, value) => onChange(idx(value, _ => value))}
-      renderOption={(props, option) => (
-        <span {...props} data-testid={option.no}>{`${option.name} - ${option.price}`}</span>
-      )}
+      renderOption={(props, option) => <span {...props} data-testid={option.no}>{`${option.name} - ${option.price}`}</span>}
       renderInput={params => (
         <TextField
           {...params}
@@ -126,11 +122,7 @@ function ServicesIncludesTicketsAutoComplete(
           InputProps={{
             ...params.InputProps,
             ...inputProps,
-            endAdornment: (
-              <Fragment>
-                {params.InputProps.endAdornment}
-              </Fragment>
-            ),
+            endAdornment: <Fragment>{params.InputProps.endAdornment}</Fragment>,
           }}
         />
       )}

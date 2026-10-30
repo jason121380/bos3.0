@@ -7,14 +7,12 @@ import MerchantsListModal from './MerchantsListModal'
 import PropTypes from 'prop-types'
 import { Autocomplete } from 'ui/combobox'
 
-const MerchantListAutocompleteForPinnedTable = ({
-  onValueChange = () => { }, selectIds = [], values, setValues, isClick
-}) => {
+const MerchantListAutocompleteForPinnedTable = ({ onValueChange = () => {}, selectIds = [], values, setValues, isClick }) => {
   const getUserGroupsWOCS = useFetchGetUserGroupsWOCS()
   const [merchantList, setMerchantList] = useState({
     allMerchants: [],
     groups: [],
-    merchants: []
+    merchants: [],
   })
   const [open, setOpen] = useState(false)
 
@@ -36,17 +34,17 @@ const MerchantListAutocompleteForPinnedTable = ({
       const data = JSON.parse(getUserGroupsWOCS.data.getUserGroupWOCS)
       setMerchantList(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getUserGroupsWOCS.loading])
 
   useEffect(() => {
     open ? setValues(selectIds) : setValues([])
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [open, setValues] 變動時執行；selectIds 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [open, setValues] 變動時執行；selectIds 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [open, setValues])
 
   return (
     <>
-      <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'flex-end' }}>
+      <div id="openModal" style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'flex-end' }}>
         <Autocomplete
           className="min-w-0 flex-1 [&_input]:cursor-pointer"
           multiple
@@ -56,7 +54,18 @@ const MerchantListAutocompleteForPinnedTable = ({
           style={{ cursor: 'pointer' }}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           // 全選：ui Button 以 asChild 落在 div（避免巢狀 button）；div 沒有 disabled，比照 MUI 以 aria-disabled＋pointer-events-none 擋點擊
-          popupIcon={<Button asChild variant="primary" size="sm" onClick={handleSelectAll} aria-disabled={getUserGroupsWOCS.loading || isClick} className={getUserGroupsWOCS.loading || isClick ? 'pointer-events-none opacity-40' : undefined}><div>全選</div></Button>}
+          popupIcon={
+            <Button
+              asChild
+              variant="primary"
+              size="sm"
+              onClick={handleSelectAll}
+              aria-disabled={getUserGroupsWOCS.loading || isClick}
+              className={getUserGroupsWOCS.loading || isClick ? 'pointer-events-none opacity-40' : undefined}
+            >
+              <div>全選</div>
+            </Button>
+          }
           value={merchantList.allMerchants.filter(d => selectIds.includes(d.id))}
           onChange={(e, v) => {
             onValueChange(v.map(d => d.id))
@@ -64,11 +73,7 @@ const MerchantListAutocompleteForPinnedTable = ({
           options={merchantList.allMerchants}
           disableCloseOnSelect
           getOptionLabel={option => option.name}
-          renderOption={(props, option) => (
-            <li {...props}>
-              {option.name}
-            </li>
-          )}
+          renderOption={(props, option) => <li {...props}>{option.name}</li>}
           renderInput={params => (
             <TextField
               onClick={event => handleOnClick(event)}
@@ -85,7 +90,9 @@ const MerchantListAutocompleteForPinnedTable = ({
             />
           )}
         />
-        <Button disabled={getUserGroupsWOCS.loading || isClick} onClick={() => setOpen(true)} variant="primary" className="shrink-0">選擇店家</Button>
+        <Button disabled={getUserGroupsWOCS.loading || isClick} onClick={() => setOpen(true)} variant="primary" className="shrink-0">
+          選擇店家
+        </Button>
       </div>
       <MerchantsListModal
         open={open}
@@ -101,7 +108,7 @@ const MerchantListAutocompleteForPinnedTable = ({
 
 MerchantListAutocompleteForPinnedTable.propTypes = {
   onValueChange: PropTypes.func,
-  selectIds: PropTypes.array
+  selectIds: PropTypes.array,
 }
 
 export default MerchantListAutocompleteForPinnedTable

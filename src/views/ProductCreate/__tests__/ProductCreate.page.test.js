@@ -25,8 +25,7 @@ const fixtures = (overrides = {}) => ({
   ...overrides,
 })
 
-const renderCreate = (overrides, options) =>
-  renderPage(<ProductCreate />, { fixtures: fixtures(overrides), route: '/product/create', ...options })
+const renderCreate = (overrides, options) => renderPage(<ProductCreate />, { fixtures: fixtures(overrides), route: '/product/create', ...options })
 
 const field = label => inputsByLabel(label)[0]
 const submit = () => fireEvent.click(screen.getByTestId('submit'))

@@ -16,9 +16,26 @@ jest.mock('elements/snackbars', () => ({
 }))
 
 const DESIGNER = { userId: 'designer-1', userName: '王小美', userNickName: 'Amy', userNo: '01' }
-const SERVICE = { id: 'service-1', no: 'S01', name: '精緻剪髮', price: 800, isLocked: false, isNoCash: false, bindedThirdPartTicket: null, isBindedThirdPartTicketLocked: false }
+const SERVICE = {
+  id: 'service-1',
+  no: 'S01',
+  name: '精緻剪髮',
+  price: 800,
+  isLocked: false,
+  isNoCash: false,
+  bindedThirdPartTicket: null,
+  isBindedThirdPartTicketLocked: false,
+}
 const CUSTOMER = { id: 'customer-1', no: 'C01', name: '陳小姐', cellphone: '0912345678' }
-const YEAR_CARD = { uuid: 'card-1', no: 'M01', name: '年卡', sellPrice: 12000, effecitveDay: 365, isLocked: false, membershipCategory: { id: 'mc-1', uuid: 'mc-1', name: '年卡類' } }
+const YEAR_CARD = {
+  uuid: 'card-1',
+  no: 'M01',
+  name: '年卡',
+  sellPrice: 12000,
+  effecitveDay: 365,
+  isLocked: false,
+  membershipCategory: { id: 'mc-1', uuid: 'mc-1', name: '年卡類' },
+}
 
 // 佇列中保存的是送出當時的 OrderInput（JSON 字串）：一個服務、有顧客
 const queuedInput = {
@@ -81,8 +98,7 @@ beforeEach(() => {
 })
 afterEach(cleanup)
 
-const setup = () =>
-  renderPage(<QueueOrderEdit match={{ params: { id: 'queue-1' } }} />, { fixtures: fixtures(), route: '/queue-order-edit/queue-1' })
+const setup = () => renderPage(<QueueOrderEdit match={{ params: { id: 'queue-1' } }} />, { fixtures: fixtures(), route: '/queue-order-edit/queue-1' })
 
 const summaryValue = label => screen.getAllByText(label)[0].nextSibling
 

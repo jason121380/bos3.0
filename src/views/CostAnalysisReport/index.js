@@ -29,7 +29,6 @@ export default function MerchantIncomeStatementMonthly() {
     endDate: endOfMonth(new Date()).getTime(),
   })
 
-
   const merchantIncomeStatementDataV2 = useFetchMerchantIncomeStatementV2({ date: date.startDate })
   const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
   const getCARPTDISPLAY = useFetchGetCARPTDISPLAY()
@@ -40,9 +39,8 @@ export default function MerchantIncomeStatementMonthly() {
       const data = idx(getCARPTDISPLAY, _ => _.data.getParameterReportSetting.CARPTDisplay)
       setCARPTDISPLAY(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getCARPTDISPLAY.loading])
-
 
   useEffect(() => {
     if (!merchantIncomeStatementDataV2.loading && !isMemberShipCardActiveData.loading) {
@@ -51,17 +49,13 @@ export default function MerchantIncomeStatementMonthly() {
           merchantIncomeStatementDataV2,
           _ => _.data.merchantIncomeStatementV2.businessIncomeDetail.moneyFlowSetConnection
         )
-        const isMemberShipCardActive = idx(isMemberShipCardActiveData,
-          _ => _.data.getIsMemberShipCardActive
-        )
+        const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
         const filterData = []
         setMerchantIncomeStatement(filterData)
         merchantIncomeStatement.forEach(d => {
-          if (!isMemberShipCardActive &&
-            (
-              d.subjectName === '會員卡收入' ||
-              (d.subjectName.includes('第三方卡券') && d.subjectName.includes('(會員卡)'))
-            )
+          if (
+            !isMemberShipCardActive &&
+            (d.subjectName === '會員卡收入' || (d.subjectName.includes('第三方卡券') && d.subjectName.includes('(會員卡)')))
           ) {
             if (d.cashRevenue !== 0 || d.cashExpenditure !== 0) filterData.push(d)
           } else {
@@ -71,11 +65,11 @@ export default function MerchantIncomeStatementMonthly() {
       } catch (error) {
         openSnackbar({
           variant: 'error',
-          message: error.message
+          message: error.message,
         })
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantIncomeStatementDataV2.loading, isMemberShipCardActiveData.loading])
   useEffect(() => {
     if (!getmerchantIncomeStatementV2ExcelLazyData.loading && getmerchantIncomeStatementV2ExcelLazyData.data !== undefined) {
@@ -84,17 +78,17 @@ export default function MerchantIncomeStatementMonthly() {
       link.href = url
       link.click()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getmerchantIncomeStatementV2ExcelLazyData.loading])
 
   const handleExcel = () => {
     getmerchantIncomeStatementV2ExcelLazy({
-      variables: { date: date.startDate }
+      variables: { date: date.startDate },
     })
   }
   return (
-    <Page title="費用分析表" className='CostAnalysisReport ui-root'>
-      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+    <Page title="費用分析表" className="CostAnalysisReport ui-root">
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'none', justifyContent: 'space-between' }}>
         <div className="merchantNamePrint">
           {JSON.parse(localStorage.getItem('userMerchant')).name +
             '   ' +
@@ -102,26 +96,19 @@ export default function MerchantIncomeStatementMonthly() {
             '   ' +
             '費用分析表'}
         </div>
-        <div className="merchantNamePrint">
-          {'列印時間： ' +
-            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-        </div>
+        <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
       </div>
       <PageHeader
         title="費用分析表"
         actions={
           <>
-          <HeaderActionsSlot />
-          <div className="printGrid print:hidden">
-            <Button
-              className="noprint"
-              variant="secondary"
-              onClick={() => window.print()}
-            >
-              <Printer strokeWidth={1.75} />
-              列印
-            </Button>
-          </div>
+            <HeaderActionsSlot />
+            <div className="printGrid print:hidden">
+              <Button className="noprint" variant="secondary" onClick={() => window.print()}>
+                <Printer strokeWidth={1.75} />
+                列印
+              </Button>
+            </div>
           </>
         }
       />
@@ -133,16 +120,16 @@ export default function MerchantIncomeStatementMonthly() {
             attributes={['lastmonth', 'thismonth', 'startDate']}
             dateChange={value => setDate(value)}
             onlyStart
-            inputFormat='yyyy/MM'
+            inputFormat="yyyy/MM"
             pickerOption={{
-              views: ['month', 'year']
+              views: ['month', 'year'],
             }}
           />
         }
       />
       {merchantIncomeStatementDataV2.error ? (
-          <QueryFailed onRetry={() => merchantIncomeStatementDataV2.refetch()} />
-        ) : !merchantIncomeStatementDataV2.loading && merchantIncomeStatement !== undefined ? (
+        <QueryFailed onRetry={() => merchantIncomeStatementDataV2.refetch()} />
+      ) : !merchantIncomeStatementDataV2.loading && merchantIncomeStatement !== undefined ? (
         <Results
           className={styles.result}
           merchantIncomeStatement={merchantIncomeStatement}

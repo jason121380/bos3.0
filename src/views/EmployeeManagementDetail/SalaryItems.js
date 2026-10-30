@@ -152,12 +152,8 @@ export default function SalaryInems({
   const handleSave = () => {
     const filteredSalaryIncreaseItems = salaryIncreaseItemsReformatted.filter(d => d.price > 0)
     const filteredSalaryDecreaseItems = salaryDecreaseItemsReformatted.filter(d => d.price > 0)
-    const filteredIncreaseSecondContent = increaseSecondContent.increaseItems.filter(
-      d => d.itemName.length > 0 && d.price > 0
-    )
-    const filteredDecreaseSecondContent = decreaseSecondContent.decreaseItems.filter(
-      d => d.itemName.length > 0 && d.price > 0
-    )
+    const filteredIncreaseSecondContent = increaseSecondContent.increaseItems.filter(d => d.itemName.length > 0 && d.price > 0)
+    const filteredDecreaseSecondContent = decreaseSecondContent.decreaseItems.filter(d => d.itemName.length > 0 && d.price > 0)
     let userFixedSalaryItemInputData = [
       ...filteredSalaryIncreaseItems,
       ...filteredSalaryDecreaseItems,
@@ -189,12 +185,8 @@ export default function SalaryInems({
           <CardHeader>
             <CardTitle className="tabular-nums">
               {`薪資加項小計:${
-                salaryIncreaseItemsReformatted
-                  .map(data => data.price)
-                  .reduce((accu, curVal) => (accu += curVal), 0) +
-                  increaseSecondContent.increaseItems
-                    .map(data => data.price)
-                    .reduce((accu, curVal) => (accu += curVal), 0) || 0
+                salaryIncreaseItemsReformatted.map(data => data.price).reduce((accu, curVal) => (accu += curVal), 0) +
+                  increaseSecondContent.increaseItems.map(data => data.price).reduce((accu, curVal) => (accu += curVal), 0) || 0
               }`}
             </CardTitle>
           </CardHeader>
@@ -204,13 +196,8 @@ export default function SalaryInems({
                 .sort((a, b) => a.sorting - b.sorting)
                 .map((data, index) => {
                   return (
-                    <div
-                      key={`increase-${index}`}
-                      className="flex items-center gap-1"
-                    >
-                      <span className="w-[25px] shrink-0 text-center text-label tabular-nums text-text-secondary">
-                        {index + 1}
-                      </span>
+                    <div key={`increase-${index}`} className="flex items-center gap-1">
+                      <span className="w-[25px] shrink-0 text-center text-label tabular-nums text-text-secondary">{index + 1}</span>
                       <TextField
                         variant="outlined"
                         label={data.itemName}
@@ -219,7 +206,7 @@ export default function SalaryInems({
                         name="price"
                         fullWidth
                         onChange={e => handleIncreaseInput(e, index)}
-                        onWheel={() => document.activeElement.blur()}              
+                        onWheel={() => document.activeElement.blur()}
                       />
                     </div>
                   )
@@ -248,7 +235,7 @@ export default function SalaryInems({
                       name="price"
                       value={data.price || 0}
                       onChange={e => handleIncreaseSecondInput(e, index)}
-                      onWheel={() => document.activeElement.blur()}              
+                      onWheel={() => document.activeElement.blur()}
                     />
                     {increaseSecondContent.increaseItems.length > 1 && (
                       <Button
@@ -287,12 +274,8 @@ export default function SalaryInems({
           <CardHeader>
             <CardTitle className="tabular-nums">
               {`薪資扣項小計:${
-                salaryDecreaseItemsReformatted
-                  .map(data => data.price)
-                  .reduce((accu, curVal) => (accu += curVal), 0) +
-                  decreaseSecondContent.decreaseItems
-                    .map(data => data.price)
-                    .reduce((accu, curVal) => (accu += curVal), 0) || 0
+                salaryDecreaseItemsReformatted.map(data => data.price).reduce((accu, curVal) => (accu += curVal), 0) +
+                  decreaseSecondContent.decreaseItems.map(data => data.price).reduce((accu, curVal) => (accu += curVal), 0) || 0
               }`}
             </CardTitle>
           </CardHeader>
@@ -302,13 +285,8 @@ export default function SalaryInems({
                 .sort((a, b) => a.sorting - b.sorting)
                 .map((data, index) => {
                   return (
-                    <div
-                      key={`increase-${index}`}
-                      className="flex items-center gap-1"
-                    >
-                      <span className="w-[25px] shrink-0 text-center text-label tabular-nums text-text-secondary">
-                        {index + 1}
-                      </span>
+                    <div key={`increase-${index}`} className="flex items-center gap-1">
+                      <span className="w-[25px] shrink-0 text-center text-label tabular-nums text-text-secondary">{index + 1}</span>
                       <TextField
                         variant="outlined"
                         label={data.itemName}
@@ -317,7 +295,7 @@ export default function SalaryInems({
                         name="price"
                         fullWidth
                         onChange={e => handleDecreaseInput(e, index)}
-                        onWheel={() => document.activeElement.blur()}              
+                        onWheel={() => document.activeElement.blur()}
                       />
                     </div>
                   )
@@ -346,7 +324,7 @@ export default function SalaryInems({
                       name="price"
                       value={data.price}
                       onChange={e => handleDecreaseSecondInput(e, index)}
-                      onWheel={() => document.activeElement.blur()}              
+                      onWheel={() => document.activeElement.blur()}
                     />
                     {decreaseSecondContent.decreaseItems.length > 1 && (
                       <Button
@@ -384,34 +362,23 @@ export default function SalaryInems({
           <div>
             <span className="text-heading tabular-nums text-text">
               {`薪資加項小計:${
-                salaryIncreaseItemsReformatted
-                  .map(data => data.price)
-                  .reduce((accu, curVal) => (accu += curVal), 0) +
-                  increaseSecondContent.increaseItems
-                    .map(data => data.price)
-                    .reduce((accu, curVal) => (accu += curVal), 0) || 0
+                salaryIncreaseItemsReformatted.map(data => data.price).reduce((accu, curVal) => (accu += curVal), 0) +
+                  increaseSecondContent.increaseItems.map(data => data.price).reduce((accu, curVal) => (accu += curVal), 0) || 0
               }`}
             </span>
           </div>
           <div>
             <span className="text-heading tabular-nums text-text">
               {`薪資扣項小計:${
-                salaryDecreaseItemsReformatted
-                  .map(data => data.price)
-                  .reduce((accu, curVal) => (accu += curVal), 0) +
-                  decreaseSecondContent.decreaseItems
-                    .map(data => data.price)
-                    .reduce((accu, curVal) => (accu += curVal), 0) || 0
+                salaryDecreaseItemsReformatted.map(data => data.price).reduce((accu, curVal) => (accu += curVal), 0) +
+                  decreaseSecondContent.decreaseItems.map(data => data.price).reduce((accu, curVal) => (accu += curVal), 0) || 0
               }`}
             </span>
           </div>
         </div>
       </div>
       <div className="col-span-2">
-        <Button
-          variant="primary"
-          onClick={handleSave}
-        >
+        <Button variant="primary" onClick={handleSave}>
           儲存並返回列表
         </Button>
       </div>

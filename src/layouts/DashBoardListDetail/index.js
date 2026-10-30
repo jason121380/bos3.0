@@ -67,7 +67,7 @@ function DashBoardListContent() {
       const userPageAuth = idx(apiUserPermissions, _ => _.data.user.pageAuthority.pageAuthority)
       setUserPageAuth(userPageAuth || [])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [apiUserPermissions.data] 變動時執行；apiUserPermissions 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [apiUserPermissions.data] 變動時執行；apiUserPermissions 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [apiUserPermissions.data])
   const SubMenuItem = Arr => hasReportAuthority(userPageAuth, Arr)
   const [selectTab, setSelectTab] = useState('daily')
@@ -94,8 +94,25 @@ function DashBoardListContent() {
   const canDesigner = SubMenuItem(['設計師業績分析表', '設計師排行榜', '設計師抽成報表', '設計師業績月報表', '服務扣項明細表', '設計師業績表'])
   const canHelper = SubMenuItem(['互助排行榜', '互助點數明細', '互助月報表', '互助業績報表'])
   // 「設計師店販抽成明細」前端沒有這張報表，只有這個權限時分類會是空的；Jason 2026/10/22 選擇從清單移除
-  const canProduct = SubMenuItem(['店販抽成明細', '店販分類抽成明細', '商品銷售排行榜', '商品消耗明細', '商品進銷貨報表', '會員卡銷售報表', '商品庫存表', '商品庫存盤點表'])
-  const canManagement = SubMenuItem(['費用分析表', '損益表', '多店業績統計表', '顧客消費排行榜', '顧客入金排行榜', '消費分析儀表板', '多店店販銷售排行'])
+  const canProduct = SubMenuItem([
+    '店販抽成明細',
+    '店販分類抽成明細',
+    '商品銷售排行榜',
+    '商品消耗明細',
+    '商品進銷貨報表',
+    '會員卡銷售報表',
+    '商品庫存表',
+    '商品庫存盤點表',
+  ])
+  const canManagement = SubMenuItem([
+    '費用分析表',
+    '損益表',
+    '多店業績統計表',
+    '顧客消費排行榜',
+    '顧客入金排行榜',
+    '消費分析儀表板',
+    '多店店販銷售排行',
+  ])
   const categories = [
     {
       value: 'daily',
@@ -206,19 +223,16 @@ function DashBoardListContent() {
   // 預設選第一個有權限的分類；目前選取若無權限（或權限尚未載入）一律退回第一個有權限者，不得切到無權限分類
   const activeCategory = visibleCategories.find(category => category.value === selectTab) || visibleCategories[0]
   return (
-    <Page className="ui-root" title='報表目錄'>
+    <Page className="ui-root" title="報表目錄">
       <div className="mx-auto w-full max-w-6xl">
         <PageHeader title="報表目錄" description="依類別瀏覽有權限的報表" />
         {activeCategory && (
-          <Tabs
-            className="md:flex md:items-stretch md:gap-0"
-            value={activeCategory.value}
-            onValueChange={setSelectTab}
-            activationMode="manual"
-          >
+          <Tabs className="md:flex md:items-stretch md:gap-0" value={activeCategory.value} onValueChange={setSelectTab} activationMode="manual">
             <SettingsTabsList className="md:bg-surface md:px-2 md:py-4">
               {visibleCategories.map(category => (
-                <SettingsTabsTrigger key={category.value} value={category.value} icon={category.icon}>{category.label}</SettingsTabsTrigger>
+                <SettingsTabsTrigger key={category.value} value={category.value} icon={category.icon}>
+                  {category.label}
+                </SettingsTabsTrigger>
               ))}
             </SettingsTabsList>
             <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">

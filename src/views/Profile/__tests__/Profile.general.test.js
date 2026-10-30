@@ -101,7 +101,19 @@ describe('個人頁：基本資料', () => {
 
   it('欄位為 null 時顯示空白；送出時保留 null', async () => {
     // 姓氏、名字、手機號碼為必填（見下方），這裡只把選填欄位設為 null
-    const me = { ...ME, nickName: null, designerNo: null, serialNumber: null, email: null, contactAddress: null, address: null, selfIntroduction: null, selfIntroductionLink: null, gender: null, birthday: null }
+    const me = {
+      ...ME,
+      nickName: null,
+      designerNo: null,
+      serialNumber: null,
+      email: null,
+      contactAddress: null,
+      address: null,
+      selfIntroduction: null,
+      selfIntroductionLink: null,
+      gender: null,
+      birthday: null,
+    }
     const { calls } = renderProfile('general', { me, fixtures: { UPDATE_USER_INFO: { setUserInfo: true } } })
     await ready()
     expect(screen.getByLabelText('暱稱')).toHaveValue('')

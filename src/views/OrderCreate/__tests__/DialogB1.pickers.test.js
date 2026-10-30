@@ -40,9 +40,17 @@ function chooseNative(select, label) {
   return option.value
 }
 
-it.each([['新增帳單', CreateCustomer], ['帳單詳細', EditCustomer], ['草稿', DraftCustomer], ['排隊', QueueCustomer]])('%s 顧客窗可選性別，Esc／背景不關閉', async (name, Component) => {
+it.each([
+  ['新增帳單', CreateCustomer],
+  ['帳單詳細', EditCustomer],
+  ['草稿', DraftCustomer],
+  ['排隊', QueueCustomer],
+])('%s 顧客窗可選性別，Esc／背景不關閉', async (name, Component) => {
   const onClose = jest.fn()
-  const page = renderPage(<Component open customer={emptyCustomerForm()} customerInModal={[]} setCustomer={jest.fn()} setBill={jest.fn()} onClose={onClose} />, { fixtures })
+  const page = renderPage(
+    <Component open customer={emptyCustomerForm()} customerInModal={[]} setCustomer={jest.fn()} setBill={jest.fn()} onClose={onClose} />,
+    { fixtures }
+  )
   await page.settle()
   const select = dialog().querySelector('select[name="gender"]')
   const value = chooseNative(select, '女')
@@ -52,7 +60,17 @@ it.each([['新增帳單', CreateCustomer], ['帳單詳細', EditCustomer], ['草
 
 it('新增顧客的設計師搜尋可選取，Enter 跳欄保留', async () => {
   const onClose = jest.fn()
-  const page = renderPage(<CreateCustomer open customer={emptyCustomerForm()} customerInModal={[{ userId: 'd1', userName: '王小美', userNo: '01' }]} setCustomer={jest.fn()} setBill={jest.fn()} onClose={onClose} />, { fixtures })
+  const page = renderPage(
+    <CreateCustomer
+      open
+      customer={emptyCustomerForm()}
+      customerInModal={[{ userId: 'd1', userName: '王小美', userNo: '01' }]}
+      setCustomer={jest.fn()}
+      setBill={jest.fn()}
+      onClose={onClose}
+    />,
+    { fixtures }
+  )
   await page.settle()
   const name = dialog().querySelector('input[name="name"]')
   fireEvent.keyDown(name, { key: 'Enter' })
@@ -105,9 +123,17 @@ it.each(['deduction', 'assistant'])('%s 扣項類別可選取且不關閉', asyn
   function Form() {
     const [items, setItems] = React.useState([{ type: '服務', itemSettings: [{ type: 'onSales', deductionOrder: 1 }] }])
     const [helpers, setHelpers] = React.useState([{ helperDeductionType: 'onSales', type: '', assistantNum: '1' }])
-    return kind === 'deduction'
-      ? <Deduction openEditDeductionModal ServiceDeductionItems={items} setServiceDeductionItems={setItems} onClose={onClose} />
-      : <Assistant openEditAssistantModal helperDeductionSetting={helpers} setHelperDeductionSetting={setHelpers} merchantHelperItems={[]} onClose={onClose} />
+    return kind === 'deduction' ? (
+      <Deduction openEditDeductionModal ServiceDeductionItems={items} setServiceDeductionItems={setItems} onClose={onClose} />
+    ) : (
+      <Assistant
+        openEditAssistantModal
+        helperDeductionSetting={helpers}
+        setHelperDeductionSetting={setHelpers}
+        merchantHelperItems={[]}
+        onClose={onClose}
+      />
+    )
   }
   const page = renderPage(<Form />, { fixtures })
   await page.settle()

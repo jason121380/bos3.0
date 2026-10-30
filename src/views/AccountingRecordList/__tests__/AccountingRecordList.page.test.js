@@ -58,7 +58,12 @@ const fixtures = {
   GET_MONEY_FLOW_FOR_ACCOUNTING: {
     moneyFlows: { moneyFlows: FLOWS, pageLimit: 1000, pageOffset: 0, totalCount: 3, revenue: 12000, expenditure: 3580 },
   },
-  GET_ACCOUNTING_SUBJECTS: { accountingSubjects: [{ id: 'a-1', name: '技術收入', isUsing: true }, { id: 'a-2', name: '雜支', isUsing: true }] },
+  GET_ACCOUNTING_SUBJECTS: {
+    accountingSubjects: [
+      { id: 'a-1', name: '技術收入', isUsing: true },
+      { id: 'a-2', name: '雜支', isUsing: true },
+    ],
+  },
   GET_ACCOUNTING_TYPE: { getAccountingType: ['現金', '匯款'] },
   GET_USERS_ORDERABLE_LIST: { getUserOrderableList: [] },
 }
@@ -74,7 +79,10 @@ const choose = (label, optionText) => {
   fireEvent.click(field(label))
   fireEvent.click(screen.getAllByRole('option').find(o => o.textContent === optionText))
 }
-const cells = text => within(screen.getByText(text).closest('tr')).getAllByRole('cell').map(c => c.textContent)
+const cells = text =>
+  within(screen.getByText(text).closest('tr'))
+    .getAllByRole('cell')
+    .map(c => c.textContent)
 
 describe('高階收支登錄', () => {
   it('預設查本月 1 日到今天整天、1000 筆、不篩選', async () => {
@@ -96,7 +104,11 @@ describe('高階收支登錄', () => {
     await settle()
     const title = `${format(startOfMonth(new Date()), 'yyyy/MM/dd')} ~ ${format(new Date(), 'yyyy/MM/dd')} 合計`
     const card = screen.getByText(title).closest('.mb-6')
-    expect(within(card).getAllByRole('cell').map(c => c.textContent)).toEqual(['12,000', '3,580', '8,420'])
+    expect(
+      within(card)
+        .getAllByRole('cell')
+        .map(c => c.textContent)
+    ).toEqual(['12,000', '3,580', '8,420'])
   })
 
   it('每筆顯示科目、收入或支出、登錄者、收付方式、關係人、備註與編輯連結，匯出檔內容一致', async () => {

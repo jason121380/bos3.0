@@ -38,9 +38,7 @@ export default function ProductCreate() {
   })
 
   const { handleSubmit } = form
-  const merchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
+  const merchantId = localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null
   const { createProduct } = useFetchCreateProduct()
   const merchantVendorList = useFetchGetMerchantVendorList()
   const getisUnlimProdEmpPrice = useFetchGetisUnlimProdEmpPrice()
@@ -61,33 +59,32 @@ export default function ProductCreate() {
         openSnackbar({ message: '請選擇抽成方式', variant: 'warning' })
         return
       }
-      if (!isUnlimProdEmpPrice && (data.employeePrice < data.cost)) throw new Error('自購價不可低於成本價')
-        const res = await createProduct({
-          input: {
-            ...data,
-            OfficialBrandMerchantId: merchantId,
-          },
-        })
+      if (!isUnlimProdEmpPrice && data.employeePrice < data.cost) throw new Error('自購價不可低於成本價')
+      const res = await createProduct({
+        input: {
+          ...data,
+          OfficialBrandMerchantId: merchantId,
+        },
+      })
 
-        if (res.data.createProduct) {
-          openSnackbar({ message: '成功新增商品', variant: 'success' })
-          history.push('/products')
-        } else {
-          openSnackbar({ message: '新增商品失敗', variant: 'error' })
-        }
-      
+      if (res.data.createProduct) {
+        openSnackbar({ message: '成功新增商品', variant: 'success' })
+        history.push('/products')
+      } else {
+        openSnackbar({ message: '新增商品失敗', variant: 'error' })
+      }
     } catch (error) {
       openSnackbar({ message: error.message, variant: 'error' })
     }
   }
   useEffect(() => {
     if (!merchantVendorList.loading) {
-      const data = idx(merchantVendorList,_=>_.data.getMerchantVendorList)
+      const data = idx(merchantVendorList, _ => _.data.getMerchantVendorList)
       setMerchantVendor(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantVendorList.loading])
-  
+
   const value = form
   return (
     <Page className="ui-root" title="新增商品">

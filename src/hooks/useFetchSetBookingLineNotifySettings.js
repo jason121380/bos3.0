@@ -8,12 +8,12 @@ const SET_BOOKING_LINE_NOTIFY_SETTINGS = gql`
 
 export default function useFetchSetBookingLineNotifySettings() {
   const [setBookingLineNotifySettings] = useMutation(SET_BOOKING_LINE_NOTIFY_SETTINGS)
-  return  {
+  return {
     setBookingLineNotifySettings: ({ input }) =>
       setBookingLineNotifySettings({
         variables: {
-        input,
-      }
-    })
-  } 
+          input,
+        },
+      }),
+  }
 }

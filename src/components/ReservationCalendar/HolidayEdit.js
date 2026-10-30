@@ -20,7 +20,7 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
     for (let i = startTime; i < endTime; i += 1800000) {
       option.push({
         time: i,
-        select: true
+        select: true,
       })
     }
     setTimeOption(option)
@@ -29,7 +29,7 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
       setTimeOption([])
       setIsClick(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [setHolidayData] 變動時執行；endTime、startTime 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [setHolidayData] 變動時執行；endTime、startTime 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [setHolidayData])
 
   const handleSelectTime = (value, index) => {
@@ -55,20 +55,20 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
         input: {
           designerId: designerId,
           datetimes: time,
-          appointable: true
-        }
+          appointable: true,
+        },
       })
       if (res.data.adminBookingTimes) {
         openSnackbar({
           message: '編輯成功',
-          variant: 'success'
+          variant: 'success',
         })
         handleOnClose()
         refetchData()
       } else {
         openSnackbar({
           message: '編輯失敗',
-          variant: 'warning'
+          variant: 'warning',
         })
         setIsClick(false)
       }
@@ -85,17 +85,18 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
       </DialogHeader>
       <DialogBody className="flex gap-[5px_10px] flex-wrap">
         {timeOption.map(({ time, select }, i) => (
-          <ToggleGroupItem
-            key={time}
-            selected={select}
-            className="tabular-nums"
-            onClick={() => handleSelectTime(!select, i)}
-          >{format(time, 'HH:mm')}</ToggleGroupItem>
+          <ToggleGroupItem key={time} selected={select} className="tabular-nums" onClick={() => handleSelectTime(!select, i)}>
+            {format(time, 'HH:mm')}
+          </ToggleGroupItem>
         ))}
       </DialogBody>
       <DialogFooter>
-        <Button variant='secondary' disabled={isClick} onClick={handleOnClose}>取消</Button>
-        <Button variant='primary' disabled={isClick} onClick={handleSetHoliday}>確定</Button>
+        <Button variant="secondary" disabled={isClick} onClick={handleOnClose}>
+          取消
+        </Button>
+        <Button variant="primary" disabled={isClick} onClick={handleSetHoliday}>
+          確定
+        </Button>
       </DialogFooter>
     </Fragment>
   )

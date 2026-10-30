@@ -106,7 +106,14 @@ describe('新增會員卡', () => {
     fireEvent.click(submit())
     await wait(() => expect(callsOf(calls, 'createMembership')).toHaveLength(1))
     expect(sentInput(calls)).toEqual(
-      expect.objectContaining({ isAvailableForSale: true, sellPrice: 10000, commissionWay: 'byPrice', commission: 5, isLocked: 'UNSET', effecitveDay: 0 })
+      expect.objectContaining({
+        isAvailableForSale: true,
+        sellPrice: 10000,
+        commissionWay: 'byPrice',
+        commission: 5,
+        isLocked: 'UNSET',
+        effecitveDay: 0,
+      })
     )
   })
 

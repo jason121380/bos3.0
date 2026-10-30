@@ -9,7 +9,7 @@ const GET_MERCHANT_NAME = gql`
 export default function useFetchGetMerchantName({ input }) {
   return useQuery(GET_MERCHANT_NAME, {
     variables: {
-      input
+      input,
     },
     fetchPolicy: 'cache-and-network',
   })

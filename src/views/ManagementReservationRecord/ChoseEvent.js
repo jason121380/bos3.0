@@ -26,9 +26,18 @@ import { EventSection, DelayMessageSection } from './ChoseEventInfoSections'
 
 // 各 modaltype 的畫面區塊已拆到同資料夾 ChoseEvent*Section(s).js（只接 props）；hooks、state、effect、handler 仍在此檔，內容不變
 export default function ChoseEvent({
-  merchantId, setModalOpen, clickData, refetchData, modaltype, setModalType,
-  editOrder, setEditOrder, checkinSettings, bookingCusCheck, checkinMode,
-  cancelPasswordUsing
+  merchantId,
+  setModalOpen,
+  clickData,
+  refetchData,
+  modaltype,
+  setModalType,
+  editOrder,
+  setEditOrder,
+  checkinSettings,
+  bookingCusCheck,
+  checkinMode,
+  cancelPasswordUsing,
 }) {
   const { booking } = useFetchBooking()
   const { updateOrder } = useFetchUpdateOrder()
@@ -78,19 +87,16 @@ export default function ChoseEvent({
     remarkForCustomer: '',
     timeCost: 1,
     isBookingCostUsing: true,
-    isCusCheckRequired: false
+    isCusCheckRequired: false,
   })
   useEffect(() => {
     if (!nonDesignateLimitData.loading) {
-      const nonDesignateLimit = idx(
-        nonDesignateLimitData,
-        _ => _.data.merchantDesignateTimeNonDesignateBookingLimit
-      )
+      const nonDesignateLimit = idx(nonDesignateLimitData, _ => _.data.merchantDesignateTimeNonDesignateBookingLimit)
       if (nonDesignateLimit !== null) {
         setLimitCount(nonDesignateLimit)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [nonDesignateLimitData.loading])
 
   const closeOrderTime = () => {
@@ -129,16 +135,18 @@ export default function ChoseEvent({
       return
     }
     setBtnDisabled(true)
-    booking(values).then((res) => {
-      if (res.data.bookingV2.id) {
-        refetchData()
-        openSnackbar({ message: '預約成功', variant: 'success' })
-        setModalOpen(false)
-      }
-    }).catch(error => {
-      // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
-      setBtnDisabled(false)
-    })
+    booking(values)
+      .then(res => {
+        if (res.data.bookingV2.id) {
+          refetchData()
+          openSnackbar({ message: '預約成功', variant: 'success' })
+          setModalOpen(false)
+        }
+      })
+      .catch(error => {
+        // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
+        setBtnDisabled(false)
+      })
   }
 
   const handleAcceptBooking = status => {
@@ -147,28 +155,30 @@ export default function ChoseEvent({
       orderId: editOrder.id,
       isApproval: status,
       isFromPC: true,
-      password
-    }).then(res => {
-      if (res.data.verifyBooking.id) {
-        refetchData()
-        if (status) {
-          openSnackbar({
-            message: '已接受預約',
-            variant: 'success',
-          })
-        } else {
-          openSnackbar({
-            message: '已取消預約',
-            variant: 'success',
-          })
-          setDialogOpen(false)
-        }
-        setModalOpen(false)
-      }
-    }).catch(error => {
-      setBtnDisabled(false)
-      // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
+      password,
     })
+      .then(res => {
+        if (res.data.verifyBooking.id) {
+          refetchData()
+          if (status) {
+            openSnackbar({
+              message: '已接受預約',
+              variant: 'success',
+            })
+          } else {
+            openSnackbar({
+              message: '已取消預約',
+              variant: 'success',
+            })
+            setDialogOpen(false)
+          }
+          setModalOpen(false)
+        }
+      })
+      .catch(error => {
+        setBtnDisabled(false)
+        // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
+      })
   }
 
   const handleUpdateEditOrder = () => {
@@ -179,7 +189,6 @@ export default function ChoseEvent({
       })
       return
     } else {
-
       if (!editOrder.customer.id) {
         openSnackbar({
           message: '請選擇顧客',
@@ -212,26 +221,28 @@ export default function ChoseEvent({
           remark: editOrder.remark,
           remarkForCustomer: editOrder.remarkForCustomer,
           timeCost: editOrder.timeCost,
-          isBookingCostUsing: editOrder.isBookingCostUsing
+          isBookingCostUsing: editOrder.isBookingCostUsing,
         },
         notificationDayCount: editOrder.notificationDayCount,
         updateOrderId: editOrder.id,
       }
 
       setBtnDisabled(true)
-      updateOrder(submitData).then(res => {
-        if (res.data.updateOrder.id) {
-          refetchData()
-          openSnackbar({
-            message: '帳單編輯成功',
-            variant: 'success',
-          })
-          setModalOpen(false)
-        }
-      }).catch(error => {
-        setBtnDisabled(false)
-        // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
-      })
+      updateOrder(submitData)
+        .then(res => {
+          if (res.data.updateOrder.id) {
+            refetchData()
+            openSnackbar({
+              message: '帳單編輯成功',
+              variant: 'success',
+            })
+            setModalOpen(false)
+          }
+        })
+        .catch(error => {
+          setBtnDisabled(false)
+          // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
+        })
     }
   }
 
@@ -245,19 +256,20 @@ export default function ChoseEvent({
       return
     }
     setBtnDisabled(true)
-    setMerchantNonDesignateBookingLimit({ input: limitCount }).then(res => {
-      if (res.data.setMerchantDesignateTimeNonDesignateBookingLimit.merchant) {
-        openSnackbar({ message: '設定完成', variant: 'success' })
-        setModalOpen(false)
-      } else {
-        openSnackbar({ message: '設定失敗', variant: 'error' })
+    setMerchantNonDesignateBookingLimit({ input: limitCount })
+      .then(res => {
+        if (res.data.setMerchantDesignateTimeNonDesignateBookingLimit.merchant) {
+          openSnackbar({ message: '設定完成', variant: 'success' })
+          setModalOpen(false)
+        } else {
+          openSnackbar({ message: '設定失敗', variant: 'error' })
+          setBtnDisabled(false)
+        }
+      })
+      .catch(error => {
+        // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
         setBtnDisabled(false)
-      }
-    }).catch(error => {
-      // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
-      setBtnDisabled(false)
-    })
-
+      })
   }
 
   const createNdsBooking = () => {
@@ -284,22 +296,24 @@ export default function ChoseEvent({
       remark: values.remark,
       remarkForCustomer: values.remarkForCustomer,
       timeCost: values.timeCost,
-      isCusCheckRequired: values.isCusCheckRequired
+      isCusCheckRequired: values.isCusCheckRequired,
     }
     if (limitCount.limit === 0) {
       openSnackbar({ message: '此時段可預約人數設定為0', variant: 'warning' })
     } else {
       setBtnDisabled(true)
-      nonDesignationBooking(submitData).then(res => {
-        if (res.data.nonDesignationBooking.id) {
-          openSnackbar({ message: '預約成功', variant: 'success' })
-          setModalOpen(false)
-          refetchData()
-        }
-      }).catch(error => {
-        setBtnDisabled(false)
-        // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
-      })
+      nonDesignationBooking(submitData)
+        .then(res => {
+          if (res.data.nonDesignationBooking.id) {
+            openSnackbar({ message: '預約成功', variant: 'success' })
+            setModalOpen(false)
+            refetchData()
+          }
+        })
+        .catch(error => {
+          setBtnDisabled(false)
+          // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
+        })
     }
   }
 
@@ -309,8 +323,8 @@ export default function ChoseEvent({
       const res = await setBookingCusCheckRequired({
         input: {
           bookingId: editOrder.id,
-          isRequired: checked
-        }
+          isRequired: checked,
+        },
       })
       if (res) {
         setEditOrder(
@@ -334,11 +348,11 @@ export default function ChoseEvent({
   }
 
   const handleCheckIn = async () => {
-    setBtnDisabled(true) 
+    setBtnDisabled(true)
     try {
       await setBookingCheckin({
         bookingId: editOrder.id,
-        isCellphone: false
+        isCellphone: false,
       })
       openSnackbar({ message: '報到成功', variant: 'success' })
       setModalOpen(false)
@@ -348,13 +362,13 @@ export default function ChoseEvent({
       // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
     }
   }
-  
+
   const handleCancelCheckIn = async () => {
-    setBtnDisabled(true) 
+    setBtnDisabled(true)
     try {
       await setBookingCancelCheckin({
         bookingId: editOrder.id,
-        isCellphone: false
+        isCellphone: false,
       })
       openSnackbar({ message: '已取消報到', variant: 'success' })
       setModalOpen(false)
@@ -366,36 +380,36 @@ export default function ChoseEvent({
   }
 
   const handleSetDelayBookingTime = async () => {
-    setBtnDisabled(true) 
+    setBtnDisabled(true)
     try {
       await setDelayBookingCheckinTime({
         input: {
           bookingId: editOrder.id,
           delayTime: delayTime,
-        }
+        },
       })
       openSnackbar({ message: '簡訊已寄出', variant: 'success' })
       setModalOpen(false)
       refetchData()
     } catch (error) {
-      setBtnDisabled(false) 
+      setBtnDisabled(false)
     }
   }
 
   const handleSetBookingNoShow = async () => {
-    setBtnDisabled(true) 
+    setBtnDisabled(true)
     try {
       await setBookingNoShow({
         input: {
           bookingIds: [editOrder.id],
           isNoShow: !editOrder.isNoShow,
-        }
+        },
       })
       openSnackbar({ message: '設定成功', variant: 'success' })
       setModalOpen(false)
       refetchData()
     } catch (error) {
-      setBtnDisabled(false) 
+      setBtnDisabled(false)
     }
   }
 
@@ -440,7 +454,7 @@ export default function ChoseEvent({
           openPassworDialog={openPassworDialog}
         />
       )}
-      {(modaltype === 'editOrderDetail' || modaltype === "editNdsOrder") && (
+      {(modaltype === 'editOrderDetail' || modaltype === 'editNdsOrder') && (
         <EditOrderDetailSection
           setModalOpen={setModalOpen}
           modaltype={modaltype}
@@ -474,14 +488,8 @@ export default function ChoseEvent({
         />
       )}
 
-      {(modaltype === 'event') && (
-        <EventSection
-          setModalOpen={setModalOpen}
-          editOrder={editOrder}
-          findTimeCost={findTimeCost}
-        />
-      )}
-      {(modaltype === 'message') && (
+      {modaltype === 'event' && <EventSection setModalOpen={setModalOpen} editOrder={editOrder} findTimeCost={findTimeCost} />}
+      {modaltype === 'message' && (
         <DelayMessageSection
           setModalOpen={setModalOpen}
           btnDisabled={btnDisabled}
@@ -492,8 +500,8 @@ export default function ChoseEvent({
       )}
       <PasswordDialog
         open={dialogOpen}
-        title='取消預約'
-        inputLabel='取消預約密碼'
+        title="取消預約"
+        inputLabel="取消預約密碼"
         handleOnCancel={closePassworDialog}
         handleOnConfirm={() => handleAcceptBooking(false)}
         isLoading={btnDisabled}

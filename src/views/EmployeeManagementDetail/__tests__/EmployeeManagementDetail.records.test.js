@@ -46,8 +46,7 @@ const orderFixtures = ({ orders, summary = {}, bonus = false, member = false }) 
 })
 const headers = () => screen.getAllByRole('columnheader').map(th => th.textContent)
 const rowOf = no => Array.from(screen.getByText(`#${no}`).closest('tr').querySelectorAll('td')).map(td => td.textContent)
-const choose = (select, text) =>
-  fireEvent.change(select, { target: { value: Array.from(select.options).find(o => o.textContent === text).value } })
+const choose = (select, text) => fireEvent.change(select, { target: { value: Array.from(select.options).find(o => o.textContent === text).value } })
 
 beforeEach(() => loginAs())
 afterEach(cleanup)
@@ -79,18 +78,49 @@ describe('帳單紀錄', () => {
     expect(headers()).not.toContain('點數折抵金額')
     expect(headers()).not.toContain('活動券')
     expect(rowOf('A1')).toEqual([
-      '詳情', '#A12026/10/19/(一)', '陳小姐0912345678', '王小美/07', 'Y',
-      '1,200', '301', '0', '0', '0', '0', '2,001', '1,501', '',
+      '詳情',
+      '#A12026/10/19/(一)',
+      '陳小姐0912345678',
+      '王小美/07',
+      'Y',
+      '1,200',
+      '301',
+      '0',
+      '0',
+      '0',
+      '0',
+      '2,001',
+      '1,501',
+      '',
     ])
     expect(rowOf('A2')).toEqual([
-      '詳情', '#A22026/10/25/(日)', '陳小姐0912345678', '王小美', 'N',
-      '1,200含 A卡, 含 B卡', '301含 C卡', '0', '0', '0', '100LINE Pay', '4,001', '1,501', '熟客',
+      '詳情',
+      '#A22026/10/25/(日)',
+      '陳小姐0912345678',
+      '王小美',
+      'N',
+      '1,200含 A卡, 含 B卡',
+      '301含 C卡',
+      '0',
+      '0',
+      '0',
+      '100LINE Pay',
+      '4,001',
+      '1,501',
+      '熟客',
     ])
     expect(screen.getAllByText('詳情')[0].closest('a')).toHaveAttribute('href', '/order/1')
   })
 
   it('會員卡啟用、紅利啟用、有活動券時顯示對應欄位', async () => {
-    const orders = [order('1', { raffleCount: 2, membership: 999.5, bonusDecountForReport: 50, TPTName: { service: [], product: [], membership: ['D卡'], overAll: [] } })]
+    const orders = [
+      order('1', {
+        raffleCount: 2,
+        membership: 999.5,
+        bonusDecountForReport: 50,
+        TPTName: { service: [], product: [], membership: ['D卡'], overAll: [] },
+      }),
+    ]
     renderDetail('orderRecord', { fixtures: orderFixtures({ orders, member: true, bonus: true }) })
     await screen.findByText('#A1')
     await wait(() => expect(headers()).toContain('活動券'))
@@ -320,4 +350,3 @@ describe('抽成報表', () => {
     expect(await screen.findByText('總應領薪資')).toBeInTheDocument()
   })
 })
-

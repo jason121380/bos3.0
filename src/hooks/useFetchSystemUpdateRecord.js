@@ -54,7 +54,6 @@ const SYSTEM_UPDATE_RECORD_DELETE = gql`
 export function useFetchCreateSystemUpdateDelete() {
   const [SystemUpdateDelete] = useMutation(SYSTEM_UPDATE_RECORD_DELETE)
   return {
-    SystemUpdateDelete: ({ systemUpdateId }) =>
-      SystemUpdateDelete({ variables: { systemUpdateId } }),
+    SystemUpdateDelete: ({ systemUpdateId }) => SystemUpdateDelete({ variables: { systemUpdateId } }),
   }
 }

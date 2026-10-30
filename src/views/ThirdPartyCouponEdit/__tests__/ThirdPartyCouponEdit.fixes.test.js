@@ -10,7 +10,12 @@ beforeEach(() => loginAs())
 afterEach(cleanup)
 
 it.each([
-  ['找不到該卡券', { fixtures: { GET_THIRD_PARTY_COUPONS: { getThirdPartTicket: [{ id: 't1', name: '街口券', type: 'PERCENT', handlingFee: 2, isNoCash: false }] } } }],
+  [
+    '找不到該卡券',
+    {
+      fixtures: { GET_THIRD_PARTY_COUPONS: { getThirdPartTicket: [{ id: 't1', name: '街口券', type: 'PERCENT', handlingFee: 2, isNoCash: false }] } },
+    },
+  ],
 ])('%s時不整頁壞，表單空白、不能儲存', async (_, options) => {
   const { settle } = renderPage(<ThirdPartyCouponEdit match={{ params: { id: 'gone' } }} />, options)
   await settle()

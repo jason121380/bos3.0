@@ -10,7 +10,18 @@ const defaultLabel = user => user.name
 // 打字時同時比對顯示文字、本名與暱稱：顯示用暱稱的設計師也能用本名找到（Codex，PR #321）
 const filterStaff = createFilterOptions({ stringify: user => [user.name, user.nickName].filter(Boolean).join(' ') })
 
-export default function StaffCombobox({ id, label, name, value, users, onChange, disabled = false, loading = false, getLabel = defaultLabel, inputProps }) {
+export default function StaffCombobox({
+  id,
+  label,
+  name,
+  value,
+  users,
+  onChange,
+  disabled = false,
+  loading = false,
+  getLabel = defaultLabel,
+  inputProps,
+}) {
   const list = users || []
   const selected = list.find(user => user.id === value) || null
   const emit = option => {

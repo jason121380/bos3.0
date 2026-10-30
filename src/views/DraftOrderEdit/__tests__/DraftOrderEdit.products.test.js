@@ -5,8 +5,19 @@
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { loginAs } from '../../../__tests__/testkit.test'
 import {
-  setupDraft, pageReady, pick, clearField, saveDraft, summaryValue, makeOrder, panel, panelHeader,
-  DESIGNER, HELPER, PRODUCT, PRODUCT2,
+  setupDraft,
+  pageReady,
+  pick,
+  clearField,
+  saveDraft,
+  summaryValue,
+  makeOrder,
+  panel,
+  panelHeader,
+  DESIGNER,
+  HELPER,
+  PRODUCT,
+  PRODUCT2,
 } from './draftPageKit.test'
 
 jest.setTimeout(20000)
@@ -58,9 +69,7 @@ describe('掛單詳細：店販帶回與修改', () => {
     await wait(() => expect(summaryValue('店販消費')).toHaveTextContent('3,000'))
     expect(summaryValue('業績合計')).toHaveTextContent('3,800')
     const input = await saveDraft(page.calls)
-    expect(input.productOrders).toEqual([
-      expect.objectContaining({ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 1000, count: 3 }),
-    ])
+    expect(input.productOrders).toEqual([expect.objectContaining({ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 1000, count: 3 })])
   })
 
   it('單價、數量輸入非數字視為 0；數量 0 的列不送出', async () => {
@@ -81,9 +90,7 @@ describe('掛單詳細：店販帶回與修改', () => {
     await wait(() => expect(rowInput(0, 'price')).toHaveValue('500'))
     expect(rowInput(0, 'count')).toHaveValue('1')
     const input = await saveDraft(page.calls)
-    expect(input.productOrders).toEqual([
-      expect.objectContaining({ sellerId: HELPER.userId, productId: PRODUCT2.id, price: 500, count: 1 }),
-    ])
+    expect(input.productOrders).toEqual([expect.objectContaining({ sellerId: HELPER.userId, productId: PRODUCT2.id, price: 500, count: 1 })])
   })
 
   it('單價鎖定的商品不能改單價', async () => {

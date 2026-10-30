@@ -12,11 +12,7 @@ function AboutAuthority({ className, roleName, setRoleName, ...rest }) {
         </CardHeader>
         <CardContent>
           <Field label="名稱">
-            <Input
-              value={roleName}
-              onChange={event => setRoleName(event.target.value)}
-              data-testid="name"
-            />
+            <Input value={roleName} onChange={event => setRoleName(event.target.value)} data-testid="name" />
           </Field>
         </CardContent>
       </Card>

@@ -22,22 +22,20 @@ const timeCostArray = [
   { label: '6.5小時', value: 13 },
   { label: '7小時', value: 14 },
   { label: '7.5小時', value: 15 },
-  { label: '8小時', value: 16 }
+  { label: '8小時', value: 16 },
 ]
 
 const optionArr = [
-  { label: "顧客端預約備註為必填項目", key: 'isRemarkRequired' },
-  { label: "限制指定預約只能預約偏好設計師", key: 'isCusBookingPreferDesOnly' },
-  { label: "開放不指定預約", key: 'isCusNonDesBookingUsing' },
-  { label: "顧客端預約強制選擇服務項目", key: 'isBookingItemRequired' },
-  { label: "關閉顧客端預約", key: 'closeCustomerBooking' },
-  { label: "預約時顯示同行人數", key: 'isBookingPeerDisplay' },
-  { label: "顯示預約項目價格", key: 'isBookingItemPriceDisplay' },
+  { label: '顧客端預約備註為必填項目', key: 'isRemarkRequired' },
+  { label: '限制指定預約只能預約偏好設計師', key: 'isCusBookingPreferDesOnly' },
+  { label: '開放不指定預約', key: 'isCusNonDesBookingUsing' },
+  { label: '顧客端預約強制選擇服務項目', key: 'isBookingItemRequired' },
+  { label: '關閉顧客端預約', key: 'closeCustomerBooking' },
+  { label: '預約時顯示同行人數', key: 'isBookingPeerDisplay' },
+  { label: '顯示預約項目價格', key: 'isBookingItemPriceDisplay' },
 ]
 
-function AboutCustomerBooking({
-  className, inputEnable, aboutCustomer, setAboutCustomer
-}) {
+function AboutCustomerBooking({ className, inputEnable, aboutCustomer, setAboutCustomer }) {
   const handleSetValue = (key, value) => {
     setAboutCustomer(
       produce(draft => {
@@ -62,7 +60,7 @@ function AboutCustomerBooking({
             />
           </div>
         ))}
-        <Field label='預約最短時長' className="mt-4">
+        <Field label="預約最短時長" className="mt-4">
           <NativeSelect
             className="w-40 mx-[20px] my-0"
             fullWidth={false}
@@ -70,7 +68,9 @@ function AboutCustomerBooking({
             onChange={e => handleSetValue('bookingMinumnTimeCost', e.target.value)}
           >
             {timeCostArray.map(d => (
-              <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
+              <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>
+                {d.label}
+              </NativeSelectOption>
             ))}
           </NativeSelect>
         </Field>

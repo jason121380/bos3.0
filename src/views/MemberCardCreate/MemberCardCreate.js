@@ -15,7 +15,8 @@ import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { PageHeader } from 'ui/page-header'
 
 // 色票浮層：沿用舊版置中固定定位（CirclePicker 接受 className）
-const colorPickerClass = 'fixed left-1/2 top-1/2 z-[1400] box-content -translate-x-1/2 -translate-y-1/2 rounded-md border border-solid border-border-strong bg-background pb-3 pl-5 pr-3 pt-5 shadow-float'
+const colorPickerClass =
+  'fixed left-1/2 top-1/2 z-[1400] box-content -translate-x-1/2 -translate-y-1/2 rounded-md border border-solid border-border-strong bg-background pb-3 pl-5 pr-3 pt-5 shadow-float'
 // 顏色預覽按鈕：背景色由 style 帶入目前色碼
 const swatchClass = 'h-9 w-16 shrink-0 rounded-md border border-solid border-border-strong p-0'
 
@@ -69,9 +70,7 @@ export default function MemberCardCreate() {
   )
 
   // 拿店家id
-  const merchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
+  const merchantId = localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null
 
   // 儲存要新增的值
   const [submitValue, setSubmitValue] = useState({
@@ -86,10 +85,10 @@ export default function MemberCardCreate() {
     isAvailableForSale: forSale,
     isLocked: 'UNSET',
     effecitveDay: 0,
-    color: "#FFFFFF",
-    textColor: "#FFFFFF",
+    color: '#FFFFFF',
+    textColor: '#FFFFFF',
     image: '',
-    comment: ""
+    comment: '',
   })
   const [colorData, setColorData] = useState(submitValue.color)
   const [colorTextData, setColorTextData] = useState(submitValue.textColor)
@@ -99,13 +98,11 @@ export default function MemberCardCreate() {
     //如果抽成card關掉就把抽成的欄位拿掉
     try {
       // 不販售時送出的抽成一律清回固定 0（Jason 2026/10/22 授權修正：原本只 setState，送出的仍是同一次 render 的舊抽成）
-      const saleFields = forSale
-        ? {}
-        : { commissionWay: 'fixed', commission: 0, isAvailableForSale: false }
+      const saleFields = forSale ? {} : { commissionWay: 'fixed', commission: 0, isAvailableForSale: false }
       if (!forSale) {
         setSubmitValue({ ...submitValue, ...saleFields })
       }
-      if ( parseInt(submitValue.effecitveDay, 10) < 0) {
+      if (parseInt(submitValue.effecitveDay, 10) < 0) {
         openSnackbar({ message: '請輸入有效期限大於或等於0', variant: 'error' })
       } else {
         createMembership({
@@ -129,11 +126,7 @@ export default function MemberCardCreate() {
   //disable 新增
   const valid = !(submitValue.no && submitValue.name && submitValue.MembershipCategoryUUID)
   // 停用原因（STYLE.md §6）：依上方 valid 的三個必填欄位
-  const missingFields = [
-    !submitValue.no && '代號',
-    !submitValue.name && '名稱',
-    !submitValue.MembershipCategoryUUID && '會員卡類別',
-  ].filter(Boolean)
+  const missingFields = [!submitValue.no && '代號', !submitValue.name && '名稱', !submitValue.MembershipCategoryUUID && '會員卡類別'].filter(Boolean)
 
   return (
     <Page className="ui-root" title="新增會員卡">
@@ -146,20 +139,10 @@ export default function MemberCardCreate() {
           <CardContent className="flex flex-col gap-4">
             {/* data-testid、required 原本經 inputProps 傳到 input，現直接放在原生 input 上 */}
             <Field label="代號" required>
-              <Input
-                name="no"
-                data-testid='no'
-                required='代號 為必填'
-                onChange={e => setSubmitValue({ ...submitValue, no: e.target.value })}
-              />
+              <Input name="no" data-testid="no" required="代號 為必填" onChange={e => setSubmitValue({ ...submitValue, no: e.target.value })} />
             </Field>
             <Field label="名稱" required>
-              <Input
-                name="name"
-                data-testid='name'
-                required='名稱 為必填'
-                onChange={e => setSubmitValue({ ...submitValue, name: e.target.value })}
-              />
+              <Input name="name" data-testid="name" required="名稱 為必填" onChange={e => setSubmitValue({ ...submitValue, name: e.target.value })} />
             </Field>
             <Field label="會員卡類別" required>
               <NativeSelect
@@ -195,7 +178,7 @@ export default function MemberCardCreate() {
                 checked={forSale}
                 onChange={() => {
                   setForSale(!forSale)
-                  setSubmitValue({ ...submitValue, isAvailableForSale: !forSale})
+                  setSubmitValue({ ...submitValue, isAvailableForSale: !forSale })
                 }}
               />
             </div>
@@ -238,7 +221,7 @@ export default function MemberCardCreate() {
                   name="color"
                   value={submitValue.color}
                   onChange={event => {
-                    setSubmitValue({ ...submitValue, color: event.target.value})
+                    setSubmitValue({ ...submitValue, color: event.target.value })
                   }}
                 />
                 <Button
@@ -360,13 +343,7 @@ export default function MemberCardCreate() {
                   ))}
                 </NativeSelect>
               </Field>
-              <Field
-                label={
-                  submitValue.commissionWay === 'byCost' || submitValue.commissionWay === 'byPrice'
-                    ? '抽成數字%'
-                    : '抽成數字'
-                }
-              >
+              <Field label={submitValue.commissionWay === 'byCost' || submitValue.commissionWay === 'byPrice' ? '抽成數字%' : '抽成數字'}>
                 <Input
                   type="number"
                   name="commission"

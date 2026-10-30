@@ -21,7 +21,7 @@ h1 {
 body {
   /* 頁面底色（淺色為白）：iOS 主畫面 App 的狀態列顯示 body 底色，#F5F5F5 會讓頂端灰、與白色頁面不平衡（Jason 2026/10/20）*/
   background-color: rgb(var(--canvas));
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -39,7 +39,7 @@ body {
 }
 
 .cellHighlight {
-  color: #007AFF !important;
+  color: #007aff !important;
   font-weight: bold !important;
 }
 
@@ -62,7 +62,6 @@ div.versionUpdateTime {
 }
 
 @media (max-width: 576px) {
-
   .teachingMode span,
   div.versionUpdateTime {
     display: none;
@@ -89,7 +88,7 @@ div.versionUpdateTime {
   div.forPrint {
     display: grid;
     grid-template-columns: 190px 190px 190px 190px;
-    padding-top: 20px
+    padding-top: 20px;
   }
 
   div.forPrintHelper {
@@ -207,7 +206,7 @@ div.versionUpdateTime {
       page-break-before: auto;
       page-break-inside: avoid;
       page-break-after: auto;
-      margin-bottom: 30px
+      margin-bottom: 30px;
     }
 
     table {
@@ -227,7 +226,6 @@ div.versionUpdateTime {
   }
 
   .DesignersSalaryDetailReport {
-
     .DesignersSalaryDetailReportTable {
       display: block !important;
       overflow: visible !important;
@@ -545,7 +543,6 @@ div.versionUpdateTime {
 
         .DecreaseDailyReportCardTable {
           tr {
-
             th,
             td {
               word-break: break-all;
@@ -582,7 +579,6 @@ div.versionUpdateTime {
     border: 1px solid black;
 
     table {
-
       tr td,
       tr th {
         border-bottom: 1px solid black !important;
@@ -616,7 +612,7 @@ div.versionUpdateTime {
         margin-bottom: 0;
 
         table td {
-          border-bottom: .5px solid black;
+          border-bottom: 0.5px solid black;
           padding: 1px 1px 1px 3px;
           font-size: 13px !important;
         }
@@ -811,7 +807,7 @@ div.versionUpdateTime {
             }
 
             &:nth-child(even) td {
-              border-bottom: .5px solid black;
+              border-bottom: 0.5px solid black;
             }
 
             &:last-child td {
@@ -830,7 +826,7 @@ div.versionUpdateTime {
         tbody.sumPerformance {
           tr td {
             word-break: break-all;
-            border-bottom: .5px solid black;
+            border-bottom: 0.5px solid black;
           }
         }
       }
@@ -883,7 +879,6 @@ div.versionUpdateTime {
     box-shadow: none;
 
     table {
-
       thead tr th,
       tbody tr td {
         white-space: pre-line !important;
@@ -1000,7 +995,7 @@ div.versionUpdateTime {
   }
 }
 
-#whiteSpace>tr>td {
+#whiteSpace > tr > td {
   white-space: pre;
 }
 
@@ -1181,7 +1176,6 @@ div.versionUpdateTime {
 }
 
 .MerchantBankTransferReportTransferDetail {
-
   input {
     text-align: center;
     padding: 7px 0 2px !important;
@@ -1213,7 +1207,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox hide input type number arrow*/
-input[type=number] {
+input[type='number'] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
@@ -1238,7 +1232,7 @@ input[type=number] {
         }
       }
 
-      tr:nth-child(2n+1) {
+      tr:nth-child(2n + 1) {
         td {
           border-bottom: none;
         }
@@ -1313,7 +1307,7 @@ input[type=number] {
 .ManagementReservationRecord {
   .hoverItem {
     &:hover {
-      transition: .3s background-color;
+      transition: 0.3s background-color;
       background-color: rgb(228, 252, 237);
       mix-blend-mode: darken;
     }

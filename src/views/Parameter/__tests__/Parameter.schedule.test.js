@@ -8,7 +8,18 @@ import React from 'react'
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { loginAs, renderPage } from '../../../__tests__/testkit.test'
 import Parameter from '..'
-import { baseFixtures, renderParameter, openTab, save, sent, checkboxByLabel, controlByLabel, controlsByLabel, typeText, cardOf } from './parameterKit.test'
+import {
+  baseFixtures,
+  renderParameter,
+  openTab,
+  save,
+  sent,
+  checkboxByLabel,
+  controlByLabel,
+  controlsByLabel,
+  typeText,
+  cardOf,
+} from './parameterKit.test'
 
 jest.setTimeout(30000)
 

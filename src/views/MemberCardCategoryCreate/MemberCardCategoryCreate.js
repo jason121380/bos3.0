@@ -12,9 +12,7 @@ function MemberCardCategoryCreate() {
   const { createMembershipCategory } = useFetchCreateMembershipCategory()
 
   // 拿店家ID
-  const OfficialBrandMerchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
+  const OfficialBrandMerchantId = localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null
 
   // 儲存要新增的值
   const [submitValue, setSubmitValue] = useState({
@@ -53,25 +51,14 @@ function MemberCardCategoryCreate() {
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
             <Field label="代號">
-              <Input
-                name="no"
-                onChange={event => setSubmitValue({ ...submitValue, no: event.target.value })}
-              />
+              <Input name="no" onChange={event => setSubmitValue({ ...submitValue, no: event.target.value })} />
             </Field>
             <Field label="名稱">
-              <Input
-                name="name"
-                onChange={event => setSubmitValue({ ...submitValue, name: event.target.value })}
-              />
+              <Input name="name" onChange={event => setSubmitValue({ ...submitValue, name: event.target.value })} />
             </Field>
           </CardContent>
           <CardFooter>
-            <Button
-              variant="primary"
-              type="submit"
-              data-testid="submit-create"
-              onClick={() => onSubmit()}
-            >
+            <Button variant="primary" type="submit" data-testid="submit-create" onClick={() => onSubmit()}>
               新增
             </Button>
           </CardFooter>

@@ -8,8 +8,16 @@
 // GraphQL 全由模擬 link 回應，不連後端、不改真實帳單。
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import {
-  setup, pageReady, makeOrder, checkoutAndGetInput, summaryValue, loginForTest, pickEmployee,
-  DESIGNER, ASSISTANT, PRODUCT,
+  setup,
+  pageReady,
+  makeOrder,
+  checkoutAndGetInput,
+  summaryValue,
+  loginForTest,
+  pickEmployee,
+  DESIGNER,
+  ASSISTANT,
+  PRODUCT,
 } from './orderEditKit.test'
 
 jest.setTimeout(20000)
@@ -35,8 +43,7 @@ const productOrder = (product, extra = {}) => ({
 })
 
 // 第 1 列：洗髮精 ×2（團購券）；第 2 列：鎖價的髮蠟
-const twoProducts = () =>
-  makeOrder({ productOrders: [productOrder(PRODUCT, { count: 2, thirdPartyPayId: 'tp-1' }), productOrder(WAX)] })
+const twoProducts = () => makeOrder({ productOrders: [productOrder(PRODUCT, { count: 2, thirdPartyPayId: 'tp-1' }), productOrder(WAX)] })
 
 const open = (overrides = {}) =>
   setup({

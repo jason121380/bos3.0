@@ -6,8 +6,12 @@ import { Table, TableBody, TableCell, TableHeader as TableHead, TableRow, TableH
 import { Card as UiCard, CardHeader as UiCardHeader, CardTitle as UiCardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
 import {
-  Table as UiTable, TableBody as UiTableBody, TableCell as UiTableCell, TableHead as UiTableHead,
-  TableHeader as UiTableHeader, TableRow as UiTableRow,
+  Table as UiTable,
+  TableBody as UiTableBody,
+  TableCell as UiTableCell,
+  TableHead as UiTableHead,
+  TableHeader as UiTableHeader,
+  TableRow as UiTableRow,
 } from 'ui/table'
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'
@@ -18,7 +22,8 @@ const reportCellClass = 'h-auto px-4 py-2 text-left align-middle whitespace-pre-
 const reportHeadClass = 'h-auto px-4 py-3 align-middle whitespace-pre text-[14px] leading-6 font-semibold text-black'
 
 // 明確保留舊表格內距與列印框線，避免依賴相容層 class。
-const reportTableClass = 'print:[&_td]:text-text text-[14px] leading-5 [&_tr]:border-0 [&_tr]:hover:bg-transparent [&_td]:border-0 [&_td]:[border-bottom:1px_solid_rgba(0,0,0,0.03)] [&_th]:border-0 [&_th]:[border-bottom:2px_solid_rgba(0,0,0,0.05)] print:[&_td]:!border-0 print:[&_th]:!border-0 print:[&_th]:bg-white print:[&_td]:![border-bottom:1px_solid_black] print:[&_th]:![border-bottom:1px_solid_black]'
+const reportTableClass =
+  'print:[&_td]:text-text text-[14px] leading-5 [&_tr]:border-0 [&_tr]:hover:bg-transparent [&_td]:border-0 [&_td]:[border-bottom:1px_solid_rgba(0,0,0,0.03)] [&_th]:border-0 [&_th]:[border-bottom:2px_solid_rgba(0,0,0,0.05)] print:[&_td]:!border-0 print:[&_th]:!border-0 print:[&_th]:bg-white print:[&_td]:![border-bottom:1px_solid_black] print:[&_th]:![border-bottom:1px_solid_black]'
 
 function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCardActive, designerNameForReportTypeData, printMode }) {
   const [printData, setPrintData] = useState([])
@@ -28,11 +33,11 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
     let group = []
     const report = []
     data.forEach((d, index) => {
-      group.push((d))
+      group.push(d)
       if (group.length === 4) {
         report.push(group)
         group = []
-      } else if (index === (data.length - 1)) {
+      } else if (index === data.length - 1) {
         report.push(group)
         group = []
       }
@@ -47,11 +52,9 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
           <UiCard className="printObject h-full">
             <UiCardHeader className="justify-center pb-4 text-center">
               <UiCardTitle>
-                {`${data.user.designerNo !== null && data.user.designerNo !== ''
-                  ? data.user.designerNo
-                  : ''
-                  } ${data.user.nickName !== null && data.user.nickName !== '' ? data.user.nickName : ''
-                  } ${data.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 互助報表`}
+                {`${data.user.designerNo !== null && data.user.designerNo !== '' ? data.user.designerNo : ''} ${
+                  data.user.nickName !== null && data.user.nickName !== '' ? data.user.nickName : ''
+                } ${data.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 互助報表`}
               </UiCardTitle>
             </UiCardHeader>
             <div className="flex flex-col gap-4 px-5 pb-5">
@@ -69,21 +72,12 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
                   {data.helperRecord.map((record, index) => (
                     <UiTableRow key={index}>
                       <UiTableCell className="tabular-nums">
-                        <a
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          href={`/order/${record.orderId}`}
-                          className="text-accent underline"
-                        >
+                        <a target="_blank" rel="noopener noreferrer" href={`/order/${record.orderId}`} className="text-accent underline">
                           #{record.orderNo}
                         </a>
                       </UiTableCell>
-                      <UiTableCell className={reportCellClass}>
-                        {record.itemName}
-                      </UiTableCell>
-                      <UiTableCell className={reportCellClass}>
-                        {record.designer ? record.designer.nameForReport : ''}
-                      </UiTableCell>
+                      <UiTableCell className={reportCellClass}>{record.itemName}</UiTableCell>
+                      <UiTableCell className={reportCellClass}>{record.designer ? record.designer.nameForReport : ''}</UiTableCell>
                       <UiTableCell numeric>{formatNumber(record.price === 0 && record.point !== 0 ? '' : record.price)}</UiTableCell>
                       <UiTableCell numeric>{formatNumber(record.point ? record.point : '')}</UiTableCell>
                     </UiTableRow>
@@ -92,8 +86,12 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
                     <UiTableCell className="font-medium">合計</UiTableCell>
                     <UiTableCell />
                     <UiTableCell />
-                    <UiTableCell numeric className="font-medium">{formatNumber(data.helperRecordPriceSummary)}</UiTableCell>
-                    <UiTableCell numeric className="font-medium">{formatNumber(data.helperRecordPointSummary)}</UiTableCell>
+                    <UiTableCell numeric className="font-medium">
+                      {formatNumber(data.helperRecordPriceSummary)}
+                    </UiTableCell>
+                    <UiTableCell numeric className="font-medium">
+                      {formatNumber(data.helperRecordPointSummary)}
+                    </UiTableCell>
                   </UiTableRow>
                 </UiTableBody>
               </UiTable>
@@ -148,21 +146,20 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
                   </UiTableRow>
                   {(isMemberShipCardActive ||
                     data.summaryTillNow.membershipPerformance !== 0 ||
-                    data.summaryTillNow.membershipRake * 100 / 100 !== 0)
-                    && (
-                      <Fragment>
-                        <UiTableRow>
-                          <UiTableCell>會員卡業績</UiTableCell>
-                          <UiTableCell numeric>{formatNumber(data.summaryCurrentDay.membershipPerformance)}</UiTableCell>
-                          <UiTableCell numeric>{formatNumber(data.summaryTillNow.membershipPerformance)}</UiTableCell>
-                        </UiTableRow>
-                        <UiTableRow>
-                          <UiTableCell>會員卡抽成</UiTableCell>
-                          <UiTableCell numeric>{formatNumber(data.summaryCurrentDay.membershipRake)}</UiTableCell>
-                          <UiTableCell numeric>{formatNumber(data.summaryTillNow.membershipRake)}</UiTableCell>
-                        </UiTableRow>
-                      </Fragment>
-                    )}
+                    (data.summaryTillNow.membershipRake * 100) / 100 !== 0) && (
+                    <Fragment>
+                      <UiTableRow>
+                        <UiTableCell>會員卡業績</UiTableCell>
+                        <UiTableCell numeric>{formatNumber(data.summaryCurrentDay.membershipPerformance)}</UiTableCell>
+                        <UiTableCell numeric>{formatNumber(data.summaryTillNow.membershipPerformance)}</UiTableCell>
+                      </UiTableRow>
+                      <UiTableRow>
+                        <UiTableCell>會員卡抽成</UiTableCell>
+                        <UiTableCell numeric>{formatNumber(data.summaryCurrentDay.membershipRake)}</UiTableCell>
+                        <UiTableCell numeric>{formatNumber(data.summaryTillNow.membershipRake)}</UiTableCell>
+                      </UiTableRow>
+                    </Fragment>
+                  )}
                 </UiTableBody>
               </UiTable>
             </div>
@@ -171,31 +168,33 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
       ))}
       {printData.map((datas, index) => {
         return (
-          <div key={`printWrap-${index}`} className='DecreaseDailyReportCardPrintContainer'>
+          <div key={`printWrap-${index}`} className="DecreaseDailyReportCardPrintContainer">
             {datas.map(data => (
               <div key={data.user.id} className="box-border DecreaseDailyReportCardPrint">
                 <Card className="overflow-hidden text-text print:rounded-none print:shadow-none">
-                  <CardHeader
-                    className="print:border print:border-solid print:border-black print:border-b-0 !min-h-0 !items-center !gap-0 !px-4 !pb-2 !pt-4 [&>div]:flex-auto [&>div]:block text-center"
-                  ><span className="block text-heading text-text">{`${data.user.designerNo !== null && data.user.designerNo !== ''
-                      ? data.user.designerNo
-                      : ''
-                      } ${data.user.nickName !== null && data.user.nickName !== '' ? data.user.nickName : ''
-                      } ${data.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 互助報表`}</span></CardHeader>
+                  <CardHeader className="print:border print:border-solid print:border-black print:border-b-0 !min-h-0 !items-center !gap-0 !px-4 !pb-2 !pt-4 [&>div]:flex-auto [&>div]:block text-center">
+                    <span className="block text-heading text-text">{`${
+                      data.user.designerNo !== null && data.user.designerNo !== '' ? data.user.designerNo : ''
+                    } ${
+                      data.user.nickName !== null && data.user.nickName !== '' ? data.user.nickName : ''
+                    } ${data.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 互助報表`}</span>
+                  </CardHeader>
                   <CardContent className="last:pb-4 print:!pb-0 p-0">
                     <div>
                       <div className="ui-scroll-x w-full overflow-x-auto print:overflow-visible rounded-lg bg-background text-text print:rounded-none print:shadow-none">
                         <Table className={reportTableClass} aria-label="a dense table">
-                          <TableHead className='DecreaseDailyReportCardTable'>
+                          <TableHead className="DecreaseDailyReportCardTable">
                             <TableRow>
                               <ReportTableHead className={reportHeadClass}>#</ReportTableHead>
                               <ReportTableHead className={clsx(reportHeadClass, printMode && 'itemPrint')}>項目</ReportTableHead>
-                              <ReportTableHead className={reportHeadClass}>{designerNameForReportTypeData === 'NO' ? '#設' : '設計師'}</ReportTableHead>
+                              <ReportTableHead className={reportHeadClass}>
+                                {designerNameForReportTypeData === 'NO' ? '#設' : '設計師'}
+                              </ReportTableHead>
                               <ReportTableHead className={reportHeadClass}>金額</ReportTableHead>
                               <ReportTableHead className={reportHeadClass}>點</ReportTableHead>
                             </TableRow>
                           </TableHead>
-                          <TableBody className='DecreaseDailyReportCardTable'>
+                          <TableBody className="DecreaseDailyReportCardTable">
                             {data.helperRecord.map((record, index) => (
                               <TableRow key={index}>
                                 <TableCell className={reportCellClass}>
@@ -219,7 +218,9 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
                               </TableRow>
                             ))}
                             <TableRow>
-                              <TableCell className={reportCellClass} style={{ fontWeight: '500' }}>合計</TableCell>
+                              <TableCell className={reportCellClass} style={{ fontWeight: '500' }}>
+                                合計
+                              </TableCell>
                               <TableCell className={reportCellClass}></TableCell>
                               <TableCell className={reportCellClass}></TableCell>
                               <TableCell className={reportCellClass}>{data.helperRecordPriceSummary}</TableCell>
@@ -280,21 +281,20 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
                             </TableRow>
                             {(isMemberShipCardActive ||
                               data.summaryTillNow.membershipPerformance !== 0 ||
-                              data.summaryTillNow.membershipRake * 100 / 100 !== 0)
-                              && (
-                                <Fragment>
-                                  <TableRow>
-                                    <TableCell className={reportCellClass}>會員卡業績</TableCell>
-                                    <TableCell className={reportCellClass}>{data.summaryCurrentDay.membershipPerformance}</TableCell>
-                                    <TableCell className={reportCellClass}>{data.summaryTillNow.membershipPerformance}</TableCell>
-                                  </TableRow>
-                                  <TableRow>
-                                    <TableCell className={reportCellClass}>會員卡抽成</TableCell>
-                                    <TableCell className={reportCellClass}>{data.summaryCurrentDay.membershipRake}</TableCell>
-                                    <TableCell className={reportCellClass}>{data.summaryTillNow.membershipRake}</TableCell>
-                                  </TableRow>
-                                </Fragment>
-                              )}
+                              (data.summaryTillNow.membershipRake * 100) / 100 !== 0) && (
+                              <Fragment>
+                                <TableRow>
+                                  <TableCell className={reportCellClass}>會員卡業績</TableCell>
+                                  <TableCell className={reportCellClass}>{data.summaryCurrentDay.membershipPerformance}</TableCell>
+                                  <TableCell className={reportCellClass}>{data.summaryTillNow.membershipPerformance}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell className={reportCellClass}>會員卡抽成</TableCell>
+                                  <TableCell className={reportCellClass}>{data.summaryCurrentDay.membershipRake}</TableCell>
+                                  <TableCell className={reportCellClass}>{data.summaryTillNow.membershipRake}</TableCell>
+                                </TableRow>
+                              </Fragment>
+                            )}
                           </TableBody>
                         </Table>
                       </div>
@@ -305,8 +305,7 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
             ))}
           </div>
         )
-      }
-      )}
+      })}
     </Fragment>
   )
 }

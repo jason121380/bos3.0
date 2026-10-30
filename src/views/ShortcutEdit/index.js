@@ -24,7 +24,7 @@ function ShortcutEdit({ match }) {
   const services = useFetchServicesForTransferList()
   const products = useFetchProductsInTransferList()
   const tickets = useFetchTicketsForTransferList({ isLaunched: true })
-  const memberCards = useFetchGetMembershipsForTransferList({ isAvailableForSale: true, })
+  const memberCards = useFetchGetMembershipsForTransferList({ isAvailableForSale: true })
   const { updateShortcut } = useUpdateShortcut()
   const { deleteShortcut } = useDeleteShortcut()
   const [isClick, setIsClick] = useState(false)
@@ -43,33 +43,27 @@ function ShortcutEdit({ match }) {
     serviceIds: [],
     productIds: [],
     ticketIds: [],
-    membershipIds: []
+    membershipIds: [],
   })
 
   const isLoading = useMemo(() => {
-    return (
-      services.loading || products.loading || tickets.loading ||
-      memberCards.loading || shortcut.loading
-    )
-  }, [
-    services.loading, products.loading, tickets.loading,
-    memberCards.loading, shortcut.loading
-  ])
+    return services.loading || products.loading || tickets.loading || memberCards.loading || shortcut.loading
+  }, [services.loading, products.loading, tickets.loading, memberCards.loading, shortcut.loading])
 
   const keyWordsOnChange = (value, type) => {
     switch (type) {
       case 'SERVICE':
         setServicesKeyword(value)
-        break;
+        break
       case 'PRODUCT':
         setProductKeyword(value)
-        break;
+        break
       case 'TICKET':
         setTicketKeyword(value)
-        break;
+        break
       case 'MEMBERCARD':
         setMemberCardsKeyword(value)
-        break;
+        break
       default:
         // 其他值不處理（與原本沒有 default 時相同）
         break
@@ -92,7 +86,7 @@ function ShortcutEdit({ match }) {
         d.display = true
         return d
       } else {
-        d.display = d.no && d.no.includes(keyword) || d.name && d.name.includes(keyword)
+        d.display = (d.no && d.no.includes(keyword)) || (d.name && d.name.includes(keyword))
         return d
       }
     })
@@ -105,18 +99,18 @@ function ShortcutEdit({ match }) {
       await updateShortcut({
         input: {
           id: match.params.id,
-          newShortcut: submitData
-        }
+          newShortcut: submitData,
+        },
       })
       openSnackbar({
         variant: 'success',
-        message: '儲存成功'
+        message: '儲存成功',
       })
       history.push('/shortcut')
     } catch (error) {
       openSnackbar({
         variant: 'error',
-        message: error.message
+        message: error.message,
       })
       setIsClick(false)
     }
@@ -130,7 +124,7 @@ function ShortcutEdit({ match }) {
     } catch (error) {
       openSnackbar({
         variant: 'error',
-        message: error.message
+        message: error.message,
       })
       setIsClick(false)
     }
@@ -138,14 +132,11 @@ function ShortcutEdit({ match }) {
 
   useEffect(() => {
     if (!shortcut.loading) {
-      const getIds = (data) => data.map(d => d.id || d.uuid)
+      const getIds = data => data.map(d => d.id || d.uuid)
       const found = idx(shortcut, _ => _.data.shortcut)
       // 查詢失敗或查無組合時不帶入（原本解構 undefined 整頁進入錯誤畫面）
       if (!found) return
-      const {
-        no, name, services, products,
-        tickets, memberships
-      } = found
+      const { no, name, services, products, tickets, memberships } = found
 
       setSubmitData({
         no,
@@ -153,10 +144,10 @@ function ShortcutEdit({ match }) {
         serviceIds: getIds(services),
         productIds: getIds(products),
         ticketIds: getIds(tickets),
-        membershipIds: getIds(memberships)
+        membershipIds: getIds(memberships),
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [shortcut.loading])
 
   useEffect(() => {
@@ -166,7 +157,7 @@ function ShortcutEdit({ match }) {
       const filtData = doFilter(data, servicesKeyword)
       setServicesData(filtData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [services.loading, servicesKeyword])
 
   useEffect(() => {
@@ -175,7 +166,7 @@ function ShortcutEdit({ match }) {
       const filtData = doFilter(data, productKeyword)
       setProductData(filtData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading, productKeyword])
 
   useEffect(() => {
@@ -184,21 +175,19 @@ function ShortcutEdit({ match }) {
       const filtData = doFilter(data, ticketKeyword)
       setTicketData(filtData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [tickets.loading, ticketKeyword])
 
   useEffect(() => {
     if (!memberCards.loading) {
-      const data = (idx(memberCards, _ => _.data.memberships.data) || []).map(({ uuid, ...rest }) => (
-        {
-          ...rest,
-          id: uuid
-        }
-      ))
+      const data = (idx(memberCards, _ => _.data.memberships.data) || []).map(({ uuid, ...rest }) => ({
+        ...rest,
+        id: uuid,
+      }))
       const filtData = doFilter(data, memberCardsKeyword)
       setMemberCardsData(filtData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [memberCards.loading, memberCardsKeyword])
 
   return (
@@ -208,7 +197,9 @@ function ShortcutEdit({ match }) {
           <PageHeader
             title="編輯組合設定"
             actions={
-              <Button onClick={() => setOpenDialog(true)} disabled={isClick} variant="danger">刪除</Button>
+              <Button onClick={() => setOpenDialog(true)} disabled={isClick} variant="danger">
+                刪除
+              </Button>
             }
           />
           {shortcut.error ? (

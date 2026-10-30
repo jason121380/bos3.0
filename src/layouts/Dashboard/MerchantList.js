@@ -1,5 +1,10 @@
-import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, GroupsRounded as GroupsRoundedIcon, Storefront as StorefrontIcon } from 'ui/icons'
-import { useHistory } from 'react-router';
+import {
+  ExpandMore as ExpandMoreIcon,
+  ChevronRight as ChevronRightIcon,
+  GroupsRounded as GroupsRoundedIcon,
+  Storefront as StorefrontIcon,
+} from 'ui/icons'
+import { useHistory } from 'react-router'
 
 import React, { useState, useEffect, useRef } from 'react'
 
@@ -16,7 +21,11 @@ const groupLabel = data => {
 function MerchantRowLabel({ isGroup, labelText }) {
   return (
     <span className="flex min-w-0 flex-1 items-center gap-[12px] text-[14px] font-normal text-text">
-      {isGroup ? <GroupsRoundedIcon className="shrink-0 text-text-secondary" style={{ fontSize: '16px' }} /> : <StorefrontIcon className="shrink-0 text-text-secondary" style={{ fontSize: '16px' }} />}
+      {isGroup ? (
+        <GroupsRoundedIcon className="shrink-0 text-text-secondary" style={{ fontSize: '16px' }} />
+      ) : (
+        <StorefrontIcon className="shrink-0 text-text-secondary" style={{ fontSize: '16px' }} />
+      )}
       <span className="min-w-0 whitespace-nowrap max-sm:truncate">{labelText}</span>
     </span>
   )
@@ -34,15 +43,18 @@ const MerchantList = ({ merchants, searchQuery }) => {
   const suppressTimerRef = useRef(null)
   const swallowClickRef = useRef(null)
 
-  useEffect(() => () => {
-    clearTimeout(suppressTimerRef.current)
-    if (swallowClickRef.current) window.removeEventListener('click', swallowClickRef.current, true)
-  }, [])
+  useEffect(
+    () => () => {
+      clearTimeout(suppressTimerRef.current)
+      if (swallowClickRef.current) window.removeEventListener('click', swallowClickRef.current, true)
+    },
+    []
+  )
 
   useEffect(() => {
     if (searchQuery) {
       const allIds = []
-      const collectIds = (groups) => {
+      const collectIds = groups => {
         groups.forEach((g, i) => {
           allIds.push(`group-${g.name}-${i}`)
           if (g.groups) collectIds(g.groups)
@@ -63,7 +75,7 @@ const MerchantList = ({ merchants, searchQuery }) => {
   }
 
   const toggleNode = id => {
-    setExpanded(prev => prev.includes(id) ? prev.filter(nodeId => nodeId !== id) : [...prev, id])
+    setExpanded(prev => (prev.includes(id) ? prev.filter(nodeId => nodeId !== id) : [...prev, id]))
   }
 
   const armSuppressClick = key => {
@@ -103,7 +115,7 @@ const MerchantList = ({ merchants, searchQuery }) => {
     data,
     parentKey,
     labelText: data.name,
-    children: []
+    children: [],
   })
 
   const buildGroupNode = (data, index, parentKey) => {
@@ -111,7 +123,7 @@ const MerchantList = ({ merchants, searchQuery }) => {
     const key = `${parentKey || 'root'}-${id}`
     const children = [
       ...(data.merchants || []).map(merchant => buildMerchantNode(merchant, key)),
-      ...(data.groups || []).map((subGroup, subIndex) => buildGroupNode(subGroup, subIndex, key))
+      ...(data.groups || []).map((subGroup, subIndex) => buildGroupNode(subGroup, subIndex, key)),
     ]
     return {
       key,
@@ -120,7 +132,7 @@ const MerchantList = ({ merchants, searchQuery }) => {
       data,
       parentKey,
       labelText: groupLabel(data),
-      children
+      children,
     }
   }
 
@@ -132,13 +144,13 @@ const MerchantList = ({ merchants, searchQuery }) => {
     data: merchants,
     parentKey: null,
     labelText: `全部(${(merchants.allMerchants || []).length})`,
-    children: (merchants.allMerchants || []).map(merchant => buildMerchantNode(merchant, '全部'))
+    children: (merchants.allMerchants || []).map(merchant => buildMerchantNode(merchant, '全部')),
   }
 
   const rootNodes = [
     allNode,
     ...(merchants.groups || []).map((group, index) => buildGroupNode(group, index, null)),
-    ...(merchants.merchants || []).map(merchant => buildMerchantNode(merchant, null))
+    ...(merchants.merchants || []).map(merchant => buildMerchantNode(merchant, null)),
   ]
 
   // 目前畫面上看得到的節點（依展開狀態攤平），鍵盤上下移動以此清單為準，與原 MUI TreeView 的可見節點導覽相同
@@ -151,9 +163,7 @@ const MerchantList = ({ merchants, searchQuery }) => {
   }
   collectVisible(rootNodes)
 
-  const effectiveFocusedKey = visibleNodes.some(node => node.key === focusedKey)
-    ? focusedKey
-    : (visibleNodes[0] ? visibleNodes[0].key : null)
+  const effectiveFocusedKey = visibleNodes.some(node => node.key === focusedKey) ? focusedKey : visibleNodes[0] ? visibleNodes[0].key : null
 
   const focusNode = key => {
     setFocusedKey(key)
@@ -167,9 +177,7 @@ const MerchantList = ({ merchants, searchQuery }) => {
     const index = visibleNodes.findIndex(visible => visible.key === node.key)
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault()
-      const nextIndex = event.key === 'ArrowDown'
-        ? Math.min(index + 1, visibleNodes.length - 1)
-        : Math.max(index - 1, 0)
+      const nextIndex = event.key === 'ArrowDown' ? Math.min(index + 1, visibleNodes.length - 1) : Math.max(index - 1, 0)
       if (visibleNodes[nextIndex]) focusNode(visibleNodes[nextIndex].key)
     } else if (event.key === 'ArrowRight') {
       event.preventDefault()
@@ -208,18 +216,15 @@ const MerchantList = ({ merchants, searchQuery }) => {
     const hasChildren = node.children.length > 0
     const isExpanded = node.isGroup && expanded.includes(node.id)
     return (
-      <li
-        key={node.key}
-        role="treeitem"
-        aria-expanded={node.isGroup && hasChildren ? isExpanded : undefined}
-        aria-selected={false}
-      >
+      <li key={node.key} role="treeitem" aria-expanded={node.isGroup && hasChildren ? isExpanded : undefined} aria-selected={false}>
         <button
           type="button"
-          ref={el => { itemRefs.current[node.key] = el }}
+          ref={el => {
+            itemRefs.current[node.key] = el
+          }}
           tabIndex={node.key === effectiveFocusedKey ? 0 : -1}
           title={node.labelText}
-          className={`flex min-w-0 items-center w-full overflow-hidden py-[8px] [border:none] rounded-[8px] bg-transparent cursor-pointer text-left [font:inherit] [transition:.2s] hover:bg-surface-hover focus-visible:[outline:2px_solid_rgb(var(--accent))] focus-visible:[outline-offset:-2px] ${(node.isGroup || depth > 0) ? 'pl-[24px] pr-[16px]' : 'px-[16px]'}`}
+          className={`flex min-w-0 items-center w-full overflow-hidden py-[8px] [border:none] rounded-[8px] bg-transparent cursor-pointer text-left [font:inherit] [transition:.2s] hover:bg-surface-hover focus-visible:[outline:2px_solid_rgb(var(--accent))] focus-visible:[outline-offset:-2px] ${node.isGroup || depth > 0 ? 'pl-[24px] pr-[16px]' : 'px-[16px]'}`}
           onPointerDown={event => {
             touchPressRef.current = { key: node.key, x: event.clientX, y: event.clientY }
           }}
@@ -231,7 +236,9 @@ const MerchantList = ({ merchants, searchQuery }) => {
             armSuppressClick(node.key)
             if (!moved) activateNode(node)
           }}
-          onPointerCancel={() => { touchPressRef.current = null }}
+          onPointerCancel={() => {
+            touchPressRef.current = null
+          }}
           onClick={() => {
             if (suppressClickRef.current === node.key) {
               suppressClickRef.current = null
@@ -243,11 +250,13 @@ const MerchantList = ({ merchants, searchQuery }) => {
           onFocus={() => setFocusedKey(node.key)}
           onKeyDown={event => handleKeyDown(event, node)}
         >
-          {node.isGroup && hasChildren
-            ? (isExpanded
-              ? <ExpandMoreIcon className="shrink-0 text-text-tertiary" sx={{ color: 'rgb(var(--text-tertiary))' }} />
-              : <ChevronRightIcon className="shrink-0 text-text-tertiary" sx={{ color: 'rgb(var(--text-tertiary))' }} />)
-            : null}
+          {node.isGroup && hasChildren ? (
+            isExpanded ? (
+              <ExpandMoreIcon className="shrink-0 text-text-tertiary" sx={{ color: 'rgb(var(--text-tertiary))' }} />
+            ) : (
+              <ChevronRightIcon className="shrink-0 text-text-tertiary" sx={{ color: 'rgb(var(--text-tertiary))' }} />
+            )
+          ) : null}
           <MerchantRowLabel isGroup={node.isGroup} labelText={node.labelText} />
         </button>
         {node.isGroup && hasChildren && isExpanded ? (

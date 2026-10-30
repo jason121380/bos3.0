@@ -13,9 +13,7 @@ import useFetchGetIsDisplayFakePerformanceInSalaryReport from 'hooks/useFetchGet
 import useFetchGetEmployeePayslipPrintStyle from 'hooks/useFetchGetEmployeePayslipPrintStyle'
 import useFetchGetIsEPWDDisplay from 'hooks/useFetchGetIsEPWDDisplay'
 import useFetchGetIsPrintDetailDisplayOnSalaryReport from 'hooks/useFetchGetIsPrintDetailDisplayOnSalaryReport'
-import {
-  useFetchGetPayslipOptimization, useFetchGetIsPrintDateHiddenForPayslip
-} from 'hooks/useFetchGetParameterCheckoutAndSalaryItemsSetting'
+import { useFetchGetPayslipOptimization, useFetchGetIsPrintDateHiddenForPayslip } from 'hooks/useFetchGetParameterCheckoutAndSalaryItemsSetting'
 
 import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
@@ -40,9 +38,15 @@ export default function Payroll() {
   const getIsPrintDetailDisplayOnSalaryReport = useFetchGetIsPrintDetailDisplayOnSalaryReport()
   const getPayslipOptimization = useFetchGetPayslipOptimization()
   const getIsPrintdetailHidden = useFetchGetIsPrintDateHiddenForPayslip()
-  const detailDisplay = getIsPrintDetailDisplayOnSalaryReport.loading ? true : idx(getIsPrintDetailDisplayOnSalaryReport, _ => _.data.getIsPrintDetailDisplayOnSalaryReport)
-  const payslipOptimization = getPayslipOptimization.loading ? false : idx(getPayslipOptimization, _ => _.data.getParameterCheckoutAndSalaryItemsSetting.isPayslipOptimizationPrintModeOn)
-  const isPrintdetailHidden = getIsPrintdetailHidden.loading ? false : idx(getIsPrintdetailHidden, _ => _.data.getParameterCheckoutAndSalaryItemsSetting.isPrintDateHiddenForPayslip)
+  const detailDisplay = getIsPrintDetailDisplayOnSalaryReport.loading
+    ? true
+    : idx(getIsPrintDetailDisplayOnSalaryReport, _ => _.data.getIsPrintDetailDisplayOnSalaryReport)
+  const payslipOptimization = getPayslipOptimization.loading
+    ? false
+    : idx(getPayslipOptimization, _ => _.data.getParameterCheckoutAndSalaryItemsSetting.isPayslipOptimizationPrintModeOn)
+  const isPrintdetailHidden = getIsPrintdetailHidden.loading
+    ? false
+    : idx(getIsPrintdetailHidden, _ => _.data.getParameterCheckoutAndSalaryItemsSetting.isPrintDateHiddenForPayslip)
 
   useEffect(() => {
     if (!getUserSalaryExcelLazyData.loading && getUserSalaryExcelLazyData.data !== undefined) {
@@ -51,7 +55,7 @@ export default function Payroll() {
       link.href = url
       link.click()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getUserSalaryExcelLazyData.loading])
 
   const handleExcel = () => {
@@ -59,11 +63,11 @@ export default function Payroll() {
       variables: {
         date: date.startDate,
         designerId: searchId,
-      }
+      },
     })
   }
   return (
-    <Page title="薪資條" className='EmployeePayslip'>
+    <Page title="薪資條" className="EmployeePayslip">
       <div>
         <PageHeader
           title="薪資條"
@@ -74,15 +78,15 @@ export default function Payroll() {
                 attributes={['lastmonth', 'thismonth', 'startDate']}
                 dateChange={value => setDate(value)}
                 onlyStart
-                inputFormat='yyyy/MM'
+                inputFormat="yyyy/MM"
                 pickerOption={{
-                  views: ['month', 'year']
+                  views: ['month', 'year'],
                 }}
               />
-              <Button variant="secondary" onClick={handleExcel} disabled={getUserSalaryExcelLazyData.loading} className={"noprint"}>
+              <Button variant="secondary" onClick={handleExcel} disabled={getUserSalaryExcelLazyData.loading} className={'noprint'}>
                 {'報表匯出'}
               </Button>
-              <Button variant="secondary" onClick={() => window.print()} className={"noprint"}>
+              <Button variant="secondary" onClick={() => window.print()} className={'noprint'}>
                 {'列印'}
               </Button>
               <Button
@@ -101,43 +105,39 @@ export default function Payroll() {
         {showFilter && (
           <Card className="mb-3 flex items-center gap-3 p-4">
             <span className="text-label text-text-secondary">篩選條件：</span>
-            <DesignerSearch
-              value={searchId}
-              label="設計師編號/姓名"
-              onChange={value => setSearchId(value.userId)}
-            />
+            <DesignerSearch value={searchId} label="設計師編號/姓名" onChange={value => setSearchId(value.userId)} />
           </Card>
         )}
 
         {usersDalaryData.error ? (
           <QueryFailed onRetry={() => usersDalaryData.refetch()} />
-        ) : (!usersDalaryData.loading && !isDisplayFakePerformance.loading && !getIsPrintDetailDisplayOnSalaryReport.loading && !EPWDDisplay.loading) ?
-          idx(
-            usersDalaryData,
-            _ =>
-              _.data.userSalaryReport.length > 0 ? (
-                <div className={'EmployeePayslipTableContainer flex w-full flex-wrap'}>
-                  <Results
-                    userSalaryReport={_.data.userSalaryReport}
-                    date={date.startDate}
-                    searchId={searchId}
-                    EPWDDisplay={EPWDDisplay.data.getIsEPWDDisplay}
-                    isDisplayFakePerformance={idx(
-                      isDisplayFakePerformance,
-                      _ => _.data.getIsDisplayFakePerformanceInSalaryReport
-                    )}
-                    printStyle={idx(
-                      employeePayslipPrintStyle,
-                      _ => _.data.getEmployeePayslipPrintStyle
-                    )}
-                    detailDisplay={!isPrintdetailHidden && !detailDisplay}
-                    payslipOptimization={payslipOptimization}
-                  />
-                </div>
-              ) : <Card><EmptyState title="無資料" /></Card>
-          ) :
+        ) : !usersDalaryData.loading &&
+          !isDisplayFakePerformance.loading &&
+          !getIsPrintDetailDisplayOnSalaryReport.loading &&
+          !EPWDDisplay.loading ? (
+          idx(usersDalaryData, _ =>
+            _.data.userSalaryReport.length > 0 ? (
+              <div className={'EmployeePayslipTableContainer flex w-full flex-wrap'}>
+                <Results
+                  userSalaryReport={_.data.userSalaryReport}
+                  date={date.startDate}
+                  searchId={searchId}
+                  EPWDDisplay={EPWDDisplay.data.getIsEPWDDisplay}
+                  isDisplayFakePerformance={idx(isDisplayFakePerformance, _ => _.data.getIsDisplayFakePerformanceInSalaryReport)}
+                  printStyle={idx(employeePayslipPrintStyle, _ => _.data.getEmployeePayslipPrintStyle)}
+                  detailDisplay={!isPrintdetailHidden && !detailDisplay}
+                  payslipOptimization={payslipOptimization}
+                />
+              </div>
+            ) : (
+              <Card>
+                <EmptyState title="無資料" />
+              </Card>
+            )
+          )
+        ) : (
           <Skeleton className="h-96 w-full" />
-        }
+        )}
       </div>
     </Page>
   )

@@ -67,10 +67,7 @@ function AboutService({ className, onChange, coupon, isEdit = false, ...rest }) 
           <Input value={coupon.name} onChange={event => onChange({ event, key: 'name' })} />
         </Field>
         <Field label="服務類別">
-          <NativeSelect
-            value={loading ? '' : coupon.ServiceCategoryId}
-            onChange={event => onChange({ event, key: 'ServiceCategoryId' })}
-          >
+          <NativeSelect value={loading ? '' : coupon.ServiceCategoryId} onChange={event => onChange({ event, key: 'ServiceCategoryId' })}>
             <NativeSelectOption value="" disabled>
               選擇服務類別
             </NativeSelectOption>

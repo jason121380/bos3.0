@@ -30,7 +30,7 @@ const FETCH_PICKING_RECORD = gql`
 export default function useFetchGetPickingRecords({ input }) {
   return useQuery(FETCH_PICKING_RECORD, {
     variables: {
-      input
+      input,
     },
     fetchPolicy: 'cache-and-network',
   })

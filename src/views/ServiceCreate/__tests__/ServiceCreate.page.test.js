@@ -409,7 +409,16 @@ describe('新增服務項目：互助點數設定', () => {
     }
     expect(callsOf(calls, 'CREATE_SERVICE')[0].variables.input.helperDeductionSetting).toEqual([
       { ...zero, helperDeductionType: 'onSales', type: '洗髮', nameList: ['1', '2'], peopleCount: 2, point: 1.5, isSplitted: false },
-      { ...zero, helperDeductionType: 'onSalary', type: '吹整', nameList: ['1'], peopleCount: 1, designatePercent: 10, nonDesignatePercent: 5, isSplitted: false },
+      {
+        ...zero,
+        helperDeductionType: 'onSalary',
+        type: '吹整',
+        nameList: ['1'],
+        peopleCount: 1,
+        designatePercent: 10,
+        nonDesignatePercent: 5,
+        isSplitted: false,
+      },
     ])
   })
 

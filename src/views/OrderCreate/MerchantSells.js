@@ -122,7 +122,9 @@ function MerchantSells({
           />
         </Field>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇商品" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇商品" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenProductsModal}>
+            <Copy aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
@@ -251,15 +253,14 @@ function MerchantSells({
                     return undefined
                   })
                 )}
-              {teachingMode && (
-                <p className={`m-0 ${styles.heading2}`}>勾選將入業績但不收費用**</p>
-              )}
+              {teachingMode && <p className={`m-0 ${styles.heading2}`}>勾選將入業績但不收費用**</p>}
             </div>
           </React.Fragment>
         )}
 
         <RowIconButton
-          label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
+          label="清除此列"
+          className={`mr-1.5 ${ROW_ICON_ALIGN}`}
           onClick={() => {
             onClear({ index })
             setFocus('employee')
@@ -270,7 +271,8 @@ function MerchantSells({
         </RowIconButton>
         {!first && (
           <RowIconButton
-            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
+            label="刪除此列"
+            className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={() => {
               removeSells({ index })
               setFocus('employee')
@@ -291,13 +293,7 @@ function MerchantSells({
         />
       )}
       {productsModalOpen && (
-        <ProductsModal
-          {...pickerModalProps}
-          onProductChange={onProductChange}
-          sells={sells}
-          productLength={productLength}
-          sellsItem={sellsItem}
-        />
+        <ProductsModal {...pickerModalProps} onProductChange={onProductChange} sells={sells} productLength={productLength} sellsItem={sellsItem} />
       )}
     </Fragment>
   )

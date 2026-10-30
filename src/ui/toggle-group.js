@@ -15,7 +15,7 @@ const GroupContext = createContext(null)
 
 const sizes = { sm: 'h-7 px-2.5 text-label max-sm:min-h-10', md: 'h-8 px-3.5 text-label max-sm:min-h-10' }
 // 也接受 MUI 的 size 名稱，替換時可原樣保留
-const sizeKey = size => ({ small: 'sm', medium: 'md', large: 'md' }[size] || size)
+const sizeKey = size => ({ small: 'sm', medium: 'md', large: 'md' })[size] || size
 
 function ToggleGroup({ value, exclusive = false, onChange, disabled, size = 'md', fullWidth, className, children, ...props }) {
   const isSelected = v => (exclusive ? value === v : Array.isArray(value) && value.includes(v))
@@ -32,7 +32,11 @@ function ToggleGroup({ value, exclusive = false, onChange, disabled, size = 'md'
     <GroupContext.Provider value={{ isSelected, toggle, disabled, size, fullWidth }}>
       <div
         role="group"
-        className={cn('ui-root inline-flex max-w-full items-center gap-0.5 overflow-x-auto rounded-full bg-surface-hover p-0.5', fullWidth && 'flex w-full', className)}
+        className={cn(
+          'ui-root inline-flex max-w-full items-center gap-0.5 overflow-x-auto rounded-full bg-surface-hover p-0.5',
+          fullWidth && 'flex w-full',
+          className
+        )}
         {...props}
       >
         {children}
@@ -64,8 +68,12 @@ const ToggleGroupItem = React.forwardRef(({ value, selected, onChange, onClick, 
         'disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-4',
         sizes[sizeKey(size || (group && group.size))] || sizes.md,
         group
-          ? isOn ? 'bg-background text-text shadow-[0_1px_2px_rgba(0,0,0,0.08)]' : 'bg-transparent text-text-secondary hover:text-text'
-          : isOn ? 'bg-accent/8 text-accent hover:bg-accent/15' : 'bg-surface-hover text-text-secondary hover:bg-surface-active hover:text-text',
+          ? isOn
+            ? 'bg-background text-text shadow-[0_1px_2px_rgba(0,0,0,0.08)]'
+            : 'bg-transparent text-text-secondary hover:text-text'
+          : isOn
+            ? 'bg-accent/8 text-accent hover:bg-accent/15'
+            : 'bg-surface-hover text-text-secondary hover:bg-surface-active hover:text-text',
         group && group.fullWidth && 'flex-1',
         focusRing,
         className

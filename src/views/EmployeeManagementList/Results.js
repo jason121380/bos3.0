@@ -88,7 +88,8 @@ export default function Results({
     setSelectedDesigners(newSelectedPayment)
   }
   const handleSelectOne = id => {
-    const newSelect = [...selectedDesigners], index = newSelect.indexOf(id)
+    const newSelect = [...selectedDesigners],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -160,14 +161,8 @@ export default function Results({
 
   const handleMultipleRakeSetting = () => {
     // 判斷抽成設定是判斷抽成設定是全段或分段
-    const nonSegmentedData =
-      profitSharing.nonSegmented.length > 0 && profitSharing.isSegmented === false
-        ? profitSharing.nonSegmented
-        : []
-    const segmentedData =
-      profitSharing.segmented.length > 0 && profitSharing.isSegmented === true
-        ? profitSharing.segmented
-        : []
+    const nonSegmentedData = profitSharing.nonSegmented.length > 0 && profitSharing.isSegmented === false ? profitSharing.nonSegmented : []
+    const segmentedData = profitSharing.segmented.length > 0 && profitSharing.isSegmented === true ? profitSharing.segmented : []
 
     fetchSetUserRake({
       userId: selectedDesigners,
@@ -184,10 +179,7 @@ export default function Results({
       })
   }
 
-  const handleRenderStatus = ({
-    isDisplayOnServiceList, isDisplayOnBookingList,
-    isDisplayOnPerformanceList, isDisplayOnBookingRecord
-  }) => {
+  const handleRenderStatus = ({ isDisplayOnServiceList, isDisplayOnBookingList, isDisplayOnPerformanceList, isDisplayOnBookingRecord }) => {
     const arr = []
     if (isDisplayOnServiceList) arr.push('可打單')
     if (isDisplayOnBookingList) arr.push('可被預約')
@@ -196,8 +188,7 @@ export default function Results({
     return arr.length ? arr.join('/') : ''
   }
 
-  const isDeductionWaySet = (deductionWay) =>
-    deductionWay && deductionWay !== '' && deductionWay !== '無扣項'
+  const isDeductionWaySet = deductionWay => deductionWay && deductionWay !== '' && deductionWay !== '無扣項'
 
   const getMessage = (isUserRakeSet, deductionWay) => {
     const msg = []
@@ -214,14 +205,8 @@ export default function Results({
     const filteredEmployeeHaveDesignerNoIsNotNum = employees
       .filter(d => d.designerNo !== null && d.designerNo.length > 0 && isNaN(Number(d.designerNo)))
       .sort((a, b) => compareNo(a.designerNo, b.designerNo))
-    const filteredEmployeeHaveNoDesignerNo = employees.filter(
-      d => d.designerNo === null || d.designerNo.length === 0
-    )
-    const sortedEmployee = [
-      ...filteredEmployeeHaveDesignerNoIsNum,
-      ...filteredEmployeeHaveDesignerNoIsNotNum,
-      ...filteredEmployeeHaveNoDesignerNo,
-    ]
+    const filteredEmployeeHaveNoDesignerNo = employees.filter(d => d.designerNo === null || d.designerNo.length === 0)
+    const sortedEmployee = [...filteredEmployeeHaveDesignerNoIsNum, ...filteredEmployeeHaveDesignerNoIsNotNum, ...filteredEmployeeHaveNoDesignerNo]
     setSortedEmployees(sortedEmployee)
   }, [employees])
 
@@ -273,7 +258,12 @@ export default function Results({
                   )}
                   <TableCell>
                     {/* 無權限時與舊版 IconButton disabled 相同：不可點（pointer-events-none）、不可聚焦 */}
-                    <Button asChild variant="ghost" size="icon" className="text-text-secondary aria-disabled:pointer-events-none aria-disabled:opacity-40">
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="icon"
+                      className="text-text-secondary aria-disabled:pointer-events-none aria-disabled:opacity-40"
+                    >
                       <RouterLink
                         aria-label="編輯員工"
                         to={`/management/employee/${data.id}/general`}
@@ -288,15 +278,10 @@ export default function Results({
                     <div className="flex items-center gap-2">
                       <Avatar className="h-9 w-9" src={data.avatar} />
                       <div>
-                        <RouterLink
-                          className="font-medium text-text no-underline hover:underline"
-                          to={`/management/employee/${data.id}/general`}
-                        >
+                        <RouterLink className="font-medium text-text no-underline hover:underline" to={`/management/employee/${data.id}/general`}>
                           {data.lastName}
                           {data.firstName}
-                          {data.status === 'pending' && (
-                            <span className="ml-1 text-caption text-warning">未設定抽成</span>
-                          )}
+                          {data.status === 'pending' && <span className="ml-1 text-caption text-warning">未設定抽成</span>}
                         </RouterLink>
                         <div className="text-caption tabular-nums text-text-secondary">{data.cellphone}</div>
                       </div>
@@ -304,11 +289,7 @@ export default function Results({
                   </TableCell>
                   <TableCell className="tabular-nums">{data.designerNo}</TableCell>
                   <TableCell>{data.nickName}</TableCell>
-                  <TableCell>
-                    {data.merchantIdentity.authorityName.length > 0
-                      ? data.merchantIdentity.authorityName
-                      : '無設定'}
-                  </TableCell>
+                  <TableCell>{data.merchantIdentity.authorityName.length > 0 ? data.merchantIdentity.authorityName : '無設定'}</TableCell>
                   <TableCell>
                     <Badge variant={data.status === 'ok' || data.status === 'pending' ? 'success' : 'neutral'}>
                       {data.status === 'ok' || data.status === 'pending' ? '可登入' : '不可登入'}
@@ -318,9 +299,7 @@ export default function Results({
                     {data.isUserRakeSet && isDeductionWaySet(data.deductionWay) ? (
                       '設定完成'
                     ) : (
-                      <span className="font-medium text-danger">
-                        {getMessage(data.isUserRakeSet, data.deductionWay)}
-                      </span>
+                      <span className="font-medium text-danger">{getMessage(data.isUserRakeSet, data.deductionWay)}</span>
                     )}
                   </TableCell>
                   <TableCell className="text-text-secondary">{handleRenderStatus(data)}</TableCell>

@@ -93,9 +93,7 @@ const ROWS = [
       invoked: [
         {
           fn: 'setMerchantMerchantMonthlyCheckoutRemark',
-          calls: [
-            { operationName: 'SET_MERCHANT_MONTHLY_CHECKOUT_REMARK', variables: { date: 'date-v', remark: 'remark-v' } },
-          ],
+          calls: [{ operationName: 'SET_MERCHANT_MONTHLY_CHECKOUT_REMARK', variables: { date: 'date-v', remark: 'remark-v' } }],
           resolved: ['setMerchantMonthlyCheckoutRemark'],
         },
       ],
@@ -511,9 +509,7 @@ const ROWS = [
       invoked: [
         {
           fn: 'SystemUpdateEdit',
-          calls: [
-            { operationName: 'SYSTEM_UPDATE_RECORD_EDIT', variables: { input: { id: 'id-v', title: 'title-v' } } },
-          ],
+          calls: [{ operationName: 'SYSTEM_UPDATE_RECORD_EDIT', variables: { input: { id: 'id-v', title: 'title-v' } } }],
           resolved: ['updateSystemUpdate'],
         },
       ],
@@ -577,9 +573,7 @@ const ROWS = [
     expect: {
       initial: [],
       shape: { fetchTicketRecod: 'function', response: { loading: false, called: false } },
-      invoked: [
-        { fn: 'fetchTicketRecod', calls: [{ operationName: 'GetTicket', variables: { input: { probe: 'input' } } }] },
-      ],
+      invoked: [{ fn: 'fetchTicketRecod', calls: [{ operationName: 'GetTicket', variables: { input: { probe: 'input' } } }] }],
       shapeAfter: { fetchTicketRecod: 'function', response: { loading: false, called: true, data: ['ticketRecords'] } },
       policies: { GetTicket: 'cache-and-network' },
     },
@@ -603,9 +597,7 @@ const ROWS = [
     expect: {
       initial: [],
       shape: ['function', { loading: false, called: false }],
-      invoked: [
-        { fn: 0, calls: [{ operationName: 'FETCH_TICKET_SELL_OVERVIEW', variables: { input: { probe: 'input' } } }] },
-      ],
+      invoked: [{ fn: 0, calls: [{ operationName: 'FETCH_TICKET_SELL_OVERVIEW', variables: { input: { probe: 'input' } } }] }],
       shapeAfter: ['function', { loading: false, called: true, data: ['ticketSellOverview'] }],
       policies: { FETCH_TICKET_SELL_OVERVIEW: 'cache-and-network' },
     },
@@ -1188,9 +1180,7 @@ const ROWS = [
       invoked: [
         {
           fn: 'updateThirdPartyCoupon',
-          calls: [
-            { operationName: 'UPDATE_UPDATE_THIRD_PARTY_COUPON', variables: { id: 'id-v', input: { probe: 'input' } } },
-          ],
+          calls: [{ operationName: 'UPDATE_UPDATE_THIRD_PARTY_COUPON', variables: { id: 'id-v', input: { probe: 'input' } } }],
           resolved: ['updateThirdPartTicket'],
         },
       ],
@@ -1292,9 +1282,7 @@ const ROWS = [
     invoke: [
       {
         fn: 'fetchUserAttendanceLazy',
-        args: [
-          { variables: { userInput: { probe: 'userInput' }, allAttendanceInput: { probe: 'allAttendanceInput' } } },
-        ],
+        args: [{ variables: { userInput: { probe: 'userInput' }, allAttendanceInput: { probe: 'allAttendanceInput' } } }],
       },
     ],
     expect: {
@@ -1340,9 +1328,7 @@ const ROWS = [
       invoked: [
         {
           fn: 'fetchDesignerSalesDetail',
-          calls: [
-            { operationName: 'FETCH_DESIGNER_SALES_DETAIL', variables: { input: { probe: 'input' }, date: 'date-v' } },
-          ],
+          calls: [{ operationName: 'FETCH_DESIGNER_SALES_DETAIL', variables: { input: { probe: 'input' }, date: 'date-v' } }],
         },
       ],
       shapeAfter: {
@@ -1379,9 +1365,7 @@ const ROWS = [
     hook: useFetchUser.useFetchIsUserSalaryChecked,
     args: [{ input: { probe: 'input' }, date: 'date-v' }],
     expect: {
-      initial: [
-        { operationName: 'FETCH_USER_IS_SALARYCHECKED', variables: { input: { probe: 'input' }, date: 'date-v' } },
-      ],
+      initial: [{ operationName: 'FETCH_USER_IS_SALARYCHECKED', variables: { input: { probe: 'input' }, date: 'date-v' } }],
       shape: { loading: false, called: true, data: ['user'] },
       policies: { FETCH_USER_IS_SALARYCHECKED: 'cache-and-network' },
     },
@@ -1526,9 +1510,7 @@ const ROWS = [
       policies: { GET_USERS_FOR_CREATE_PICKING: 'cache-and-network' },
     },
     loggedOut: {
-      initial: [
-        { operationName: 'GET_USERS_FOR_CREATE_PICKING', variables: { input: { MerchantId: null, probe: 'input' } } },
-      ],
+      initial: [{ operationName: 'GET_USERS_FOR_CREATE_PICKING', variables: { input: { MerchantId: null, probe: 'input' } } }],
     },
     failure: { loading: false, called: true, error: 'error' },
   },
@@ -1537,9 +1519,7 @@ const ROWS = [
     hook: useFetchUsers.useFetchUserIncrease,
     args: [{ input: { probe: 'input' }, date: 'date-v' }],
     expect: {
-      initial: [
-        { operationName: 'FETCH_USER_SALARY_INCREASE', variables: { input: { probe: 'input' }, date: 'date-v' } },
-      ],
+      initial: [{ operationName: 'FETCH_USER_SALARY_INCREASE', variables: { input: { probe: 'input' }, date: 'date-v' } }],
       shape: { loading: false, called: true, data: ['users'] },
       policies: { FETCH_USER_SALARY_INCREASE: 'cache-and-network' },
     },
@@ -1550,9 +1530,7 @@ const ROWS = [
     hook: useFetchUsers.useFetchUserDecrease,
     args: [{ input: { probe: 'input' }, date: 'date-v' }],
     expect: {
-      initial: [
-        { operationName: 'FETCH_USER_SALARY_DECREASE', variables: { input: { probe: 'input' }, date: 'date-v' } },
-      ],
+      initial: [{ operationName: 'FETCH_USER_SALARY_DECREASE', variables: { input: { probe: 'input' }, date: 'date-v' } }],
       shape: { loading: false, called: true, data: ['users'] },
       policies: { FETCH_USER_SALARY_DECREASE: 'cache-and-network' },
     },
@@ -1563,9 +1541,7 @@ const ROWS = [
     hook: useFetchUsers.useFetchUsersSalaryItems,
     args: [{ input: { probe: 'input' }, date: 'date-v' }],
     expect: {
-      initial: [
-        { operationName: 'GET_ALL_USERS_SALARY_ITEMS', variables: { input: { probe: 'input' }, date: 'date-v' } },
-      ],
+      initial: [{ operationName: 'GET_ALL_USERS_SALARY_ITEMS', variables: { input: { probe: 'input' }, date: 'date-v' } }],
       shape: { loading: false, called: true, data: ['users'] },
       policies: { GET_ALL_USERS_SALARY_ITEMS: 'cache-and-network' },
     },
@@ -1610,9 +1586,7 @@ const ROWS = [
       policies: { GET_USERS_IN_EMPLOYEE_SCHEDULE: 'cache-and-network' },
     },
     loggedOut: {
-      initial: [
-        { operationName: 'GET_USERS_IN_EMPLOYEE_SCHEDULE', variables: { input: { MerchantId: null, probe: 'input' } } },
-      ],
+      initial: [{ operationName: 'GET_USERS_IN_EMPLOYEE_SCHEDULE', variables: { input: { MerchantId: null, probe: 'input' } } }],
     },
     failure: { loading: false, called: true, error: 'error' },
   },

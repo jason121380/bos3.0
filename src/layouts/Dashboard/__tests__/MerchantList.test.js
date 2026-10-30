@@ -95,7 +95,10 @@ describe('MerchantBar：資料與搜尋', () => {
 
   it('群組名稱符合時保留該群組（即使店名不符合）；群組或最外層缺少 merchants／groups 欄位時當成空清單', () => {
     const { unmount } = renderBar(
-      loaded({ allMerchants: [], groups: [{ no: 'G2', name: 'Central', groups: [{ no: '', name: '子', groups: [], merchants: [{ id: 'x', name: '其他' }] }] }] })
+      loaded({
+        allMerchants: [],
+        groups: [{ no: 'G2', name: 'Central', groups: [{ no: '', name: '子', groups: [], merchants: [{ id: 'x', name: '其他' }] }] }],
+      })
     )
     expect(items()).toEqual(['全部(0)', 'G2 - Central(1)'])
     fireEvent.change(screen.getByLabelText('搜尋店家'), { target: { value: 'central' } })
@@ -212,7 +215,16 @@ describe('MerchantList：點擊', () => {
   it('群組缺少 groups／merchants 欄位、資料缺少 allMerchants 時視為空，不拋錯', () => {
     render(
       <MemoryRouter>
-        <MerchantList merchants={{ groups: [{ no: 'X', name: '缺欄位', merchants: [{ id: 'm9', name: '新竹店' }] }, { no: 'Y', name: '全缺' }], merchants: [] }} searchQuery="" />
+        <MerchantList
+          merchants={{
+            groups: [
+              { no: 'X', name: '缺欄位', merchants: [{ id: 'm9', name: '新竹店' }] },
+              { no: 'Y', name: '全缺' },
+            ],
+            merchants: [],
+          }}
+          searchQuery=""
+        />
       </MemoryRouter>
     )
     expect(items()).toEqual(['全部(0)', 'X - 缺欄位(1)', 'Y - 全缺(0)'])

@@ -64,15 +64,10 @@ export default function TopUpCreate({ match }) {
       const designerId = walletDepositDetail.data.walletDepositDetail.Maker.id
       const remark = walletDepositDetail.data.walletDepositDetail.remark
       const date = walletDepositDetail.data.walletDepositDetail.date
-      const handlingFeeDecountPrice =
-        walletDepositDetail.data.walletDepositDetail.handlingFeeDecountPrice
-      const handlingFeeDecountWay =
-        walletDepositDetail.data.walletDepositDetail.handlingFeeDecountWay
+      const handlingFeeDecountPrice = walletDepositDetail.data.walletDepositDetail.handlingFeeDecountPrice
+      const handlingFeeDecountWay = walletDepositDetail.data.walletDepositDetail.handlingFeeDecountWay
       const values = {
-        money:
-          handlingFeeDecountWay === 'BYCUSTOMER'
-            ? money + Math.abs(handlingFeeDecountPrice)
-            : money,
+        money: handlingFeeDecountWay === 'BYCUSTOMER' ? money + Math.abs(handlingFeeDecountPrice) : money,
         payType,
         customerId,
         designerId,
@@ -83,13 +78,13 @@ export default function TopUpCreate({ match }) {
       reset(values)
       setHandlingFeeDecountPrice(handlingFeeDecountPrice)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [walletDepositDetail.loading] 變動時執行；reset、walletDepositDetail 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [walletDepositDetail.loading] 變動時執行；reset、walletDepositDetail 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [walletDepositDetail.loading])
 
   const handleDelete = async () => {
     setIsClick(true)
     try {
-      const res = await deleteWalletDeposit({ id: walletDepositDetailId, })
+      const res = await deleteWalletDeposit({ id: walletDepositDetailId })
       if (res.data.deleteWalletDeposit) {
         openSnackbar({
           message: '刪除入金成功',
@@ -112,11 +107,7 @@ export default function TopUpCreate({ match }) {
         <PageHeader
           title="編輯入金"
           actions={
-            <Button
-              variant="danger"
-              onClick={handleDelete}
-              disabled={isClick}
-            >
+            <Button variant="danger" onClick={handleDelete} disabled={isClick}>
               刪除
             </Button>
           }
@@ -126,16 +117,16 @@ export default function TopUpCreate({ match }) {
             {walletDepositDetail.error ? (
               <QueryFailed onRetry={() => walletDepositDetail.refetch()} />
             ) : walletDepositDetail.loading ? (
-              <div className="flex flex-col gap-4"><Skeleton className="h-9 w-full" /><Skeleton className="h-9 w-full" /><Skeleton className="h-9 w-full" /></div>
+              <div className="flex flex-col gap-4">
+                <Skeleton className="h-9 w-full" />
+                <Skeleton className="h-9 w-full" />
+                <Skeleton className="h-9 w-full" />
+              </div>
             ) : (
               <>
                 <General handlingFeeDecountPrice={handlingFeeDecountPrice} />
                 <div className="flex justify-end">
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    disabled={isClick}
-                  >
+                  <Button variant="primary" type="submit" disabled={isClick}>
                     儲存
                   </Button>
                 </div>

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import idx from 'idx'
 import { Autocomplete } from 'ui/combobox'
 
-const BelongAutocomplete = ({ value, onChange = () => { }, fetchData = false, optionData, isloading, isReadOnly = false, ...rest }) => {
+const BelongAutocomplete = ({ value, onChange = () => {}, fetchData = false, optionData, isloading, isReadOnly = false, ...rest }) => {
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
   const checkedIcon = <CheckBoxIcon fontSize="small" />
   const [attributions, setAttributions] = useState([])
@@ -16,7 +16,7 @@ const BelongAutocomplete = ({ value, onChange = () => { }, fetchData = false, op
     if (fetchData) {
       getAttributionLazy()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   // 呼叫端給選項時跟著 optionData 更新（原本只在掛載時讀一次，選項較晚到時下拉仍是空的；Jason 2026/10/22 fix all）
@@ -31,7 +31,7 @@ const BelongAutocomplete = ({ value, onChange = () => { }, fetchData = false, op
       const data = idx(attributionLazyData, _ => _.data.getAttribution).map(({ name }) => name)
       setAttributions(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [attributionLazyData.loading, attributionLazyData.data])
 
   return (
@@ -49,18 +49,11 @@ const BelongAutocomplete = ({ value, onChange = () => { }, fetchData = false, op
       readOnly={isReadOnly}
       renderOption={(props, option, { selected }) => (
         <span style={{ fontSize: 14, padding: 6 }} {...props}>
-          <Checkbox
-            style={{ color: 'rgb(var(--text))', padding: 2, marginRight: 4 }}
-            icon={icon}
-            checkedIcon={checkedIcon}
-            checked={selected}
-          />
+          <Checkbox style={{ color: 'rgb(var(--text))', padding: 2, marginRight: 4 }} icon={icon} checkedIcon={checkedIcon} checked={selected} />
           {option}
         </span>
       )}
-      renderInput={params => (
-        <TextField {...params} variant="outlined" label="歸屬" />
-      )}
+      renderInput={params => <TextField {...params} variant="outlined" label="歸屬" />}
     />
   )
 }

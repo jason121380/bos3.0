@@ -15,7 +15,6 @@ import { Skeleton } from 'ui/skeleton'
 import { Autocomplete } from 'ui/combobox'
 import QueryFailed from 'components/QueryFailed'
 
-
 const ProductReserveCheck = () => {
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
   const checkedIcon = <CheckBoxIcon fontSize="small" />
@@ -27,11 +26,11 @@ const ProductReserveCheck = () => {
   const [open, setOpen] = useState(false)
   const [reportData, setReportData] = useState({
     reserveCheckSummary: [],
-    productReserveChecks: []
+    productReserveChecks: [],
   })
   const [date, setDate] = useState({
     startDate: startOfMonth(new Date()).getTime(),
-    endDate: endOfDay(new Date()).getTime()
+    endDate: endOfDay(new Date()).getTime(),
   })
   const [productIds, setProductIds] = useState([])
 
@@ -43,7 +42,7 @@ const ProductReserveCheck = () => {
 
   useEffect(() => {
     handleSearch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [date] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [date] 變動時呼叫，補上會每次 render 重跑
   }, [date])
 
   useEffect(() => {
@@ -51,14 +50,14 @@ const ProductReserveCheck = () => {
       const data = idx(getAllProducts, _ => _.data.products.data)
       setProductOptions(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAllProducts.loading])
 
   useEffect(() => {
     if (!productReserveData.loading && productReserveData.error) {
       setReportData({
         reserveCheckSummary: [],
-        productReserveChecks: []
+        productReserveChecks: [],
       })
       return
     }
@@ -67,14 +66,14 @@ const ProductReserveCheck = () => {
       const data = idx(productReserveData, _ => _.data.productReserveCheck)
       setReportData(data || { reserveCheckSummary: [], productReserveChecks: [] })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productReserveData.loading])
 
   useEffect(() => {
     if (productIds.length === 0) {
       handleSearch()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [productIds] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [productIds] 變動時呼叫，補上會每次 render 重跑
   }, [productIds])
 
   const handleSearch = (inputDate = date) => {
@@ -83,9 +82,9 @@ const ProductReserveCheck = () => {
       variables: {
         input: {
           dateRange: inputDate,
-          productIds: productId
+          productIds: productId,
         },
-      }
+      },
     })
   }
 
@@ -113,7 +112,10 @@ const ProductReserveCheck = () => {
               size="sm"
               style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
               disabled={getAllProducts.loading || productReserveData.loading || (productReserveData.data === undefined && !productReserveData.error)}
-              onClick={selectAll}>全選</Button>
+              onClick={selectAll}
+            >
+              全選
+            </Button>
           }
           onOpen={() => setOpen(true)}
           onClose={() => setOpen(false)}
@@ -126,18 +128,12 @@ const ProductReserveCheck = () => {
             props.key = props.id
             return (
               <li {...props}>
-                <Checkbox
-                  style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                  icon={icon}
-                  checkedIcon={checkedIcon}
-                  checked={selected}
-                />
+                <Checkbox style={{ color: 'rgb(var(--text))', marginRight: 8 }} icon={icon} checkedIcon={checkedIcon} checked={selected} />
                 {/* 選項已先排除沒有代號的商品（filterOptions） */}
                 {`${option.no} - ${option.name}`}
               </li>
             )
-          }
-          }
+          }}
           filterOptions={(options, { inputValue }) => {
             const keyWord = inputValue.toLocaleLowerCase()
             const newOptions = options.filter(d => {
@@ -174,8 +170,8 @@ const ProductReserveCheck = () => {
         </div>
       </div>
       {productReserveData.error ? (
-          <QueryFailed onRetry={() => handleSearch()} />
-        ) : productReserveData.loading || (productReserveData.data === undefined && !productReserveData.error) ? (
+        <QueryFailed onRetry={() => handleSearch()} />
+      ) : productReserveData.loading || (productReserveData.data === undefined && !productReserveData.error) ? (
         <Skeleton className="h-96" aria-busy="true" />
       ) : (
         <Results reportData={reportData} />

@@ -55,7 +55,7 @@ function AboutService({ className, onChange, service, handleCheckboxChange, rese
       const data = idx(getThirdPartys, _ => _.data.merchant.thirdpartyCoupons) || []
       setThirdParty(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getThirdPartys.loading])
 
   return (
@@ -65,16 +65,10 @@ function AboutService({ className, onChange, service, handleCheckboxChange, rese
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
         <Field label="代號">
-          <Input
-            value={service.no}
-            onChange={event => onChange({ event, key: 'no' })}
-          />
+          <Input value={service.no} onChange={event => onChange({ event, key: 'no' })} />
         </Field>
         <Field label="名稱">
-          <Input
-            value={service.name}
-            onChange={event => onChange({ event, key: 'name' })}
-          />
+          <Input value={service.name} onChange={event => onChange({ event, key: 'name' })} />
         </Field>
         <NativeSelect
           value={service.ServiceCategoryId}
@@ -189,7 +183,7 @@ function AboutService({ className, onChange, service, handleCheckboxChange, rese
           placeholder="請選擇…"
           label="綁定第三方卡券"
         >
-          <NativeSelectOption value='none'>無</NativeSelectOption>
+          <NativeSelectOption value="none">無</NativeSelectOption>
           {thirdParty.map((data, idx) => (
             <NativeSelectOption value={data.id} key={`${data.name}-${idx}`}>
               {data.name}

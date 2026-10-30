@@ -16,7 +16,16 @@ jest.mock('elements/snackbars', () => ({
 }))
 
 const DESIGNER = { userId: 'designer-1', userName: '王小美', userNickName: 'Amy', userNo: '01' }
-const SERVICE = { id: 'service-1', no: 'S01', name: '精緻剪髮', price: 800, isLocked: false, isNoCash: false, bindedThirdPartTicket: null, isBindedThirdPartTicketLocked: false }
+const SERVICE = {
+  id: 'service-1',
+  no: 'S01',
+  name: '精緻剪髮',
+  price: 800,
+  isLocked: false,
+  isNoCash: false,
+  bindedThirdPartTicket: null,
+  isBindedThirdPartTicketLocked: false,
+}
 
 const fixtures = ({ layout = 'A4', ...overrides } = {}) => ({
   GET_DESIGNATION_SETTING_FOR_ORDER_CREATE: { getDesignationSettingForOrderCreate: 'DESIGNATE' },

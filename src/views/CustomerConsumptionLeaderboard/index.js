@@ -24,18 +24,18 @@ function CustomerConsumptionLeaderboard() {
   const [getCustomerConsumptionExcel, customerConsumptionDataExcel] = useFetchGetCustomerConsumptionLeaderboardExcel()
   const [reportData, setReportData] = useState([])
   const [inputData, setInputData] = useState({
-    "orderType": 'ALL',
-    "designerIds": [],
-    "dateRange": {
-      "startDate": startOfMonth(new Date()).getTime(),
-      "endDate": endOfMonth(new Date()).getTime(),
+    'orderType': 'ALL',
+    'designerIds': [],
+    'dateRange': {
+      'startDate': startOfMonth(new Date()).getTime(),
+      'endDate': endOfMonth(new Date()).getTime(),
     },
-    "consumptionTypes": []
+    'consumptionTypes': [],
   })
 
   useEffect(() => {
     handleSearch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [inputData.dateRange] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [inputData.dateRange] 變動時呼叫，補上會每次 render 重跑
   }, [inputData.dateRange])
 
   useEffect(() => {
@@ -49,8 +49,8 @@ function CustomerConsumptionLeaderboard() {
     if (!customerConsumptionDataExcel.loading && customerConsumptionDataExcel.data) {
       const url = customerConsumptionDataExcel.data.customerConsumptionLeaderboardExcel
       const link = document.createElement('a')
-			link.href = url
-			link.click()
+      link.href = url
+      link.click()
     }
   }, [customerConsumptionDataExcel])
 
@@ -62,12 +62,12 @@ function CustomerConsumptionLeaderboard() {
     if (rangeLimit(inputData.dateRange)) {
       openSnackbar({
         message: '時間篩選區間不可超過一年',
-        variant: 'error'
+        variant: 'error',
       })
     } else {
       getCustomerConsumption({
         variables: {
-          input: inputData
+          input: inputData,
         },
       })
     }
@@ -78,12 +78,12 @@ function CustomerConsumptionLeaderboard() {
     if (rangeLimit(inputData.dateRange)) {
       openSnackbar({
         message: '時間篩選區間不可超過一年',
-        variant: 'error'
+        variant: 'error',
       })
     } else {
       getCustomerConsumptionExcel({
         variables: {
-          input: inputData
+          input: inputData,
         },
       })
     }
@@ -100,12 +100,11 @@ function CustomerConsumptionLeaderboard() {
   return (
     <Page className="ui-root" title="顧客消費排行榜">
       <div>
-        <PageHeader title='顧客消費排行榜'>
-          <Button
-            variant='secondary'
-            disabled={customerConsumptionDataExcel.loading || exportMaskOff}
-            onClick={handleGetExcelData}
-          ><Download strokeWidth={1.75} />報表匯出</Button>
+        <PageHeader title="顧客消費排行榜">
+          <Button variant="secondary" disabled={customerConsumptionDataExcel.loading || exportMaskOff} onClick={handleGetExcelData}>
+            <Download strokeWidth={1.75} />
+            報表匯出
+          </Button>
         </PageHeader>
         <BackendExportNotice settingOff={exportMaskOff} />
         <Filter
@@ -117,7 +116,7 @@ function CustomerConsumptionLeaderboard() {
         />
         {customerConsumptionData.error ? (
           <QueryFailed onRetry={handleSearch} />
-        ) : (!customerConsumptionData.loading && customerConsumptionData.data) ? (
+        ) : !customerConsumptionData.loading && customerConsumptionData.data ? (
           <Results reportData={reportData} />
         ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示

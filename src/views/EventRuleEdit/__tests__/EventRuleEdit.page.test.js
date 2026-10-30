@@ -70,7 +70,12 @@ const ruleGroup = overrides => ({
 const setup = ({ group = ruleGroup(), ...fixtures } = {}) =>
   renderPage(<EventRuleEdit match={{ params: { id: 'rg1' } }} />, {
     fixtures: {
-      USE_FETCH_GET_ATTRIBUTIONS: { getAttribution: [{ name: '設計部', value: 'd' }, { name: '美容部', value: 'b' }] },
+      USE_FETCH_GET_ATTRIBUTIONS: {
+        getAttribution: [
+          { name: '設計部', value: 'd' },
+          { name: '美容部', value: 'b' },
+        ],
+      },
       GET_EVENT_RULE_GROUP: { eventRuleGroup: group },
       UPDATE_EVENT_RULE_GROUP: { updateEventRuleGroup: true },
       ...fixtures,
@@ -164,7 +169,11 @@ describe('編輯規則', () => {
     pickDate('結束時間', new Date(2026, 10, 25))
     fireEvent.click(screen.getByText('選擇店家（測試）'))
     fireEvent.click(screen.getByText('選付款方式（測試）'))
-    for (const [label, value] of [['門檻', '2000'], ['每單發券上限', '3'], ['總張數上限', '4000']]) {
+    for (const [label, value] of [
+      ['門檻', '2000'],
+      ['每單發券上限', '3'],
+      ['總張數上限', '4000'],
+    ]) {
       const input = fieldByLabel(label)
       fireEvent.focusIn(input)
       fireEvent.change(input, { target: { value } })

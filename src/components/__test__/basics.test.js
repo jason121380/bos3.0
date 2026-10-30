@@ -217,7 +217,15 @@ describe('PasswordDialog', () => {
     expect(onCancel).toHaveBeenCalledTimes(1)
     expect(onConfirm).toHaveBeenCalledTimes(1)
     rerender(
-      <PasswordDialog open isLoading title="操作密碼" inputLabel="密碼" inputOnChange={onInput} handleOnCancel={onCancel} handleOnConfirm={onConfirm} />
+      <PasswordDialog
+        open
+        isLoading
+        title="操作密碼"
+        inputLabel="密碼"
+        inputOnChange={onInput}
+        handleOnCancel={onCancel}
+        handleOnConfirm={onConfirm}
+      />
     )
     expect(screen.getByRole('button', { name: '取消' })).toBeDisabled()
     expect(screen.getByRole('button', { name: '確認' })).toBeDisabled()
@@ -226,9 +234,7 @@ describe('PasswordDialog', () => {
   // Jason 2026/10/22 fix all：原本寫成 PasswordDialog.prototype = {…}（不是 propTypes，型別檢查沒有作用，且列的是不存在的 props）
   it('propTypes 檢查實際使用的 props：型別不對時開發模式會警告', () => {
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
-    render(
-      <PasswordDialog open="no" title={1} inputLabel={2} isLoading="yes" handleOnCancel="x" handleOnConfirm="y" inputOnChange="z" />
-    )
+    render(<PasswordDialog open="no" title={1} inputLabel={2} isLoading="yes" handleOnCancel="x" handleOnConfirm="y" inputOnChange="z" />)
     const warned = spy.mock.calls.map(args => args.map(String).join(' ')).filter(text => /Failed (%s|prop) type/.test(text))
     ;['open', 'title', 'inputLabel', 'isLoading', 'handleOnCancel', 'handleOnConfirm', 'inputOnChange'].forEach(prop => {
       expect(warned.some(text => text.includes(`\`${prop}\``))).toBe(true)

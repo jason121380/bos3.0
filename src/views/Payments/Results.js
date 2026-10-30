@@ -27,7 +27,8 @@ function Results({ className, paymentList = [], ...rest }) {
     setSelectedPayment(newSelectedPayment)
   }
   const handleSelectOne = id => {
-    const newSelect = [...selectedPayment], index = newSelect.indexOf(id)
+    const newSelect = [...selectedPayment],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -47,12 +48,8 @@ function Results({ className, paymentList = [], ...rest }) {
       <Card>
         <CardHeader>
           <div className="flex items-baseline gap-3">
-            <CardTitle>
-              所有支付方式
-            </CardTitle>
-            <span className="text-label tabular-nums text-text-secondary">
-              共 {paymentList.length} 筆
-            </span>
+            <CardTitle>所有支付方式</CardTitle>
+            <span className="text-label tabular-nums text-text-secondary">共 {paymentList.length} 筆</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5 pt-4">
@@ -62,18 +59,16 @@ function Results({ className, paymentList = [], ...rest }) {
                 <TableHead className="w-12">
                   <Checkbox
                     aria-label="全選"
-                    checked={
-                      selectedPayment.length === paymentList.length && paymentList.length > 0
-                    }
-                    indeterminate={
-                      selectedPayment.length > 0 && selectedPayment.length < paymentList.length
-                    }
+                    checked={selectedPayment.length === paymentList.length && paymentList.length > 0}
+                    indeterminate={selectedPayment.length > 0 && selectedPayment.length < paymentList.length}
                     onChange={handleSelectAll}
                     disabled={paymentList.length === 0}
                   />
                 </TableHead>
                 <TableHead className="w-16">操作</TableHead>
-                <TableHead numeric className="w-12">#</TableHead>
+                <TableHead numeric className="w-12">
+                  #
+                </TableHead>
                 <TableHead>名稱</TableHead>
                 <TableHead numeric>手續費</TableHead>
                 <TableHead>扣項方式</TableHead>
@@ -92,19 +87,14 @@ function Results({ className, paymentList = [], ...rest }) {
                   </TableCell>
                   <TableCell>
                     <Button asChild variant="ghost" size="icon" className="text-text-secondary">
-                      <RouterLink
-                        aria-label={`編輯 ${data.name}`}
-                        to={`/payment/edit/${data.id}`}
-                      >
+                      <RouterLink aria-label={`編輯 ${data.name}`} to={`/payment/edit/${data.id}`}>
                         <EditIconSlot fontSize="small" />
                       </RouterLink>
                     </Button>
                   </TableCell>
                   <TableCell numeric>{idx + 1}</TableCell>
                   <TableCell>{data.name}</TableCell>
-                  <TableCell numeric>
-                    {formatNumber(data.fee) + (data.amountType === 'PERCENT' ? PaymentSymbol[data.amountType] : '')}
-                  </TableCell>
+                  <TableCell numeric>{formatNumber(data.fee) + (data.amountType === 'PERCENT' ? PaymentSymbol[data.amountType] : '')}</TableCell>
                   <TableCell>{deductions[data.type]}</TableCell>
                   <TableCell>{data.isNoCash ? '是' : '否'}</TableCell>
                 </TableRow>

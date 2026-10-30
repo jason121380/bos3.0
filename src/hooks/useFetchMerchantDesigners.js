@@ -49,9 +49,7 @@ const FETCH_DESIGNERS = gql`
 export default function useFetchMerchantDesigners() {
   return useQuery(FETCH_DESIGNERS, {
     variables: {
-      merchantId: localStorage.getItem('userMerchant')
-        ? JSON.parse(localStorage.getItem('userMerchant')).id
-        : null,
+      merchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
     },
     fetchPolicy: 'cache-and-network',
   })

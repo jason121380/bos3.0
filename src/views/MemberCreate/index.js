@@ -78,14 +78,7 @@ export default function Reservation({ location }) {
         <Card>
           <CardContent className="flex flex-col gap-4">
             <Field label="姓名" htmlFor="member-create-name">
-              <Input
-                id="member-create-name"
-                className="h-11"
-                placeholder="姓名..."
-                value={profile.name}
-                name="name"
-                onChange={handleFieldChange}
-              />
+              <Input id="member-create-name" className="h-11" placeholder="姓名..." value={profile.name} name="name" onChange={handleFieldChange} />
             </Field>
             <ToggleGroup
               exclusive
@@ -106,18 +99,18 @@ export default function Reservation({ location }) {
               format="yyyy/MM/dd"
               onChange={handleFieldChange}
               value={profile.birthday}
-              openTo='year'
+              openTo="year"
               localeText={{
-                toolbarTitle: '選擇日期'
+                toolbarTitle: '選擇日期',
               }}
               slotProps={{
                 toolbar: {
-                  toolbarFormat: 'yyyy年M月d日'
+                  toolbarFormat: 'yyyy年M月d日',
                 },
                 textField: {
                   variant: 'outlined',
                   fullWidth: true,
-                }
+                },
               }}
             />
             <Field label="推薦碼" htmlFor="member-create-recommand-code">
@@ -130,7 +123,14 @@ export default function Reservation({ location }) {
                 onChange={handleFieldChange}
               />
             </Field>
-            <Button type="submit" variant="primary" size="lg" className="h-11 w-full" disabled={vaild} aria-describedby={vaild ? 'member-create-missing' : undefined}>
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              className="h-11 w-full"
+              disabled={vaild}
+              aria-describedby={vaild ? 'member-create-missing' : undefined}
+            >
               註冊
             </Button>
             {/* 停用原因（STYLE.md §6）：依 vaild（姓名、性別、生日必填） */}

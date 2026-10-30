@@ -8,23 +8,19 @@ import { styles, timeArr } from './choseEventConstants'
 // 在 ChoseEvent 原位置以相同條件渲染（{條件 && <區塊 />}），掛載／卸載時機與原本的 <Fragment> 相同
 
 // 事件內容（event）
-export function EventSection({
-  setModalOpen,
-  editOrder,
-  findTimeCost,
-}) {
+export function EventSection({ setModalOpen, editOrder, findTimeCost }) {
   return (
     <Fragment>
       <div className={`MuiTypography-body1 ${styles.eventWrap}`}>
         <div>{`時間: ${format(new Date(editOrder.date), 'yyyy/MM/dd  HH:mm')}`}</div>
         <div>{`事件時長: ${findTimeCost(editOrder.timeCost)}`}</div>
-        <div className='info'>
+        <div className="info">
           <div>事件說明:</div>
           <TextField
             multiline
-            variant='outlined'
+            variant="outlined"
             inputProps={{
-              readOnly: true
+              readOnly: true,
             }}
             value={editOrder.customer.name}
           />
@@ -46,32 +42,19 @@ export function EventSection({
 }
 
 // 延遲服務時間（message）
-export function DelayMessageSection({
-  setModalOpen,
-  btnDisabled,
-  delayTime,
-  setDelayTime,
-  handleSetDelayBookingTime,
-}) {
+export function DelayMessageSection({ setModalOpen, btnDisabled, delayTime, setDelayTime, handleSetDelayBookingTime }) {
   return (
     <>
       <p>尚須多久時間完成服務(將會通知下位顧客新的到店時間)</p>
       <div style={{ padding: '12px 0px', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         {timeArr.map(({ label, value }) => (
-          <Button
-            key={label}
-            variant={delayTime === value ? 'primary' : 'secondary'}
-            onClick={() => setDelayTime(value)}
-          >{label}</Button>
+          <Button key={label} variant={delayTime === value ? 'primary' : 'secondary'} onClick={() => setDelayTime(value)}>
+            {label}
+          </Button>
         ))}
       </div>
       <div className="flex justify-end gap-2">
-        <Button
-          variant="primary"
-          type="submit"
-          disabled={btnDisabled}
-          onClick={handleSetDelayBookingTime}
-        >
+        <Button variant="primary" type="submit" disabled={btnDisabled} onClick={handleSetDelayBookingTime}>
           儲存
         </Button>
         <Button

@@ -9,10 +9,7 @@ import useFetchMerchant from 'hooks/useFetchMerchant'
 import { useState, useEffect, useRef } from 'react'
 import CalendarColorClip, { RESERVATION_COLORS } from 'components/CalendarColorClip'
 import DateSelector from 'components/DateSelector'
-import {
-  getYear, getMonth, getDate, startOfDay, endOfDay,
-  addMinutes, differenceInMinutes, subMinutes, isSameDay
-} from 'date-fns'
+import { getYear, getMonth, getDate, startOfDay, endOfDay, addMinutes, differenceInMinutes, subMinutes, isSameDay } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchGetDesignerNameForCustomerSide from 'hooks/useFetchGetDesignerNameForCustomerSide'
 import useFetchGetMerchantDesignerCalendar from 'hooks/useFetchGetMerchantDesignerCalendar'
@@ -25,7 +22,7 @@ import { useFetchGetBookinHistoryDisplay } from 'hooks/useFetchGetParameterAbout
 import { useFetchGetCancelBookingUsing } from 'hooks/useFetchMerchantPassword'
 import useFetchGetIsBookingCusCheckUsing from 'hooks/useFetchGetIsBookingCusCheckUsing'
 import { useSelector } from 'react-redux'
-import produce from 'immer';
+import produce from 'immer'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { cn } from 'ui/utils'
@@ -58,8 +55,8 @@ function Calendar() {
   })
   const DesignerCalendar = useFetchGetMerchantDesignerCalendar({
     input: {
-      dateRange: date
-    }
+      dateRange: date,
+    },
   })
   const merchant = useFetchMerchant()
   const [orderRange, setOrderRange] = useState([])
@@ -67,12 +64,12 @@ function Calendar() {
   const [cusRemarkDisplay, setCusRemarkDisplay] = useState(false)
   const [calendarData, setCalendarData] = useState({
     designate: [],
-    nonDesignate: []
+    nonDesignate: [],
   })
   const [calendarRowData, setCalendarRowData] = useState({
     designate: [],
     nonDesignate: null,
-    changeData: null
+    changeData: null,
   })
   const [designerName, setDesignerName] = useState('NAME')
   const [eventDisplay, setEventDisplay] = useState(false)
@@ -90,21 +87,21 @@ function Calendar() {
   const [calendarSize, setCalendarSize] = useState({
     width: 95,
     height: 40,
-    breakHeight: 45
+    breakHeight: 45,
   })
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [showFilter, setShowFilter] = useState(false);
-  const open = Boolean(anchorEl);
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [showFilter, setShowFilter] = useState(false)
+  const open = Boolean(anchorEl)
   const ndsRef = useRef([])
   const notifiedChangeRef = useRef(null)
 
-  const handleClick = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
+  const handleClick = event => {
+    setAnchorEl(anchorEl ? null : event.currentTarget)
+  }
 
   const handleFilterClick = () => {
-    setShowFilter(!showFilter);
-  };
+    setShowFilter(!showFilter)
+  }
 
   const handleRefetch = () => {
     DesignerCalendar.refetch()
@@ -121,12 +118,11 @@ function Calendar() {
       const { calendar, ...rest } = des
       calendar.sort((a, b) => a.startTime - b.startTime)
       const checkHorR = (cost, startTime, isOrder, isDone = false) => {
-
         for (let i = 0; i < cost; i++) {
           const time = addMinutes(startTime, 30 * i).getTime()
           if (isOrder) {
             if (countOrder[time] === undefined) {
-              countOrder[time] = (isDone ? 0 : 1)
+              countOrder[time] = isDone ? 0 : 1
             } else {
               countOrder[time] = countOrder[time] + (isDone ? 0 : 1)
             }
@@ -143,11 +139,8 @@ function Calendar() {
       const isOrder = []
       const isBreak = []
       calendar.forEach((item, index) => {
-        const style = {};
-        const {
-          timeCost, startTime, bookingStatus, isDesignate, isCusCheckRequired, isCheckin,
-          isDone, createdOrderId, isNoShow
-        } = item
+        const style = {}
+        const { timeCost, startTime, bookingStatus, isDesignate, isCusCheckRequired, isCheckin, isDone, createdOrderId, isNoShow } = item
         if (!unCheckDisplay && bookingStatus === '待審核') return
         if (checkinSettings.isBookingCheckinEnabled && item.type === 'RESERVATION') {
           if (checkedType !== '') {
@@ -167,16 +160,16 @@ function Calendar() {
               style.height = `${timeCost * calendarSize.height - 2}px`
               calendar[index].type = 'HOLIDAY'
               checkHorR(timeCost, startTime, false)
-              break;
+              break
             case 'HOLIDAY':
               style.backgroundColor = RESERVATION_COLORS.unavailable
               style.height = `${timeCost * calendarSize.height - 2}px`
               checkHorR(timeCost, startTime, false)
-              break;
+              break
             case 'EVENT':
               style.backgroundColor = RESERVATION_COLORS.event
               style.height = `${timeCost * calendarSize.height - 2}px`
-              break;
+              break
             case 'RESERVATION':
               style.height = `${timeCost * calendarSize.height - 2}px`
               item.isBookingCostUsing && checkHorR(timeCost, startTime, true, isDone)
@@ -184,18 +177,18 @@ function Calendar() {
                 case '預約成功':
                   style.backgroundColor = isDesignate ? RESERVATION_COLORS.designate : RESERVATION_COLORS.nonDesignate
                   // item.nameToDisplay = item.nameToDisplay + ` - ${isDesignate ? '預約成功(指定)' : '預約成功(不指定)'}`
-                  break;
+                  break
                 case '待審核':
                   style.backgroundColor = RESERVATION_COLORS.pending
                   // item.nameToDisplay = item.nameToDisplay + ' - 待審核'
-                  break;
+                  break
                 case '已完成':
                   style.backgroundColor = RESERVATION_COLORS.completed
-                  break;
+                  break
                 default:
-                  break;
+                  break
               }
-              break;
+              break
             default:
               // 其他值不處理（與原本沒有 default 時相同）
               break
@@ -208,7 +201,6 @@ function Calendar() {
           if (isDone) {
             style.backgroundColor = RESERVATION_COLORS.done
           }
-
         }
         const customData = {
           nameToDisplay: item.nameToDisplay,
@@ -233,8 +225,8 @@ function Calendar() {
           isCusCheckRequired,
           isDone,
           createdOrderId,
-          isNoShow
-        };
+          isNoShow,
+        }
 
         if (item.type === 'RESERVATION' || item.type === 'EVENT') {
           if (checkinMode && (item.type === 'EVENT' || item.isDone)) return
@@ -242,14 +234,14 @@ function Calendar() {
             key: item.ids.length ? item.ids[0] : `${item.type}-${index}`,
             customData,
             dates: item.startTime,
-            style
+            style,
           })
         } else {
           isBreak.push({
             key: item.ids.length ? item.ids[0] : `${item.type}-${index}`,
             customData,
             dates: item.startTime,
-            style
+            style,
           })
         }
 
@@ -257,40 +249,44 @@ function Calendar() {
           key: item.ids.length ? item.ids[0] : `${item.type}-${index}`,
           customData,
           dates: item.startTime,
-          style
-        };
+          style,
+        }
       })
 
       arr.push({
-        ...rest, countOrder, countHoliday, isBreak, isOrder
+        ...rest,
+        countOrder,
+        countHoliday,
+        isBreak,
+        isOrder,
       })
-    });
+    })
 
     arr.forEach(({ isBreak, isOrder, ...d }) => {
-      const isOrderGroups = [];
-      const isBreakGroups = [];
+      const isOrderGroups = []
+      const isBreakGroups = []
       let length = 1
       let breakLength = 0
       for (let i = 0; i < isBreak.length; i++) {
         const parentStyle = {}
-        const time1 = isBreak[i];
-        if (time1.isProcessed) continue; // 跳過已處理過的時間
+        const time1 = isBreak[i]
+        if (time1.isProcessed) continue // 跳過已處理過的時間
 
-        const currentGroup = [time1];
+        const currentGroup = [time1]
         for (let j = i + 1; j < isBreak.length; j++) {
-          const time2 = isBreak[j];
+          const time2 = isBreak[j]
           if (time2.isProcessed) {
-            continue;
+            continue
           } // 跳過已處理過的時間
 
           if (
             // 判斷時間是否重疊
-            (time2.customData.start >= time1.customData.start && time2.customData.start < time1.customData.end)
-            || (time2.customData.end > time1.customData.start && time2.customData.end <= time1.customData.end)
-            || (time2.customData.start <= time1.customData.start && time2.customData.end >= time1.customData.end)
+            (time2.customData.start >= time1.customData.start && time2.customData.start < time1.customData.end) ||
+            (time2.customData.end > time1.customData.start && time2.customData.end <= time1.customData.end) ||
+            (time2.customData.start <= time1.customData.start && time2.customData.end >= time1.customData.end)
           ) {
-            currentGroup.push(time2);
-            time2.isProcessed = true; // 標記已處理過的時間
+            currentGroup.push(time2)
+            time2.isProcessed = true // 標記已處理過的時間
           }
         }
         const firstTime = currentGroup[0].dates
@@ -307,7 +303,7 @@ function Calendar() {
         })
 
         if (!checkinMode) {
-          isBreakGroups.push({ data: currentGroup, parentStyle });
+          isBreakGroups.push({ data: currentGroup, parentStyle })
           if (currentGroup.length >= breakLength) {
             breakLength = currentGroup.length + 1
           }
@@ -315,24 +311,24 @@ function Calendar() {
       }
       for (let i = 0; i < isOrder.length; i++) {
         const parentStyle = {}
-        const time1 = isOrder[i];
-        if (time1.isProcessed) continue; // 跳過已處理過的時間
+        const time1 = isOrder[i]
+        if (time1.isProcessed) continue // 跳過已處理過的時間
 
-        const currentGroup = [time1];
+        const currentGroup = [time1]
         for (let j = i + 1; j < isOrder.length; j++) {
-          const time2 = isOrder[j];
+          const time2 = isOrder[j]
           if (time2.isProcessed) {
-            continue;
+            continue
           } // 跳過已處理過的時間
 
           if (
             // 判斷時間是否重疊
-            (time2.customData.start >= time1.customData.start && time2.customData.start < time1.customData.end)
-            || (time2.customData.end > time1.customData.start && time2.customData.end <= time1.customData.end)
-            || (time2.customData.start <= time1.customData.start && time2.customData.end >= time1.customData.end)
+            (time2.customData.start >= time1.customData.start && time2.customData.start < time1.customData.end) ||
+            (time2.customData.end > time1.customData.start && time2.customData.end <= time1.customData.end) ||
+            (time2.customData.start <= time1.customData.start && time2.customData.end >= time1.customData.end)
           ) {
-            currentGroup.push(time2);
-            time2.isProcessed = true; // 標記已處理過的時間
+            currentGroup.push(time2)
+            time2.isProcessed = true // 標記已處理過的時間
           }
         }
         const firstTime = currentGroup[0].dates
@@ -348,7 +344,7 @@ function Calendar() {
           }
         })
 
-        isOrderGroups.push({ data: currentGroup, parentStyle });
+        isOrderGroups.push({ data: currentGroup, parentStyle })
         if (currentGroup.length >= length) {
           length = currentGroup.length + 1
         }
@@ -358,7 +354,7 @@ function Calendar() {
         length,
         breakLength,
         isOrderGroups,
-        isBreakGroups
+        isBreakGroups,
       })
     })
     return finalData
@@ -415,10 +411,10 @@ function Calendar() {
       setCalendarRowData({
         designate: cloneDeep(data.merchantDesignerCalendar || []),
         nonDesignate: cloneDeep(data.nonDesignateCalendar || { designerName: null, calendar: [] }),
-        changeData: null
+        changeData: null,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [DesignerCalendar.loading])
 
   useEffect(() => {
@@ -428,11 +424,11 @@ function Calendar() {
         setCalendarRowData({
           designate: calendarData.merchantDesignerCalendar,
           nonDesignate: calendarData.nonDesignateCalendar,
-          changeData: changeData
+          changeData: changeData,
         })
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [reservationData] 變動時執行；date.startDate 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [reservationData] 變動時執行；date.startDate 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [reservationData])
 
   useEffect(() => {
@@ -442,40 +438,39 @@ function Calendar() {
       const designate = handleTidyOrder(calendarRowData.designate, timeRange[0])
       const nonDesignate = handleTidyOrder([calendarRowData.nonDesignate], timeRange[0], true)
       setCalendarData({
-        designate, nonDesignate: nonDesignate[0]
+        designate,
+        nonDesignate: nonDesignate[0],
       })
       // 同一筆推播只提示一次：之後調整格子、切換報到模式等重算表格時不再提示（Jason 2026/10/22 fix all）
-      if (calendarRowData.changeData && calendarRowData.changeData !== notifiedChangeRef.current &&
-        (unCheckDisplay || calendarRowData.changeData.bookingStatus !== 'UNCHECK')) {
+      if (
+        calendarRowData.changeData &&
+        calendarRowData.changeData !== notifiedChangeRef.current &&
+        (unCheckDisplay || calendarRowData.changeData.bookingStatus !== 'UNCHECK')
+      ) {
         notifiedChangeRef.current = calendarRowData.changeData
         const { actionType, bookingDataId } = calendarRowData.changeData
         switch (actionType) {
           case 'CREATE':
             openSnackbar({
               variant: 'success',
-              message: '有一筆新預約'
+              message: '有一筆新預約',
             })
-            break;
+            break
           default:
             openSnackbar({
               variant: 'warning',
-              message: '預約紀錄已更新'
+              message: '預約紀錄已更新',
             })
             if (bookingDataId === editOrder.id) {
               setModalOpen(false)
             }
-            break;
+            break
         }
-
       }
     }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ checkinMode, checkinSettings.isBookingCheckinEnabled, c…] 變動時執行；editOrder.id、handleSetTimeRange、handleTidyOrder、merchant 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
-  }, [
-    checkinMode, checkinSettings.isBookingCheckinEnabled,
-    calendarRowData, checkedType, unCheckDisplay, merchant.loading,
-    calendarSize
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ checkinMode, checkinSettings.isBookingCheckinEnabled, c…] 變動時執行；editOrder.id、handleSetTimeRange、handleTidyOrder、merchant 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+  }, [checkinMode, checkinSettings.isBookingCheckinEnabled, calendarRowData, checkedType, unCheckDisplay, merchant.loading, calendarSize])
 
   // 以下設定查詢失敗（data 為 undefined）時沿用與初始值相同的預設，不整頁壞（Jason 2026/10/22 fix all）
   useEffect(() => {
@@ -483,7 +478,7 @@ function Calendar() {
       const data = idx(nameType, _ => _.data.getDesignerNameForCustomerSide) || 'NAME'
       setDesignerName(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [nameType.loading])
 
   useEffect(() => {
@@ -491,7 +486,7 @@ function Calendar() {
       const data = idx(bookingRemarkDisplay, _ => _.data.getIsBookingRemarkDisplay) || false
       setRemarkDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [bookingRemarkDisplay.loading])
 
   useEffect(() => {
@@ -499,7 +494,7 @@ function Calendar() {
       const data = idx(cusBookingRemarkDisplay, _ => _.data.getIsCusBookingRemarkDisplay) || false
       setCusRemarkDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [cusBookingRemarkDisplay.loading])
 
   useEffect(() => {
@@ -507,7 +502,7 @@ function Calendar() {
       const data = idx(getEventDisplay, _ => _.data.getParameterAboutSettingFunction.isEventDisplayOnDayBookingRecord) || false
       setEventDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getEventDisplay.loading])
 
   useEffect(() => {
@@ -518,7 +513,7 @@ function Calendar() {
       }
       setCheckinSettings(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantCheckinSettings.loading])
 
   useEffect(() => {
@@ -526,7 +521,7 @@ function Calendar() {
       const data = idx(getIsBookingCusCheckUsing, _ => _.data.getIsBookingCusCheckUsing) || false
       setBookingCusCheck(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBookingCusCheckUsing.loading])
 
   useEffect(() => {
@@ -535,7 +530,7 @@ function Calendar() {
       // 讀不到推播類型時維持預設（提示待審核）
       setUnCheckDisplay(data ? data.includes('UNCHECK') : true)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBookingTypeForSocket.loading])
 
   useEffect(() => {
@@ -543,7 +538,7 @@ function Calendar() {
       const data = idx(getBookinHistoryDisplay, _ => _.data.getParameterAboutBookingSetting.isBookingHistoryDisplay) || false
       setBookingHistoryDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBookinHistoryDisplay.loading])
 
   return (
@@ -551,11 +546,20 @@ function Calendar() {
     <Page title="單日預約紀錄">
       {/* 載入遮罩：原 aria-hidden 讀屏無從得知載入中；改 role=status（visibility hidden 時讀屏自然略過），下方行事曆容器同步 aria-busy */}
       <div
-        id='Backdrop'
+        id="Backdrop"
         role="status"
         aria-live="polite"
         className="fixed inset-0 flex items-center justify-center !opacity-100 z-[1300] ![background:rgba(0,0,0,0)]"
-        style={{ visibility: (!(!merchant.loading && !DesignerCalendar.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length))) ? undefined : 'hidden' }}
+        style={{
+          visibility: !(
+            !merchant.loading &&
+            !DesignerCalendar.loading &&
+            orderRange.length &&
+            (calendarData.designate.length || calendarData.nonDesignate.length)
+          )
+            ? undefined
+            : 'hidden',
+        }}
       >
         <LoaderCircle aria-hidden="true" className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
         <span className="sr-only">預約紀錄載入中…</span>
@@ -611,12 +615,7 @@ function Calendar() {
           {checkinSettings.isBookingCheckinEnabled && checkinMode && (
             <div className="flex items-center gap-3">
               <span className="whitespace-nowrap text-label text-text-secondary">報到狀態篩選</span>
-              <NativeSelect
-                aria-label="報到狀態篩選"
-                className="min-w-[140px]"
-                onChange={e => setCheckedType(e.target.value)}
-                value={checkedType}
-              >
+              <NativeSelect aria-label="報到狀態篩選" className="min-w-[140px]" onChange={e => setCheckedType(e.target.value)} value={checkedType}>
                 <NativeSelectOption value="">全部顯示</NativeSelectOption>
                 <NativeSelectOption value={true}>報到成功</NativeSelectOption>
                 <NativeSelectOption value={false}>未報到</NativeSelectOption>
@@ -625,7 +624,16 @@ function Calendar() {
           )}
         </Card>
       )}
-      <div aria-busy={(!(!merchant.loading && !DesignerCalendar.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length))) || undefined}>
+      <div
+        aria-busy={
+          !(
+            !merchant.loading &&
+            !DesignerCalendar.loading &&
+            orderRange.length &&
+            (calendarData.designate.length || calendarData.nonDesignate.length)
+          ) || undefined
+        }
+      >
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2.5 [&>div]:w-fit">
           <CalendarColorClip
             eventDisplay={eventDisplay}
@@ -634,14 +642,7 @@ function Calendar() {
             bookingHistoryDisplay={bookingHistoryDisplay}
           />
           <span className="ui-root">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-accent"
-              aria-label="調整格子寬度與高度"
-              aria-expanded={open}
-              onClick={handleClick}
-            >
+            <Button variant="ghost" size="icon" className="text-accent" aria-label="調整格子寬度與高度" aria-expanded={open} onClick={handleClick}>
               <SlidersHorizontal strokeWidth={1.75} />
             </Button>
           </span>
@@ -690,14 +691,14 @@ function Calendar() {
             </PopoverContent>
           </Popover>
         </div>
-        {(DesignerCalendar.error || merchant.error) ? (
+        {DesignerCalendar.error || merchant.error ? (
           <QueryFailed
             onRetry={() => {
               if (DesignerCalendar.error) DesignerCalendar.refetch()
               if (merchant.error) merchant.refetch()
             }}
           />
-        ) : (!merchant.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length)) ?
+        ) : !merchant.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length) ? (
           <OrderTable
             orderRange={orderRange}
             calendarData={calendarData}
@@ -717,10 +718,12 @@ function Calendar() {
             setEditOrder={setEditOrder}
             calendarSize={calendarSize}
             cancelPasswordUsing={isPasswordRequired(cancelBookingUsing, 'cancelReservation')}
-          /> : ''
-        }
+          />
+        ) : (
+          ''
+        )}
       </div>
-    </Page >
+    </Page>
   )
 }
 

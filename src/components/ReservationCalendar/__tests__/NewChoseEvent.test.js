@@ -95,17 +95,28 @@ describe('NewChoseEvent 全店模式', () => {
 // 改為送出中（pending）停用，後端回應後恢復
 describe('NewChoseEvent 審核窗：接受／取消預約送出中停用', () => {
   const ORDER = {
-    id: 'b1', date: T, status: '待審核', isDesignate: false, companionCount: 0, remark: '', remarkForCustomer: '',
+    id: 'b1',
+    date: T,
+    status: '待審核',
+    isDesignate: false,
+    companionCount: 0,
+    remark: '',
+    remarkForCustomer: '',
     customer: { id: 'c1', name: '王小明', cellphone: '0912' },
   }
   const deferred = () => {
     let resolve
-    const promise = new Promise(res => { resolve = res })
+    const promise = new Promise(res => {
+      resolve = res
+    })
     return { promise, resolve }
   }
   const row = text => screen.getByText(text).closest('button')
 
-  it.each([['接受預約', true], ['取消預約', false]])('%s：送出中兩列都停用、不會重複送出；回應後恢復', async (text, isApproval) => {
+  it.each([
+    ['接受預約', true],
+    ['取消預約', false],
+  ])('%s：送出中兩列都停用、不會重複送出；回應後恢復', async (text, isApproval) => {
     const pending = deferred()
     mockApi.verifyBooking = jest.fn(() => pending.promise)
     renderEvent({ modaltype: 'orderCheck', editOrder: ORDER })

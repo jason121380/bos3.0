@@ -21,7 +21,16 @@ afterEach(cleanup)
 
 const customerInput = () => screen.getByPlaceholderText('顧客姓名/手機號碼/編號')
 const noCustomerYet = () => baseQueue({ withoutCustomerData: false })
-const NEW_CUSTOMER = { id: 'customer-9', category: '', name: '', cellphone: '0955666777', gender: 'MALE', birthday: { year: '', month: '', day: '' }, preferDesigner: null, source: null }
+const NEW_CUSTOMER = {
+  id: 'customer-9',
+  category: '',
+  name: '',
+  cellphone: '0955666777',
+  gender: 'MALE',
+  birthday: { year: '', month: '', day: '' },
+  preferDesigner: null,
+  source: null,
+}
 const openModal = async title => {
   fireEvent.click(screen.getByRole('button', { name: '新增顧客' }))
   return (await screen.findByText(title)).closest('[role="dialog"]')
@@ -191,7 +200,18 @@ describe('重新開單：編輯沒有生日資料的顧客', () => {
   it('生日欄空白；儲存送出空白生日，不會帶入其他值', async () => {
     const page = setupQueue({
       queue: baseQueue({ customerId: CUSTOMER.id, withoutCustomerData: false }),
-      FETCH_CUSTOMER_DETAIL: { customer: { ...CUSTOMER, birthday: null, gender: 'MALE', remark: null, source: null, preferDesigner: { id: DESIGNER.userId, name: DESIGNER.userName }, membershipPurchaseRecord: [], isLineBinded: false } },
+      FETCH_CUSTOMER_DETAIL: {
+        customer: {
+          ...CUSTOMER,
+          birthday: null,
+          gender: 'MALE',
+          remark: null,
+          source: null,
+          preferDesigner: { id: DESIGNER.userId, name: DESIGNER.userName },
+          membershipPurchaseRecord: [],
+          isLineBinded: false,
+        },
+      },
       SET_CUSTOMER: { updateCustomer: true },
     })
     await loaded(page)
@@ -232,7 +252,13 @@ describe('重新開單：沒輸入手機時新增顧客', () => {
     const { input } = callsOf(page.calls, 'FETCH_ADD_CUSTOMER')[0].variables
     expect(input).toEqual(
       expect.objectContaining({
-        name: '吳小姐', cellphone: '0955666777', email: 'wu@example.com', lineId: 'wu-line', address: '台北市', nickName: '小吳', remark: '怕冷',
+        name: '吳小姐',
+        cellphone: '0955666777',
+        email: 'wu@example.com',
+        lineId: 'wu-line',
+        address: '台北市',
+        nickName: '小吳',
+        remark: '怕冷',
         birthday: { year: '85', month: '', day: '' },
       })
     )

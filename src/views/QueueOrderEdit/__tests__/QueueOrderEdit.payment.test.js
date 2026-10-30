@@ -9,8 +9,19 @@
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { loginAs, callsOf } from '../../../__tests__/testkit.test'
 import {
-  setupQueue, loaded, baseQueue, retry, summaryValue, pickOption, fieldInput, panel, inputOf, ticketRecordsFixture,
-  CUSTOMER, SERVICE, TICKET_RECORD,
+  setupQueue,
+  loaded,
+  baseQueue,
+  retry,
+  summaryValue,
+  pickOption,
+  fieldInput,
+  panel,
+  inputOf,
+  ticketRecordsFixture,
+  CUSTOMER,
+  SERVICE,
+  TICKET_RECORD,
 } from './queueKit.test'
 
 jest.setTimeout(20000)
@@ -155,7 +166,9 @@ describe('重新開單：清除顧客或改輸入新手機時扣入金清空', (
 
   it('原顧客不變（含編輯顧客資料儲存後）：佇列帶入的扣入金照原值送出', async () => {
     const page = setupQueue({
-      queue: queuedWithWallet(), customerWallet: { customerWallet: 1000 }, SET_CUSTOMER: { updateCustomer: true },
+      queue: queuedWithWallet(),
+      customerWallet: { customerWallet: 1000 },
+      SET_CUSTOMER: { updateCustomer: true },
     })
     await loaded(page)
     await wait(() => expect(customerInput().value).toContain('陳小姐'))
@@ -187,7 +200,10 @@ describe('重新開單：項目金額減少', () => {
 })
 
 describe('重新開單：紅利點數', () => {
-  const bonusOn = { GET_CUSTOMER_BONUS: { getIsCustomerBonusActive: true }, GET_CUSTOMER_BONUS_RECORD: { customerBonusRecord: [{ bonus: 30 }, { bonus: 20 }] } }
+  const bonusOn = {
+    GET_CUSTOMER_BONUS: { getIsCustomerBonusActive: true },
+    GET_CUSTOMER_BONUS_RECORD: { customerBonusRecord: [{ bonus: 30 }, { bonus: 20 }] },
+  }
 
   it('顯示剩餘點數；扣點不能超過剩餘點數加本次給點；負數與非數字不接受；給點可手動輸入', async () => {
     const page = setupQueue({ queue: withCustomer(), ...bonusOn })
@@ -247,21 +263,26 @@ describe('重新開單：紅利點數', () => {
   })
 
   it('給點規則比帳單晚到：規則到了仍依應收金額給點', async () => {
-    const page = setupQueue({
-      queue: withCustomer({
-        serviceOrders: [{ serviceId: SERVICE.id, price: 800, thirdPartyCouponMerchantId: null, serviceOrderHelpers: [] }],
-        productOrders: [],
-        ticketOrders: [],
-        useTicketOrders: [],
-        membershipOrders: [],
-        walletPay: 0,
-        amountByOtherPay: 0,
-        bonusDecount: 0,
-        bonusDeposit: 0,
-      }),
-      ...bonusOn,
-      GET_BONUS_REWARD_RULE: { getParameterAboutSettingFunction: { bonusRewardRule: { isUsing: true, rule: { price: 100, bonus: 1, mode: 'ROUNDING' } } } },
-    }, { delays: { GET_BONUS_REWARD_RULE: 400 } })
+    const page = setupQueue(
+      {
+        queue: withCustomer({
+          serviceOrders: [{ serviceId: SERVICE.id, price: 800, thirdPartyCouponMerchantId: null, serviceOrderHelpers: [] }],
+          productOrders: [],
+          ticketOrders: [],
+          useTicketOrders: [],
+          membershipOrders: [],
+          walletPay: 0,
+          amountByOtherPay: 0,
+          bonusDecount: 0,
+          bonusDeposit: 0,
+        }),
+        ...bonusOn,
+        GET_BONUS_REWARD_RULE: {
+          getParameterAboutSettingFunction: { bonusRewardRule: { isUsing: true, rule: { price: 100, bonus: 1, mode: 'ROUNDING' } } },
+        },
+      },
+      { delays: { GET_BONUS_REWARD_RULE: 400 } }
+    )
     await loaded(page)
     expect((await retry(page.calls)).bonusDeposit).toBe(8)
   })
@@ -270,7 +291,9 @@ describe('重新開單：紅利點數', () => {
     const page = setupQueue({
       queue: withCustomer(),
       ...bonusOn,
-      GET_BONUS_REWARD_RULE: { getParameterAboutSettingFunction: { bonusRewardRule: { isUsing: true, rule: { price: 100, bonus: 2, mode: 'ROUNDDOWN' } } } },
+      GET_BONUS_REWARD_RULE: {
+        getParameterAboutSettingFunction: { bonusRewardRule: { isUsing: true, rule: { price: 100, bonus: 2, mode: 'ROUNDDOWN' } } },
+      },
     })
     await loaded(page)
     await wait(() => expect(bonusField('點數給點')).toHaveValue('16'))
@@ -284,7 +307,9 @@ describe('重新開單：紅利點數', () => {
       queue: withCustomer({ bonusDeposit: 5 }),
       ...bonusOn,
       GET_IS_BONUS_REWARD_WITH_LINE: { getParameterAboutSettingFunction: { isBonusRewardWithLine: true } },
-      GET_BONUS_REWARD_RULE: { getParameterAboutSettingFunction: { bonusRewardRule: { isUsing: true, rule: { price: 100, bonus: 1, mode: 'ROUNDING' } } } },
+      GET_BONUS_REWARD_RULE: {
+        getParameterAboutSettingFunction: { bonusRewardRule: { isUsing: true, rule: { price: 100, bonus: 1, mode: 'ROUNDING' } } },
+      },
     })
     await loaded(page)
     await wait(() => expect(bonusField('點數給點')).toHaveValue('0'))
@@ -298,7 +323,9 @@ describe('重新開單：紅利點數', () => {
       ...bonusOn,
       FETCH_CUSTOMER_DETAIL: { customer: { ...CUSTOMER, membershipPurchaseRecord: [], isLineBinded: true } },
       GET_IS_BONUS_REWARD_WITH_LINE: { getParameterAboutSettingFunction: { isBonusRewardWithLine: true } },
-      GET_BONUS_REWARD_RULE: { getParameterAboutSettingFunction: { bonusRewardRule: { isUsing: true, rule: { price: 100, bonus: 1, mode: 'ROUNDUP' } } } },
+      GET_BONUS_REWARD_RULE: {
+        getParameterAboutSettingFunction: { bonusRewardRule: { isUsing: true, rule: { price: 100, bonus: 1, mode: 'ROUNDUP' } } },
+      },
     })
     await loaded(page)
     await wait(() => expect(bonusField('點數給點')).toHaveValue('8'))
@@ -358,7 +385,13 @@ describe('重新開單：佇列帳單缺欄位時的預設值', () => {
     const input = await retry(page.calls)
     expect(input).toEqual(
       expect.objectContaining({
-        walletPay: 0, withoutCustomerData: false, bonusDecount: 0, bonusDeposit: 0, bonusUsed: 0, source: null, serialNumber: null,
+        walletPay: 0,
+        withoutCustomerData: false,
+        bonusDecount: 0,
+        bonusDeposit: 0,
+        bonusUsed: 0,
+        source: null,
+        serialNumber: null,
         customerCellphone: '0911000222',
       })
     )

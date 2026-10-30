@@ -12,14 +12,14 @@ function EmployeeAutoComplete(
     className = '',
     assistField = '',
     isAssist = false,
-    onChange = () => { },
-    inputOnChange = () => { },
-    getCustomerData = () => { },
+    onChange = () => {},
+    inputOnChange = () => {},
+    getCustomerData = () => {},
     label = '',
     value,
     fieldProps,
     schedule,
-    onKeyDown = () => { },
+    onKeyDown = () => {},
     onFocus,
     inputProps = {
       'data-testid': 'employee',
@@ -39,13 +39,12 @@ function EmployeeAutoComplete(
     if (setEmployeeAlready !== undefined && !userOrderableList.loading) {
       setEmployeeAlready(!userOrderableList.loading)
     }
-  }, [userOrderableList.loading, setEmployeeAlready]);
+  }, [userOrderableList.loading, setEmployeeAlready])
   const [designerKeyword, setDesignerKeyword] = React.useState('')
   // const [inputDisplay, setInputDisplay] = React.useState('')
   // const [keyCode, setKeyCode] = React.useState(null)
 
-  const selectedValue =
-    idx(userOrderableList, _ => _.data.getUserOrderableList.find(d => d.userId === value)) || null
+  const selectedValue = idx(userOrderableList, _ => _.data.getUserOrderableList.find(d => d.userId === value)) || null
 
   const handleInputChange = event => {
     idx(event, _ => {
@@ -59,7 +58,7 @@ function EmployeeAutoComplete(
     if (options.length > 0) {
       getCustomerData(options)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getCustomerData）；只在 [options] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getCustomerData）；只在 [options] 變動時呼叫，補上會每次 render 重跑
   }, [options])
 
   const filterOptions = (options, state) => {
@@ -71,31 +70,19 @@ function EmployeeAutoComplete(
     let userName = []
     if (keyWord !== '' && keyWord.trim() !== '') {
       userNo = newOptions.filter((data, index) => {
-        if (
-          data.userNo !== '' &&
-          data.userNo !== null &&
-          data.userNo.toLowerCase() === keyWord.toLowerCase()
-        ) {
+        if (data.userNo !== '' && data.userNo !== null && data.userNo.toLowerCase() === keyWord.toLowerCase()) {
           return data.userNo.toLowerCase() === keyWord.toLowerCase()
         }
         return false
       })
       userNickName = newOptions.filter((data, index) => {
-        if (
-          data.userNickName !== '' &&
-          data.userNickName !== null &&
-          data.userNickName.toLowerCase().includes(keyWord.toLowerCase())
-        ) {
+        if (data.userNickName !== '' && data.userNickName !== null && data.userNickName.toLowerCase().includes(keyWord.toLowerCase())) {
           return data.userNickName.toLowerCase().includes(keyWord.toLowerCase())
         }
         return false
       })
       userName = newOptions.filter((data, index) => {
-        if (
-          data.userName !== '' &&
-          data.userName !== null &&
-          data.userName.toLowerCase().includes(keyWord.toLowerCase())
-        ) {
+        if (data.userName !== '' && data.userName !== null && data.userName.toLowerCase().includes(keyWord.toLowerCase())) {
           return data.userName.toLowerCase().includes(keyWord.toLowerCase())
         }
         return false
@@ -163,14 +150,11 @@ function EmployeeAutoComplete(
         autoHighlight
         onFocus={onFocus}
         getOptionLabel={option =>
-          (option.userNo !== null &&
-            option.userNo !== '' &&
-            option.userNo.toLowerCase().includes(designerKeyword.toLowerCase())) ||
-            selectedValue !== null
-            ? `${option.userNickName !== null && option.userNickName !== ''
-              ? option.userNickName
-              : option.userName
-            }${option.userNo !== '' && option.userNo !== null ? `-${option.userNo}` : '(無代號)'}`
+          (option.userNo !== null && option.userNo !== '' && option.userNo.toLowerCase().includes(designerKeyword.toLowerCase())) ||
+          selectedValue !== null
+            ? `${
+                option.userNickName !== null && option.userNickName !== '' ? option.userNickName : option.userName
+              }${option.userNo !== '' && option.userNo !== null ? `-${option.userNo}` : '(無代號)'}`
             : option.userName
         }
         loading={userOrderableList.loading}
@@ -188,9 +172,7 @@ function EmployeeAutoComplete(
         renderOption={(props, option) => (
           <div {...props} data-testid={`${inputProps['data-testid']}-${option.userName}`}>
             <span>
-              {option.userNickName !== null && option.userNickName !== ''
-                ? option.userNickName
-                : `${option.userName}`}
+              {option.userNickName !== null && option.userNickName !== '' ? option.userNickName : `${option.userName}`}
               {option.userNo !== '' && option.userNo !== null ? `-${option.userNo}` : '(無代號)'}
             </span>
           </div>

@@ -38,18 +38,13 @@ function Results({
 
   useEffect(() => {
     if (!getIsDisplayHelperRetrieveInDailyReport.loading) {
-      setDataVisible(
-        idx(getIsDisplayHelperRetrieveInDailyReport, _ => _.data.getIsDisplayHelperRetrieveInDailyReport)
-      )
+      setDataVisible(idx(getIsDisplayHelperRetrieveInDailyReport, _ => _.data.getIsDisplayHelperRetrieveInDailyReport))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsDisplayHelperRetrieveInDailyReport.loading])
 
   useEffect(() => {
-    if (
-      !mathRoundSetting.loading &&
-      mathRoundSetting.data.getIsUsingMathRoundInDesignerDailyReport === true
-    ) {
+    if (!mathRoundSetting.loading && mathRoundSetting.data.getIsUsingMathRoundInDesignerDailyReport === true) {
       setIsMathRound(idx(mathRoundSetting, _ => _.data.getIsUsingMathRoundInDesignerDailyReport))
       const cloneData = cloneDeep(designerDailyReport)
       cloneData.forEach(data => {
@@ -86,32 +81,29 @@ function Results({
             order.truthPerformanceWithHelperUsage = Math.round(order.truthPerformanceWithHelperUsage)
           })
         })
-
       })
       setMathRoundPrintData(clonePrintData)
     }
     // 列印資料由父層 effect 設定，比本元件掛載晚一拍；換日期時本元件重新掛載、四捨五入設定已有快取，
     // 只看設定的 loading 會用到上一天的列印資料（畫面正確、印出來是前一天），資料改變時要重算（2026/10/30）
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [mathRoundSetting.loading, designerDailyReport, printData])
 
   return (
     <Fragment>
       {(isMathRound ? mathRoundData : designerDailyReport).map((designer, index) => (
-        <div key={designer.user.id + index} className="box-border pt-6 pl-6 basis-[100%] max-w-[100%] grow-0 min-[600px]:basis-[50%] min-[600px]:max-w-[50%] min-[600px]:grow-0 min-[900px]:basis-[33.33333333333333%] min-[900px]:max-w-[33.33333333333333%] min-[900px]:grow-0 EmployeeDailyReportCard, noprint">
+        <div
+          key={designer.user.id + index}
+          className="box-border pt-6 pl-6 basis-[100%] max-w-[100%] grow-0 min-[600px]:basis-[50%] min-[600px]:max-w-[50%] min-[600px]:grow-0 min-[900px]:basis-[33.33333333333333%] min-[900px]:max-w-[33.33333333333333%] min-[900px]:grow-0 EmployeeDailyReportCard, noprint"
+        >
           <UICard className="overflow-hidden">
             <UICardHeader className="justify-center pb-4 text-center">
               <CardTitle>
-                {`${designer.user.designerNo !== null && designer.user.designerNo !== ''
-                  ? designer.user.designerNo
-                  : ''
-                  } ${designer.user.nickName !== null && designer.user.nickName !== ''
-                    ? designer.user.nickName
-                    : ''
-                  } ${designer.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 日報表 ${Number(designer.totalPageCount) !== 1
-                    ? `- ${designer.currentPageOrder}/${designer.totalPageCount}`
-                    : ''
-                  }`}
+                {`${designer.user.designerNo !== null && designer.user.designerNo !== '' ? designer.user.designerNo : ''} ${
+                  designer.user.nickName !== null && designer.user.nickName !== '' ? designer.user.nickName : ''
+                } ${designer.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 日報表 ${
+                  Number(designer.totalPageCount) !== 1 ? `- ${designer.currentPageOrder}/${designer.totalPageCount}` : ''
+                }`}
               </CardTitle>
             </UICardHeader>
             <div className="h-px bg-border" />
@@ -137,34 +129,21 @@ function Results({
                     )}
                     {designer.orderRecord.length > 0
                       ? designer.orderRecord.map((orderRecord, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="categoryPrint2">
-                            <a
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              href={`/order/${orderRecord.orderId}`}
-                              className="underline text-text"
-                            >
-                              {orderRecord.orderNo}
-                              {orderRecord.designation ? `*` : null}
-                            </a>
-                          </TableCell>
-                          <TableCell className="categoryPrintService2">
-                            {orderRecord.category === '項目消費'
-                              ? `${orderRecord.category[2]}${orderRecord.category[3]}`
-                              : orderRecord.category}
-                          </TableCell>
-                          <TableCell className="itemPrint">
-                            {orderRecord.itemName}
-                          </TableCell>
-                          <TableCell className="categoryPrint2">
-                            {formatNumber(displayFloat(orderRecord.fakePerformance))}
-                          </TableCell>
-                          <TableCell className="categoryPrint2">
-                            {formatNumber(displayFloat(orderRecord.truthPerformance))}
-                          </TableCell>
-                        </TableRow>
-                      ))
+                          <TableRow key={index}>
+                            <TableCell className="categoryPrint2">
+                              <a target="_blank" rel="noopener noreferrer" href={`/order/${orderRecord.orderId}`} className="underline text-text">
+                                {orderRecord.orderNo}
+                                {orderRecord.designation ? `*` : null}
+                              </a>
+                            </TableCell>
+                            <TableCell className="categoryPrintService2">
+                              {orderRecord.category === '項目消費' ? `${orderRecord.category[2]}${orderRecord.category[3]}` : orderRecord.category}
+                            </TableCell>
+                            <TableCell className="itemPrint">{orderRecord.itemName}</TableCell>
+                            <TableCell className="categoryPrint2">{formatNumber(displayFloat(orderRecord.fakePerformance))}</TableCell>
+                            <TableCell className="categoryPrint2">{formatNumber(displayFloat(orderRecord.truthPerformance))}</TableCell>
+                          </TableRow>
+                        ))
                       : null}
 
                     {designer.isLastPage ? (
@@ -172,11 +151,7 @@ function Results({
                         <TableCell className="font-medium">合計</TableCell>
                         <TableCell className="categoryPrintService2"></TableCell>
                         <TableCell></TableCell>
-                        {priceDisplayOnReport ? (
-                          <TableCell>{formatNumber(displayFloat(designer.currentFakeSummary))}</TableCell>
-                        ) : (
-                          <TableCell />
-                        )}
+                        {priceDisplayOnReport ? <TableCell>{formatNumber(displayFloat(designer.currentFakeSummary))}</TableCell> : <TableCell />}
                         <TableCell>{formatNumber(displayFloat(designer.currentTruthSummary))}</TableCell>
                       </TableRow>
                     ) : (
@@ -190,150 +165,106 @@ function Results({
                   </TableBody>
                 </Table>
                 {designer.isLastPage && (
-                    <Table dense aria-label="a dense table">
-                      <TableHeader>
+                  <Table dense aria-label="a dense table">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="forPrint3"></TableHead>
+                        <TableHead>日合計</TableHead>
+                        <TableHead>累計</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {priceDisplayOnReport && (
                         <TableRow>
-                          <TableHead className="forPrint3"></TableHead>
-                          <TableHead>日合計</TableHead>
-                          <TableHead>累計</TableHead>
+                          <TableCell className="forPrint4">金額(虛)</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.currentDay.performanceFakeTotal))}</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.tillNow.performanceFakeTotal))}</TableCell>
                         </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {priceDisplayOnReport && (
+                      )}
+                      {(!isHiddenZero ||
+                        ((designer.currentDay.performanceTruthTotal !== 0 || designer.tillNow.performanceTruthTotal !== 0) && isHiddenZero)) && (
+                        <TableRow>
+                          <TableCell className="forPrint4">實業績</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.currentDay.performanceTruthTotal))}</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.tillNow.performanceTruthTotal))}</TableCell>
+                        </TableRow>
+                      )}
+                      {(!isHiddenZero ||
+                        ((designer.currentDay.performanceDesignateTruthTotal !== 0 || designer.tillNow.performanceDesignateTruthTotal !== 0) &&
+                          isHiddenZero)) && (
+                        <TableRow>
+                          <TableCell className="forPrint4">指定實業績</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.currentDay.performanceDesignateTruthTotal))}</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.tillNow.performanceDesignateTruthTotal))}</TableCell>
+                        </TableRow>
+                      )}
+                      {(!isHiddenZero ||
+                        ((designer.currentDay.performanceNonDesignateTruthTotal !== 0 || designer.tillNow.performanceNonDesignateTruthTotal !== 0) &&
+                          isHiddenZero)) && (
+                        <TableRow>
+                          <TableCell className="forPrint4">不指定實業績</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.currentDay.performanceNonDesignateTruthTotal))}</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.tillNow.performanceNonDesignateTruthTotal))}</TableCell>
+                        </TableRow>
+                      )}
+                      {(!isHiddenZero ||
+                        ((designer.currentDay.thirdPartHandlingFee !== 0 || designer.tillNow.thirdPartHandlingFee !== 0) && isHiddenZero)) && (
+                        <TableRow>
+                          <TableCell className="forPrint4">手續費</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.currentDay.thirdPartHandlingFee))}</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.tillNow.thirdPartHandlingFee))}</TableCell>
+                        </TableRow>
+                      )}
+                      <TableRow>
+                        <TableCell className="forPrint4">特殊抽成業績</TableCell>
+                        <TableCell>{formatNumber(displayFloat(designer.currentDay.performanceWithSpecialRake))}</TableCell>
+                        <TableCell>{formatNumber(displayFloat(designer.tillNow.performanceWithSpecialRake))}</TableCell>
+                      </TableRow>
+
+                      <TableRow>
+                        <TableCell className="forPrint4">店販金額</TableCell>
+                        <TableCell>{formatNumber(displayFloat(designer.currentDay.productFakeTotal))}</TableCell>
+                        <TableCell>{formatNumber(displayFloat(designer.tillNow.productFakeTotal))}</TableCell>
+                      </TableRow>
+
+                      <TableRow>
+                        <TableCell className="forPrint4">店販抽成</TableCell>
+                        <TableCell>{formatNumber(displayFloat(designer.currentDay.productRake))}</TableCell>
+                        <TableCell>{formatNumber(displayFloat(designer.tillNow.productRake))}</TableCell>
+                      </TableRow>
+
+                      {(isMemberShipCardActive || designer.tillNow.membershipFakeTotal !== 0 || designer.tillNow.membershipRake !== 0) && (
+                        <Fragment>
                           <TableRow>
-                            <TableCell className="forPrint4">金額(虛)</TableCell>
-                            <TableCell>
-                              {formatNumber(displayFloat(designer.currentDay.performanceFakeTotal))}
-                            </TableCell>
-                            <TableCell>
-                              {formatNumber(displayFloat(designer.tillNow.performanceFakeTotal))}
-                            </TableCell>
+                            <TableCell className="forPrint4">會員卡業績</TableCell>
+                            <TableCell>{formatNumber(displayFloat(designer.currentDay.membershipFakeTotal))}</TableCell>
+                            <TableCell>{formatNumber(displayFloat(designer.tillNow.membershipFakeTotal))}</TableCell>
                           </TableRow>
-                        )}
-                        {(!isHiddenZero ||
-                          ((designer.currentDay.performanceTruthTotal !== 0 ||
-                            designer.tillNow.performanceTruthTotal !== 0) &&
-                            isHiddenZero)) && (
-                            <TableRow>
-                              <TableCell className="forPrint4">實業績</TableCell>
-                              <TableCell>
-                                {formatNumber(displayFloat(designer.currentDay.performanceTruthTotal))}
-                              </TableCell>
-                              <TableCell>
-                                {formatNumber(displayFloat(designer.tillNow.performanceTruthTotal))}
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        {(!isHiddenZero ||
-                          ((designer.currentDay.performanceDesignateTruthTotal !== 0 ||
-                            designer.tillNow.performanceDesignateTruthTotal !== 0) &&
-                            isHiddenZero)) && (
-                            <TableRow>
-                              <TableCell className="forPrint4">指定實業績</TableCell>
-                              <TableCell>
-                                {formatNumber(displayFloat(designer.currentDay.performanceDesignateTruthTotal))}
-                              </TableCell>
-                              <TableCell>
-                                {formatNumber(displayFloat(designer.tillNow.performanceDesignateTruthTotal))}
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        {(!isHiddenZero ||
-                          ((designer.currentDay.performanceNonDesignateTruthTotal !== 0 ||
-                            designer.tillNow.performanceNonDesignateTruthTotal !== 0) &&
-                            isHiddenZero)) && (
-                            <TableRow>
-                              <TableCell className="forPrint4">不指定實業績</TableCell>
-                              <TableCell>
-                                {formatNumber(displayFloat(designer.currentDay.performanceNonDesignateTruthTotal))}
-                              </TableCell>
-                              <TableCell>
-                                {formatNumber(displayFloat(designer.tillNow.performanceNonDesignateTruthTotal))}
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        {(!isHiddenZero ||
-                          ((designer.currentDay.thirdPartHandlingFee !== 0 ||
-                            designer.tillNow.thirdPartHandlingFee !== 0) &&
-                            isHiddenZero)) && (
-                            <TableRow>
-                              <TableCell className="forPrint4">手續費</TableCell>
-                              <TableCell>
-                                {formatNumber(displayFloat(designer.currentDay.thirdPartHandlingFee))}
-                              </TableCell>
-                              <TableCell>
-                                {formatNumber(displayFloat(designer.tillNow.thirdPartHandlingFee))}
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        <TableRow>
-                          <TableCell className="forPrint4">特殊抽成業績</TableCell>
-                          <TableCell>
-                            {formatNumber(displayFloat(designer.currentDay.performanceWithSpecialRake))}
-                          </TableCell>
-                          <TableCell>
-                            {formatNumber(displayFloat(designer.tillNow.performanceWithSpecialRake))}
-                          </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                          <TableCell className="forPrint4">店販金額</TableCell>
-                          <TableCell>
-                            {formatNumber(displayFloat(designer.currentDay.productFakeTotal))}
-                          </TableCell>
-                          <TableCell>{formatNumber(displayFloat(designer.tillNow.productFakeTotal))}</TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                          <TableCell className="forPrint4">店販抽成</TableCell>
-                          <TableCell>{formatNumber(displayFloat(designer.currentDay.productRake))}</TableCell>
-                          <TableCell>{formatNumber(displayFloat(designer.tillNow.productRake))}</TableCell>
-                        </TableRow>
-
-                        {(isMemberShipCardActive || (designer.tillNow.membershipFakeTotal !== 0 || designer.tillNow.membershipRake !== 0)) &&
-                          (
-                            <Fragment>
-                              <TableRow>
-                                <TableCell className="forPrint4">會員卡業績</TableCell>
-                                <TableCell>{formatNumber(displayFloat(designer.currentDay.membershipFakeTotal))}</TableCell>
-                                <TableCell>{formatNumber(displayFloat(designer.tillNow.membershipFakeTotal))}</TableCell>
-                              </TableRow>
-                              <TableRow>
-                                <TableCell className="forPrint4">會員卡抽成</TableCell>
-                                <TableCell>{formatNumber(displayFloat(designer.currentDay.membershipRake))}</TableCell>
-                                <TableCell>{formatNumber(displayFloat(designer.tillNow.membershipRake))}</TableCell>
-                              </TableRow>
-                            </Fragment>
-                          )
-                        }
-                        <TableRow>
-                          <TableCell className="forPrint4">互助使用(不含點)</TableCell>
-                          <TableCell>{`${formatNumber(displayFloat(
-                            designer.currentDay.helperPaidPrice
-                          ))}`}</TableCell>
-                          <TableCell>{`${formatNumber(displayFloat(
-                            designer.tillNow.helperPaidPrice
-                          ))}`}</TableCell>
-                        </TableRow>
-                        {
                           <TableRow>
-                            <TableCell className="forPrint4">互助使用(點)</TableCell>
-                            <TableCell>{`${formatNumber(displayFloat(designer.currentDay.helperPaidPoint))}${isHelperPointPriceDisplay
-                              ? `/${formatNumber(Math.abs(
-                                displayFloat(designer.currentDay.helperPaidPriceFromPoint)
-                              ))}`
-                              : ''
-                              }`}</TableCell>
-                            <TableCell>{`${formatNumber(displayFloat(designer.tillNow.helperPaidPoint))}${isHelperPointPriceDisplay
-                              ? `/${formatNumber(Math.abs(
-                                displayFloat(designer.tillNow.helperPaidPriceFromPoint)
-                              ))}`
-                              : ''
-                              }`}</TableCell>
+                            <TableCell className="forPrint4">會員卡抽成</TableCell>
+                            <TableCell>{formatNumber(displayFloat(designer.currentDay.membershipRake))}</TableCell>
+                            <TableCell>{formatNumber(displayFloat(designer.tillNow.membershipRake))}</TableCell>
                           </TableRow>
-                        }
-                        {dataVisible
-                          ? (!isHiddenZero ||
+                        </Fragment>
+                      )}
+                      <TableRow>
+                        <TableCell className="forPrint4">互助使用(不含點)</TableCell>
+                        <TableCell>{`${formatNumber(displayFloat(designer.currentDay.helperPaidPrice))}`}</TableCell>
+                        <TableCell>{`${formatNumber(displayFloat(designer.tillNow.helperPaidPrice))}`}</TableCell>
+                      </TableRow>
+                      {
+                        <TableRow>
+                          <TableCell className="forPrint4">互助使用(點)</TableCell>
+                          <TableCell>{`${formatNumber(displayFloat(designer.currentDay.helperPaidPoint))}${
+                            isHelperPointPriceDisplay ? `/${formatNumber(Math.abs(displayFloat(designer.currentDay.helperPaidPriceFromPoint)))}` : ''
+                          }`}</TableCell>
+                          <TableCell>{`${formatNumber(displayFloat(designer.tillNow.helperPaidPoint))}${
+                            isHelperPointPriceDisplay ? `/${formatNumber(Math.abs(displayFloat(designer.tillNow.helperPaidPriceFromPoint)))}` : ''
+                          }`}</TableCell>
+                        </TableRow>
+                      }
+                      {dataVisible
+                        ? (!isHiddenZero ||
                             ((designer.currentDay.helperRetrievePoint !== 0 ||
                               designer.currentDay.helperRetrievePrice !== 0 ||
                               designer.currentDay.helpGetNoPoint !== 0 ||
@@ -362,153 +293,102 @@ function Results({
                                     designer.currentDay.helperRetrievePrice}
                                 </TableCell>
                                 <TableCell>
-                                  {`${formatNumber(displayFloat(designer.tillNow.helperRetrievePoint))}` +
-                                    '/' +
-                                    designer.tillNow.helperRetrievePrice}
+                                  {`${formatNumber(displayFloat(designer.tillNow.helperRetrievePoint))}` + '/' + designer.tillNow.helperRetrievePrice}
                                 </TableCell>
                               </TableRow>
                             </Fragment>
                           )
-                          : (!isHiddenZero ||
-                            ((designer.currentDay.helperRetrievePoint !== 0 ||
-                              designer.tillNow.helperRetrievePoint !== 0) &&
-                              isHiddenZero)) && (
+                        : (!isHiddenZero ||
+                            ((designer.currentDay.helperRetrievePoint !== 0 || designer.tillNow.helperRetrievePoint !== 0) && isHiddenZero)) && (
                             <TableRow>
                               <TableCell className="forPrint4">互助獲得</TableCell>
-                              <TableCell>{`${formatNumber(displayFloat(
-                                designer.currentDay.helperRetrievePoint
-                              ))}`}</TableCell>
-                              <TableCell>{`${formatNumber(displayFloat(
-                                designer.tillNow.helperRetrievePoint
-                              ))}`}</TableCell>
+                              <TableCell>{`${formatNumber(displayFloat(designer.currentDay.helperRetrievePoint))}`}</TableCell>
+                              <TableCell>{`${formatNumber(displayFloat(designer.tillNow.helperRetrievePoint))}`}</TableCell>
                             </TableRow>
                           )}
-                        {(!isHiddenZero ||
-                          ((designer.currentDay.orderTotalCount !== 0 ||
-                            designer.tillNow.orderTotalCount !== 0) &&
-                            isHiddenZero)) && (
-                            <TableRow>
-                              <TableCell className="forPrint4">總客數</TableCell>
-                              <TableCell>{formatNumber(designer.currentDay.orderTotalCount)}</TableCell>
-                              <TableCell>{formatNumber(designer.tillNow.orderTotalCount)}</TableCell>
-                            </TableRow>
-                          )}
-                        {(!isHiddenZero ||
-                          ((designer.currentDay.designateOrderCount !== 0 ||
-                            designer.tillNow.designateOrderCount !== 0) &&
-                            isHiddenZero)) && (
-                            <TableRow>
-                              <TableCell className="forPrint4">指定客</TableCell>
-                              <TableCell>{formatNumber(designer.currentDay.designateOrderCount)}</TableCell>
-                              <TableCell>{formatNumber(designer.tillNow.designateOrderCount)}</TableCell>
-                            </TableRow>
-                          )}
-                        {(!isHiddenZero ||
-                          ((designer.currentDay.nonDesignateOrderCount !== 0 ||
-                            designer.tillNow.nonDesignateOrderCount !== 0) &&
-                            isHiddenZero)) && (
-                            <TableRow>
-                              <TableCell className="forPrint4">不指定客</TableCell>
-                              <TableCell>{formatNumber(designer.currentDay.nonDesignateOrderCount)}</TableCell>
-                              <TableCell>{formatNumber(designer.tillNow.nonDesignateOrderCount)}</TableCell>
-                            </TableRow>
-                          )}
-                        {(!isHiddenZero ||
-                          ((designer.currentDay.orderAveragePrice !== 0 ||
-                            designer.tillNow.orderAveragePrice !== 0) &&
-                            isHiddenZero)) &&
-                          (isMathRound ? (
-                            <TableRow>
-                              <TableCell className="forPrint4">客單價</TableCell>
-                              <TableCell>
-                                {formatNumber(Math.round(
-                                  designer.currentDay.performanceFakeTotal /
-                                  designer.currentDay.orderTotalCount
-                                ))}
-                              </TableCell>
-                              <TableCell>
-                                {formatNumber(Math.round(
-                                  designer.tillNow.performanceFakeTotal /
-                                  designer.tillNow.orderTotalCount
-                                ))}
-                              </TableCell>
-                            </TableRow>
-                          ) : (
-                            <TableRow>
-                              <TableCell className="forPrint4">客單價</TableCell>
-                              <TableCell>
-                                {formatNumber(displayFloat(
-                                  designer.currentDay.performanceFakeTotal /
-                                  designer.currentDay.orderTotalCount
-                                ))}
-                              </TableCell>
-                              <TableCell>
-                                {formatNumber(displayFloat(
-                                  designer.tillNow.performanceFakeTotal /
-                                  designer.tillNow.orderTotalCount
-                                ))}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        {(!isHiddenZero ||
-                          ((designer.currentDay.orderTypeCount !== 0 ||
-                            designer.tillNow.orderTypeCount !== 0) &&
-                            isHiddenZero)) && (
-                            <TableRow>
-                              <TableCell className="forPrint4">客項次(服務)</TableCell>
-                              <TableCell>{formatNumber(designer.currentDay.orderTypeCount)}</TableCell>
-                              <TableCell>{formatNumber(designer.tillNow.orderTypeCount)}</TableCell>
-                            </TableRow>
-                          )}
-                        {(!isHiddenZero ||
-                          ((designer.currentDay.orderTypeAveragePrice !== 0 ||
-                            designer.tillNow.orderTypeAveragePrice !== 0) &&
-                            isHiddenZero)) &&
-                          (isMathRound ? (
-                            <TableRow>
-                              <TableCell className="forPrint4">平均項次單價</TableCell>
-                              <TableCell>
-                                {formatNumber(Math.round(
-                                  designer.currentDay.performanceFakeTotal /
-                                  designer.currentDay.orderTypeCount
-                                ))}
-                              </TableCell>
-                              <TableCell>
-                                {formatNumber(Math.round(
-                                  designer.tillNow.performanceFakeTotal /
-                                  designer.tillNow.orderTypeCount
-                                ))}
-                              </TableCell>
-                            </TableRow>
-                          ) : (
-                            <TableRow>
-                              <TableCell className="forPrint4">平均項次單價</TableCell>
-                              <TableCell>
-                                {formatNumber(displayFloat(
-                                  designer.currentDay.performanceFakeTotal /
-                                  designer.currentDay.orderTypeCount
-                                ))}
-                              </TableCell>
-                              <TableCell>
-                                {formatNumber(displayFloat(
-                                  designer.tillNow.performanceFakeTotal /
-                                  designer.tillNow.orderTypeCount
-                                ))}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        {(!isHiddenZero ||
-                          ((designer.currentDay.walletDeposit !== 0 ||
-                            designer.tillNow.walletDeposit !== 0) &&
-                            isHiddenZero)) && (
-                            <TableRow>
-                              <TableCell className="forPrint4">入金儲值</TableCell>
-                              <TableCell>{formatNumber(displayFloat(designer.currentDay.walletDeposit))}</TableCell>
-                              <TableCell>{formatNumber(displayFloat(designer.tillNow.walletDeposit))}</TableCell>
-                            </TableRow>
-                          )}
-                      </TableBody>
-                    </Table>
+                      {(!isHiddenZero || ((designer.currentDay.orderTotalCount !== 0 || designer.tillNow.orderTotalCount !== 0) && isHiddenZero)) && (
+                        <TableRow>
+                          <TableCell className="forPrint4">總客數</TableCell>
+                          <TableCell>{formatNumber(designer.currentDay.orderTotalCount)}</TableCell>
+                          <TableCell>{formatNumber(designer.tillNow.orderTotalCount)}</TableCell>
+                        </TableRow>
+                      )}
+                      {(!isHiddenZero ||
+                        ((designer.currentDay.designateOrderCount !== 0 || designer.tillNow.designateOrderCount !== 0) && isHiddenZero)) && (
+                        <TableRow>
+                          <TableCell className="forPrint4">指定客</TableCell>
+                          <TableCell>{formatNumber(designer.currentDay.designateOrderCount)}</TableCell>
+                          <TableCell>{formatNumber(designer.tillNow.designateOrderCount)}</TableCell>
+                        </TableRow>
+                      )}
+                      {(!isHiddenZero ||
+                        ((designer.currentDay.nonDesignateOrderCount !== 0 || designer.tillNow.nonDesignateOrderCount !== 0) && isHiddenZero)) && (
+                        <TableRow>
+                          <TableCell className="forPrint4">不指定客</TableCell>
+                          <TableCell>{formatNumber(designer.currentDay.nonDesignateOrderCount)}</TableCell>
+                          <TableCell>{formatNumber(designer.tillNow.nonDesignateOrderCount)}</TableCell>
+                        </TableRow>
+                      )}
+                      {(!isHiddenZero ||
+                        ((designer.currentDay.orderAveragePrice !== 0 || designer.tillNow.orderAveragePrice !== 0) && isHiddenZero)) &&
+                        (isMathRound ? (
+                          <TableRow>
+                            <TableCell className="forPrint4">客單價</TableCell>
+                            <TableCell>
+                              {formatNumber(Math.round(designer.currentDay.performanceFakeTotal / designer.currentDay.orderTotalCount))}
+                            </TableCell>
+                            <TableCell>
+                              {formatNumber(Math.round(designer.tillNow.performanceFakeTotal / designer.tillNow.orderTotalCount))}
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          <TableRow>
+                            <TableCell className="forPrint4">客單價</TableCell>
+                            <TableCell>
+                              {formatNumber(displayFloat(designer.currentDay.performanceFakeTotal / designer.currentDay.orderTotalCount))}
+                            </TableCell>
+                            <TableCell>
+                              {formatNumber(displayFloat(designer.tillNow.performanceFakeTotal / designer.tillNow.orderTotalCount))}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      {(!isHiddenZero || ((designer.currentDay.orderTypeCount !== 0 || designer.tillNow.orderTypeCount !== 0) && isHiddenZero)) && (
+                        <TableRow>
+                          <TableCell className="forPrint4">客項次(服務)</TableCell>
+                          <TableCell>{formatNumber(designer.currentDay.orderTypeCount)}</TableCell>
+                          <TableCell>{formatNumber(designer.tillNow.orderTypeCount)}</TableCell>
+                        </TableRow>
+                      )}
+                      {(!isHiddenZero ||
+                        ((designer.currentDay.orderTypeAveragePrice !== 0 || designer.tillNow.orderTypeAveragePrice !== 0) && isHiddenZero)) &&
+                        (isMathRound ? (
+                          <TableRow>
+                            <TableCell className="forPrint4">平均項次單價</TableCell>
+                            <TableCell>
+                              {formatNumber(Math.round(designer.currentDay.performanceFakeTotal / designer.currentDay.orderTypeCount))}
+                            </TableCell>
+                            <TableCell>{formatNumber(Math.round(designer.tillNow.performanceFakeTotal / designer.tillNow.orderTypeCount))}</TableCell>
+                          </TableRow>
+                        ) : (
+                          <TableRow>
+                            <TableCell className="forPrint4">平均項次單價</TableCell>
+                            <TableCell>
+                              {formatNumber(displayFloat(designer.currentDay.performanceFakeTotal / designer.currentDay.orderTypeCount))}
+                            </TableCell>
+                            <TableCell>
+                              {formatNumber(displayFloat(designer.tillNow.performanceFakeTotal / designer.tillNow.orderTypeCount))}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      {(!isHiddenZero || ((designer.currentDay.walletDeposit !== 0 || designer.tillNow.walletDeposit !== 0) && isHiddenZero)) && (
+                        <TableRow>
+                          <TableCell className="forPrint4">入金儲值</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.currentDay.walletDeposit))}</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.tillNow.walletDeposit))}</TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
                 )}
               </div>
             </div>
@@ -517,23 +397,23 @@ function Results({
       ))}
       {(isMathRound ? mathRoundPrintData : printData).map((data, index) => {
         return (
-          <div key={`printWrap-${index}`} className='EmployeeDailyReportCardPrintContainer'>
+          <div key={`printWrap-${index}`} className="EmployeeDailyReportCardPrintContainer">
             {data.map((designer, index) => {
               return (
-                <div key={`print-${designer.user.id}-${index}`} className="box-border pt-6 pl-6 basis-[100%] max-w-[100%] grow-0 min-[600px]:basis-[50%] min-[600px]:max-w-[50%] min-[600px]:grow-0 min-[900px]:basis-[33.33333333333333%] min-[900px]:max-w-[33.33333333333333%] min-[900px]:grow-0 EmployeeDailyReportCardPrint">
+                <div
+                  key={`print-${designer.user.id}-${index}`}
+                  className="box-border pt-6 pl-6 basis-[100%] max-w-[100%] grow-0 min-[600px]:basis-[50%] min-[600px]:max-w-[50%] min-[600px]:grow-0 min-[900px]:basis-[33.33333333333333%] min-[900px]:max-w-[33.33333333333333%] min-[900px]:grow-0 EmployeeDailyReportCardPrint"
+                >
                   <Card className="overflow-hidden text-text print:rounded-none print:shadow-none">
-                    <CardHeader
-                      className="print:border print:border-solid print:border-black print:border-b-0 !min-h-0 !items-center !gap-0 !px-4 !pb-2 !pt-4 [&>div]:flex-auto [&>div]:block text-center"
-                    ><span className="block text-heading text-text">{`${designer.user.designerNo !== null && designer.user.designerNo !== ''
-                        ? designer.user.designerNo
-                        : ''
-                        } ${designer.user.nickName !== null && designer.user.nickName !== ''
-                          ? designer.user.nickName
-                          : ''
-                        } ${designer.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 日報表 ${Number(designer.totalPageCount) !== 1
-                          ? `- ${designer.currentPageOrder}/${designer.totalPageCount}`
-                          : ''
-                        }`}</span></CardHeader>
+                    <CardHeader className="print:border print:border-solid print:border-black print:border-b-0 !min-h-0 !items-center !gap-0 !px-4 !pb-2 !pt-4 [&>div]:flex-auto [&>div]:block text-center">
+                      <span className="block text-heading text-text">{`${
+                        designer.user.designerNo !== null && designer.user.designerNo !== '' ? designer.user.designerNo : ''
+                      } ${
+                        designer.user.nickName !== null && designer.user.nickName !== '' ? designer.user.nickName : ''
+                      } ${designer.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 日報表 ${
+                        Number(designer.totalPageCount) !== 1 ? `- ${designer.currentPageOrder}/${designer.totalPageCount}` : ''
+                      }`}</span>
+                    </CardHeader>
                     <CardContent className="last:pb-4 print:!pb-0 p-0">
                       <div className="printCard">
                         <Table dense aria-label="a dense table">
@@ -541,7 +421,7 @@ function Results({
                             <TableRow>
                               <TableHead className="categoryPrint">單號</TableHead>
                               <TableHead className="categoryPrintService2">類別</TableHead>
-                              <TableHead className={printMode ? "itemPrint" : null}>項目</TableHead>
+                              <TableHead className={printMode ? 'itemPrint' : null}>項目</TableHead>
                               <TableHead className="categoryPrint">金額</TableHead>
                               <TableHead className="categoryPrint">業績</TableHead>
                             </TableRow>
@@ -556,34 +436,28 @@ function Results({
                             )}
                             {designer.orderRecord.length > 0
                               ? designer.orderRecord.map((orderRecord, index) => (
-                                <TableRow key={`print-${index}`}>
-                                  <TableCell className="categoryPrint2">
-                                    <a
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      href={`/order/${orderRecord.orderId}`}
-                                      className="underline text-[color:black]"
-                                    >
-                                      {orderRecord.orderNo}
-                                      {orderRecord.designation ? `*` : null}
-                                    </a>
-                                  </TableCell>
-                                  <TableCell className="categoryPrintService2">
-                                    {orderRecord.category === '項目消費'
-                                      ? `${orderRecord.category[2]}${orderRecord.category[3]}`
-                                      : orderRecord.category}
-                                  </TableCell>
-                                  <TableCell className={printMode ? "itemPrint" : null}>
-                                    {orderRecord.itemName}
-                                  </TableCell>
-                                  <TableCell className="categoryPrint2">
-                                    {displayFloat(orderRecord.fakePerformance)}
-                                  </TableCell>
-                                  <TableCell className="categoryPrint2">
-                                    {displayFloat(orderRecord.truthPerformance)}
-                                  </TableCell>
-                                </TableRow>
-                              ))
+                                  <TableRow key={`print-${index}`}>
+                                    <TableCell className="categoryPrint2">
+                                      <a
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        href={`/order/${orderRecord.orderId}`}
+                                        className="underline text-[color:black]"
+                                      >
+                                        {orderRecord.orderNo}
+                                        {orderRecord.designation ? `*` : null}
+                                      </a>
+                                    </TableCell>
+                                    <TableCell className="categoryPrintService2">
+                                      {orderRecord.category === '項目消費'
+                                        ? `${orderRecord.category[2]}${orderRecord.category[3]}`
+                                        : orderRecord.category}
+                                    </TableCell>
+                                    <TableCell className={printMode ? 'itemPrint' : null}>{orderRecord.itemName}</TableCell>
+                                    <TableCell className="categoryPrint2">{displayFloat(orderRecord.fakePerformance)}</TableCell>
+                                    <TableCell className="categoryPrint2">{displayFloat(orderRecord.truthPerformance)}</TableCell>
+                                  </TableRow>
+                                ))
                               : null}
 
                             {designer.isLastPage ? (
@@ -591,11 +465,7 @@ function Results({
                                 <TableCell className="font-medium">合計</TableCell>
                                 <TableCell className="categoryPrintService2"></TableCell>
                                 <TableCell></TableCell>
-                                {priceDisplayOnReport ? (
-                                  <TableCell>{displayFloat(designer.currentFakeSummary)}</TableCell>
-                                ) : (
-                                  <TableCell />
-                                )}
+                                {priceDisplayOnReport ? <TableCell>{displayFloat(designer.currentFakeSummary)}</TableCell> : <TableCell />}
                                 <TableCell>{displayFloat(designer.currentTruthSummary)}</TableCell>
                               </TableRow>
                             ) : (
@@ -609,150 +479,110 @@ function Results({
                           </TableBody>
                         </Table>
                         {designer.isLastPage && (
-                            <Table dense aria-label="a dense table">
-                              <TableHeader>
+                          <Table dense aria-label="a dense table">
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead></TableHead>
+                                <TableHead>日合計</TableHead>
+                                <TableHead>累計</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {priceDisplayOnReport && (
                                 <TableRow>
-                                  <TableHead></TableHead>
-                                  <TableHead>日合計</TableHead>
-                                  <TableHead>累計</TableHead>
+                                  <TableCell>金額(虛)</TableCell>
+                                  <TableCell>{displayFloat(designer.currentDay.performanceFakeTotal)}</TableCell>
+                                  <TableCell>{displayFloat(designer.tillNow.performanceFakeTotal)}</TableCell>
                                 </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {priceDisplayOnReport && (
+                              )}
+                              {(!isHiddenZero ||
+                                ((designer.currentDay.performanceTruthTotal !== 0 || designer.tillNow.performanceTruthTotal !== 0) &&
+                                  isHiddenZero)) && (
+                                <TableRow>
+                                  <TableCell>實業績</TableCell>
+                                  <TableCell>{displayFloat(designer.currentDay.performanceTruthTotal)}</TableCell>
+                                  <TableCell>{displayFloat(designer.tillNow.performanceTruthTotal)}</TableCell>
+                                </TableRow>
+                              )}
+                              {(!isHiddenZero ||
+                                ((designer.currentDay.performanceDesignateTruthTotal !== 0 ||
+                                  designer.tillNow.performanceDesignateTruthTotal !== 0) &&
+                                  isHiddenZero)) && (
+                                <TableRow>
+                                  <TableCell>指定實業績</TableCell>
+                                  <TableCell>{displayFloat(designer.currentDay.performanceDesignateTruthTotal)}</TableCell>
+                                  <TableCell>{displayFloat(designer.tillNow.performanceDesignateTruthTotal)}</TableCell>
+                                </TableRow>
+                              )}
+                              {(!isHiddenZero ||
+                                ((designer.currentDay.performanceNonDesignateTruthTotal !== 0 ||
+                                  designer.tillNow.performanceNonDesignateTruthTotal !== 0) &&
+                                  isHiddenZero)) && (
+                                <TableRow>
+                                  <TableCell>不指定實業績</TableCell>
+                                  <TableCell>{displayFloat(designer.currentDay.performanceNonDesignateTruthTotal)}</TableCell>
+                                  <TableCell>{displayFloat(designer.tillNow.performanceNonDesignateTruthTotal)}</TableCell>
+                                </TableRow>
+                              )}
+                              {(!isHiddenZero ||
+                                ((designer.currentDay.thirdPartHandlingFee !== 0 || designer.tillNow.thirdPartHandlingFee !== 0) &&
+                                  isHiddenZero)) && (
+                                <TableRow>
+                                  <TableCell>手續費</TableCell>
+                                  <TableCell>{displayFloat(designer.currentDay.thirdPartHandlingFee)}</TableCell>
+                                  <TableCell>{displayFloat(designer.tillNow.thirdPartHandlingFee)}</TableCell>
+                                </TableRow>
+                              )}
+                              <TableRow>
+                                <TableCell>特殊抽成業績</TableCell>
+                                <TableCell>{displayFloat(designer.currentDay.performanceWithSpecialRake)}</TableCell>
+                                <TableCell>{displayFloat(designer.tillNow.performanceWithSpecialRake)}</TableCell>
+                              </TableRow>
+
+                              <TableRow>
+                                <TableCell>店販金額</TableCell>
+                                <TableCell>{displayFloat(designer.currentDay.productFakeTotal)}</TableCell>
+                                <TableCell>{displayFloat(designer.tillNow.productFakeTotal)}</TableCell>
+                              </TableRow>
+
+                              <TableRow>
+                                <TableCell>店販抽成</TableCell>
+                                <TableCell>{displayFloat(designer.currentDay.productRake)}</TableCell>
+                                <TableCell>{displayFloat(designer.tillNow.productRake)}</TableCell>
+                              </TableRow>
+
+                              {(isMemberShipCardActive || designer.tillNow.membershipFakeTotal !== 0 || designer.tillNow.membershipRake !== 0) && (
+                                <Fragment>
                                   <TableRow>
-                                    <TableCell>金額(虛)</TableCell>
-                                    <TableCell>
-                                      {displayFloat(designer.currentDay.performanceFakeTotal)}
-                                    </TableCell>
-                                    <TableCell>
-                                      {displayFloat(designer.tillNow.performanceFakeTotal)}
-                                    </TableCell>
+                                    <TableCell>會員卡業績</TableCell>
+                                    <TableCell>{displayFloat(designer.currentDay.membershipFakeTotal)}</TableCell>
+                                    <TableCell>{displayFloat(designer.tillNow.membershipFakeTotal)}</TableCell>
                                   </TableRow>
-                                )}
-                                {(!isHiddenZero ||
-                                  ((designer.currentDay.performanceTruthTotal !== 0 ||
-                                    designer.tillNow.performanceTruthTotal !== 0) &&
-                                    isHiddenZero)) && (
-                                    <TableRow>
-                                      <TableCell>實業績</TableCell>
-                                      <TableCell>
-                                        {displayFloat(designer.currentDay.performanceTruthTotal)}
-                                      </TableCell>
-                                      <TableCell>
-                                        {displayFloat(designer.tillNow.performanceTruthTotal)}
-                                      </TableCell>
-                                    </TableRow>
-                                  )}
-                                {(!isHiddenZero ||
-                                  ((designer.currentDay.performanceDesignateTruthTotal !== 0 ||
-                                    designer.tillNow.performanceDesignateTruthTotal !== 0) &&
-                                    isHiddenZero)) && (
-                                    <TableRow>
-                                      <TableCell>指定實業績</TableCell>
-                                      <TableCell>
-                                        {displayFloat(designer.currentDay.performanceDesignateTruthTotal)}
-                                      </TableCell>
-                                      <TableCell>
-                                        {displayFloat(designer.tillNow.performanceDesignateTruthTotal)}
-                                      </TableCell>
-                                    </TableRow>
-                                  )}
-                                {(!isHiddenZero ||
-                                  ((designer.currentDay.performanceNonDesignateTruthTotal !== 0 ||
-                                    designer.tillNow.performanceNonDesignateTruthTotal !== 0) &&
-                                    isHiddenZero)) && (
-                                    <TableRow>
-                                      <TableCell>不指定實業績</TableCell>
-                                      <TableCell>
-                                        {displayFloat(designer.currentDay.performanceNonDesignateTruthTotal)}
-                                      </TableCell>
-                                      <TableCell>
-                                        {displayFloat(designer.tillNow.performanceNonDesignateTruthTotal)}
-                                      </TableCell>
-                                    </TableRow>
-                                  )}
-                                {(!isHiddenZero ||
-                                  ((designer.currentDay.thirdPartHandlingFee !== 0 ||
-                                    designer.tillNow.thirdPartHandlingFee !== 0) &&
-                                    isHiddenZero)) && (
-                                    <TableRow>
-                                      <TableCell>手續費</TableCell>
-                                      <TableCell>
-                                        {displayFloat(designer.currentDay.thirdPartHandlingFee)}
-                                      </TableCell>
-                                      <TableCell>
-                                        {displayFloat(designer.tillNow.thirdPartHandlingFee)}
-                                      </TableCell>
-                                    </TableRow>
-                                  )}
-                                <TableRow>
-                                  <TableCell>特殊抽成業績</TableCell>
-                                  <TableCell>
-                                    {displayFloat(designer.currentDay.performanceWithSpecialRake)}
-                                  </TableCell>
-                                  <TableCell>
-                                    {displayFloat(designer.tillNow.performanceWithSpecialRake)}
-                                  </TableCell>
-                                </TableRow>
-
-                                <TableRow>
-                                  <TableCell>店販金額</TableCell>
-                                  <TableCell>
-                                    {displayFloat(designer.currentDay.productFakeTotal)}
-                                  </TableCell>
-                                  <TableCell>{displayFloat(designer.tillNow.productFakeTotal)}</TableCell>
-                                </TableRow>
-
-                                <TableRow>
-                                  <TableCell>店販抽成</TableCell>
-                                  <TableCell>{displayFloat(designer.currentDay.productRake)}</TableCell>
-                                  <TableCell>{displayFloat(designer.tillNow.productRake)}</TableCell>
-                                </TableRow>
-
-                                {(isMemberShipCardActive || (designer.tillNow.membershipFakeTotal !== 0 || designer.tillNow.membershipRake !== 0)) &&
-                                  (
-                                    <Fragment>
-                                      <TableRow>
-                                        <TableCell>會員卡業績</TableCell>
-                                        <TableCell>{displayFloat(designer.currentDay.membershipFakeTotal)}</TableCell>
-                                        <TableCell>{displayFloat(designer.tillNow.membershipFakeTotal)}</TableCell>
-                                      </TableRow>
-                                      <TableRow>
-                                        <TableCell>會員卡抽成</TableCell>
-                                        <TableCell>{displayFloat(designer.currentDay.membershipRake)}</TableCell>
-                                        <TableCell>{displayFloat(designer.tillNow.membershipRake)}</TableCell>
-                                      </TableRow>
-                                    </Fragment>
-                                  )
-                                }
-                                <TableRow>
-                                  <TableCell>互助使用(不含點)</TableCell>
-                                  <TableCell>{`${displayFloat(
-                                    designer.currentDay.helperPaidPrice
-                                  )}`}</TableCell>
-                                  <TableCell>{`${displayFloat(
-                                    designer.tillNow.helperPaidPrice
-                                  )}`}</TableCell>
-                                </TableRow>
-                                {
                                   <TableRow>
-                                    <TableCell>互助使用(點)</TableCell>
-                                    <TableCell>{`${displayFloat(designer.currentDay.helperPaidPoint)}${isHelperPointPriceDisplay
-                                      ? `/${Math.abs(
-                                        displayFloat(designer.currentDay.helperPaidPriceFromPoint)
-                                      )}`
-                                      : ''
-                                      }`}</TableCell>
-                                    <TableCell>{`${displayFloat(designer.tillNow.helperPaidPoint)}${isHelperPointPriceDisplay
-                                      ? `/${Math.abs(
-                                        displayFloat(designer.tillNow.helperPaidPriceFromPoint)
-                                      )}`
-                                      : ''
-                                      }`}</TableCell>
+                                    <TableCell>會員卡抽成</TableCell>
+                                    <TableCell>{displayFloat(designer.currentDay.membershipRake)}</TableCell>
+                                    <TableCell>{displayFloat(designer.tillNow.membershipRake)}</TableCell>
                                   </TableRow>
-                                }
-                                {dataVisible
-                                  ? (!isHiddenZero ||
+                                </Fragment>
+                              )}
+                              <TableRow>
+                                <TableCell>互助使用(不含點)</TableCell>
+                                <TableCell>{`${displayFloat(designer.currentDay.helperPaidPrice)}`}</TableCell>
+                                <TableCell>{`${displayFloat(designer.tillNow.helperPaidPrice)}`}</TableCell>
+                              </TableRow>
+                              {
+                                <TableRow>
+                                  <TableCell>互助使用(點)</TableCell>
+                                  <TableCell>{`${displayFloat(designer.currentDay.helperPaidPoint)}${
+                                    isHelperPointPriceDisplay ? `/${Math.abs(displayFloat(designer.currentDay.helperPaidPriceFromPoint))}` : ''
+                                  }`}</TableCell>
+                                  <TableCell>{`${displayFloat(designer.tillNow.helperPaidPoint)}${
+                                    isHelperPointPriceDisplay ? `/${Math.abs(displayFloat(designer.tillNow.helperPaidPriceFromPoint))}` : ''
+                                  }`}</TableCell>
+                                </TableRow>
+                              }
+                              {dataVisible
+                                ? (!isHiddenZero ||
                                     ((designer.currentDay.helperRetrievePoint !== 0 ||
                                       designer.currentDay.helperRetrievePrice !== 0 ||
                                       designer.currentDay.helpGetNoPoint !== 0 ||
@@ -776,166 +606,110 @@ function Results({
                                           點數/換算金額
                                         </TableCell>
                                         <TableCell>
-                                          {`${displayFloat(designer.currentDay.helperRetrievePoint)}` +
-                                            '/' +
-                                            designer.currentDay.helperRetrievePrice}
+                                          {`${displayFloat(designer.currentDay.helperRetrievePoint)}` + '/' + designer.currentDay.helperRetrievePrice}
                                         </TableCell>
                                         <TableCell>
-                                          {`${displayFloat(designer.tillNow.helperRetrievePoint)}` +
-                                            '/' +
-                                            designer.tillNow.helperRetrievePrice}
+                                          {`${displayFloat(designer.tillNow.helperRetrievePoint)}` + '/' + designer.tillNow.helperRetrievePrice}
                                         </TableCell>
                                       </TableRow>
                                     </Fragment>
                                   )
-                                  : (!isHiddenZero ||
-                                    ((designer.currentDay.helperRetrievePoint !== 0 ||
-                                      designer.tillNow.helperRetrievePoint !== 0) &&
+                                : (!isHiddenZero ||
+                                    ((designer.currentDay.helperRetrievePoint !== 0 || designer.tillNow.helperRetrievePoint !== 0) &&
                                       isHiddenZero)) && (
                                     <TableRow>
                                       <TableCell>互助獲得</TableCell>
-                                      <TableCell>{`${displayFloat(
-                                        designer.currentDay.helperRetrievePoint
-                                      )}`}</TableCell>
-                                      <TableCell>{`${displayFloat(
-                                        designer.tillNow.helperRetrievePoint
-                                      )}`}</TableCell>
+                                      <TableCell>{`${displayFloat(designer.currentDay.helperRetrievePoint)}`}</TableCell>
+                                      <TableCell>{`${displayFloat(designer.tillNow.helperRetrievePoint)}`}</TableCell>
                                     </TableRow>
                                   )}
-                                {(!isHiddenZero ||
-                                  ((designer.currentDay.orderTotalCount !== 0 ||
-                                    designer.tillNow.orderTotalCount !== 0) &&
-                                    isHiddenZero)) && (
-                                    <TableRow>
-                                      <TableCell>總客數</TableCell>
-                                      <TableCell>{designer.currentDay.orderTotalCount}</TableCell>
-                                      <TableCell>{designer.tillNow.orderTotalCount}</TableCell>
-                                    </TableRow>
-                                  )}
-                                {(!isHiddenZero ||
-                                  ((designer.currentDay.designateOrderCount !== 0 ||
-                                    designer.tillNow.designateOrderCount !== 0) &&
-                                    isHiddenZero)) && (
-                                    <TableRow>
-                                      <TableCell>指定客</TableCell>
-                                      <TableCell>{designer.currentDay.designateOrderCount}</TableCell>
-                                      <TableCell>{designer.tillNow.designateOrderCount}</TableCell>
-                                    </TableRow>
-                                  )}
-                                {(!isHiddenZero ||
-                                  ((designer.currentDay.nonDesignateOrderCount !== 0 ||
-                                    designer.tillNow.nonDesignateOrderCount !== 0) &&
-                                    isHiddenZero)) && (
-                                    <TableRow>
-                                      <TableCell>不指定客</TableCell>
-                                      <TableCell>{designer.currentDay.nonDesignateOrderCount}</TableCell>
-                                      <TableCell>{designer.tillNow.nonDesignateOrderCount}</TableCell>
-                                    </TableRow>
-                                  )}
-                                {(!isHiddenZero ||
-                                  ((designer.currentDay.orderAveragePrice !== 0 ||
-                                    designer.tillNow.orderAveragePrice !== 0) &&
-                                    isHiddenZero)) &&
-                                  (isMathRound ? (
-                                    <TableRow>
-                                      <TableCell>客單價</TableCell>
-                                      <TableCell>
-                                        {Math.round(
-                                          designer.currentDay.performanceFakeTotal /
-                                          designer.currentDay.orderTotalCount
-                                        )}
-                                      </TableCell>
-                                      <TableCell>
-                                        {Math.round(
-                                          designer.tillNow.performanceFakeTotal /
-                                          designer.tillNow.orderTotalCount
-                                        )}
-                                      </TableCell>
-                                    </TableRow>
-                                  ) : (
-                                    <TableRow>
-                                      <TableCell>客單價</TableCell>
-                                      <TableCell>
-                                        {displayFloat(
-                                          designer.currentDay.performanceFakeTotal /
-                                          designer.currentDay.orderTotalCount
-                                        )}
-                                      </TableCell>
-                                      <TableCell>
-                                        {displayFloat(
-                                          designer.tillNow.performanceFakeTotal /
-                                          designer.tillNow.orderTotalCount
-                                        )}
-                                      </TableCell>
-                                    </TableRow>
-                                  ))}
-                                {(!isHiddenZero ||
-                                  ((designer.currentDay.orderTypeCount !== 0 ||
-                                    designer.tillNow.orderTypeCount !== 0) &&
-                                    isHiddenZero)) && (
-                                    <TableRow>
-                                      <TableCell>客項次(服務)</TableCell>
-                                      <TableCell>{designer.currentDay.orderTypeCount}</TableCell>
-                                      <TableCell>{designer.tillNow.orderTypeCount}</TableCell>
-                                    </TableRow>
-                                  )}
-                                {(!isHiddenZero ||
-                                  ((designer.currentDay.orderTypeAveragePrice !== 0 ||
-                                    designer.tillNow.orderTypeAveragePrice !== 0) &&
-                                    isHiddenZero)) &&
-                                  (isMathRound ? (
-                                    <TableRow>
-                                      <TableCell>平均項次單價</TableCell>
-                                      <TableCell>
-                                        {Math.round(
-                                          designer.currentDay.performanceFakeTotal /
-                                          designer.currentDay.orderTypeCount
-                                        )}
-                                      </TableCell>
-                                      <TableCell>
-                                        {Math.round(
-                                          designer.tillNow.performanceFakeTotal /
-                                          designer.tillNow.orderTypeCount
-                                        )}
-                                      </TableCell>
-                                    </TableRow>
-                                  ) : (
-                                    <TableRow>
-                                      <TableCell>平均項次單價</TableCell>
-                                      <TableCell>
-                                        {displayFloat(
-                                          designer.currentDay.performanceFakeTotal /
-                                          designer.currentDay.orderTypeCount
-                                        )}
-                                      </TableCell>
-                                      <TableCell>
-                                        {displayFloat(
-                                          designer.tillNow.performanceFakeTotal /
-                                          designer.tillNow.orderTypeCount
-                                        )}
-                                      </TableCell>
-                                    </TableRow>
-                                  ))}
-                                {(!isHiddenZero ||
-                                  ((designer.currentDay.walletDeposit !== 0 ||
-                                    designer.tillNow.walletDeposit !== 0) &&
-                                    isHiddenZero)) && (
-                                    <TableRow>
-                                      <TableCell>入金儲值</TableCell>
-                                      <TableCell>{displayFloat(designer.currentDay.walletDeposit)}</TableCell>
-                                      <TableCell>{displayFloat(designer.tillNow.walletDeposit)}</TableCell>
-                                    </TableRow>
-                                  )}
-                              </TableBody>
-                            </Table>
+                              {(!isHiddenZero ||
+                                ((designer.currentDay.orderTotalCount !== 0 || designer.tillNow.orderTotalCount !== 0) && isHiddenZero)) && (
+                                <TableRow>
+                                  <TableCell>總客數</TableCell>
+                                  <TableCell>{designer.currentDay.orderTotalCount}</TableCell>
+                                  <TableCell>{designer.tillNow.orderTotalCount}</TableCell>
+                                </TableRow>
+                              )}
+                              {(!isHiddenZero ||
+                                ((designer.currentDay.designateOrderCount !== 0 || designer.tillNow.designateOrderCount !== 0) && isHiddenZero)) && (
+                                <TableRow>
+                                  <TableCell>指定客</TableCell>
+                                  <TableCell>{designer.currentDay.designateOrderCount}</TableCell>
+                                  <TableCell>{designer.tillNow.designateOrderCount}</TableCell>
+                                </TableRow>
+                              )}
+                              {(!isHiddenZero ||
+                                ((designer.currentDay.nonDesignateOrderCount !== 0 || designer.tillNow.nonDesignateOrderCount !== 0) &&
+                                  isHiddenZero)) && (
+                                <TableRow>
+                                  <TableCell>不指定客</TableCell>
+                                  <TableCell>{designer.currentDay.nonDesignateOrderCount}</TableCell>
+                                  <TableCell>{designer.tillNow.nonDesignateOrderCount}</TableCell>
+                                </TableRow>
+                              )}
+                              {(!isHiddenZero ||
+                                ((designer.currentDay.orderAveragePrice !== 0 || designer.tillNow.orderAveragePrice !== 0) && isHiddenZero)) &&
+                                (isMathRound ? (
+                                  <TableRow>
+                                    <TableCell>客單價</TableCell>
+                                    <TableCell>
+                                      {Math.round(designer.currentDay.performanceFakeTotal / designer.currentDay.orderTotalCount)}
+                                    </TableCell>
+                                    <TableCell>{Math.round(designer.tillNow.performanceFakeTotal / designer.tillNow.orderTotalCount)}</TableCell>
+                                  </TableRow>
+                                ) : (
+                                  <TableRow>
+                                    <TableCell>客單價</TableCell>
+                                    <TableCell>
+                                      {displayFloat(designer.currentDay.performanceFakeTotal / designer.currentDay.orderTotalCount)}
+                                    </TableCell>
+                                    <TableCell>{displayFloat(designer.tillNow.performanceFakeTotal / designer.tillNow.orderTotalCount)}</TableCell>
+                                  </TableRow>
+                                ))}
+                              {(!isHiddenZero ||
+                                ((designer.currentDay.orderTypeCount !== 0 || designer.tillNow.orderTypeCount !== 0) && isHiddenZero)) && (
+                                <TableRow>
+                                  <TableCell>客項次(服務)</TableCell>
+                                  <TableCell>{designer.currentDay.orderTypeCount}</TableCell>
+                                  <TableCell>{designer.tillNow.orderTypeCount}</TableCell>
+                                </TableRow>
+                              )}
+                              {(!isHiddenZero ||
+                                ((designer.currentDay.orderTypeAveragePrice !== 0 || designer.tillNow.orderTypeAveragePrice !== 0) &&
+                                  isHiddenZero)) &&
+                                (isMathRound ? (
+                                  <TableRow>
+                                    <TableCell>平均項次單價</TableCell>
+                                    <TableCell>{Math.round(designer.currentDay.performanceFakeTotal / designer.currentDay.orderTypeCount)}</TableCell>
+                                    <TableCell>{Math.round(designer.tillNow.performanceFakeTotal / designer.tillNow.orderTypeCount)}</TableCell>
+                                  </TableRow>
+                                ) : (
+                                  <TableRow>
+                                    <TableCell>平均項次單價</TableCell>
+                                    <TableCell>
+                                      {displayFloat(designer.currentDay.performanceFakeTotal / designer.currentDay.orderTypeCount)}
+                                    </TableCell>
+                                    <TableCell>{displayFloat(designer.tillNow.performanceFakeTotal / designer.tillNow.orderTypeCount)}</TableCell>
+                                  </TableRow>
+                                ))}
+                              {(!isHiddenZero ||
+                                ((designer.currentDay.walletDeposit !== 0 || designer.tillNow.walletDeposit !== 0) && isHiddenZero)) && (
+                                <TableRow>
+                                  <TableCell>入金儲值</TableCell>
+                                  <TableCell>{displayFloat(designer.currentDay.walletDeposit)}</TableCell>
+                                  <TableCell>{displayFloat(designer.tillNow.walletDeposit)}</TableCell>
+                                </TableRow>
+                              )}
+                            </TableBody>
+                          </Table>
                         )}
                       </div>
                     </CardContent>
                   </Card>
                 </div>
               )
-            })
-            }
+            })}
           </div>
         )
       })}

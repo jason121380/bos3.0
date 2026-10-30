@@ -121,7 +121,10 @@ describe('NewChoseEvent（單日預約紀錄）：「取消／關閉」只在等
 // 已修正（Jason 2026/10/22 fix all）：審核窗的「接受預約」「取消預約」列原本送出中沒有停用，可重複送出；
 // 改為送出中（pending）停用，後端回應後恢復
 describe('NewChoseEvent（單日預約紀錄）審核窗：接受／取消預約送出中停用', () => {
-  it.each([['接受預約', true], ['取消預約', false]])('%s：送出中兩列都停用、不會重複送出；回應後恢復', async (text, isApproval) => {
+  it.each([
+    ['接受預約', true],
+    ['取消預約', false],
+  ])('%s：送出中兩列都停用、不會重複送出；回應後恢復', async (text, isApproval) => {
     const pending = deferred()
     mockApi.verifyBooking = jest.fn(() => pending.promise)
     renderEvent({ modaltype: 'orderCheck' })

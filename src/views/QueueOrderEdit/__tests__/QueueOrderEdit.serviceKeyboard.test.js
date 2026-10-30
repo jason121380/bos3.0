@@ -17,7 +17,14 @@ beforeEach(() => loginAs())
 afterEach(cleanup)
 
 // 價格可改、但綁定的第三方卡券被鎖定的服務
-const SERVICE_TP = { ...SERVICE, id: 'service-3', no: 'S03', name: '團購剪髮', bindedThirdPartTicket: { id: 'tp-1' }, isBindedThirdPartTicketLocked: 'TRUE' }
+const SERVICE_TP = {
+  ...SERVICE,
+  id: 'service-3',
+  no: 'S03',
+  name: '團購剪髮',
+  bindedThirdPartTicket: { id: 'tp-1' },
+  isBindedThirdPartTicketLocked: 'TRUE',
+}
 // 價格依店家設定鎖定（UNSET）、第三方卡券不鎖定的服務
 const SERVICE_PERM = { ...SERVICE, id: 'service-4', no: 'S04', name: '燙髮', price: 3000, isLocked: 'UNSET' }
 // 鎖價、第三方卡券不鎖定的服務

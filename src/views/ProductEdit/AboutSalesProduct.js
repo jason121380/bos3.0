@@ -29,13 +29,7 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
             ))}
           </NativeSelect>
         </Field>
-        <Field
-          label={
-            product.commissionWay === 'byCost' || product.commissionWay === 'byPrice'
-              ? '抽成數字%'
-              : '抽成數字'
-          }
-        >
+        <Field label={product.commissionWay === 'byCost' || product.commissionWay === 'byPrice' ? '抽成數字%' : '抽成數字'}>
           <Input
             type="number"
             value={product.commission}

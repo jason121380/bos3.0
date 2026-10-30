@@ -65,7 +65,14 @@ export const baseFixtures = (overrides = {}) => ({
       {
         orderId: 'o1',
         orderStaticDetail: [
-          { designerName: '王小美', serviceType: '服務', itemName: '精緻剪髮', count: 1, price: 800, helperList: [{ helperName: '李助理', helperNo: '02', helperType: '洗髮' }] },
+          {
+            designerName: '王小美',
+            serviceType: '服務',
+            itemName: '精緻剪髮',
+            count: 1,
+            price: 800,
+            helperList: [{ helperName: '李助理', helperNo: '02', helperType: '洗髮' }],
+          },
           { designerName: '王小美', serviceType: '卡券使用', itemName: '護髮卡', count: 1, price: 199.99, helperList: [] },
         ],
       },
@@ -96,7 +103,14 @@ export const renderDetails = ({ route = '/management/customers/c1/general', fixt
   renderPage(
     <>
       <Route path="/management/customers/:id/:tab?" render={props => <CustomerManagementDetails {...props} />} />
-      {onHistory && <Route render={({ history }) => { onHistory(history); return null }} />}
+      {onHistory && (
+        <Route
+          render={({ history }) => {
+            onHistory(history)
+            return null
+          }}
+        />
+      )}
     </>,
     {
       fixtures: baseFixtures(fixtures),

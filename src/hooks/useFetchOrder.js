@@ -369,8 +369,8 @@ export const useFetchUseMembershipOrder = ({ id }) => {
   })
 }
 
-export const useFetchOrderForPrint= () => {
-  const [getOrderLazy, orderDataLazy] =  useLazyQuery(FETCH_ORDER_FOR_PRINT, {
+export const useFetchOrderForPrint = () => {
+  const [getOrderLazy, orderDataLazy] = useLazyQuery(FETCH_ORDER_FOR_PRINT, {
     fetchPolicy: 'cache-and-network',
   })
   return [getOrderLazy, orderDataLazy]

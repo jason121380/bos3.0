@@ -81,7 +81,16 @@ const TextField = React.forwardRef(function TextField(
 ) {
   const id = useAutoId(idProp)
   // InputProps.placeholder 在 MUI 會傳到輸入框（InputBase），這裡比照，不放到外框 div
-  const { startAdornment, endAdornment, inputProps: nestedInputProps, readOnly, style: inputRootStyle, className: inputRootClassName, placeholder: rootPlaceholder, ...inputRootRest } = InputProps || {}
+  const {
+    startAdornment,
+    endAdornment,
+    inputProps: nestedInputProps,
+    readOnly,
+    style: inputRootStyle,
+    className: inputRootClassName,
+    placeholder: rootPlaceholder,
+    ...inputRootRest
+  } = InputProps || {}
   const small = size === 'small'
   const elementProps = {
     id,

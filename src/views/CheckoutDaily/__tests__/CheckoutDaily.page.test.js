@@ -240,11 +240,15 @@ describe('每日結帳', () => {
       expect(screen.getByText('共 2 筆')).toBeInTheDocument()
       expect(reportHeaders()).not.toContain('會員卡消費')
       expect(reportHeaders()).not.toContain('點數折抵金額(-)')
-      const cells = within(screen.getByText('2026/10/20').closest('tr')).getAllByRole('cell').map(c => c.textContent)
+      const cells = within(screen.getByText('2026/10/20').closest('tr'))
+        .getAllByRole('cell')
+        .map(c => c.textContent)
       expect(cells.slice(1, 6)).toEqual(['2026/10/20', '1,701', '1,000', '501', '33.34'])
       expect(cells[cells.length - 2]).toBe('2026/10/21')
       expect(cells[cells.length - 1]).toBe('')
-      const total = within(screen.getByText('合計').closest('tr')).getAllByRole('cell').map(c => c.textContent)
+      const total = within(screen.getByText('合計').closest('tr'))
+        .getAllByRole('cell')
+        .map(c => c.textContent)
       expect(total.slice(0, 5)).toEqual(['合計', '', '3,402', '2,001', '1,001'])
       // 匯出：依日期由舊到新、最後一列為合計，不含會員卡與點數欄
       await wait(() => expect(exportedCsv()).toContain('"2026/10/19","1000","501"'))
@@ -294,7 +298,13 @@ describe('每日結帳', () => {
     it('設定未啟用但區間內有會員卡、點數折抵金額時仍顯示兩欄', async () => {
       const { settle } = setup({
         dailyMoneyFlowReport: {
-          dailyMoneyFlowReport: { data: REPORT_ROWS, summary: { ...SUMMARY, membership: 800, bonusDecountForReport: 50 }, pageLimit: 1000, pageOffset: 0, totalCount: 2 },
+          dailyMoneyFlowReport: {
+            data: REPORT_ROWS,
+            summary: { ...SUMMARY, membership: 800, bonusDecountForReport: 50 },
+            pageLimit: 1000,
+            pageOffset: 0,
+            totalCount: 2,
+          },
         },
       })
       await settle()

@@ -9,9 +9,7 @@ import cloneDeep from 'lodash/cloneDeep'
 // 重新開單與打帳單的同名元件邏輯不同（帶入金額的方式、焦點處理），沒有合併。
 export default function useCouponUseRow({ index, couponUsage, onChange, onClear }) {
   const [price, setPrice] = React.useState(0)
-  const [ticketOrderHelpers, setTicketOrderHelpers] = React.useState(
-    couponUsage.useTicketOrderHelpers
-  )
+  const [ticketOrderHelpers, setTicketOrderHelpers] = React.useState(couponUsage.useTicketOrderHelpers)
   const ticketRecord = useFetchLazyTicketRecords()
   React.useEffect(() => {
     if (!ticketRecord.response.loading && ticketRecord.response.data) {
@@ -58,15 +56,15 @@ export default function useCouponUseRow({ index, couponUsage, onChange, onClear 
       idx(value, _ => {
         return _.service.helperDeductionSetting.length > 0
           ? _.service.helperDeductionSetting
-            .map(data =>
-              data.nameList.map(name => ({
-                type: ticketHelperType(data.type, name),
-                helperId: '',
-                isDesignate: false,
-                helperDeductiontype: data.helperDeductionType,
-              }))
-            )
-            .reduce((a, b) => a.concat(b))
+              .map(data =>
+                data.nameList.map(name => ({
+                  type: ticketHelperType(data.type, name),
+                  helperId: '',
+                  isDesignate: false,
+                  helperDeductiontype: data.helperDeductionType,
+                }))
+              )
+              .reduce((a, b) => a.concat(b))
           : []
       })
     )

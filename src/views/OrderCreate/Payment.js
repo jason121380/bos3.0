@@ -2,16 +2,7 @@ import { Field, Input } from 'ui/input'
 import PaymentAutoComplete from 'components/PaymentAutoComplete'
 import billContext from 'context/keyInContext'
 import idx from 'idx'
-import React, {
-  createRef,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  memo,
-  Fragment,
-  useMemo,
-} from 'react'
+import React, { createRef, useContext, useEffect, useRef, useState, memo, Fragment, useMemo } from 'react'
 import { useLazyFetchCustomerWallet } from 'hooks/useFetchCustomerWallet'
 
 import PaymentCustomerWallet from './PaymentCustomerWallet'
@@ -52,9 +43,7 @@ function Payment() {
   }, [bill.payType.length])
 
   const otherPayLimit =
-    bill.serviceOrders
-      .map(d => typeof d.thirdPartyCouponMerchantId !== 'string' && d.price)
-      .reduce((total, item) => (total = total + item), 0) +
+    bill.serviceOrders.map(d => typeof d.thirdPartyCouponMerchantId !== 'string' && d.price).reduce((total, item) => (total = total + item), 0) +
     bill.productOrders
       .filter(d => typeof d.thirdPartyCouponMerchantId !== 'string')
       .reduce((total, item) => (total = total + item.price * item.count), 0) +
@@ -101,10 +90,7 @@ function Payment() {
     .filter(d => typeof d.thirdPartyCouponMerchantId !== 'string')
     .reduce((total, item) => (total = total + item.price * item.count), 0)
 
-  const couponSellPrice = bill.ticketOrders.reduce(
-    (total, item) => (total = total + item.price * item.count),
-    0
-  )
+  const couponSellPrice = bill.ticketOrders.reduce((total, item) => (total = total + item.price * item.count), 0)
   const memberShipCardOrdersPrice = bill.membershipOrders
     .filter(d => typeof d.thirdPartyCouponMerchantId !== 'string')
     .reduce((total, item) => (total = total + item.price), 0)
@@ -125,7 +111,7 @@ function Payment() {
         value: 0,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [bill.payType] 變動時執行；bill.amountByOtherPay、handleBillChange 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [bill.payType] 變動時執行；bill.amountByOtherPay、handleBillChange 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [bill.payType])
 
   const amountByOtherPay = value => {

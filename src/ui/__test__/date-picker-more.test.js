@@ -21,7 +21,10 @@ afterEach(() => {
   jest.useRealTimers()
 })
 
-const iso = d => (d instanceof Date && !Number.isNaN(d.getTime()) ? `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}` : String(d))
+const iso = d =>
+  d instanceof Date && !Number.isNaN(d.getTime())
+    ? `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`
+    : String(d)
 
 // 以 matchMedia 模擬滑鼠裝置；回傳可觸發 change 的控制器
 const mockMatchMedia = (matches, { legacy = false } = {}) => {
@@ -219,7 +222,7 @@ describe('日期時間（手機版）', () => {
     expect(screen.getByRole('listbox', { name: '時' })).toBeInTheDocument()
   })
 
-  it("views 只有 day 與 minutes 時，選日後顯示時間清單（minutes 併入 hours 視圖）；openTo=hours 且沒有值時以現在為準", () => {
+  it('views 只有 day 與 minutes 時，選日後顯示時間清單（minutes 併入 hours 視圖）；openTo=hours 且沒有值時以現在為準', () => {
     const { unmount } = render(<MobileDateTimePicker views={['day', 'minutes']} value={new Date(2026, 9, 20, 9, 0)} onChange={() => {}} />)
     fireEvent.click(screen.getByRole('textbox'))
     fireEvent.click(screen.getByRole('gridcell', { name: '2026年10月21日' }))
@@ -318,7 +321,9 @@ describe('裝置模式切換（matchMedia change）', () => {
 
 describe('欄位與外層', () => {
   it('只有 data-*／aria-*／id 落到外層 DOM；MUI 專用或拼錯的 props 不輸出', () => {
-    const { container } = render(<MobileDatePicker value={null} onChange={() => {}} data-testid="dp" id="dp1" aria-describedby="hint" ocaleText={{}} foo="bar" />)
+    const { container } = render(
+      <MobileDatePicker value={null} onChange={() => {}} data-testid="dp" id="dp1" aria-describedby="hint" ocaleText={{}} foo="bar" />
+    )
     const root = screen.getByTestId('dp')
     expect(root).toBe(container.firstChild)
     expect(root).toHaveAttribute('id', 'dp1')

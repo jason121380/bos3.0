@@ -55,22 +55,37 @@ export default function UiPreview() {
             <h1 className="text-title text-text">元件預覽</h1>
             <p className="text-body text-text-secondary">src/ui 依 STYLE.md 建立的基礎元件</p>
           </div>
-          <Button variant="ghost" onClick={() => setDark(d => !d)}>{dark ? '淺色' : '深色'}</Button>
+          <Button variant="ghost" onClick={() => setDark(d => !d)}>
+            {dark ? '淺色' : '深色'}
+          </Button>
         </header>
 
         <Section title="Button">
           <div className="flex flex-wrap items-center gap-3">
-            <Button variant="primary"><Plus strokeWidth={1.75} />新增帳單</Button>
-            <Button variant="secondary"><Download strokeWidth={1.75} />匯出</Button>
+            <Button variant="primary">
+              <Plus strokeWidth={1.75} />
+              新增帳單
+            </Button>
+            <Button variant="secondary">
+              <Download strokeWidth={1.75} />
+              匯出
+            </Button>
             <Button variant="ghost">取消</Button>
-            <Button variant="danger"><Trash2 strokeWidth={1.75} />刪除</Button>
-            <Button variant="secondary" disabled>停用</Button>
+            <Button variant="danger">
+              <Trash2 strokeWidth={1.75} />
+              刪除
+            </Button>
+            <Button variant="secondary" disabled>
+              停用
+            </Button>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <Button size="sm">sm 32</Button>
             <Button size="md">md 36</Button>
             <Button size="lg">lg 40</Button>
-            <Button size="icon" variant="ghost" aria-label="搜尋"><Search strokeWidth={1.75} /></Button>
+            <Button size="icon" variant="ghost" aria-label="搜尋">
+              <Search strokeWidth={1.75} />
+            </Button>
           </div>
         </Section>
 
@@ -113,7 +128,9 @@ export default function UiPreview() {
                   <TableCell>{r.customer}</TableCell>
                   <TableCell>{r.designer}</TableCell>
                   <TableCell numeric>{money(r.amount)}</TableCell>
-                  <TableCell><Badge variant={STATUS[r.status][0]}>{STATUS[r.status][1]}</Badge></TableCell>
+                  <TableCell>
+                    <Badge variant={STATUS[r.status][0]}>{STATUS[r.status][1]}</Badge>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -123,13 +140,20 @@ export default function UiPreview() {
             page={page}
             rowsPerPage={rowsPerPage}
             onPageChange={(e, p) => setPage(p)}
-            onRowsPerPageChange={e => { setRowsPerPage(e.target.value); setPage(0) }}
+            onRowsPerPageChange={e => {
+              setRowsPerPage(e.target.value)
+              setPage(0)
+            }}
           />
         </Section>
 
         <Section title="Card / Tabs">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {[['今日營收', '48,320'], ['今日客數', '37'], ['平均客單', '1,306']].map(([k, v]) => (
+            {[
+              ['今日營收', '48,320'],
+              ['今日客數', '37'],
+              ['平均客單', '1,306'],
+            ].map(([k, v]) => (
               <Card key={k}>
                 <CardContent className="flex flex-col gap-1">
                   <span className="text-label text-text-secondary">{k}</span>
@@ -150,8 +174,16 @@ export default function UiPreview() {
                   <TabsTrigger value="product">店販</TabsTrigger>
                   <TabsTrigger value="card">會員卡</TabsTrigger>
                 </TabsList>
-                <TabsContent value="service"><p className="text-body text-text-secondary">服務業績內容</p></TabsContent>
-                <TabsContent value="product"><EmptyState title="尚無店販資料" description="選擇其他日期區間，或先新增帳單。" action={<Button variant="primary">新增帳單</Button>} /></TabsContent>
+                <TabsContent value="service">
+                  <p className="text-body text-text-secondary">服務業績內容</p>
+                </TabsContent>
+                <TabsContent value="product">
+                  <EmptyState
+                    title="尚無店販資料"
+                    description="選擇其他日期區間，或先新增帳單。"
+                    action={<Button variant="primary">新增帳單</Button>}
+                  />
+                </TabsContent>
                 <TabsContent value="card">
                   <div className="flex flex-col gap-3">
                     <Skeleton className="h-5 w-1/3" />
@@ -167,16 +199,24 @@ export default function UiPreview() {
         <Section title="Dialog / Toast">
           <div className="flex flex-wrap gap-3">
             <Dialog>
-              <DialogTrigger asChild><Button variant="danger">刪除帳單</Button></DialogTrigger>
+              <DialogTrigger asChild>
+                <Button variant="danger">刪除帳單</Button>
+              </DialogTrigger>
               <DialogContent size="sm">
                 <DialogHeader>
                   <DialogTitle>確定要刪除這張帳單？</DialogTitle>
                   <DialogDescription>刪除後此帳單的業績、抽成與庫存扣減都會一併取消，且無法復原。</DialogDescription>
                 </DialogHeader>
-                <DialogBody><p className="text-body text-text">帳單編號 A20261018001・1,880</p></DialogBody>
+                <DialogBody>
+                  <p className="text-body text-text">帳單編號 A20261018001・1,880</p>
+                </DialogBody>
                 <DialogFooter>
-                  <DialogClose asChild><Button variant="ghost">取消</Button></DialogClose>
-                  <DialogClose asChild><Button variant="danger">刪除</Button></DialogClose>
+                  <DialogClose asChild>
+                    <Button variant="ghost">取消</Button>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Button variant="danger">刪除</Button>
+                  </DialogClose>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -205,7 +245,9 @@ export default function UiPreview() {
               <ToggleGroupItem value="week">週</ToggleGroupItem>
               <ToggleGroupItem value="month">月</ToggleGroupItem>
             </ToggleGroup>
-            <ToggleGroupItem selected={chip} onChange={() => setChip(c => !c)}>只看指定</ToggleGroupItem>
+            <ToggleGroupItem selected={chip} onChange={() => setChip(c => !c)}>
+              只看指定
+            </ToggleGroupItem>
             <Switch label="報到模式" checked={checkIn} onChange={(e, c) => setCheckIn(c)} />
             <CheckboxField label="連續新增" defaultChecked />
           </div>
@@ -220,11 +262,15 @@ export default function UiPreview() {
           <StatGrid cols={4}>
             <Stat label="服務消費">12,880</Stat>
             <Stat label="店販消費">3,200</Stat>
-            <Stat label="業績收入" hint="含卡券入業績">16,080</Stat>
+            <Stat label="業績收入" hint="含卡券入業績">
+              16,080
+            </Stat>
             <Stat label="營業現金應收">9,500</Stat>
           </StatGrid>
           <div className="grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2">
-            <StatCard label="入金餘額" hint="最後異動 2026/10/18">12,000</StatCard>
+            <StatCard label="入金餘額" hint="最後異動 2026/10/18">
+              12,000
+            </StatCard>
             <StatCard label="紅利點數">1,880</StatCard>
           </div>
         </Section>

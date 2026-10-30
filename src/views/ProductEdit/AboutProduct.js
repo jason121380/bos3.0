@@ -56,16 +56,10 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
       <CardContent>
         <form className="flex flex-col gap-6">
           <Field label="代號">
-            <Input
-              value={product.no}
-              onChange={event => onChange({ event, key: 'no' })}
-            />
+            <Input value={product.no} onChange={event => onChange({ event, key: 'no' })} />
           </Field>
           <Field label="名稱">
-            <Input
-              value={product.name}
-              onChange={event => onChange({ event, key: 'name' })}
-            />
+            <Input value={product.name} onChange={event => onChange({ event, key: 'name' })} />
           </Field>
           <NativeSelect
             value={product.ProductCategoryId}
@@ -89,28 +83,27 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
             options={merchantVendor}
             autoHighlight
             value={product.VendorId}
-            onChange={(e, value) => value === null ? setProduct({...product, VendorId: null}) : setProduct({...product, VendorId: value.uuid})}
+            onChange={(e, value) => (value === null ? setProduct({ ...product, VendorId: null }) : setProduct({ ...product, VendorId: value.uuid }))}
             getOptionLabel={option => {
-                if (typeof option === 'string') {
-                  const optionLabel = merchantVendor.find(d => d.uuid === option)
-                  if (option !== '' && optionLabel) {
-                    return `${optionLabel.no === '' ? '(無代號)' : `${optionLabel.no}`} ${optionLabel.nickname === "" ? optionLabel.name : optionLabel.nickname}`
-                  } else {
-                    return ''
-                  }
+              if (typeof option === 'string') {
+                const optionLabel = merchantVendor.find(d => d.uuid === option)
+                if (option !== '' && optionLabel) {
+                  return `${optionLabel.no === '' ? '(無代號)' : `${optionLabel.no}`} ${optionLabel.nickname === '' ? optionLabel.name : optionLabel.nickname}`
                 } else {
                   return ''
                 }
+              } else {
+                return ''
               }
-            }
+            }}
             renderOption={(props, option) => (
               <li {...props} key={option.uuid}>
-                {`${option.no === '' ? '(無代號)' : `${option.no}`} ${option.nickname === "" ? option.name : option.nickname}`}
+                {`${option.no === '' ? '(無代號)' : `${option.no}`} ${option.nickname === '' ? option.name : option.nickname}`}
               </li>
             )}
-            filterOptions={(options, {inputValue}) => {
+            filterOptions={(options, { inputValue }) => {
               const newOptions = options.filter(d => {
-                return (d.no.includes(inputValue) || d.name.includes(inputValue) || d.nickname.includes(inputValue))
+                return d.no.includes(inputValue) || d.name.includes(inputValue) || d.nickname.includes(inputValue)
               })
               return newOptions
             }}
@@ -130,18 +123,13 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
           <div className="flex flex-wrap gap-x-6">
             <div className="flex items-center text-body text-text">
               <span>是否可販售</span>
-              <Switch
-                checked={product.isAvailableForSale}
-                onChange={handleForSaleSwitch}
-                color="primary"
-                name="isAvailableForSale"
-              />
+              <Switch checked={product.isAvailableForSale} onChange={handleForSaleSwitch} color="primary" name="isAvailableForSale" />
             </div>
             <div className="flex items-center text-body text-text">
               <span>是否上架</span>
               <Switch
                 checked={product.isPublished}
-                onChange={() => setProduct({...product, isPublished: !product.isPublished})}
+                onChange={() => setProduct({ ...product, isPublished: !product.isPublished })}
                 color="primary"
                 name="isPublished"
               />
@@ -164,7 +152,7 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
                   key: 'sellPrice',
                 })
               }
-              onWheel={() => document.activeElement.blur()}              
+              onWheel={() => document.activeElement.blur()}
             />
           )}
           <TextField
@@ -183,7 +171,7 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
                 key: 'cost',
               })
             }
-            onWheel={() => document.activeElement.blur()}              
+            onWheel={() => document.activeElement.blur()}
           />
           <TextField
             type="number"
@@ -201,7 +189,7 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
                 key: 'employeePrice',
               })
             }
-            onWheel={() => document.activeElement.blur()}              
+            onWheel={() => document.activeElement.blur()}
           />
           <NativeSelect
             value={product.stockUnit}

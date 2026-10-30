@@ -19,11 +19,8 @@ export default function useFetchMerchantSalaryDncreaseItems() {
 }
 
 export function useFetchMerchantSalaryDecreaseItemsLazy() {
-  const [fetchMerchantSalaryDecreaseItemsLazy, merchantSalaryDecreaseItemsLazyData] = useLazyQuery(
-    GET_MERCHANT_SALARY_DECREASE_ITEMS,
-    {
-      fetchPolicy: SETTINGS_FETCH_POLICY,
-    }
-  )
+  const [fetchMerchantSalaryDecreaseItemsLazy, merchantSalaryDecreaseItemsLazyData] = useLazyQuery(GET_MERCHANT_SALARY_DECREASE_ITEMS, {
+    fetchPolicy: SETTINGS_FETCH_POLICY,
+  })
   return { fetchMerchantSalaryDecreaseItemsLazy, merchantSalaryDecreaseItemsLazyData }
 }

@@ -68,7 +68,7 @@ function Services({
       idx(serviceRef, _ => _.current.focus())
     } else {
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [expanded, focusFirstField] 變動時執行；bill.designerId、bill.serviceOrders.length、index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [expanded, focusFirstField] 變動時執行；bill.designerId、bill.serviceOrders.length、index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [expanded, focusFirstField])
 
   useEffect(() => {
@@ -82,11 +82,11 @@ function Services({
         .map(data =>
           data.type !== ''
             ? data.nameList.map(name => {
-              return {
-                type: `${data.type}-${name}`,
-                helperDeductiontype: data.helperDeductionType,
-              }
-            })
+                return {
+                  type: `${data.type}-${name}`,
+                  helperDeductiontype: data.helperDeductionType,
+                }
+              })
             : []
         )
         .reduce((total, item) => total.concat(item), [])
@@ -101,14 +101,10 @@ function Services({
   }, [serviceDetail.data, serviceDetail.loading, reset])
 
   useEffect(() => {
-    if (
-      helperFromModal.length !== 0 &&
-      index === servicesOnPannel.length - 1 &&
-      !servicesModalOpen
-    ) {
+    if (helperFromModal.length !== 0 && index === servicesOnPannel.length - 1 && !servicesModalOpen) {
       setHelper(helperFromModal)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [helperFromModal, servicesModalOpen] 變動時執行；index、servicesOnPannel.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [helperFromModal, servicesModalOpen] 變動時執行；index、servicesOnPannel.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [helperFromModal, servicesModalOpen])
 
   useEffect(() => {
@@ -168,7 +164,7 @@ function Services({
         },
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getService）；只在 [service.serviceId] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getService）；只在 [service.serviceId] 變動時呼叫，補上會每次 render 重跑
   }, [service.serviceId])
 
   useEffect(() => {
@@ -177,11 +173,11 @@ function Services({
         .map(data =>
           data.type !== ''
             ? data.nameList.map(name => {
-              return {
-                type: `${data.type}-${name}`,
-                helperDeductiontype: data.helperDeductionType,
-              }
-            })
+                return {
+                  type: `${data.type}-${name}`,
+                  helperDeductiontype: data.helperDeductionType,
+                }
+              })
             : []
         )
         .reduce((total, item) => total.concat(item), [])
@@ -192,8 +188,8 @@ function Services({
           helperDeductiontype: data.helperDeductiontype,
         }))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [serviceDetail.data, serviceDetail.loading,] 變動時執行；service 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
-  }, [serviceDetail.data, serviceDetail.loading,])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [serviceDetail.data, serviceDetail.loading,] 變動時執行；service 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+  }, [serviceDetail.data, serviceDetail.loading])
 
   const handlePriceChange = (event, index) => {
     setFocus('price')
@@ -264,7 +260,7 @@ function Services({
       default:
         break
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [focus] 變動時執行；helper.length、helperRefs、service.isLocked 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [focus] 變動時執行；helper.length、helperRefs、service.isLocked 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [focus])
 
   const handleFocus = event => {
@@ -304,7 +300,9 @@ function Services({
     <Fragment>
       <div className={styles.service}>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇服務" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenServicesModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇服務" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenServicesModal}>
+            <Copy aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
@@ -401,11 +399,7 @@ function Services({
                           } else if (event.key === 'Enter' && helperIdx + 1 < helper.length) {
                             setFocus(helper[helperIdx + 1].type)
                             helperRefs[helperIdx + 1].current.focus()
-                          } else if (
-                            event.key === 'Enter' &&
-                            helperIdx + 1 === helper.length &&
-                            thirdPartTicket
-                          ) {
+                          } else if (event.key === 'Enter' && helperIdx + 1 === helper.length && thirdPartTicket) {
                             if (ticketDisabled) {
                               changeRowFocus(index + 1)
                               setFocus('service')
@@ -432,11 +426,7 @@ function Services({
                           if (event.key === 'Enter' && helperIdx + 1 < helper.length) {
                             setFocus(helper[helperIdx + 1].type)
                             helperRefs[helperIdx + 1].current.focus()
-                          } else if (
-                            event.key === 'Enter' &&
-                            helperIdx + 1 === helper.length &&
-                            thirdPartTicket
-                          ) {
+                          } else if (event.key === 'Enter' && helperIdx + 1 === helper.length && thirdPartTicket) {
                             if (ticketDisabled) {
                               changeRowFocus(index + 1)
                               setFocus('service')
@@ -512,21 +502,16 @@ function Services({
                   )}
               </div>
             )}
-            {teachingMode && (
-              <p className={`m-0 ${styles.heading2} ${ROW_INLINE_ALIGN}`}>勾選將入業績但不收費用**</p>
-            )}
+            {teachingMode && <p className={`m-0 ${styles.heading2} ${ROW_INLINE_ALIGN}`}>勾選將入業績但不收費用**</p>}
           </Fragment>
         )}
-        <RowIconButton
-          label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
-          onClick={handleClear}
-          data-testid={`service-${index}-clear`}
-        >
+        <RowIconButton label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`} onClick={handleClear} data-testid={`service-${index}-clear`}>
           <Eraser aria-hidden="true" strokeWidth={1.75} />
         </RowIconButton>
         {!first && (
           <RowIconButton
-            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
+            label="刪除此列"
+            className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={() => {
               removeService(index)
               setFocus('service')

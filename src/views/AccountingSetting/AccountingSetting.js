@@ -55,10 +55,10 @@ function AccountingSetting() {
       const accountingType = idx(accountingTypeData, _ =>
         _.data.getAccountingType.length > 0
           ? _.data.getAccountingType.map(data => {
-            return {
-              accountingTypeName: data,
-            }
-          })
+              return {
+                accountingTypeName: data,
+              }
+            })
           : [{ accountingTypeName: '' }]
       )
 
@@ -67,40 +67,31 @@ function AccountingSetting() {
       idx(accountingSubjectsData, _ =>
         _.data.accountingSubjects.length > 0
           ? _.data.accountingSubjects.map(data => {
-            if (data.isUsing === true) {
-              if (data.inoutType === 'REVENUE') {
-                revenueSubjectsInit.push({
-                  number: data.number,
-                  name: data.name,
-                })
-              } else {
-                expenditureSubjectsInit.push({
-                  number: data.number,
-                  name: data.name,
-                })
+              if (data.isUsing === true) {
+                if (data.inoutType === 'REVENUE') {
+                  revenueSubjectsInit.push({
+                    number: data.number,
+                    name: data.name,
+                  })
+                } else {
+                  expenditureSubjectsInit.push({
+                    number: data.number,
+                    name: data.name,
+                  })
+                }
               }
-            }
-            return undefined
-          })
+              return undefined
+            })
           : [{ number: '', name: '' }]
       )
 
-      setAccountingRevenueSubjects(
-        revenueSubjectsInit.length > 0 ? revenueSubjectsInit : [{ number: '', name: '' }]
-      )
-      setAccountingExpenditureSubjects(
-        expenditureSubjectsInit.length > 0 ? expenditureSubjectsInit : [{ number: '', name: '' }]
-      )
+      setAccountingRevenueSubjects(revenueSubjectsInit.length > 0 ? revenueSubjectsInit : [{ number: '', name: '' }])
+      setAccountingExpenditureSubjects(expenditureSubjectsInit.length > 0 ? expenditureSubjectsInit : [{ number: '', name: '' }])
       // 收付方式查詢失敗時留一列空白（同科目查詢失敗），不整頁錯誤（Jason 2026/10/22）
       setAccountingType(accountingType || [{ accountingTypeName: '' }])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-  }, [
-    accountingTypeData.data,
-    accountingTypeData.loading,
-    accountingSubjectsData.data,
-    accountingSubjectsData.loading,
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+  }, [accountingTypeData.data, accountingTypeData.loading, accountingSubjectsData.data, accountingSubjectsData.loading])
 
   // 科目或收付方式查詢失敗時畫面只有空白列，此時儲存會把設定存成空白：停用儲存（Jason 2026/10/22「照建議」）
   const loadFailed = Boolean(accountingTypeData.error || accountingSubjectsData.error)
@@ -116,9 +107,7 @@ function AccountingSetting() {
       })
       .catch(err => console.log(err.message))
 
-    const accountTypeData = accountingType
-      .map(data => data.accountingTypeName)
-      .filter(data => data !== '')
+    const accountTypeData = accountingType.map(data => data.accountingTypeName).filter(data => data !== '')
 
     setAccountType({ typeList: accountTypeData })
       .then(() => accountingTypeData.refetch())
@@ -131,15 +120,12 @@ function AccountingSetting() {
     <Page className="ui-root" title="收支科目設定">
       <div className="mx-auto w-full max-w-6xl">
         <PageHeader title="收支科目設定" />
-        <Tabs
-          className="md:flex md:items-stretch"
-          value={selectTab}
-          onValueChange={value => handleTabsChange(null, value)}
-          activationMode="manual"
-        >
+        <Tabs className="md:flex md:items-stretch" value={selectTab} onValueChange={value => handleTabsChange(null, value)} activationMode="manual">
           <SettingsTabsList>
             {tabs.map((tab, index) => (
-              <SettingsTabsTrigger key={index} value={tab.value} icon={tab.icon}>{tab.label}</SettingsTabsTrigger>
+              <SettingsTabsTrigger key={index} value={tab.value} icon={tab.icon}>
+                {tab.label}
+              </SettingsTabsTrigger>
             ))}
           </SettingsTabsList>
           <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">

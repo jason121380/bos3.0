@@ -8,7 +8,7 @@ const SearchField = ({ value, onChange }) => {
       variant="standard"
       fullWidth
       size="small"
-      placeholder='名稱/代號'
+      placeholder="名稱/代號"
       value={value}
       onChange={e => {
         onChange(e.target.value)
@@ -20,9 +20,7 @@ const SearchField = ({ value, onChange }) => {
             <SearchRoundedIcon style={{ marginLeft: -8 }} />
           </InputAdornment>
         ),
-        endAdornment: (
-          <ClearRoundedIcon sx={{ cursor: 'pointer' }} onClick={() => onChange("")} />
-        )
+        endAdornment: <ClearRoundedIcon sx={{ cursor: 'pointer' }} onClick={() => onChange('')} />,
       }}
     />
   )

@@ -18,8 +18,16 @@ const mockRecaptcha = { resets: 0 }
 jest.mock('react-google-recaptcha-enterprise', () => {
   const ReactActual = jest.requireActual('react')
   return ReactActual.forwardRef(({ onChange }, ref) => {
-    ReactActual.useImperativeHandle(ref, () => ({ reset: () => { mockRecaptcha.resets += 1 } }))
-    return <button type="button" onClick={() => onChange('token-1')}>完成驗證</button>
+    ReactActual.useImperativeHandle(ref, () => ({
+      reset: () => {
+        mockRecaptcha.resets += 1
+      },
+    }))
+    return (
+      <button type="button" onClick={() => onChange('token-1')}>
+        完成驗證
+      </button>
+    )
   })
 })
 
@@ -38,7 +46,13 @@ const RESULT = {
 }
 
 const setup = (result = RESULT) =>
-  renderPage(<><CustomizedSnackbars /><CustomerEventTicketSearch /></>, { fixtures: { GET_CUSTOMER_CHECK_TICKET: { customerCheckTicket: result } } })
+  renderPage(
+    <>
+      <CustomizedSnackbars />
+      <CustomerEventTicketSearch />
+    </>,
+    { fixtures: { GET_CUSTOMER_CHECK_TICKET: { customerCheckTicket: result } } }
+  )
 
 const submit = () => screen.getByText('提交')
 
@@ -102,7 +116,12 @@ describe('抽獎券查詢', () => {
 
 it('查詢拋錯時呼叫全域錯誤提示', () => {
   const error = new Error('查詢失敗')
-  jest.spyOn(require('hooks/useFetchGetCustomerCheckTicket'), 'default').mockReturnValue([() => { throw error }, { loading: false }])
+  jest.spyOn(require('hooks/useFetchGetCustomerCheckTicket'), 'default').mockReturnValue([
+    () => {
+      throw error
+    },
+    { loading: false },
+  ])
   setup()
   fireEvent.click(screen.getByText('完成驗證'))
   fireEvent.change(screen.getByLabelText(/^電話/), { target: { value: '0912345678' } })

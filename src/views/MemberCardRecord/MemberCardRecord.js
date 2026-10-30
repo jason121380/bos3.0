@@ -119,12 +119,7 @@ function MemberCardRecord() {
                     {category.name}
                   </Button>
                 ))}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-danger"
-                onClick={handleClearCategory}
-              >
+              <Button variant="ghost" size="sm" className="text-danger" onClick={handleClearCategory}>
                 清除
               </Button>
             </div>
@@ -140,8 +135,14 @@ function MemberCardRecord() {
             onPageChange={handlePageChange}
             onChanged={() => membershipsData.refetch()}
           />
-        ) : <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
-        }
+        ) : (
+          <div className="flex flex-col gap-3">
+            <Skeleton className="h-14 w-full" />
+            <Skeleton className="h-11 w-full" />
+            <Skeleton className="h-11 w-full" />
+            <Skeleton className="h-11 w-full" />
+          </div>
+        )}
       </div>
     </Page>
   )

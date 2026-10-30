@@ -12,21 +12,18 @@ import produce from 'immer'
 import ShortcutDialog from '../../components/ShortcutDialog'
 
 function Header({ ...rest }) {
-  const {
-    orderNo, bill, setBill, enable, serialNumberUsing, handleShortcutChange,
-    comboActive, shortBtnDisable
-  } = useContext(billContext)
+  const { orderNo, bill, setBill, enable, serialNumberUsing, handleShortcutChange, comboActive, shortBtnDisable } = useContext(billContext)
   const [openModal, setOpenModal] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null)
   const anchorRef = useRef(null)
   const [shortcutModal, setShortcutModal] = useState(false)
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popper' : undefined;
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popper' : undefined
 
-  const handleClick = (event) => {
+  const handleClick = event => {
     anchorRef.current = event.currentTarget
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
+    setAnchorEl(anchorEl ? null : event.currentTarget)
+  }
 
   const shortCutClose = () => {
     setShortcutModal(false)
@@ -40,9 +37,14 @@ function Header({ ...rest }) {
           <h1 className="m-0 flex items-center gap-2 text-title !font-bold text-text">
             帳單詳細 {orderNo ? `(${orderNo})` : ''}
             {/* 抽獎流水號：原為帶 role="button" 的裸 svg（鍵盤無法觸發），改真 <button>；onClick 照舊（錨點改為按鈕本身） */}
-            <Popover open={open} onOpenChange={next => { if (!next) setAnchorEl(null) }}>
+            <Popover
+              open={open}
+              onOpenChange={next => {
+                if (!next) setAnchorEl(null)
+              }}
+            >
               <PopoverAnchor virtualRef={anchorRef} />
-              {bill.raffleRecord.length ?
+              {bill.raffleRecord.length ? (
                 <RowIconButton
                   label="抽獎流水號"
                   aria-describedby={id}
@@ -52,15 +54,25 @@ function Header({ ...rest }) {
                 >
                   <Ticket aria-hidden="true" strokeWidth={1.75} />
                 </RowIconButton>
-                : ''}
+              ) : (
+                ''
+              )}
               {/* 非 modal：外點／Esc 收起清單，原按鈕仍由 handleClick 切換。圖層順序交給共用 layer-stack。 */}
-              <PopoverContent id={id} aria-label="抽獎流水號清單" side="bottom" align="center" sideOffset={10}
+              <PopoverContent
+                id={id}
+                aria-label="抽獎流水號清單"
+                side="bottom"
+                align="center"
+                sideOffset={10}
                 className="border-0 bg-transparent shadow-none"
                 onCloseAutoFocus={event => {
                   event.preventDefault()
                   if (document.activeElement === document.body && anchorRef.current) anchorRef.current.focus()
                 }}
-                onInteractOutside={event => { if (anchorEl && anchorEl.contains(event.target)) event.preventDefault() }}>
+                onInteractOutside={event => {
+                  if (anchorEl && anchorEl.contains(event.target)) event.preventDefault()
+                }}
+              >
                 <Card className="ui-root max-h-[300px] overflow-y-auto shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
                   <Table wrapperClassName="rounded-none border-0">
                     <TableHeader className="sticky top-0 z-10">
@@ -87,7 +99,9 @@ function Header({ ...rest }) {
             帳單速查
           </Button>
           {comboActive && (
-            <Button size="sm" variant="secondary" disabled={shortBtnDisable} onClick={() => setShortcutModal(true)}>組合商品</Button>
+            <Button size="sm" variant="secondary" disabled={shortBtnDisable} onClick={() => setShortcutModal(true)}>
+              組合商品
+            </Button>
           )}
         </div>
         {serialNumberUsing && (

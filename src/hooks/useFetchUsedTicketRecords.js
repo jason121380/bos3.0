@@ -61,7 +61,8 @@ const FETCH_USED_TICKET_RECORDS = gql`
 export function useFetchUsedTicketRecordsLazy(input, ticketIds) {
   const [getUsedTicketRecords, usedTicketRecordsData] = useLazyQuery(FETCH_USED_TICKET_RECORDS, {
     variables: {
-      input, ticketIds
+      input,
+      ticketIds,
     },
     fetchPolicy: 'cache-and-network',
   })

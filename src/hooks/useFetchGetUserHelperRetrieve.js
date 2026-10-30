@@ -85,11 +85,8 @@ export const useFetchUserHelperRetrieve = input =>
   })
 
 export function useFetchUserHelperRetrieveLazy() {
-  const [fetchUserHelperRetrieveLazy, userHelperRetrieveLazyData] = useLazyQuery(
-    GET_USER_HELPER_RETRIEVE,
-    {
-      fetchPolicy: 'cache-and-network',
-    }
-  )
+  const [fetchUserHelperRetrieveLazy, userHelperRetrieveLazyData] = useLazyQuery(GET_USER_HELPER_RETRIEVE, {
+    fetchPolicy: 'cache-and-network',
+  })
   return { fetchUserHelperRetrieveLazy, userHelperRetrieveLazyData }
 }

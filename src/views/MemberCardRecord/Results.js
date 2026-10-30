@@ -3,7 +3,7 @@ import { openSnackbar } from 'elements/snackbars'
 import format from 'date-fns/format'
 import { useState, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import useFetchDeleteMembership from 'hooks/useFetchDeleteMembership'
 import useFetchMultipleUpdateMembershipCategory from 'hooks/useFetchMultipleUpdateMembershipCategory'
 import { Download, Pencil } from 'lucide-react'
@@ -32,15 +32,14 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
 
   // 多選checkbox
   const handleSelectAll = event => {
-    const newSelected = event.target.checked
-      ? memberships.data.filter(d => d.isUsing).map(d => d.uuid)
-      : []
+    const newSelected = event.target.checked ? memberships.data.filter(d => d.isUsing).map(d => d.uuid) : []
     setSelectedMembership(newSelected)
   }
 
   // 單選checkbox
   const handleSelectOne = uuid => {
-    const newSelect = [...selectedMembership], index = newSelect.indexOf(uuid)
+    const newSelect = [...selectedMembership],
+      index = newSelect.indexOf(uuid)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -119,7 +118,7 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
   }, [memberships])
 
   return (
-    <div {...rest} className='MemberCardRecordResult mt-2'>
+    <div {...rest} className="MemberCardRecordResult mt-2">
       <Card>
         <CardHeader
           className="items-center pb-4"
@@ -134,9 +133,7 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
         >
           <div className="flex items-baseline gap-3">
             <CardTitle>所有會員卡</CardTitle>
-            <span className="text-label text-text-secondary tabular-nums">
-              共 {memberships.data.length} 筆
-            </span>
+            <span className="text-label text-text-secondary tabular-nums">共 {memberships.data.length} 筆</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -149,11 +146,7 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
                     checked={isAllSelected}
                     indeterminate={selectedMembership.length > 0 && !isAllSelected}
                     onChange={handleSelectAll}
-                    disabled={
-                      memberships.data.length === 0 ||
-                      memberships.data.filter(d => !d.isUsing).length ===
-                      memberships.data.length
-                    }
+                    disabled={memberships.data.length === 0 || memberships.data.filter(d => !d.isUsing).length === memberships.data.length}
                   />
                 </TableHead>
                 <TableHead>操作</TableHead>
@@ -200,9 +193,7 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
                     </Button>
                   </TableCell>
                   <TableCell className="tabular-nums">{data.no}</TableCell>
-                  <TableCell>
-                    {data.membershipCategory === null ? '未分類' : data.membershipCategory.name}
-                  </TableCell>
+                  <TableCell>{data.membershipCategory === null ? '未分類' : data.membershipCategory.name}</TableCell>
                   <TableCell>{data.name}</TableCell>
                   <TableCell numeric>{formatNumber(data.cost)}</TableCell>
                   <TableCell numeric>{formatNumber(data.sellPrice)}</TableCell>
@@ -220,10 +211,7 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
         onEditMembershipCategory={handleOpenEditMembershipCategoryModal}
       />
       {/* 批次刪除確認（比照打卡記錄刪除的確認窗，Jason 2026/10/22「照建議」）：確定才送出刪除，取消保留勾選 */}
-      <Dialog
-        open={openDialog}
-        onOpenChange={o => !o && handleCloseDialog()}
-      >
+      <Dialog open={openDialog} onOpenChange={o => !o && handleCloseDialog()}>
         <DialogContent size="sm">
           <DialogHeader>
             <DialogTitle id="alert-dialog-title">{`確定要刪除選取的 ${selectedMembership.length} 張會員卡嗎？`}</DialogTitle>

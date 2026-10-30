@@ -20,10 +20,27 @@ const today = new Date()
 const at = (h, m = 0) => new Date(today.getFullYear(), today.getMonth(), today.getDate(), h, m).getTime()
 const p = (h, m = 0, distanceValue = 'LOWERTHAN25') => ({ time: at(h, m), distanceValue })
 const NONE = { time: null, distanceValue: null }
-const user = (id, extra) => ({ userId: id, userName: id, userNickName: null, userNo: null, isLate: false, isLeaveEarly: false, clockInSetting: null, clockInRecord: [], ...extra })
+const user = (id, extra) => ({
+  userId: id,
+  userName: id,
+  userNickName: null,
+  userNo: null,
+  isLate: false,
+  isLeaveEarly: false,
+  clockInSetting: null,
+  clockInRecord: [],
+  ...extra,
+})
 
 const USERS = [
-  user('u1', { userName: '王小美', userNickName: 'Amy', userNo: '01', isLate: true, clockInSetting: { name: '早班' }, clockInRecord: [{ in: p(9, 10), out: null, breakRecord: [] }] }),
+  user('u1', {
+    userName: '王小美',
+    userNickName: 'Amy',
+    userNo: '01',
+    isLate: true,
+    clockInSetting: { name: '早班' },
+    clockInRecord: [{ in: p(9, 10), out: null, breakRecord: [] }],
+  }),
   user('u2', { userName: '李大華' }),
   user('u3', { userName: '張三', clockInRecord: [{ in: p(9), out: null, breakRecord: [{ start: p(12), end: null }] }] }),
   user('u4', { userName: '趙四', clockInRecord: [{ in: p(9), out: null, breakRecord: [{ start: p(12), end: p(13) }] }] }),
@@ -49,7 +66,14 @@ const USERS = [
   user('u6', {
     userName: '孫六',
     clockInRecord: [
-      { in: NONE, out: p(8), breakRecord: [{ start: NONE, end: null }, { start: NONE, end: NONE }] },
+      {
+        in: NONE,
+        out: p(8),
+        breakRecord: [
+          { start: NONE, end: null },
+          { start: NONE, end: NONE },
+        ],
+      },
       { in: NONE, out: null, breakRecord: [{ start: NONE, end: NONE }] },
       { in: p(10), out: null, breakRecord: [] },
       // 沒有上班時間、只有下班

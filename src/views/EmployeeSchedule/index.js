@@ -69,21 +69,27 @@ const EmployeeSchedule = () => {
     setDisableButtonUndo(isFirst)
     setDisableButtonRedo(isLast)
     setScheduleCard(
-      data === null ? [{
-        cardName: '',
-        setName: false,
-        scheduleRow: [{
-          timeAdded: false,
-          designerId: '',
-          time: 0,
-        }]
-      }] : data
+      data === null
+        ? [
+            {
+              cardName: '',
+              setName: false,
+              scheduleRow: [
+                {
+                  timeAdded: false,
+                  designerId: '',
+                  time: 0,
+                },
+              ],
+            },
+          ]
+        : data
     )
     setDisableButton(false)
     if (!newSchedule?.data) {
       openSnackbar({
         message: '排班表已更新',
-        variant: 'success'
+        variant: 'success',
       })
       handleClose()
       handleCloseModal()
@@ -171,11 +177,11 @@ const EmployeeSchedule = () => {
     handleClose()
   }
 
-  const handleSetSchedule = async (inputData) => {
+  const handleSetSchedule = async inputData => {
     try {
       const res = await setEmployeeSchedule({
         schedule: inputData,
-        currentScheduleId: scheduleId
+        currentScheduleId: scheduleId,
       })
       handleSetData(res)
     } catch (error) {
@@ -196,7 +202,7 @@ const EmployeeSchedule = () => {
       const data = idx(getIsEmployeeScheduleUndoActive, _ => _.data.getIsEmployeeScheduleUndoActive)
       setUndoActive(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsEmployeeScheduleUndoActive.loading])
 
   useEffect(() => {
@@ -205,7 +211,7 @@ const EmployeeSchedule = () => {
     } else {
       setDisableButton(true)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [employeeScheduleData.loading] 變動時執行；employeeScheduleData、handleSetData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [employeeScheduleData.loading] 變動時執行；employeeScheduleData、handleSetData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [employeeScheduleData.loading])
 
   useEffect(() => {
@@ -216,12 +222,12 @@ const EmployeeSchedule = () => {
     } else {
       setDisableButton(true)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [usersData.loading])
 
   useEffect(() => {
     socketSchedule && handleSetData(socketSchedule, undefined, true)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSetData）；只在 [socketSchedule] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSetData）；只在 [socketSchedule] 變動時呼叫，補上會每次 render 重跑
   }, [socketSchedule])
   return (
     <Page className="ui-root" title="排班表">
@@ -279,19 +285,10 @@ const EmployeeSchedule = () => {
             <DialogDescription>刪除後此班表與其中的人員排序會一併移除。</DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button
-              variant="ghost"
-              disabled={disableButton}
-              onClick={handleClose}
-            >
+            <Button variant="ghost" disabled={disableButton} onClick={handleClose}>
               取消
             </Button>
-            <Button
-              variant="danger"
-              onClick={handleDeleteCard}
-              disabled={disableButton}
-              autoFocus
-            >
+            <Button variant="danger" onClick={handleDeleteCard} disabled={disableButton} autoFocus>
               確定
             </Button>
           </DialogFooter>

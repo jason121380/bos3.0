@@ -5,13 +5,13 @@ import { ordersListPath, ordersListPathForOrderDate } from '../ordersListPath'
 // 「startDate=13 碼&endDate=…」時會拋錯，畫面就顯示結帳失敗、留在原頁。
 
 test('有日期區間時回到同一區間的帳單列表', () => {
-  expect(ordersListPath('?startDate=1760976000000&endDate=1761062399999'))
-    .toBe('/management/orders?startDate=1760976000000&endDate=1761062399999')
+  expect(ordersListPath('?startDate=1760976000000&endDate=1761062399999')).toBe('/management/orders?startDate=1760976000000&endDate=1761062399999')
 })
 
 test('日期前面還有別的參數時仍讀得到兩個日期', () => {
-  expect(ordersListPath('?source=LINE&startDate=1760976000000&endDate=1761062399999'))
-    .toBe('/management/orders?startDate=1760976000000&endDate=1761062399999')
+  expect(ordersListPath('?source=LINE&startDate=1760976000000&endDate=1761062399999')).toBe(
+    '/management/orders?startDate=1760976000000&endDate=1761062399999'
+  )
 })
 
 test('依掛單日期回到當天的帳單列表；日期無效時不帶參數', () => {

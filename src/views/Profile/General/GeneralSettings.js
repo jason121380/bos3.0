@@ -102,7 +102,7 @@ function GeneralSettings({
                   id="profile-general-lastName"
                   name="lastName"
                   onChange={handleFiledChange}
-                  value={values.lastName !== null ? values.lastName : ""}
+                  value={values.lastName !== null ? values.lastName : ''}
                 />
               </Field>
             </div>
@@ -112,7 +112,7 @@ function GeneralSettings({
                   id="profile-general-firstName"
                   name="firstName"
                   onChange={handleFiledChange}
-                  value={values.firstName !== null ? values.firstName : ""}
+                  value={values.firstName !== null ? values.firstName : ''}
                 />
               </Field>
             </div>
@@ -121,21 +121,21 @@ function GeneralSettings({
                 // 月曆 facade：label 改由 ui/date-picker 放在欄位上方；textField 的 variant 由 facade 統一成 outlined
                 // （原 standard，屬本批預期的視覺改變）
                 label="生日"
-                value={values.birthday !== null ? values.birthday : ""}
-                format='yyyy/MM/dd'
-                openTo='year'
-                orientation='portrait'
+                value={values.birthday !== null ? values.birthday : ''}
+                format="yyyy/MM/dd"
+                openTo="year"
+                orientation="portrait"
                 localeText={{
-                  toolbarTitle: '選擇日期'
+                  toolbarTitle: '選擇日期',
                 }}
                 slotProps={{
                   toolbar: {
-                    toolbarFormat: 'yyyy年M月d日'
+                    toolbarFormat: 'yyyy年M月d日',
                   },
                   textField: {
                     variant: 'standard',
-                    fullWidth: true
-                  }
+                    fullWidth: true,
+                  },
                 }}
                 onChange={handleBirthday}
               />
@@ -143,8 +143,20 @@ function GeneralSettings({
             <div>
               <Label>性別</Label>
               <div className="flex flex-row gap-4" role="radiogroup" aria-label="gender">
-                <RadioField name="gender" value="MALE" checked={(values.gender !== null ? values.gender : "") === 'MALE'} onChange={handleGenderChange} label="男" />
-                <RadioField name="gender" value="FEMALE" checked={(values.gender !== null ? values.gender : "") === 'FEMALE'} onChange={handleGenderChange} label="女" />
+                <RadioField
+                  name="gender"
+                  value="MALE"
+                  checked={(values.gender !== null ? values.gender : '') === 'MALE'}
+                  onChange={handleGenderChange}
+                  label="男"
+                />
+                <RadioField
+                  name="gender"
+                  value="FEMALE"
+                  checked={(values.gender !== null ? values.gender : '') === 'FEMALE'}
+                  onChange={handleGenderChange}
+                  label="女"
+                />
               </div>
             </div>
             {/* <Grid item md={6} xs={12}>
@@ -177,7 +189,7 @@ function GeneralSettings({
                   name="nickName"
                   onChange={handleFiledChange}
                   type="text"
-                  value={values.nickName !== null ? values.nickName : ""}
+                  value={values.nickName !== null ? values.nickName : ''}
                 />
               </Field>
             </div>
@@ -188,7 +200,7 @@ function GeneralSettings({
                   name="designerNo"
                   onChange={handleFiledChange}
                   type="text"
-                  value={values.designerNo !== null ? values.designerNo : ""}
+                  value={values.designerNo !== null ? values.designerNo : ''}
                 />
               </Field>
             </div>
@@ -199,7 +211,7 @@ function GeneralSettings({
                   name="cellphone"
                   type="text"
                   onChange={handleFiledChange}
-                  value={values.cellphone !== null ? values.cellphone : ""}
+                  value={values.cellphone !== null ? values.cellphone : ''}
                 />
               </Field>
             </div>
@@ -210,18 +222,13 @@ function GeneralSettings({
                   name="serialNumber"
                   onChange={handleFiledChange}
                   type="text"
-                  value={values.serialNumber !== null ? values.serialNumber : ""}
+                  value={values.serialNumber !== null ? values.serialNumber : ''}
                 />
               </Field>
             </div>
             <div className="md:col-span-2">
               <Field label="電子信箱" htmlFor="profile-general-email">
-                <Input
-                  id="profile-general-email"
-                  name="email"
-                  onChange={handleFiledChange}
-                  value={values.email !== null ? values.email : ""}
-                />
+                <Input id="profile-general-email" name="email" onChange={handleFiledChange} value={values.email !== null ? values.email : ''} />
               </Field>
             </div>
             <div className="md:col-span-2">
@@ -231,7 +238,7 @@ function GeneralSettings({
                   name="contactAddress"
                   onChange={handleFiledChange}
                   type="text"
-                  value={values.contactAddress !== null ? values.contactAddress : ""}
+                  value={values.contactAddress !== null ? values.contactAddress : ''}
                 />
               </Field>
             </div>
@@ -242,7 +249,7 @@ function GeneralSettings({
                   name="address"
                   onChange={handleFiledChange}
                   type="text"
-                  value={values.address !== null ? values.address : ""}
+                  value={values.address !== null ? values.address : ''}
                 />
               </Field>
             </div>
@@ -253,7 +260,7 @@ function GeneralSettings({
                   name="selfIntroduction"
                   onChange={handleFiledChange}
                   type="text"
-                  value={values.selfIntroduction !== null ? values.selfIntroduction : ""}
+                  value={values.selfIntroduction !== null ? values.selfIntroduction : ''}
                 />
               </Field>
             </div>
@@ -261,9 +268,9 @@ function GeneralSettings({
               <Field label="自介連結" htmlFor="profile-general-selfIntroductionLink">
                 <Input
                   id="profile-general-selfIntroductionLink"
-                  name='selfIntroductionLink'
-                  placeholder='請輸入網址 ex: https://www.mlgroup.io'
-                  value={values.selfIntroductionLink !== null ? values.selfIntroductionLink : ""}
+                  name="selfIntroductionLink"
+                  placeholder="請輸入網址 ex: https://www.mlgroup.io"
+                  value={values.selfIntroductionLink !== null ? values.selfIntroductionLink : ''}
                   onChange={handleFiledChange}
                 />
               </Field>
@@ -276,12 +283,7 @@ function GeneralSettings({
               {`請填寫${missingFields.join('、')}後再儲存`}
             </p>
           )}
-          <Button
-            type="submit"
-            variant="primary"
-            disabled={!vaild}
-            aria-describedby={!vaild ? 'profile-general-missing' : undefined}
-          >
+          <Button type="submit" variant="primary" disabled={!vaild} aria-describedby={!vaild ? 'profile-general-missing' : undefined}>
             儲存變更
           </Button>
         </CardFooter>

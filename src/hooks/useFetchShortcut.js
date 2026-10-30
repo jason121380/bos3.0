@@ -93,7 +93,7 @@ const GET_SHORTCUT = gql`
   }
 `
 
-const useShortcut = (shortcutId) => {
+const useShortcut = shortcutId => {
   return useQuery(GET_SHORTCUT, {
     variables: {
       shortcutId,
@@ -147,7 +147,7 @@ const DELETE_SHORTCUT = gql`
 const useDeleteShortcut = () => {
   const [deleteShortcut] = useMutation(DELETE_SHORTCUT)
   return {
-    deleteShortcut: (deleteShortcutId) =>
+    deleteShortcut: deleteShortcutId =>
       deleteShortcut({
         variables: {
           deleteShortcutId,
@@ -156,8 +156,4 @@ const useDeleteShortcut = () => {
   }
 }
 
-
-export {
-  useShortcuts, useShortcut, useCreateShortcut, useUpdateShortcut, useDeleteShortcut,
-  useShortcutsForOrderCreate
-}
+export { useShortcuts, useShortcut, useCreateShortcut, useUpdateShortcut, useDeleteShortcut, useShortcutsForOrderCreate }

@@ -18,7 +18,7 @@ import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import { Autocomplete } from 'ui/combobox'
 import QueryFailed from 'components/QueryFailed'
 
@@ -37,7 +37,7 @@ export default function HelperPerformance() {
       startDate: pageSetting.startDate,
       endDate: pageSetting.endDate,
     },
-    jobTitle: selectTitle
+    jobTitle: selectTitle,
   })
   const [membershipDisplay, setMembershipDisplay] = useState(false)
   const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
@@ -55,7 +55,7 @@ export default function HelperPerformance() {
       })
       setJobTitle(title)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantJobTitlePoint.loading])
 
   useEffect(() => {
@@ -69,13 +69,10 @@ export default function HelperPerformance() {
       const data = cloneDeep(idx(useFetchGetHelperPerformanceData, _ => _.data.helperPerformanceReport))
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const membershipTotal = data[data.length - 1].helperPerformance.find(d => d.typeName === '會員卡')
-      const showMembership = membershipTotal ? (
-        membershipTotal.count +
-        membershipTotal.designateCount +
-        membershipTotal.point +
-        membershipTotal.priceNoPoint
-      ) !== 0 : false
-      const memberShipCardActive = (showMembership || isMemberShipCardActive)
+      const showMembership = membershipTotal
+        ? membershipTotal.count + membershipTotal.designateCount + membershipTotal.point + membershipTotal.priceNoPoint !== 0
+        : false
+      const memberShipCardActive = showMembership || isMemberShipCardActive
 
       setMembershipDisplay(memberShipCardActive)
       if (!memberShipCardActive) {
@@ -104,7 +101,7 @@ export default function HelperPerformance() {
       })
       setExcelData(excelData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [useFetchGetHelperPerformanceData.loading, isMemberShipCardActiveData.loading])
   return (
     <Page title="互助業績報表" className="ui-root">
@@ -112,10 +109,7 @@ export default function HelperPerformance() {
         title="互助業績報表"
         actions={
           <Button asChild variant="secondary">
-            <CSVLink
-              data={excelData}
-              filename="互助業績報表.csv"
-            >
+            <CSVLink data={excelData} filename="互助業績報表.csv">
               <Download strokeWidth={1.75} />
               報表匯出
             </CSVLink>
@@ -140,31 +134,21 @@ export default function HelperPerformance() {
           onChange={(event, value) => setSelectTitle(value.map(d => d.id))}
           renderOption={(props, option, { selected }) => (
             <li {...props}>
-              <Checkbox
-                style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                icon={icon}
-                checkedIcon={checkedIcon}
-                checked={selected}
-              />
+              <Checkbox style={{ color: 'rgb(var(--text))', marginRight: 8 }} icon={icon} checkedIcon={checkedIcon} checked={selected} />
               {option.jobTitle}
             </li>
           )}
-          renderInput={params => (
-            <TextField {...params} variant="outlined" label="人員類別" placeholder="人員名稱" />
-          )}
+          renderInput={params => <TextField {...params} variant="outlined" label="人員類別" placeholder="人員名稱" />}
         />
       </div>
       {useFetchGetHelperPerformanceData.error ? (
-          <QueryFailed onRetry={() => useFetchGetHelperPerformanceData.refetch()} />
-        ) : !useFetchGetHelperPerformanceData.loading ? (
+        <QueryFailed onRetry={() => useFetchGetHelperPerformanceData.refetch()} />
+      ) : !useFetchGetHelperPerformanceData.loading ? (
         idx(useFetchGetHelperPerformanceData, _ =>
           _.data.helperPerformanceReport.length > 0 ? (
             <Results
               membershipDisplay={membershipDisplay}
-              helperPerformanceData={idx(
-                useFetchGetHelperPerformanceData,
-                _ => _.data.helperPerformanceReport
-              )}
+              helperPerformanceData={idx(useFetchGetHelperPerformanceData, _ => _.data.helperPerformanceReport)}
             />
           ) : (
             <EmptyState title="無資料" />

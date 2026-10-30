@@ -10,7 +10,7 @@ export default function useFetchSetIsDisplayNonBankAccountInBankTransferReport()
   const [setIsDisplayNonBankAccountInBankTransferReport] = useMutation(SET_IS_DISPLAY_NON_BANK_ACCOUNT_IN_BANK_TRANSFER_REPORT)
   return {
     setIsDisplayNonBankAccountInBankTransferReport: ({ input }) =>
-    setIsDisplayNonBankAccountInBankTransferReport({
+      setIsDisplayNonBankAccountInBankTransferReport({
         variables: {
           input,
         },

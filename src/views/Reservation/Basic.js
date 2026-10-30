@@ -32,10 +32,7 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
     }
   }, [])
 
-  const {
-    fetchUnspecifiedBookingTimes,
-    unspecifiedBookingTimesResponse,
-  } = useLazyFetchUnspecifiedBookingTimes({
+  const { fetchUnspecifiedBookingTimes, unspecifiedBookingTimesResponse } = useLazyFetchUnspecifiedBookingTimes({
     storeId: merchantId,
     date: values.date,
   })
@@ -44,13 +41,10 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
     if (values.date) {
       fetchUnspecifiedBookingTimes()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（fetchUnspecifiedBookingTimes）；只在 [values.date] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（fetchUnspecifiedBookingTimes）；只在 [values.date] 變動時呼叫，補上會每次 render 重跑
   }, [values.date])
 
-  const {
-    fetchDesignerBookingTimes,
-    designerBookingTimesResponse,
-  } = useLazyFetchDesignerBookingTimes({
+  const { fetchDesignerBookingTimes, designerBookingTimesResponse } = useLazyFetchDesignerBookingTimes({
     designerId: values.designerId,
     storeId: merchantId,
     date: values.date,
@@ -66,7 +60,7 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
     <Card>
       <CardContent className="flex flex-col gap-4">
         <DatePicker
-          format='yyyy/MM/dd'
+          format="yyyy/MM/dd"
           label="希望服務日期"
           value={values.date}
           onChange={event => {
@@ -78,26 +72,20 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
             }
           }}
           localeText={{
-            toolbarTitle: '選擇日期'
+            toolbarTitle: '選擇日期',
           }}
           slotProps={{
             toolbar: {
-              toolbarFormat: 'yyyy年M月d日'
+              toolbarFormat: 'yyyy年M月d日',
             },
             textField: {
               variant: 'outlined',
               fullWidth: true,
-            }
+            },
           }}
         />
 
-        <ToggleGroup
-          fullWidth
-          value={asignDesigner}
-          exclusive
-          onChange={onAssignChange}
-          aria-label="指定不指定設計師"
-        >
+        <ToggleGroup fullWidth value={asignDesigner} exclusive onChange={onAssignChange} aria-label="指定不指定設計師">
           <ToggleGroupItem className="h-10" value={true} aria-label="assign" data-testid="designer-assigned">
             指定
           </ToggleGroupItem>
@@ -148,7 +136,11 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
             }}
             displayEmpty={false}
             placeholder="請選擇…"
-            label={<>服務時間<span className="text-danger"> *</span></>}
+            label={
+              <>
+                服務時間<span className="text-danger"> *</span>
+              </>
+            }
             labelRef={serviceTimeRef}
           >
             <NativeSelectOption aria-label="None" value="" />
@@ -156,11 +148,7 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
               _.data.getBookingTimes.map(data => {
                 return (
                   asignDesigner && (
-                    <NativeSelectOption
-                      value={data.time}
-                      key={data.time}
-                      disabled={data.status === '不可預約'}
-                    >
+                    <NativeSelectOption value={data.time} key={data.time} disabled={data.status === '不可預約'}>
                       {format(new Date(data.time), 'HH:mm')}
                     </NativeSelectOption>
                   )
@@ -172,11 +160,7 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
               _.data.unspecifiedBookingTimes.map(data => {
                 return (
                   !asignDesigner && (
-                    <NativeSelectOption
-                      value={data.time}
-                      key={data.time}
-                      disabled={data.status === '不可預約'}
-                    >
+                    <NativeSelectOption value={data.time} key={data.time} disabled={data.status === '不可預約'}>
                       {format(new Date(data.time), 'HH:mm')}
                     </NativeSelectOption>
                   )

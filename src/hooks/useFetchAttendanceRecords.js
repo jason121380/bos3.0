@@ -60,10 +60,10 @@ const GET_ALL_ATTENDANCE = gql`
 `
 
 export function useFetchAttendanceRecordsLazy(input) {
-  const [attendanceRecordsLazy , attendanceRecordsLazyData] = useLazyQuery(GET_ALL_ATTENDANCE, {
+  const [attendanceRecordsLazy, attendanceRecordsLazyData] = useLazyQuery(GET_ALL_ATTENDANCE, {
     fetchPolicy: 'cache-and-network',
   })
-  return [attendanceRecordsLazy , attendanceRecordsLazyData]
+  return [attendanceRecordsLazy, attendanceRecordsLazyData]
 }
 
 const GET_ATTENDANCE_STATUS = gql`

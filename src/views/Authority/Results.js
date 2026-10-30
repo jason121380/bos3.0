@@ -25,14 +25,13 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
   const { deleteAuthority } = useFetchDeleteAuthority()
   const handleSelectAll = event => {
     const newSelectedAll = event.target.checked
-      ? merchantAuth
-        .filter(data => data.authorityName !== '高階主管')
-        .map(merchantAuth => merchantAuth.id)
+      ? merchantAuth.filter(data => data.authorityName !== '高階主管').map(merchantAuth => merchantAuth.id)
       : []
     setSelected(newSelectedAll)
   }
   const handleSelectOne = id => {
-    const newSelect = [...selected], index = newSelect.indexOf(id)
+    const newSelect = [...selected],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -93,9 +92,7 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
         <CardHeader className="pb-4">
           <div className="flex items-baseline gap-3">
             <CardTitle>角色權限列表</CardTitle>
-            <span className="text-label tabular-nums text-text-secondary">
-              共 {merchantAuth.length} 筆
-            </span>
+            <span className="text-label tabular-nums text-text-secondary">共 {merchantAuth.length} 筆</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -105,16 +102,8 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
                 <TableHead className="w-12">
                   <Checkbox
                     aria-label="全選"
-                    checked={
-                      selected.length ===
-                      merchantAuth.filter(d => d.authorityName !== '高階主管').length &&
-                      merchantAuth.length > 0
-                    }
-                    indeterminate={
-                      selected.length > 0 &&
-                      selected.length <
-                      merchantAuth.filter(d => d.authorityName !== '高階主管').length
-                    }
+                    checked={selected.length === merchantAuth.filter(d => d.authorityName !== '高階主管').length && merchantAuth.length > 0}
+                    indeterminate={selected.length > 0 && selected.length < merchantAuth.filter(d => d.authorityName !== '高階主管').length}
                     onChange={handleSelectAll}
                     disabled={merchantAuth.length === 0}
                   />
@@ -152,10 +141,7 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
                         </Button>
                       ) : (
                         <Button asChild variant="ghost" size="icon" className="text-text-secondary">
-                          <RouterLink
-                            aria-label="編輯角色"
-                            to={data.authorityName === '高階主管' ? undefined : `/role/edit/${data.id}`}
-                          >
+                          <RouterLink aria-label="編輯角色" to={data.authorityName === '高階主管' ? undefined : `/role/edit/${data.id}`}>
                             <Pencil strokeWidth={1.75} />
                           </RouterLink>
                         </Button>
@@ -164,15 +150,9 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
                     <TableCell>{data.authorityName}</TableCell>
                     <TableCell numeric>{formatNumber(data.usingDesignerCount)}</TableCell>
                     <TableCell>
-                      <Switch
-                        size="small"
-                        checked={data.isDefault}
-                        onClick={() => handleSetDefaltAuth(data.id)}
-                      />
+                      <Switch size="small" checked={data.isDefault} onClick={() => handleSetDefaltAuth(data.id)} />
                     </TableCell>
-                    <TableCell>
-                      {authStatus[index] && <Badge variant={authStatusVariant(authStatus[index])}>{authStatus[index]}</Badge>}
-                    </TableCell>
+                    <TableCell>{authStatus[index] && <Badge variant={authStatusVariant(authStatus[index])}>{authStatus[index]}</Badge>}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>

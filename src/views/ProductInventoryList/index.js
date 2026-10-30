@@ -37,7 +37,7 @@ const ProductInventoryList = () => {
       const data = (idx(productCategories, _ => _.data.productCategories) || []).map(d => d.name)
       setCategoryOption(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productCategories.loading])
 
   useEffect(() => {
@@ -47,9 +47,9 @@ const ProductInventoryList = () => {
       switch (sortType) {
         case 'COUNT':
           sortData = sortData.sort((a, b) => {
-            return (a.count < b.count) ? -1 : (a.count > b.count) ? 1 : 0
+            return a.count < b.count ? -1 : a.count > b.count ? 1 : 0
           })
-          break;
+          break
         case 'VENDOR':
           sortData = sortData.sort((x, y) => {
             const reg = /[a-zA-Z0-9]/
@@ -70,7 +70,7 @@ const ProductInventoryList = () => {
           const nullData = sortData.filter(d => d.vendorName === null)
           const filterData = sortData.filter(d => d.vendorName !== null)
           sortData = [...filterData, ...nullData]
-          break;
+          break
         case 'PRODUCTNO':
           sortData = sortData.sort((x, y) => {
             const reg = /[a-zA-Z0-9]/
@@ -88,7 +88,7 @@ const ProductInventoryList = () => {
               return xName.localeCompare(yName)
             }
           })
-          break;
+          break
         case 'CATEGORY':
           sortData = sortData.sort((x, y) => {
             const reg = /[a-zA-Z0-9]/
@@ -106,7 +106,7 @@ const ProductInventoryList = () => {
               return xName.localeCompare(yName)
             }
           })
-          break;
+          break
         default:
           // 其他值不處理（與原本沒有 default 時相同）
           break
@@ -116,20 +116,17 @@ const ProductInventoryList = () => {
       }
       setReportData([...sortData])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productInventoryList.loading, sortType, selectCategory])
 
   return (
-    <Page className='ProductInventoryList ui-root' title="商品庫存表">
+    <Page className="ProductInventoryList ui-root" title="商品庫存表">
       <div>
         <PageHeader
-          title='商品庫存表'
+          title="商品庫存表"
           actions={
             <>
-              <Button
-                onClick={() => window.print()}
-                variant="secondary"
-              >
+              <Button onClick={() => window.print()} variant="secondary">
                 <Printer strokeWidth={1.75} />
                 列印
               </Button>
@@ -158,23 +155,12 @@ const ProductInventoryList = () => {
                   options={categoryOption}
                   getOptionLabel={option => option}
                   onChange={(event, value) => setSelectCategory(value)}
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      label="篩選商品分類"
-                    />
-                  )}
+                  renderInput={params => <TextField {...params} variant="outlined" label="篩選商品分類" />}
                 />
               </div>
               <div>
                 <div className="divText mb-2 text-caption text-text-secondary">排序依據：</div>
-                <ToggleGroup
-                  size="small"
-                  value={sortType}
-                  onChange={(e, value) => value && setSortType(value)}
-                  exclusive
-                >
+                <ToggleGroup size="small" value={sortType} onChange={(e, value) => value && setSortType(value)} exclusive>
                   {sortEnum.map((data, idx) => (
                     <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                       {data.label}
@@ -257,7 +243,9 @@ const ProductInventoryList = () => {
         </div> */}
         {productInventoryList.error ? (
           <QueryFailed onRetry={() => productInventoryList.refetch()} />
-        ) : !productInventoryList.loading ? <Results reportData={reportData} /> : (
+        ) : !productInventoryList.loading ? (
+          <Results reportData={reportData} />
+        ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示
           <div className="noprint" aria-busy="true" aria-label="載入中">
             <Skeleton className="h-[320px] w-full rounded-lg" />

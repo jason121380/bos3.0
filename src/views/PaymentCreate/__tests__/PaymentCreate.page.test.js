@@ -104,7 +104,9 @@ describe('新增支付方式', () => {
     await settle()
     fillValid()
     fireEvent.click(submit())
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('名稱重複') })))
+    await wait(() =>
+      expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('名稱重複') }))
+    )
     expect(callsOf(calls, 'CREATE_PAYMENT')).toHaveLength(1)
     expect(currentLocation()).toBe('/payment/create')
   })

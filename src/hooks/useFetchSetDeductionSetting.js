@@ -10,7 +10,7 @@ export function useFetchCreateDeductionSetting() {
   const [createDeductionSetting] = useMutation(CREATE_DEDUCTION_SETTING)
   return {
     createDeductionSetting: input =>
-    createDeductionSetting({
+      createDeductionSetting({
         variables: {
           input,
         },
@@ -45,7 +45,7 @@ export function useFetchDeleteDeductionSetting() {
   const [deleteDeductionSetting] = useMutation(DELETE_DEDUCTION_SETTING)
   return {
     deleteDeductionSetting: DeductionId =>
-    deleteDeductionSetting({
+      deleteDeductionSetting({
         variables: {
           DeductionId,
         },

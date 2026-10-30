@@ -41,15 +41,8 @@ export default function () {
   }
   const cellphoneRegex = new RegExp('^09[0-9]{8}$')
   const isValidInput = isAssign
-    ? values.merchantId &&
-      values.dateTime &&
-      values.designerId &&
-      values.customers.main.name &&
-      cellphoneRegex.test(values.customers.main.cellphone)
-    : values.merchantId &&
-      values.dateTime &&
-      values.customers.main.name &&
-      cellphoneRegex.test(values.customers.main.cellphone)
+    ? values.merchantId && values.dateTime && values.designerId && values.customers.main.name && cellphoneRegex.test(values.customers.main.cellphone)
+    : values.merchantId && values.dateTime && values.customers.main.name && cellphoneRegex.test(values.customers.main.cellphone)
 
   const isValidFriendsInput = Object.keys(values.customers)
     .filter(key => key !== 'main')
@@ -121,8 +114,8 @@ export default function () {
               ? values.customers.main.designerService.map(data => data.name).toString()
               : []
             : bookingCategoryNames.length !== 0
-            ? (bookingCategoryNames.find(data => data.type === 'main')?.name ?? '')
-            : []
+              ? (bookingCategoryNames.find(data => data.type === 'main')?.name ?? '')
+              : []
 
           const messaes = []
           if (data.nonDesignationBooking.status === '待審核') {
@@ -153,10 +146,7 @@ export default function () {
 服務: ${service}`,
             })
           }
-          if (
-            getQueryString({ key: 'usingLineLogin', location }) === '1' ||
-            !getQueryString({ key: 'usingLineLogin', location })
-          ) {
+          if (getQueryString({ key: 'usingLineLogin', location }) === '1' || !getQueryString({ key: 'usingLineLogin', location })) {
             window.liff.closeWindow()
             window.liff.sendMessages(messaes)
           }
@@ -207,8 +197,8 @@ export default function () {
               ? values.customers.main.designerService.map(data => data.name).toString()
               : []
             : bookingCategoryNames.length !== 0
-            ? (bookingCategoryNames.find(data => data.type === 'main')?.name ?? '')
-            : []
+              ? (bookingCategoryNames.find(data => data.type === 'main')?.name ?? '')
+              : []
 
           const messaes = []
           if (data.bookingV2.status === '待審核') {
@@ -238,10 +228,7 @@ export default function () {
 服務: ${service}`,
             })
           }
-          if (
-            getQueryString({ key: 'usingLineLogin', location }) === '1' ||
-            !getQueryString({ key: 'usingLineLogin', location })
-          ) {
+          if (getQueryString({ key: 'usingLineLogin', location }) === '1' || !getQueryString({ key: 'usingLineLogin', location })) {
             window.liff.closeWindow()
             window.liff.sendMessages(messaes)
           }
@@ -294,12 +281,7 @@ export default function () {
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-      <Basic
-        asignDesigner={isAssign}
-        onChange={handleChange}
-        onAssignChange={handleAssignChange}
-        onDesignerChange={handleDesignerChange}
-      />
+      <Basic asignDesigner={isAssign} onChange={handleChange} onAssignChange={handleAssignChange} onDesignerChange={handleDesignerChange} />
 
       {Object.keys(values.customers).map((customer, index) => (
         <Customer

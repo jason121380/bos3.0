@@ -26,7 +26,7 @@ function EventRuleEdit({ match }) {
     name: '',
     start: new Date().getTime(),
     end: new Date().getTime(),
-    maxCount: 0
+    maxCount: 0,
   })
   // 編輯頁多一個 mainEventId，查詢回來後由 newData 整份覆蓋
   const [inputValue, setInputValue] = useState({ mainEventId: '', ...createRuleInput() })
@@ -37,7 +37,7 @@ function EventRuleEdit({ match }) {
       const data = (idx(getAttribution, _ => _.data.getAttribution) || []).map(({ name }) => name)
       setAttributions(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAttribution.loading])
 
   useEffect(() => {
@@ -46,10 +46,24 @@ function EventRuleEdit({ match }) {
       // 規則查詢失敗或查無規則時不帶入（原本解構 undefined 整頁進入錯誤畫面）
       if (!group) return
       const {
-        mainEventId, nameForGroup, nameDefault, startDateDefault, endDateDefault, startDateForGroup,
-        endDateForGroup, isSMSNotifyForGroup, maxCountForGroup, maxCountPerOrder, maxCountDefault,
-        thresholdPrice, consumptionTypeUsing, consumptionTypeRules, payTypeUsing, merchants, endDateActual,
-        walletDepositRules
+        mainEventId,
+        nameForGroup,
+        nameDefault,
+        startDateDefault,
+        endDateDefault,
+        startDateForGroup,
+        endDateForGroup,
+        isSMSNotifyForGroup,
+        maxCountForGroup,
+        maxCountPerOrder,
+        maxCountDefault,
+        thresholdPrice,
+        consumptionTypeUsing,
+        consumptionTypeRules,
+        payTypeUsing,
+        merchants,
+        endDateActual,
+        walletDepositRules,
       } = group
 
       const newData = {
@@ -63,37 +77,37 @@ function EventRuleEdit({ match }) {
         consumptionTypeUsing,
         service: {
           type: '',
-          belong: []
+          belong: [],
         },
         ticketSellInPerformance: {
           type: '',
-          belong: []
+          belong: [],
         },
         ticketSellNotInPerformance: {
           type: '',
-          belong: []
+          belong: [],
         },
         ticketUsePerformanceEntered: {
           type: '',
-          belong: []
+          belong: [],
         },
         ticketUsePerformanceNotEntered: {
           type: '',
-          belong: []
+          belong: [],
         },
         walletDepositForCash: {
           using: false,
-          price: 0
+          price: 0,
         },
         walletDepositForOtherPay: {
           using: false,
-          price: 0
+          price: 0,
         },
         payTypeUsing,
         thresholdPrice,
         isSMSNotifyForGroup,
         maxCountForGroup,
-        maxCountPerOrder
+        maxCountPerOrder,
       }
 
       consumptionTypeRules.forEach(({ consumptionType, attributionRange, attributions }) => {
@@ -104,7 +118,7 @@ function EventRuleEdit({ match }) {
       walletDepositRules.forEach(({ payType, depositThreshold }) => {
         const obj = {
           CASH: 'walletDepositForCash',
-          OTHERPAY: 'walletDepositForOtherPay'
+          OTHERPAY: 'walletDepositForOtherPay',
         }
         newData[obj[payType]].using = true
         newData[obj[payType]].price = depositThreshold
@@ -117,10 +131,10 @@ function EventRuleEdit({ match }) {
         name: nameDefault,
         start: startDateDefault,
         end: endDateDefault,
-        maxCount: maxCountDefault
+        maxCount: maxCountDefault,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getEventRule.loading])
 
   const handleSubmit = async () => {
@@ -130,27 +144,26 @@ function EventRuleEdit({ match }) {
       const submitData = buildRuleSubmitData(inputValue, inputValue.mainEventId)
       const res = await updateRule({
         id: match.params.id,
-        eventRuleGroup: submitData
+        eventRuleGroup: submitData,
       })
 
       if (res.data.updateEventRuleGroup) {
         openSnackbar({
           message: '儲存成功',
-          variant: 'success'
+          variant: 'success',
         })
         history.push('/main-event-list')
       } else {
         openSnackbar({
           message: '儲存失敗',
-          variant: 'warning'
+          variant: 'warning',
         })
         setIsClick(false)
       }
-
     } catch (error) {
       openSnackbar({
         message: error.message,
-        variant: 'error'
+        variant: 'error',
       })
       setIsClick(false)
     }

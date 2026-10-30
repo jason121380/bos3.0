@@ -3,8 +3,18 @@ const helperDeduction = (deductionData, setHelperPoint, setHelperDeductionNums, 
   const helperDeductionNumsArray = []
   deductionData.forEach(data => {
     const {
-      isDesignate, nameList, isSplitted, percent, designatePercent, nonDesignatePercent,
-      point, designatePoint, nonDesignatePoint, designateCash, nonDesignateCash, cash
+      isDesignate,
+      nameList,
+      isSplitted,
+      percent,
+      designatePercent,
+      nonDesignatePercent,
+      point,
+      designatePoint,
+      nonDesignatePoint,
+      designateCash,
+      nonDesignateCash,
+      cash,
     } = data
     switch (data.deductionWay) {
       case '固定金額':
@@ -23,14 +33,14 @@ const helperDeduction = (deductionData, setHelperPoint, setHelperDeductionNums, 
       case '業績%數':
         if (isDesignate) {
           const percent = Math.max(designatePercent, nonDesignatePercent) * nameList.length
-          const deduction = parseInt(servicePrice * percent / 100, 10)
+          const deduction = parseInt((servicePrice * percent) / 100, 10)
           helperDeductionNumsArray.push(deduction)
         } else {
           if (isSplitted) {
-            helperDeductionNumsArray.push(parseInt(servicePrice * percent / 100, 10))
+            helperDeductionNumsArray.push(parseInt((servicePrice * percent) / 100, 10))
           } else {
             const totalPercent = percent * nameList.length
-            helperDeductionNumsArray.push(parseInt(servicePrice * totalPercent / 100, 10))
+            helperDeductionNumsArray.push(parseInt((servicePrice * totalPercent) / 100, 10))
           }
         }
         break

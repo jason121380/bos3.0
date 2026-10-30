@@ -63,20 +63,21 @@ label {
   color: #ffffffd6;
 }
 
-svg.MuiSvgIcon-root[data-testid=CheckBoxOutlineBlankIcon],
-svg.MuiSvgIcon-root[data-testid=CheckBoxIcon] {
-  color: #4581df !important
+svg.MuiSvgIcon-root[data-testid='CheckBoxOutlineBlankIcon'],
+svg.MuiSvgIcon-root[data-testid='CheckBoxIcon'] {
+  color: #4581df !important;
 }
 
 .system-update-record-span {
-  &, span {
+  &,
+  span {
     color: #fff !important;
   }
 }
 
 .ScheduleCard {
   svg {
-    color: #4581df !important
+    color: #4581df !important;
   }
 }
 
@@ -145,7 +146,7 @@ div.versionUpdateTime {
   div.forPrint {
     display: grid;
     grid-template-columns: 190px 190px 190px 190px;
-    padding-top: 20px
+    padding-top: 20px;
   }
   div.forPrintHelper {
     display: grid;
@@ -252,14 +253,14 @@ div.versionUpdateTime {
       page-break-before: auto;
       page-break-inside: avoid;
       page-break-after: auto;
-      margin-bottom: 30px
+      margin-bottom: 30px;
     }
     table {
       tbody tr {
         border-top: 1px solid black !important;
       }
       tbody tr td,
-      thead tr th{
+      thead tr th {
         border: none;
       }
     }
@@ -327,7 +328,7 @@ div.versionUpdateTime {
           outline: none;
           tr {
             outline: none;
-            th{
+            th {
               border-top: 1px solid black;
             }
           }
@@ -527,7 +528,8 @@ div.versionUpdateTime {
         margin-right: -1px;
         .DecreaseDailyReportCardTable {
           tr {
-            th, td {
+            th,
+            td {
               word-break: break-all;
               &:first-child {
                 min-width: 30px;
@@ -545,7 +547,7 @@ div.versionUpdateTime {
             border-bottom: 1px solid black;
           }
         }
-      } 
+      }
     }
   }
   .HelperMonthlyReport {
@@ -553,7 +555,8 @@ div.versionUpdateTime {
     border-radius: 0;
     border: 1px solid black;
     table {
-      tr td, tr th {
+      tr td,
+      tr th {
         border-bottom: 1px solid black !important;
       }
     }
@@ -578,7 +581,7 @@ div.versionUpdateTime {
         page-break-inside: avoid;
         margin-bottom: 0;
         table td {
-          border-bottom: .5px solid black;
+          border-bottom: 0.5px solid black;
           padding: 1px 1px 1px 3px;
           font-size: 13px !important;
         }
@@ -591,7 +594,7 @@ div.versionUpdateTime {
           td {
             width: 150px !important;
             span {
-              font-size: 13px!important;
+              font-size: 13px !important;
             }
             .nowrap {
               width: 70px;
@@ -720,7 +723,7 @@ div.versionUpdateTime {
         width: 100%;
         border: 1px solid black;
         table-layout: fixed;
-        thead tr th{
+        thead tr th {
           border-bottom: 1px solid black !important;
           white-space: break-spaces;
           &:first-child {
@@ -741,13 +744,14 @@ div.versionUpdateTime {
               }
             }
             &:nth-child(even) td {
-              border-bottom: .5px solid black;
+              border-bottom: 0.5px solid black;
             }
             &:last-child td {
               border-bottom: 1px solid black;
             }
           }
-          tr:nth-child(4n) , tr:nth-child(4n-1){
+          tr:nth-child(4n),
+          tr:nth-child(4n-1) {
             td {
               background-color: #efefef;
             }
@@ -756,7 +760,7 @@ div.versionUpdateTime {
         tbody.sumPerformance {
           tr td {
             word-break: break-all;
-            border-bottom: .5px solid black;
+            border-bottom: 0.5px solid black;
           }
         }
       }
@@ -770,7 +774,10 @@ div.versionUpdateTime {
       border-radius: 0;
       border: none;
       max-height: unset !important;
-      table, tr, th, td {
+      table,
+      tr,
+      th,
+      td {
         border: none;
         outline: none;
       }
@@ -781,7 +788,8 @@ div.versionUpdateTime {
         thead tr {
           position: relative;
         }
-        th, td {
+        th,
+        td {
           border-top: 1px solid black;
           &:first-child {
             position: relative;
@@ -796,7 +804,7 @@ div.versionUpdateTime {
     border-top: none;
     box-shadow: none;
     table {
-      thead tr th, 
+      thead tr th,
       tbody tr td {
         white-space: pre-line !important;
         word-break: break-all;
@@ -819,7 +827,8 @@ div.versionUpdateTime {
       max-height: unset !important;
       table {
         border: 1px solid black;
-        td, th {
+        td,
+        th {
           border: none;
         }
         th {
@@ -838,7 +847,10 @@ div.versionUpdateTime {
     border-radius: 0;
     border: none;
     max-height: unset !important;
-    table, tr, th, td {
+    table,
+    tr,
+    th,
+    td {
       border: none;
       outline: none;
     }
@@ -849,7 +861,8 @@ div.versionUpdateTime {
       thead tr {
         position: relative;
       }
-      th, td {
+      th,
+      td {
         border-top: 1px solid black;
         &:first-child {
           position: relative;
@@ -863,7 +876,8 @@ div.versionUpdateTime {
     margin: 0;
     .DesignerMonthlyReportTable {
       border: 1px solid black;
-      td, th {
+      td,
+      th {
         border: none;
         background-color: transparent;
       }
@@ -995,9 +1009,9 @@ div.versionUpdateTime {
           }
           &:first-child {
             width: 150px;
-            cursor:default;
-            justify-content:flex-start;
-            &:hover{
+            cursor: default;
+            justify-content: flex-start;
+            &:hover {
               background: #202020;
             }
           }
@@ -1101,7 +1115,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox hide input type number arrow*/
-input[type=number] {
+input[type='number'] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
@@ -1113,18 +1127,18 @@ input[type=number] {
 .designerPerformanceReport {
   .designerPerformanceReportTable {
     table tbody.designerPerformance {
-      tr:nth-child(4n){
+      tr:nth-child(4n) {
         td {
           background-color: #2f2f2f;
         }
       }
-      tr:nth-child(4n-1){
+      tr:nth-child(4n-1) {
         td {
           background-color: #2f2f2f;
           border-bottom: none !important;
         }
       }
-      tr:nth-child(2n+1){
+      tr:nth-child(2n + 1) {
         td {
           border-bottom: none !important;
         }
@@ -1151,7 +1165,8 @@ input[type=number] {
 }
 .BusinessItemsMonthlyAnalyzeReportTable {
   table-layout: auto;
-  th, td {
+  th,
+  td {
     white-space: nowrap !important;
   }
   td {
@@ -1198,7 +1213,7 @@ input[type=number] {
   }
   .hoverItem {
     &:hover {
-      transition: .3s background-color;
+      transition: 0.3s background-color;
       background-color: rgb(228, 252, 237);
       mix-blend-mode: color;
     }
@@ -1209,10 +1224,18 @@ input[type=number] {
     animation-iteration-count: infinite;
   }
   @keyframes remark {
-    0% { transform: translateX(0px); }
-    45% { transform: translateX(calc(140px - 100%));  }
-    55% { transform: translateX(calc(140px - 100%));  }
-    100% { transform: translateX(0px);  }
+    0% {
+      transform: translateX(0px);
+    }
+    45% {
+      transform: translateX(calc(140px - 100%));
+    }
+    55% {
+      transform: translateX(calc(140px - 100%));
+    }
+    100% {
+      transform: translateX(0px);
+    }
   }
 }
 

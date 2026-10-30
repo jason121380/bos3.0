@@ -9,7 +9,15 @@ jest.mock('react-csv', () => ({ CSVLink: ({ children }) => <a href="#csv">{child
 jest.setTimeout(20000)
 
 const card = (uuid, name, isUsing = true) => ({
-  uuid, no: uuid, name, isUsing, membershipCategory: null, cost: 0, sellPrice: 0, updatedAt: 0, creator: null,
+  uuid,
+  no: uuid,
+  name,
+  isUsing,
+  membershipCategory: null,
+  cost: 0,
+  sellPrice: 0,
+  updatedAt: 0,
+  creator: null,
 })
 
 beforeEach(() => loginAs())

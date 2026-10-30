@@ -38,14 +38,7 @@ const assistantNum = [
 // 新增服務／編輯服務共用（2026/10/28 自兩頁合併，畫面與行為逐字保留）。
 // 「協助人員人數」下拉一律綁定目前人數（nameList.length），與編輯頁相同（2026/10/30）。新增頁原本沒有綁 value，
 // 下拉只記住自己選過的值：按「清除此互助設定」後資料已歸零，畫面仍顯示舊人數，與送出資料不一致。
-function AboutAssistantSetting({
-  className,
-  support,
-  helperDeductionType,
-  onChange,
-  merchantHelperItems,
-  ...rest
-}) {
+function AboutAssistantSetting({ className, support, helperDeductionType, onChange, merchantHelperItems, ...rest }) {
   const inputLabel = useRef()
 
   const handleAddAssistantContent = () => {
@@ -342,9 +335,7 @@ function AboutAssistantSetting({
                     variant="outlined"
                     label={`指定${content.deductionWay}`}
                     value={handleReturnDeductionValue(content, content.deductionWay, true)}
-                    onChange={event =>
-                      handleDesignateDeductionWayInput(event, index, content.deductionWay)
-                    }
+                    onChange={event => handleDesignateDeductionWayInput(event, index, content.deductionWay)}
                     onWheel={() => document.activeElement.blur()}
                   />
                   <TextField
@@ -354,9 +345,7 @@ function AboutAssistantSetting({
                     variant="outlined"
                     label={`不指定${content.deductionWay}`}
                     value={handleReturnDeductionValue(content, content.deductionWay, false)}
-                    onChange={event =>
-                      handleNonDesignateDeductionWayInput(event, index, content.deductionWay)
-                    }
+                    onChange={event => handleNonDesignateDeductionWayInput(event, index, content.deductionWay)}
                     onWheel={() => document.activeElement.blur()}
                   />
                 </div>
@@ -387,9 +376,7 @@ function AboutAssistantSetting({
                       variant="outlined"
                       label={content.deductionWay}
                       value={handleReturnValue(content, content.deductionWay, content.isDesignate)}
-                      onChange={event =>
-                        handleDeductionWayInput(event, index, content.deductionWay)
-                      }
+                      onChange={event => handleDeductionWayInput(event, index, content.deductionWay)}
                       onWheel={() => document.activeElement.blur()}
                     />
                   </div>
@@ -437,13 +424,7 @@ function AboutAssistantSetting({
                 </Button>
               )}
               {index === support.length - 1 && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-text-secondary"
-                  aria-label="新增互助設定"
-                  onClick={handleAddAssistantContent}
-                >
+                <Button variant="ghost" size="icon" className="text-text-secondary" aria-label="新增互助設定" onClick={handleAddAssistantContent}>
                   <Plus strokeWidth={1.75} />
                 </Button>
               )}

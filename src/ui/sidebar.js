@@ -60,13 +60,14 @@ export function releaseSidebarFlyout(close) {
 function Sidebar({ mobileOpen, onMobileClose, desktopOpen = true, className, children }) {
   return (
     <SidebarRailContext.Provider value={!desktopOpen}>
-      {mobileOpen && (
-        <div aria-hidden="true" className="noprint fixed inset-0 z-[1190] bg-black/40 lg:hidden" onClick={onMobileClose} />
-      )}
+      {mobileOpen && <div aria-hidden="true" className="noprint fixed inset-0 z-[1190] bg-black/40 lg:hidden" onClick={onMobileClose} />}
       {/* iPhone PWA（viewport-fit=cover）狀態列畫在網頁最上方的安全區上：抽屜打開時遮罩（黑 40%）與抽屜淺灰底會把狀態列染灰。
           這條白色（canvas）細條只蓋住頂部安全區，讓狀態列維持純白、文字維持深色；一般瀏覽器安全區為 0，不顯示。純畫面，不攔點擊。 */}
       {mobileOpen && (
-        <div aria-hidden="true" className="noprint pointer-events-none fixed inset-x-0 top-0 z-[1201] h-[env(safe-area-inset-top)] bg-canvas lg:hidden" />
+        <div
+          aria-hidden="true"
+          className="noprint pointer-events-none fixed inset-x-0 top-0 z-[1201] h-[env(safe-area-inset-top)] bg-canvas lg:hidden"
+        />
       )}
       <aside
         data-rail={desktopOpen ? undefined : 'true'}
@@ -95,13 +96,14 @@ const SidebarContent = ({ className, ...props }) => (
   <nav className={cn('flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 pb-4 lg:group-data-[rail=true]/sidebar:px-1.5', className)} {...props} />
 )
 
-const SidebarFooter = ({ className, ...props }) => (
-  <div className={cn('px-3 py-3 lg:group-data-[rail=true]/sidebar:px-1.5', className)} {...props} />
-)
+const SidebarFooter = ({ className, ...props }) => <div className={cn('px-3 py-3 lg:group-data-[rail=true]/sidebar:px-1.5', className)} {...props} />
 
 // 區段標題：14px、text-tertiary（Grok 式分組標籤）。圖示欄不顯示文字標題。
 const SidebarLabel = ({ className, ...props }) => (
-  <div className={cn('px-2.5 pb-1.5 pt-4 text-label font-normal text-text-tertiary lg:group-data-[rail=true]/sidebar:hidden', className)} {...props} />
+  <div
+    className={cn('px-2.5 pb-1.5 pt-4 text-label font-normal text-text-tertiary lg:group-data-[rail=true]/sidebar:hidden', className)}
+    {...props}
+  />
 )
 
 const rowClass = cn(
@@ -115,11 +117,20 @@ const labelClass = 'flex-1 truncate lg:group-data-[rail=true]/sidebar:hidden'
 
 // 可收合的群組列（如「櫃檯作業」）
 const SidebarGroupButton = React.forwardRef(({ icon: Icon, open, hideChevron, className, children, ...props }, ref) => (
-  <button ref={ref} type="button" aria-expanded={hideChevron ? undefined : open} className={cn(rowClass, 'font-medium text-text', className)} {...props}>
+  <button
+    ref={ref}
+    type="button"
+    aria-expanded={hideChevron ? undefined : open}
+    className={cn(rowClass, 'font-medium text-text', className)}
+    {...props}
+  >
     {Icon && <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} />}
     <span className={labelClass}>{children}</span>
     {!hideChevron && (
-      <ChevronDown className={cn('h-4 w-4 shrink-0 text-text-tertiary transition-transform lg:group-data-[rail=true]/sidebar:hidden', !open && '-rotate-90')} strokeWidth={1.75} />
+      <ChevronDown
+        className={cn('h-4 w-4 shrink-0 text-text-tertiary transition-transform lg:group-data-[rail=true]/sidebar:hidden', !open && '-rotate-90')}
+        strokeWidth={1.75}
+      />
     )}
   </button>
 ))
@@ -227,16 +238,16 @@ function SidebarFlyout({ id, anchorRef, label, autoFocus, onMouseEnter, onMouseL
         viewportWidth: window.innerWidth,
         viewportHeight: window.innerHeight,
       })
-      setBox(prev => (
-        prev
-        && prev.top === next.top
-        && prev.left === next.left
-        && prev.height === next.height
-        && prev.maxWidth === next.maxWidth
-        && prev.paddingLeft === next.paddingLeft
+      setBox(prev =>
+        prev &&
+        prev.top === next.top &&
+        prev.left === next.left &&
+        prev.height === next.height &&
+        prev.maxWidth === next.maxWidth &&
+        prev.paddingLeft === next.paddingLeft
           ? prev
           : next
-      ))
+      )
     }
     update()
     window.addEventListener('resize', update)
@@ -281,13 +292,4 @@ function SidebarFlyout({ id, anchorRef, label, autoFocus, onMouseEnter, onMouseL
   )
 }
 
-export {
-  Sidebar,
-  SidebarHeader,
-  SidebarContent,
-  SidebarFooter,
-  SidebarLabel,
-  SidebarGroupButton,
-  SidebarLink,
-  SidebarFlyout,
-}
+export { Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarLabel, SidebarGroupButton, SidebarLink, SidebarFlyout }

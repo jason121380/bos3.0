@@ -128,9 +128,7 @@ function Results({
     orders.forEach(order => {
       excelData.push({
         帳單編號: `#${order.no}`,
-        時間: `${format(new Date(order.date), 'yyyy/MM/dd')}/${weekDisplay(
-          format(new Date(order.date), 'eeee')
-        )}`,
+        時間: `${format(new Date(order.date), 'yyyy/MM/dd')}/${weekDisplay(format(new Date(order.date), 'eeee'))}`,
         客戶: isCustomerDataMarked
           ? maskCustomerForExport(order.customer.name, order.customer.cellphone)
           : `${order.customer.name} ${order.customer.cellphone}`,
@@ -151,7 +149,7 @@ function Results({
         '入金使用(-)': order.walletUsedForDecount,
         '點數折抵金額(-)': order.bonusDecountForReport,
         備註: order.remark,
-        帳單來源: order.source
+        帳單來源: order.source,
       })
     })
     if (!membershipDisplay) {
@@ -171,7 +169,7 @@ function Results({
     if (printOrderDetail.length > 0) {
       printDiv()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（printDiv）；只在 [printOrderDetail] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（printDiv）；只在 [printOrderDetail] 變動時呼叫，補上會每次 render 重跑
   }, [printOrderDetail])
   const printDiv = () => {
     var printMain = document.getElementById('printMain')
@@ -184,29 +182,21 @@ function Results({
     }
 
     if (orderDetailPrintLayout === 'A4') {
-      newWin.document.write(
-        '<html><body onload="window.print()" style="margin: 0mm 5mm;">' +
-        printMain.innerHTML +
-        '</body></html>'
-      )
+      newWin.document.write('<html><body onload="window.print()" style="margin: 0mm 5mm;">' + printMain.innerHTML + '</body></html>')
     } else if (orderDetailPrintLayout === '感熱紙(80mm)') {
       newWin.document.write(
         '<html style="width: 78mm;"><style>@page {margin: 1mm; width:78mm;}</style><body onload="window.print()">' +
-        printThermal.innerHTML +
-        '</body></html>'
+          printThermal.innerHTML +
+          '</body></html>'
       )
     } else if (orderDetailPrintLayout === '感熱紙(57mm)') {
       newWin.document.write(
         '<html style="width: 56mm;"><style>@page {margin: 1mm; width:56mm;}</style><body onload="window.print()">' +
-        printThermal.innerHTML +
-        '</body></html>'
+          printThermal.innerHTML +
+          '</body></html>'
       )
     } else {
-      newWin.document.write(
-        '<html><style>@page {margin: 1mm;}</style><body onload="window.print()">' +
-        printThermal.innerHTML +
-        '</body></html>'
-      )
+      newWin.document.write('<html><style>@page {margin: 1mm;}</style><body onload="window.print()">' + printThermal.innerHTML + '</body></html>')
     }
 
     if (closureDelayed) {
@@ -215,7 +205,7 @@ function Results({
       }, 100)
       setTimeout(() => {
         newWin.close()
-      }, 10000);
+      }, 10000)
     } else {
       newWin.document.close()
       setTimeout(function () {
@@ -228,7 +218,8 @@ function Results({
     setSelectedOrders(newSelectedPayment)
   }
   const handleSelectOne = id => {
-    const newSelect = [...selectedOrders], index = newSelect.indexOf(id)
+    const newSelect = [...selectedOrders],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -237,7 +228,8 @@ function Results({
     setSelectedOrders(newSelect)
   }
   const handleOrderExtend = id => {
-    const newSelect = [...orderExtendArr], index = newSelect.indexOf(id)
+    const newSelect = [...orderExtendArr],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -302,12 +294,12 @@ function Results({
     )
     setCashPayment(
       servicePriceWithoutThirdPartyCoupon +
-      productPriceWithoutThirdPartyCoupon +
-      membershipWithoutThirdPartyCoupon +
-      couponSellPrice -
-      Math.abs(filterOrder[0].walletUsedForDecount) -
-      Math.abs(filterOrder[0].otherPayWayForDecount) -
-      Math.abs(filterOrder[0].bonusDecountForReport)
+        productPriceWithoutThirdPartyCoupon +
+        membershipWithoutThirdPartyCoupon +
+        couponSellPrice -
+        Math.abs(filterOrder[0].walletUsedForDecount) -
+        Math.abs(filterOrder[0].otherPayWayForDecount) -
+        Math.abs(filterOrder[0].bonusDecountForReport)
     )
     setCouponSellPrice(couponSellPrice)
     setPrintOrderDetail(filterOrder)
@@ -388,7 +380,7 @@ function Results({
       bonusUsed: Order.bonusUsed,
       remark: Order.remark,
       source: Order.source,
-      serialNumber: Order.serialNumber
+      serialNumber: Order.serialNumber,
     }
     fetchReCheckoutOrder({
       updateOrderId: Order.id,
@@ -489,7 +481,7 @@ function Results({
       bonusUsed: Order.bonusUsed,
       remark: Order.remark,
       source: Order.source,
-      serialNumber: Order.serialNumber
+      serialNumber: Order.serialNumber,
     }
     fetchReCheckoutOrder({
       updateOrderId: Order.id,
@@ -521,22 +513,22 @@ function Results({
       const { bonusDeposit, bonusUsed, bonusDecountForReport } = printOrderDetail[0]
       const bonus = bonusDeposit !== 0 || bonusUsed !== 0 || bonusDecountForReport !== 0
       if (bonusActive || bonus) {
-        return (
-          isPrintMain ?
-            <>
+        return isPrintMain ? (
+          <>
+            <div>增點：{bonusDeposit}</div>
+            <div>扣點：{bonusUsed}</div>
+            <div>折抵：{Math.abs(bonusDecountForReport)}</div>
+          </>
+        ) : (
+          <>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>增點：{bonusDeposit}</div>
               <div>扣點：{bonusUsed}</div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>折抵：{Math.abs(bonusDecountForReport)}</div>
-            </> :
-            <>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div>增點：{bonusDeposit}</div>
-                <div>扣點：{bonusUsed}</div>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div>折抵：{Math.abs(bonusDecountForReport)}</div>
-              </div>
-            </>
+            </div>
+          </>
         )
       }
     }
@@ -584,57 +576,53 @@ function Results({
         isClick={isClick}
       />
       <div style={{ display: 'none' }} id="printMain">
-        {
-          (!detailInfo.logo.isDisplay || !detailInfo.logo.imageUrl) &&
-            (!detailInfo.qrcode.isDisplay || !detailInfo.qrcode.imageUrl) &&
-            (!detailInfo.message.isDisplay || !detailInfo.message.message) ? '' :
-            <div style={{ width: '100%', height: 50, display: 'flex', gap: 5, marginBottom: 5 }}>
-              <div style={{ width: 50, height: 50, flexShrink: 0 }}>
-                {(detailInfo.logo.isDisplay && detailInfo.logo.imageUrl) ?
-                  <img style={{ width: '100%', height: '100%' }} src={imgUrl} /> : ""}
-              </div>
-              <div style={{ width: 50, height: 50, overFlow: 'hidden', flexShrink: 0, overflow: 'hidden' }}>
-                {detailInfo.qrcode.isDisplay && detailInfo.qrcode.imageUrl ?
-                  <img style={{ width: '100%', height: '100%' }} src={qrcodeUrl} /> : ""}
-              </div>
-              <div
-                style={{
-                  flexGrow: 1,
-                  overflow: 'hidden',
-                  display: 'flex',
-                }}
-              >
-                <textarea
-                  disabled
-                  style={{
-                    height: 50,
-                    resize: 'none',
-                    overflow: 'hidden',
-                    border: 'none',
-                    fontSize: 7,
-                    fontFamily: 'auto',
-                    flexGrow: 1,
-                    whiteSpace: 'nowrap'
-                  }}
-                  onChange={() => { }}
-                  value={detailInfo.message.isDisplay && detailInfo.message.message ? detailInfo.message.message : ''}
-                />
-              </div>
+        {(!detailInfo.logo.isDisplay || !detailInfo.logo.imageUrl) &&
+        (!detailInfo.qrcode.isDisplay || !detailInfo.qrcode.imageUrl) &&
+        (!detailInfo.message.isDisplay || !detailInfo.message.message) ? (
+          ''
+        ) : (
+          <div style={{ width: '100%', height: 50, display: 'flex', gap: 5, marginBottom: 5 }}>
+            <div style={{ width: 50, height: 50, flexShrink: 0 }}>
+              {detailInfo.logo.isDisplay && detailInfo.logo.imageUrl ? <img style={{ width: '100%', height: '100%' }} src={imgUrl} /> : ''}
             </div>
-        }
+            <div style={{ width: 50, height: 50, overFlow: 'hidden', flexShrink: 0, overflow: 'hidden' }}>
+              {detailInfo.qrcode.isDisplay && detailInfo.qrcode.imageUrl ? <img style={{ width: '100%', height: '100%' }} src={qrcodeUrl} /> : ''}
+            </div>
+            <div
+              style={{
+                flexGrow: 1,
+                overflow: 'hidden',
+                display: 'flex',
+              }}
+            >
+              <textarea
+                disabled
+                style={{
+                  height: 50,
+                  resize: 'none',
+                  overflow: 'hidden',
+                  border: 'none',
+                  fontSize: 7,
+                  fontFamily: 'auto',
+                  flexGrow: 1,
+                  whiteSpace: 'nowrap',
+                }}
+                onChange={() => {}}
+                value={detailInfo.message.isDisplay && detailInfo.message.message ? detailInfo.message.message : ''}
+              />
+            </div>
+          </div>
+        )}
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '10px' }}>{merchantName}</div>
           <div style={{ color: '#009999' }}>結帳單</div>
         </div>
         <div>
           日期：
-          {printOrderDetail.length !== 0 &&
-            format(new Date(printOrderDetail[0].date), 'yyyy/MM/dd HH:mm')}
+          {printOrderDetail.length !== 0 && format(new Date(printOrderDetail[0].date), 'yyyy/MM/dd HH:mm')}
         </div>
         <div>帳單編號：{printOrderDetail.length !== 0 && printOrderDetail[0].no}</div>
-        <div>
-          設計師:{printOrderDetail.length !== 0 && designerNameType(printOrderDetail[0].designer, nameDisplayOnInvoice)}
-        </div>
+        <div>設計師:{printOrderDetail.length !== 0 && designerNameType(printOrderDetail[0].designer, nameDisplayOnInvoice)}</div>
         <div>
           顧客:
           {printOrderDetail.length !== 0 && printOrderDetail[0].customer.name}
@@ -645,18 +633,14 @@ function Results({
               printOrderDetail[0].staticDetail.map((d, index) => {
                 if (d.serviceType === '項目消費') {
                   return (
-                    <div
-                      key={index}
-                      style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}
-                    >
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}>
                       <div style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center' }}>
                         <div>{d.itemName}</div>
                         {d.helperList.length > 0 &&
                           d.helperList.map((d, index) => (
-                            <div
-                              style={{ fontSize: '8px' }}
-                              key={`helperList-${index}`}
-                            >助理:{d.helperNo || d.helperName}</div>
+                            <div style={{ fontSize: '8px' }} key={`helperList-${index}`}>
+                              助理:{d.helperNo || d.helperName}
+                            </div>
                           ))}
                       </div>
                       <div>{d.price}x1</div>
@@ -671,10 +655,7 @@ function Results({
               printOrderDetail[0].staticDetail.map((d, index) => {
                 if (d.serviceType === '店販銷售') {
                   return (
-                    <div
-                      key={index}
-                      style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}
-                    >
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}>
                       <div>{d.itemName}</div>
                       <div>{d.price}</div>
                     </div>
@@ -688,10 +669,7 @@ function Results({
               printOrderDetail[0].staticDetail.map((d, index) => {
                 if (d.serviceType === '會員卡銷售') {
                   return (
-                    <div
-                      key={index}
-                      style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}
-                    >
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}>
                       <div>{d.itemName}</div>
                       <div>{d.price}</div>
                     </div>
@@ -705,10 +683,7 @@ function Results({
               printOrderDetail[0].staticDetail.map((d, index) => {
                 if (d.serviceType === '卡券販賣(不入業績)') {
                   return (
-                    <div
-                      key={index}
-                      style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}
-                    >
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}>
                       <div>{d.itemName}</div>
                       <div>{d.price}</div>
                     </div>
@@ -722,10 +697,7 @@ function Results({
               printOrderDetail[0].staticDetail.map((d, index) => {
                 if (d.serviceType === '卡券販賣(入業績)') {
                   return (
-                    <div
-                      key={index}
-                      style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}
-                    >
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}>
                       <div>{d.itemName}</div>
                       <div>{d.price}</div>
                     </div>
@@ -739,10 +711,7 @@ function Results({
               printOrderDetail[0].staticDetail.map((d, index) => {
                 if (d.serviceType === '卡券使用') {
                   return (
-                    <div
-                      key={index}
-                      style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}
-                    >
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', margin: '0 50px' }}>
                       <div>{d.itemName}</div>
                       <div>{d.price}</div>
                     </div>
@@ -768,52 +737,50 @@ function Results({
       </div>
       <div style={{ display: 'none' }} id="printThermal">
         <div>
-          {
-            (!detailInfo.logo.isDisplay || !detailInfo.logo.imageUrl) &&
-              (!detailInfo.qrcode.isDisplay || !detailInfo.qrcode.imageUrl) &&
-              (!detailInfo.message.isDisplay || !detailInfo.message.message) ? '' :
-              <div style={{ width: '100%', height: 50, display: 'flex', gap: 5, marginBottom: 5 }}>
-                <div style={{ width: 50, height: 50, flexShrink: 0 }}>
-                  {(detailInfo.logo.isDisplay && detailInfo.logo.imageUrl) ?
-                    <img style={{ width: '100%', height: '100%' }} src={imgUrl} /> : ""}
-                </div>
-                <div style={{ width: 50, height: 50, overFlow: 'hidden', flexShrink: 0, overflow: 'hidden' }}>
-                  {detailInfo.qrcode.isDisplay && detailInfo.qrcode.imageUrl ?
-                    <img style={{ width: '100%', height: '100%' }} src={qrcodeUrl} /> : ""}
-                </div>
-                <div
-                  style={{
-                    flexGrow: 1,
-                    overflow: 'hidden',
-                    display: 'flex',
-                  }}
-                >
-                  <textarea
-                    disabled
-                    style={{
-                      height: 50,
-                      resize: 'none',
-                      overflow: 'hidden',
-                      border: 'none',
-                      fontSize: 7,
-                      fontFamily: 'auto',
-                      flexGrow: 1,
-                      whiteSpace: 'nowrap'
-                    }}
-                    onChange={() => { }}
-                    value={detailInfo.message.isDisplay && detailInfo.message.message ? detailInfo.message.message : ''}
-                  />
-                </div>
+          {(!detailInfo.logo.isDisplay || !detailInfo.logo.imageUrl) &&
+          (!detailInfo.qrcode.isDisplay || !detailInfo.qrcode.imageUrl) &&
+          (!detailInfo.message.isDisplay || !detailInfo.message.message) ? (
+            ''
+          ) : (
+            <div style={{ width: '100%', height: 50, display: 'flex', gap: 5, marginBottom: 5 }}>
+              <div style={{ width: 50, height: 50, flexShrink: 0 }}>
+                {detailInfo.logo.isDisplay && detailInfo.logo.imageUrl ? <img style={{ width: '100%', height: '100%' }} src={imgUrl} /> : ''}
               </div>
-          }
+              <div style={{ width: 50, height: 50, overFlow: 'hidden', flexShrink: 0, overflow: 'hidden' }}>
+                {detailInfo.qrcode.isDisplay && detailInfo.qrcode.imageUrl ? <img style={{ width: '100%', height: '100%' }} src={qrcodeUrl} /> : ''}
+              </div>
+              <div
+                style={{
+                  flexGrow: 1,
+                  overflow: 'hidden',
+                  display: 'flex',
+                }}
+              >
+                <textarea
+                  disabled
+                  style={{
+                    height: 50,
+                    resize: 'none',
+                    overflow: 'hidden',
+                    border: 'none',
+                    fontSize: 7,
+                    fontFamily: 'auto',
+                    flexGrow: 1,
+                    whiteSpace: 'nowrap',
+                  }}
+                  onChange={() => {}}
+                  value={detailInfo.message.isDisplay && detailInfo.message.message ? detailInfo.message.message : ''}
+                />
+              </div>
+            </div>
+          )}
           <div>
             <span>{merchantName}</span>
             <span style={{ marginLeft: '20px' }}>結帳單</span>
           </div>
           <div>
             日期：
-            {printOrderDetail.length !== 0 &&
-              format(new Date(printOrderDetail[0].date), 'yyyy/MM/dd HH:mm')}
+            {printOrderDetail.length !== 0 && format(new Date(printOrderDetail[0].date), 'yyyy/MM/dd HH:mm')}
           </div>
           <div>帳單編號：{printOrderDetail.length !== 0 && printOrderDetail[0].no}</div>
           <div>設計師:{printOrderDetail.length !== 0 && designerNameType(printOrderDetail[0].designer, nameDisplayOnInvoice)}</div>

@@ -18,25 +18,29 @@ test('沒有使用者物件時不寫入，也不清掉既有 token', () => {
 
 test('有使用者、沒有 token 欄位：只存白名單欄位，不寫 token', () => {
   localStorage.setItem('token', 'keep-me')
-  expect(persistLineLoginSession({
-    id: 'u1',
-    name: '店長',
-    isAdmin: false,
-    isNeedChangePassword: false,
-    cellphone: '0912345678',
-  })).toBe(true)
+  expect(
+    persistLineLoginSession({
+      id: 'u1',
+      name: '店長',
+      isAdmin: false,
+      isNeedChangePassword: false,
+      cellphone: '0912345678',
+    })
+  ).toBe(true)
   const stored = JSON.parse(localStorage.getItem('user'))
   expect(stored).toEqual({ id: 'u1', name: '店長', isAdmin: false, isNeedChangePassword: false })
   expect(localStorage.getItem('token')).toBe('keep-me')
 })
 
 test('回應物件上若已有非空 token，比照一般登入寫入', () => {
-  expect(persistLineLoginSession({
-    id: 'u1',
-    name: '店長',
-    isAdmin: true,
-    isNeedChangePassword: false,
-    token: 'line-token',
-  })).toBe(true)
+  expect(
+    persistLineLoginSession({
+      id: 'u1',
+      name: '店長',
+      isAdmin: true,
+      isNeedChangePassword: false,
+      token: 'line-token',
+    })
+  ).toBe(true)
   expect(localStorage.getItem('token')).toBe('line-token')
 })

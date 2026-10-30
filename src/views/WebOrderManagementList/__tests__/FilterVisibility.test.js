@@ -7,11 +7,18 @@ import WebOrderManagementList from '..'
 // 未開啟報到的店家按「篩選」只會展開一張空白卡片（Jason 2026/10/21 截圖），因此不應出現篩選鈕。
 
 let mockCheckinEnabled
-jest.mock('hooks/useFetchGetBookingManagement', () => () => ({ loading: false, refetch: () => {}, data: { bookingManagement: { bookings: [], count: 0, pageLimit: 1000, pageOffset: 0 } } }))
+jest.mock('hooks/useFetchGetBookingManagement', () => () => ({
+  loading: false,
+  refetch: () => {},
+  data: { bookingManagement: { bookings: [], count: 0, pageLimit: 1000, pageOffset: 0 } },
+}))
 jest.mock('hooks/useFetchGetMerchantCheckinSettings', () => ({
   __esModule: true,
   default: () => ({}),
-  useFetchGetCheckinSettingsForManagementList: () => ({ loading: false, data: { getMerchantCheckinSettings: { isBookingCheckinEnabled: mockCheckinEnabled } } }),
+  useFetchGetCheckinSettingsForManagementList: () => ({
+    loading: false,
+    data: { getMerchantCheckinSettings: { isBookingCheckinEnabled: mockCheckinEnabled } },
+  }),
 }))
 jest.mock('hooks/useFetchGetIsBookingCusCheckUsing', () => () => ({ loading: false, data: { getIsBookingCusCheckUsing: false } }))
 jest.mock('hooks/useFetchMerchantPassword', () => ({
@@ -24,7 +31,12 @@ jest.mock('../Results', () => () => <div>results</div>)
 
 beforeEach(() => localStorage.setItem('userMerchant', JSON.stringify({ id: 'm1', name: '測試店' })))
 
-const renderPage = () => render(<MemoryRouter><WebOrderManagementList /></MemoryRouter>)
+const renderPage = () =>
+  render(
+    <MemoryRouter>
+      <WebOrderManagementList />
+    </MemoryRouter>
+  )
 
 test('店家未開啟報到功能：不顯示篩選鈕', () => {
   mockCheckinEnabled = false

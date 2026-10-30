@@ -1,6 +1,6 @@
 import { gql, useMutation } from '@apollo/client'
 
-const UPDATE_PICKING= gql`
+const UPDATE_PICKING = gql`
   mutation UPDATE_PICKING($id: ID!, $input: UpdatePickingInput!) {
     updatePicking(id: $id, input: $input)
   }

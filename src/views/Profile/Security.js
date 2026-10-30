@@ -47,22 +47,10 @@ function Security({ className, ...rest }) {
         <form>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
             <Field label="密碼" htmlFor="profile-security-password">
-              <Input
-                id="profile-security-password"
-                name="password"
-                onChange={handleOnChange}
-                type="password"
-                value={values.password}
-              />
+              <Input id="profile-security-password" name="password" onChange={handleOnChange} type="password" value={values.password} />
             </Field>
             <Field label="確認密碼" htmlFor="profile-security-confirm">
-              <Input
-                id="profile-security-confirm"
-                name="confirm"
-                onChange={handleOnChange}
-                type="password"
-                value={values.confirm}
-              />
+              <Input id="profile-security-confirm" name="confirm" onChange={handleOnChange} type="password" value={values.confirm} />
             </Field>
           </div>
         </form>

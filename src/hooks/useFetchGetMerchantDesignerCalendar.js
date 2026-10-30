@@ -70,7 +70,7 @@ const GET_MERCHANT_DESIGNER_CALENDAR = gql`
 export default function useFetchGetMerchantDesignerCalendar({ input }) {
   return useQuery(GET_MERCHANT_DESIGNER_CALENDAR, {
     variables: {
-      input
+      input,
     },
     fetchPolicy: 'cache-and-network',
   })

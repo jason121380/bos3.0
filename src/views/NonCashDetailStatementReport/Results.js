@@ -24,7 +24,7 @@ export default function Results({ data, total, bonusDisplay }) {
                   <TableHead key={index} className="min-w-[140px]">
                     <span className="flex justify-center">{item}</span>
                     <span className="flex justify-around">
-                      <span>金額  </span>
+                      <span>金額 </span>
                       <span>手續費</span>
                     </span>
                   </TableHead>
@@ -36,8 +36,8 @@ export default function Results({ data, total, bonusDisplay }) {
                   <TableHead key={index} className="min-w-[140px]">
                     <span className="flex justify-center">{item}</span>
                     <span className="flex justify-around">
-                        <span>金額   </span>
-                        <span>手續費</span>
+                      <span>金額 </span>
+                      <span>手續費</span>
                     </span>
                   </TableHead>
                 )
@@ -92,7 +92,7 @@ export default function Results({ data, total, bonusDisplay }) {
                   <b>合計</b>
                 </TableCell>
 
-                {total.otherPay.map((i, totalOtherPayIndex)=> {
+                {total.otherPay.map((i, totalOtherPayIndex) => {
                   return (
                     <TableCell key={totalOtherPayIndex}>
                       <span className="flex justify-around tabular-nums">
@@ -102,7 +102,7 @@ export default function Results({ data, total, bonusDisplay }) {
                     </TableCell>
                   )
                 })}
-                {total.thirdParty.map((i, totalThirdPartyIndex)=> {
+                {total.thirdParty.map((i, totalThirdPartyIndex) => {
                   return (
                     <TableCell key={totalThirdPartyIndex}>
                       <span className="flex justify-around tabular-nums">
@@ -112,8 +112,14 @@ export default function Results({ data, total, bonusDisplay }) {
                     </TableCell>
                   )
                 })}
-                <TableCell numeric className="font-medium">{formatNumber(getData.summary.walletUsed)}</TableCell>
-                {bonusDisplay && <TableCell numeric className="font-medium">{formatNumber(getData.summary.bonusDecount)}</TableCell>}
+                <TableCell numeric className="font-medium">
+                  {formatNumber(getData.summary.walletUsed)}
+                </TableCell>
+                {bonusDisplay && (
+                  <TableCell numeric className="font-medium">
+                    {formatNumber(getData.summary.bonusDecount)}
+                  </TableCell>
+                )}
               </TableRow>
             )}
           </TableBody>

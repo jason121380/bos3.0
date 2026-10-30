@@ -25,7 +25,10 @@ function clearTimer(id) {
 function scheduleDismiss(id, ms) {
   clearTimer(id)
   if (!ms) return
-  timers.set(id, setTimeout(() => dismiss(id), ms))
+  timers.set(
+    id,
+    setTimeout(() => dismiss(id), ms)
+  )
 }
 
 function dismiss(id) {
@@ -105,7 +108,10 @@ const ToastCard = React.forwardRef(({ variant = 'info', title, description, onCl
           title="關閉"
           onClick={onClose}
           // 視覺 20px；以透明偽元素把命中區擴到 40px（STYLE §9 觸控目標）
-          className={cn("relative shrink-0 rounded-md p-0.5 text-text-tertiary before:absolute before:-inset-2.5 before:content-[''] hover:text-text", focusRing)}
+          className={cn(
+            "relative shrink-0 rounded-md p-0.5 text-text-tertiary before:absolute before:-inset-2.5 before:content-[''] hover:text-text",
+            focusRing
+          )}
         >
           <X className="h-4 w-4" strokeWidth={1.75} />
         </button>

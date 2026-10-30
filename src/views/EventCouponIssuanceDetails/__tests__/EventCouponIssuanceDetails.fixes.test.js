@@ -29,16 +29,50 @@ jest.setTimeout(20000)
 const TW_1022 = Date.UTC(2026, 9, 21, 16, 30)
 const RECORDS = [
   {
-    number: 'V0001', eventName: '周年慶', ruleName: '滿千送券', orderDate: TW_1022, orderNo: 123, orderId: 'o1',
-    customerName: '陳小美', customerCellphone: '0911222333', isCustomerSideUsing: true, isSMSSended: false,
+    number: 'V0001',
+    eventName: '周年慶',
+    ruleName: '滿千送券',
+    orderDate: TW_1022,
+    orderNo: 123,
+    orderId: 'o1',
+    customerName: '陳小美',
+    customerCellphone: '0911222333',
+    isCustomerSideUsing: true,
+    isSMSSended: false,
   },
   {
-    number: 'V0002', eventName: '周年慶', ruleName: '滿千送券', orderDate: TW_1022, orderNo: 124, orderId: 'o2',
-    customerName: '歐陽娜娜', customerCellphone: '0922333444', isCustomerSideUsing: false, isSMSSended: true,
+    number: 'V0002',
+    eventName: '周年慶',
+    ruleName: '滿千送券',
+    orderDate: TW_1022,
+    orderNo: 124,
+    orderId: 'o2',
+    customerName: '歐陽娜娜',
+    customerCellphone: '0922333444',
+    isCustomerSideUsing: false,
+    isSMSSended: true,
   },
   // 兩個字的姓名、沒有手機；沒有姓名
-  { number: 'V0003', eventName: '周年慶', ruleName: '滿千送券', orderDate: TW_1022, orderNo: 125, orderId: 'o3', customerName: '王五', customerCellphone: null },
-  { number: 'V0004', eventName: '周年慶', ruleName: '滿千送券', orderDate: TW_1022, orderNo: 126, orderId: 'o4', customerName: null, customerCellphone: '0933' },
+  {
+    number: 'V0003',
+    eventName: '周年慶',
+    ruleName: '滿千送券',
+    orderDate: TW_1022,
+    orderNo: 125,
+    orderId: 'o3',
+    customerName: '王五',
+    customerCellphone: null,
+  },
+  {
+    number: 'V0004',
+    eventName: '周年慶',
+    ruleName: '滿千送券',
+    orderDate: TW_1022,
+    orderNo: 126,
+    orderId: 'o4',
+    customerName: null,
+    customerCellphone: '0933',
+  },
 ]
 const voucher = v => ({
   voucherIssuanceRecord: { data: RECORDS, pageLimit: v.input.pageLimit, pageOffset: v.input.pageOffset, totalCount: 120 },
@@ -59,8 +93,15 @@ describe('活動發券明細匯出遮罩', () => {
     const { settle } = setup({ GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false } })
     const rows = await exported(settle)
     expect(rows[0]).toEqual({
-      流水號: 'V0001', 活動名稱: '周年慶', 規則名稱: '滿千送券', 帳單日期: '2026/10/22', 帳單編號: '#123',
-      顧客姓名: '陳*美', 顧客手機: '0911***333', 使用手機端: '是', 寄送簡訊: '否',
+      流水號: 'V0001',
+      活動名稱: '周年慶',
+      規則名稱: '滿千送券',
+      帳單日期: '2026/10/22',
+      帳單編號: '#123',
+      顧客姓名: '陳*美',
+      顧客手機: '0911***333',
+      使用手機端: '是',
+      寄送簡訊: '否',
     })
   })
 
@@ -89,9 +130,7 @@ describe('活動發券明細分頁', () => {
     await wait(() => expect(inputs()[inputs().length - 1].pageOffset).toBe(1))
     await screen.findByText('共 120 筆資料')
     fireEvent.click(screen.getByText('換日期（測試）'))
-    await wait(() =>
-      expect(inputs()[inputs().length - 1]).toEqual(expect.objectContaining({ startDate: 1000, endDate: 2000, pageOffset: 0 }))
-    )
+    await wait(() => expect(inputs()[inputs().length - 1]).toEqual(expect.objectContaining({ startDate: 1000, endDate: 2000, pageOffset: 0 })))
     // 不會先以第 2 頁查一次新區間
     expect(inputs().filter(i => i.startDate === 1000 && i.pageOffset === 1)).toHaveLength(0)
   })

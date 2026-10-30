@@ -23,19 +23,13 @@ function EditProductsCategoryModal({
       <DialogContent size="lg" className="max-w-[912px]" hideClose aria-describedby={undefined}>
         <DialogHeader className="flex-row items-center justify-between pr-6">
           <DialogTitle>編輯商品類別</DialogTitle>
-          <Button
-            variant="secondary"
-            onClick={onClose}
-          >
+          <Button variant="secondary" onClick={onClose}>
             關閉
           </Button>
         </DialogHeader>
         <DialogBody>
           <Field label="商品類別">
-            <NativeSelect
-              value={selectedCategoryId}
-              onChange={event => handleSelectCategoryId(event)}
-            >
+            <NativeSelect value={selectedCategoryId} onChange={event => handleSelectCategoryId(event)}>
               {productCategories.map((data, idx) => (
                 <NativeSelectOption key={`${data.id}-${idx}`} value={data.id}>
                   {data.no} {data.name}
@@ -45,10 +39,7 @@ function EditProductsCategoryModal({
           </Field>
         </DialogBody>
         <DialogFooter>
-          <Button
-            variant="primary"
-            onClick={handleUpdateProductsCategory}
-          >
+          <Button variant="primary" onClick={handleUpdateProductsCategory}>
             儲存
           </Button>
         </DialogFooter>

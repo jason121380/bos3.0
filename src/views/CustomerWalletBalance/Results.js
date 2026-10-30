@@ -6,9 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 function Results({ report }) {
   const [walletLeftSum, setWalletLeftSum] = useState(0)
   useEffect(() => {
-    setWalletLeftSum(
-      report.reduce((accu, curVal) => accu + curVal.leftWallet, 0)
-    )
+    setWalletLeftSum(report.reduce((accu, curVal) => accu + curVal.leftWallet, 0))
   }, [report])
   return (
     <Table className="min-w-[650px]" aria-label="a dense table">
@@ -35,7 +33,9 @@ function Results({ report }) {
           <TableCell className="font-bold">合計</TableCell>
           <TableCell />
           <TableCell />
-          <TableCell numeric className="font-bold">{formatNumber(walletLeftSum)}</TableCell>
+          <TableCell numeric className="font-bold">
+            {formatNumber(walletLeftSum)}
+          </TableCell>
         </TableRow>
       </TableBody>
     </Table>

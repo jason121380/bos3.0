@@ -248,13 +248,16 @@ function AssistantSettingEditModal({
   return (
     <Dialog open={openEditAssistantModal}>
       {/* 保留原表單寬 912px；本批僅替換彈窗外殼。 */}
-      <DialogContent hideClose
+      <DialogContent
+        hideClose
         onOpenAutoFocus={event => {
           // 沿用舊 Modal：已有欄位焦點就保留，否則先聚焦面板，避免選人窗自動叫出手機鍵盤。
           event.preventDefault()
           if (!event.target.contains(document.activeElement)) event.target.focus()
         }}
-        className="sm:max-w-[912px]" aria-describedby={undefined}>
+        className="sm:max-w-[912px]"
+        aria-describedby={undefined}
+      >
         <DialogHeader className="items-center pb-4">
           <div className="flex w-full items-center justify-between gap-4">
             <DialogTitle>互助點數設定</DialogTitle>
@@ -304,7 +307,7 @@ function AssistantSettingEditModal({
                   placeholder="請選擇…"
                   label="協助人員人數"
                   labelId="select-item-label"
-                // value={content.type}
+                  // value={content.type}
                 >
                   {assistantNum.map((data, idx) => (
                     <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
@@ -347,12 +350,12 @@ function AssistantSettingEditModal({
                 </span>
               )}
               {content.designatePercent ||
-                content.designateCash ||
-                content.designatePoint ||
-                content.designatePercent ||
-                content.designateCash ||
-                content.designatePoint > 0 ||
-                content.isDesignate ? (
+              content.designateCash ||
+              content.designatePoint ||
+              content.designatePercent ||
+              content.designateCash ||
+              content.designatePoint > 0 ||
+              content.isDesignate ? (
                 <>
                   <TextField
                     style={{ width: '5rem' }}
@@ -369,17 +372,11 @@ function AssistantSettingEditModal({
                             : '指定業績%數'
                     }
                     value={
-                      content.designatePercent ||
-                        content.designateCash ||
-                        content.designatePoint > 0
-                        ? content.designatePercent ||
-                        content.designateCash ||
-                        content.designatePoint
+                      content.designatePercent || content.designateCash || content.designatePoint > 0
+                        ? content.designatePercent || content.designateCash || content.designatePoint
                         : 0
                     }
-                    onChange={event =>
-                      handleDesignateDeductionWayInput(event, index, content.deductionWay)
-                    }
+                    onChange={event => handleDesignateDeductionWayInput(event, index, content.deductionWay)}
                     onWheel={() => document.activeElement.blur()}
                   />
                   <TextField
@@ -397,17 +394,11 @@ function AssistantSettingEditModal({
                             : '不指定業績%數'
                     }
                     value={
-                      content.nonDesignatePercent ||
-                        content.nonDesignateCash ||
-                        content.nonDesignatePoint > 0
-                        ? content.nonDesignatePercent ||
-                        content.nonDesignateCash ||
-                        content.nonDesignatePoint
+                      content.nonDesignatePercent || content.nonDesignateCash || content.nonDesignatePoint > 0
+                        ? content.nonDesignatePercent || content.nonDesignateCash || content.nonDesignatePoint
                         : 0
                     }
-                    onChange={event =>
-                      handleNonDesignateDeductionWayInput(event, index, content.deductionWay)
-                    }
+                    onChange={event => handleNonDesignateDeductionWayInput(event, index, content.deductionWay)}
                     onWheel={() => document.activeElement.blur()}
                   />
                 </>
@@ -418,20 +409,8 @@ function AssistantSettingEditModal({
                     type="number"
                     name="designateInput"
                     variant="outlined"
-                    label={
-                      content.deductionWay
-                        ? content.deductionWay
-                        : content.point > 0
-                          ? '點數'
-                          : content.cash > 0
-                            ? '固定金額'
-                            : '業績%數'
-                    }
-                    value={
-                      content.percent || content.cash || content.point > 0
-                        ? content.percent || content.cash || content.point
-                        : 0
-                    }
+                    label={content.deductionWay ? content.deductionWay : content.point > 0 ? '點數' : content.cash > 0 ? '固定金額' : '業績%數'}
+                    value={content.percent || content.cash || content.point > 0 ? content.percent || content.cash || content.point : 0}
                     onChange={event => handleDeductionWayInput(event, index, content.deductionWay)}
                     onWheel={() => document.activeElement.blur()}
                   />
@@ -439,13 +418,7 @@ function AssistantSettingEditModal({
               )}
               <div className="flex items-center gap-1">
                 {content.deductionWay !== '' && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-text-secondary"
-                    aria-label="清除此互助設定"
-                    onClick={() => handleClear(index)}
-                  >
+                  <Button variant="ghost" size="icon" className="text-text-secondary" aria-label="清除此互助設定" onClick={() => handleClear(index)}>
                     <Delete strokeWidth={1.75} />
                   </Button>
                 )}
@@ -461,13 +434,7 @@ function AssistantSettingEditModal({
                   </Button>
                 )}
                 {index === helperDeductionSetting.length - 1 && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-text-secondary"
-                    aria-label="新增互助設定"
-                    onClick={handleAddAssistantContent}
-                  >
+                  <Button variant="ghost" size="icon" className="text-text-secondary" aria-label="新增互助設定" onClick={handleAddAssistantContent}>
                     <Plus strokeWidth={1.75} />
                   </Button>
                 )}

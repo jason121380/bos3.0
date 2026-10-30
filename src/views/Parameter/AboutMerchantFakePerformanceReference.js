@@ -14,12 +14,7 @@ const fakePerformanceRefer = [
   },
 ]
 
-function AboutMerchantFakePerformanceReference({
-  className,
-  setMerchantFakePerformanceRefer,
-  merchantFakePerformanceRefer,
-  inputEnable,
-}) {
+function AboutMerchantFakePerformanceReference({ className, setMerchantFakePerformanceRefer, merchantFakePerformanceRefer, inputEnable }) {
   return (
     <Card>
       <CardHeader>
@@ -28,7 +23,7 @@ function AboutMerchantFakePerformanceReference({
       <CardContent>
         <div className="flex items-center">
           <div className="flex flex-wrap items-center gap-2 p-2">
-            <Field label='虛業績依據'>
+            <Field label="虛業績依據">
               <NativeSelect
                 disabled={!inputEnable}
                 fullWidth={false}
