@@ -218,7 +218,8 @@ function OrderCreate() {
         })
         // 依據上一筆訂單的判斷要等後端修改
       } else {
-        if (status !== undefined) {
+        // 查詢失敗或後端回 null 時 idx 回 null，不能只擋 undefined（2026/10/30 自動掃描發現）
+        if (status != null) {
           setDesignationSettingForOrderCreate(status.isDesignate)
           handleBillChange({
             key: 'isDesignate',

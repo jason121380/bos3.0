@@ -280,7 +280,8 @@ function Header({ forceUpdate, ...rest }) {
             <ReceiptText strokeWidth={1.75} />
             帳單速查
           </Button>
-          {lastOrderStatus !== undefined && lastOrderStatus.orderNo !== 0 && (
+          {/* 查詢失敗時 lastOrderStatus 為 null，不能只擋 undefined（2026/10/30 自動掃描發現） */}
+          {lastOrderStatus != null && lastOrderStatus.orderNo !== 0 && (
             <span className="flex items-center gap-1 text-label tabular-nums text-text-secondary">
               <History className="h-4 w-4" strokeWidth={1.75} />
               上一筆帳單 #{lastOrderStatus.orderNo}

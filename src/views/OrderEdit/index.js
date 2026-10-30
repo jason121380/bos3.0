@@ -405,8 +405,9 @@ export default function KeyIn({ match }) {
 
   const shortBtnDisable = !(serviceAlready && productAlready && couponAlready && membershipAlready)
 
+  // 套餐設定查詢失敗時視為未啟用（2026/10/30 自動掃描發現）
   const comboActive = !getIsComboSetting.loading
-    ? getIsComboSetting.data.getParameterAboutSettingFunction.isComboUsing
+    ? Boolean(idx(getIsComboSetting, _ => _.data.getParameterAboutSettingFunction.isComboUsing))
     : false
 
   const handleShortcutChange = ({

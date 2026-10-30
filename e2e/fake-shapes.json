@@ -1,0 +1,25 @@
+{
+  "lists": [
+    "attributions",
+    "authorityName",
+    "customerSellSetting",
+    "data",
+    "helperMonthlyReport",
+    "merchantDesignerCalendar",
+    "moneyFlowDailyReport",
+    "nonCashDetailStatement",
+    "otherPayUsing",
+    "point",
+    "productConsumeSummary",
+    "record",
+    "reserveCheckSummary",
+    "thirdPartTicketUsing",
+    "title"
+  ],
+  "scalarLists": [
+    "authorityName",
+    "otherPayUsing",
+    "thirdPartTicketUsing"
+  ],
+  "timestamps": []
+}

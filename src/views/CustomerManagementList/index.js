@@ -286,7 +286,7 @@ function CustomerManagementList() {
         </div>
         {customerList.error ? (
           <QueryFailed onRetry={() => customerList.refetch()} />
-        ) : (!isMemberShipCardActive.loading && !customerList.loading) ?
+        ) : (!isMemberShipCardActiveData.loading && !customerList.loading) ?
           idx(customerList.data, _ => (
             <Results
               customers={_.customers.customers}

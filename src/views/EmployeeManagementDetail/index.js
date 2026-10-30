@@ -534,7 +534,8 @@ function Settings({ match, history }) {
   useEffect(() => {
     if (!getMerchantCheckinSettings.loading) {
       const data = idx(getMerchantCheckinSettings, _ => _.data.getMerchantCheckinSettings)
-      setCheckinSettings(data)
+      // 報到設定查詢失敗時保留預設值，不讓整頁拋錯（2026/10/30 自動掃描發現）
+      if (data) setCheckinSettings(data)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantCheckinSettings.loading])

@@ -168,7 +168,8 @@ function Settings({ match, history }) {
   useEffect(() => {
     if (!getMerchantCheckinSettings.loading) {
       const data = idx(getMerchantCheckinSettings,_=>_.data.getMerchantCheckinSettings)
-      setCheckinSettings(data)
+      // 報到設定查詢失敗時保留預設值，不讓整個個人頁拋錯（2026/10/30 自動掃描發現）
+      if (data) setCheckinSettings(data)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantCheckinSettings.loading])
@@ -617,7 +618,7 @@ function Settings({ match, history }) {
   // （Jason 2026/10/20「要放在左側」；比照員工資料、顧客詳細資料）。左選單加 noprint，列印時只印右側內容。
   // handleTabsChange（history.push 路由）、value、權限過濾 itemValue 與各分頁內容/存值一字未動。
   return (
-    <Page className="ui-root" title={`${profile.data.me.name} - ${findTabName()}`}>
+    <Page className="ui-root" title={`${idx(profile, _ => _.data.me.name) || '個人檔案'} - ${findTabName()}`}>
       <div className="w-full">
         <PageHeader
           title='變更帳戶資訊'
