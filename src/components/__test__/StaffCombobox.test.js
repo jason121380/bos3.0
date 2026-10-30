@@ -72,6 +72,18 @@ describe('StaffCombobox', () => {
     expect(onChange).not.toHaveBeenCalled()
   })
 
+  // Codex（PR #321）：中文輸入法組字中按 Enter 是確認選字；若此時清單停在目前的設計師上，不可當成「再選一次」
+  // 送出（預約頁會因此清掉已選的時段與服務項目）。
+  it('輸入法組字中按 Enter（isComposing 或 keyCode 229）不送出', () => {
+    const onChange = jest.fn()
+    render(<StaffCombobox label="服務設計師" value="d1" users={USERS} onChange={onChange} />)
+    const input = screen.getByLabelText('服務設計師')
+    fireEvent.change(input, { target: { value: '王' } })
+    fireEvent.keyDown(input, { key: 'Enter', isComposing: true })
+    fireEvent.keyDown(input, { key: 'Enter', keyCode: 229 })
+    expect(onChange).not.toHaveBeenCalled()
+  })
+
   it('getLabel 決定清單與欄位文字、打字依它篩選；inputProps 合併到輸入框且不影響選取', () => {
     const onChange = jest.fn()
     const users = [{ id: 'd1', name: '王小美', nickName: 'Amy' }, { id: 'd2', name: '李大華', nickName: null }]

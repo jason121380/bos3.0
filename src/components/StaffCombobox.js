@@ -43,6 +43,8 @@ export default function StaffCombobox({ id, label, name, value, users, onChange,
       )}
       onKeyDown={event => {
         if (event.key !== 'Enter' || !selected) return
+        // 中文輸入法按 Enter 是確認選字，不是選設計師（keyCode 229 為舊瀏覽器的組字中代碼）
+        if ((event.nativeEvent && event.nativeEvent.isComposing) || event.keyCode === 229) return
         const active = event.target.getAttribute('aria-activedescendant')
         if (active && isSelectedOption(document.getElementById(active))) emit(selected)
       }}
