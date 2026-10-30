@@ -11,13 +11,14 @@ const displayDate = record => format(record.updateTime, 'yyyy/MM/dd')
 
 describe('靜態清單', () => {
   it('新紀錄在最前面，接著是匯出的 18 筆，日期不改寫到 2026', () => {
-    expect(systemUpdateRecordSource).toHaveLength(35)
-    expect(systemUpdateRecords).toHaveLength(35)
+    expect(systemUpdateRecordSource).toHaveLength(36)
+    expect(systemUpdateRecords).toHaveLength(36)
 
-    const head = systemUpdateRecordSource.slice(0, 18).map(record => [record.title, record.versionNo, record.updateTime])
+    const head = systemUpdateRecordSource.slice(0, 19).map(record => [record.title, record.versionNo, record.updateTime])
     expect(systemUpdateRecordSource[0].versionNo).toBe(APP_VERSION)
     expect(head).toEqual([
-      ['2026/10/30 程式碼排版統一', APP_VERSION, '2026-10-30'],
+      ['2026/10/30 文件同步與重新評分', APP_VERSION, '2026-10-30'],
+      ['2026/10/30 程式碼排版統一', 'v3.10302235', '2026-10-30'],
       ['2026/10/30 預約頁設計師可搜尋', 'v3.10302151', '2026-10-30'],
       ['2026/10/30 檔名修正', 'v3.10302000', '2026-10-30'],
       ['2026/10/30 下拉選單統一', 'v3.10301821', '2026-10-30'],
@@ -37,7 +38,7 @@ describe('靜態清單', () => {
       ['更新統整', '23.053~23.061', '2023-06-07'],
     ])
 
-    expect(systemUpdateRecordSource.slice(17)).toEqual(historicalRecords)
+    expect(systemUpdateRecordSource.slice(18)).toEqual(historicalRecords)
     expect(historicalRecords.map(record => record.updateTime)).toEqual([
       '2023-06-07',
       '2023-04-21',
@@ -61,7 +62,8 @@ describe('靜態清單', () => {
     expect(historicalRecords.find(record => record.versionNo === '22.399').title).toBe('10/04 - 10/21 更新')
     expect(historicalRecords.find(record => record.versionNo === '22.386').content).toContain('```mermaid')
 
-    expect(systemUpdateRecords.slice(0, 18).map(record => [record.title, displayDate(record)])).toEqual([
+    expect(systemUpdateRecords.slice(0, 19).map(record => [record.title, displayDate(record)])).toEqual([
+      ['2026/10/30 文件同步與重新評分', '2026/10/30'],
       ['2026/10/30 程式碼排版統一', '2026/10/30'],
       ['2026/10/30 預約頁設計師可搜尋', '2026/10/30'],
       ['2026/10/30 檔名修正', '2026/10/30'],
@@ -98,8 +100,9 @@ describe('清單頁', () => {
 
     expect(screen.getByRole('heading', { name: '版本更新紀錄' })).toBeInTheDocument()
     const titles = Array.from(container.querySelectorAll('h2')).map(node => node.textContent)
-    expect(titles).toHaveLength(35)
-    expect(titles.slice(0, 18)).toEqual([
+    expect(titles).toHaveLength(36)
+    expect(titles.slice(0, 19)).toEqual([
+      '2026/10/30 文件同步與重新評分',
       '2026/10/30 程式碼排版統一',
       '2026/10/30 預約頁設計師可搜尋',
       '2026/10/30 檔名修正',
