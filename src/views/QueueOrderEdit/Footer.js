@@ -79,7 +79,8 @@ export default function Footer({ enable }) {
             message: `重結失敗：${error}`,
             variant: 'error',
           })
-          window.location.reload()
+          // 原本失敗後整頁 reload：櫃檯改過的項目全部被蓋回、錯誤提示也跟著消失，看不到失敗原因。
+          // 改為留在本頁、保留已填內容，按鈕恢復可按，修正後可直接再送（帳單沒成立、佇列也沒刪，2026/10/28）
         })
     }
   }

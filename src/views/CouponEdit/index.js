@@ -17,7 +17,8 @@ import { useHistory } from 'react-router'
 import { useSelector } from 'react-redux'
 
 import AboutAssistantSetting from './AboutAssistantSetting'
-import AboutCoupon from './AboutCoupon'
+// 一般資訊區塊與另一頁共用（views/CouponShared，2026/10/28）
+import AboutCoupon from 'views/CouponShared/AboutCoupon'
 import AboutDeduction from './AboutDeduction'
 import QueryFailed from 'components/QueryFailed'
 
@@ -424,7 +425,7 @@ function ServiceCategoryEdit({ match }) {
     <Page className="ui-root" title={isDuplicate ? "新增卡券項目" : "編輯卡券項目"} >
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
         <PageHeader className="pb-0" title={isDuplicate ? "新增卡券項目" : "編輯卡券項目"} />
-        <AboutCoupon coupon={coupon} onChange={handleOnChange} />
+        <AboutCoupon coupon={coupon} onChange={handleOnChange} isEdit />
 
         {deductionDisplay && coupon2.itemId !== '' && (
           <AboutDeduction

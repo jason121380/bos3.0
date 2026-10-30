@@ -65,10 +65,14 @@ describe('新增服務項目：送出', () => {
     const { settle } = setup()
     await settle()
     expect(submitButton()).toBeDisabled()
+    // 按鈕停用時要說出還缺什麼（STYLE.md §6），填一項就少一項，都填了就不顯示
+    expect(screen.getByText('尚缺：名稱、服務類別')).toHaveAttribute('role', 'status')
     await typeText(controlByLabel('名稱'), '頭皮隔離霜')
     expect(submitButton()).toBeDisabled()
+    expect(screen.getByText('尚缺：服務類別')).toBeInTheDocument()
     pick(controlByLabel('服務類別'), '剪髮')
     expect(submitButton()).not.toBeDisabled()
+    expect(screen.queryByText(/^尚缺：/)).toBeNull()
   })
 
   it('預設值：鎖價與第三方卡券鎖定為「依系統參數設定」、綁定「無」送 null；扣項依抽成方式、販售設定依顧客分類產生', async () => {
@@ -359,6 +363,7 @@ describe('新增服務項目：互助點數設定', () => {
     // 第 1 列：扣業績、洗髮、2 人、依點數 1.5
     pick(controlByLabel('類別', helperRow(0)), '洗髮')
     pick(controlByLabel('協助人員人數', helperRow(0)), '2')
+    expect(selectedText(controlByLabel('協助人員人數', helperRow(0)))).toBe('2')
     pick(controlByLabel('扣項方式', helperRow(0)), '依點數')
     fireEvent.change(controlByLabel('點數', helperRow(0)), { target: { value: '1.5' } })
     // 第 2 列：扣薪水、吹整、1 人、依業績%數分指定 10／5
@@ -375,8 +380,11 @@ describe('新增服務項目：互助點數設定', () => {
     // 第 3 列：新增後清除再刪除
     fireEvent.click(buttonIn(helperRow(1), '新增互助設定'))
     pick(controlByLabel('扣項方式', helperRow(2)), '依固定金額')
+    pick(controlByLabel('協助人員人數', helperRow(2)), '3')
     fireEvent.click(buttonIn(helperRow(2), '清除此互助設定'))
     expect(selectedText(controlByLabel('扣項方式', helperRow(2)))).toBe('')
+    // 清除後人數歸零，下拉也要跟著清空（2026/10/30：新增頁原本沒綁 value，清除後仍顯示舊的「3」，畫面與送出資料不一致）
+    expect(selectedText(controlByLabel('協助人員人數', helperRow(2)))).toBe('')
     expect(buttonIn(helperRow(2), '清除此互助設定')).toBeNull()
     fireEvent.click(buttonIn(helperRow(2), '刪除此互助設定'))
     // 互助均分只改該列（勾了再取消，送出仍為 false）

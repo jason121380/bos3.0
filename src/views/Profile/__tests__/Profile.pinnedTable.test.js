@@ -164,3 +164,15 @@ it('樹鍵盤展開與選取後，儲存保留原釘選值與店家', async () =
     pinnedTables: [{ title: '櫃檯作業', name: '帳單列表' }, { title: '櫃檯作業', name: '打帳單' }],
   })
 })
+
+// 從沒設定過釘選的使用者，後端回的 pinnedSettings／usingStoreIds 可能是 null（2026/10/30 瀏覽器驗收發現）：
+// 原本 JSON.parse(null).map 直接讓整個個人頁拋錯，使用者連基本資料都看不到。
+describe('功能釘選：尚未設定過', () => {
+  it('pinnedSettings 與 usingStoreIds 為 null 時仍顯示設定頁，釘選清單為空', async () => {
+    setup({}, { pinned: { usingStoreIds: null, pinnedSettings: null } })
+    await ready()
+    expect(screen.queryByText('這個頁面發生錯誤')).toBeNull()
+    expect(pinnedList()).toEqual([])
+  })
+})
+

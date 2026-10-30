@@ -9,9 +9,9 @@ import { useHistory } from 'react-router'
 import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
-import General from './General'
+import RuleForm from 'views/EventRuleShared/RuleForm'
+import { createRuleInput, buildRuleSubmitData } from 'views/EventRuleShared/ruleInput'
 import { openSnackbar } from 'elements/snackbars'
-import { startOfDay, endOfDay } from 'date-fns'
 
 function EventRuleCreate({ match }) {
   const history = useHistory()
@@ -26,48 +26,7 @@ function EventRuleCreate({ match }) {
     end: new Date().getTime(),
     maxCount: 0
   })
-  const [inputValue, setInputValue] = useState({
-    nameForGroup: '',
-    startDateForGroup: new Date().getTime(),
-    endDateForGroup: new Date().getTime(),
-    merchants: [],
-    product: false,
-    membershipCard: false,
-    consumptionTypeUsing: 'ALL',
-    service: {
-      type: '',
-      belong: []
-    },
-    ticketSellInPerformance: {
-      type: '',
-      belong: []
-    },
-    ticketSellNotInPerformance: {
-      type: '',
-      belong: []
-    },
-    ticketUsePerformanceEntered: {
-      type: '',
-      belong: []
-    },
-    ticketUsePerformanceNotEntered: {
-      type: '',
-      belong: []
-    },
-    walletDepositForCash: {
-      using: false,
-      price: 0
-    },
-    walletDepositForOtherPay: {
-      using: false,
-      price: 0
-    },
-    payTypeUsing: [],
-    thresholdPrice: 0,
-    isSMSNotifyForGroup: false,
-    maxCountForGroup: 0,
-    maxCountPerOrder: 0
-  })
+  const [inputValue, setInputValue] = useState(createRuleInput())
 
   useEffect(() => {
     if (!getAttribution.loading) {
@@ -106,123 +65,10 @@ function EventRuleCreate({ match }) {
   }, [getMainEvent.loading])
 
   const handleSubmit = async () => {
-    const {
-      nameForGroup, startDateForGroup, endDateForGroup, merchants, product, membershipCard,
-      consumptionTypeUsing, service, maxCountForGroup, payTypeUsing, thresholdPrice, isSMSNotifyForGroup,
-      ticketSellNotInPerformance, ticketUsePerformanceEntered, maxCountPerOrder, ticketSellInPerformance,
-      ticketUsePerformanceNotEntered, walletDepositForCash, walletDepositForOtherPay
-    } = cloneDeep(inputValue)
-    const submitData = {
-      mainEventId: match.params.id,
-      nameForGroup: nameForGroup.trim(),
-      startDateForGroup: startOfDay(startDateForGroup).getTime(),
-      endDateForGroup: endOfDay(endDateForGroup).getTime(),
-      merchants,
-      consumptionTypeUsing,
-      maxCountForGroup,
-      payTypeUsing,
-      thresholdPrice,
-      isSMSNotifyForGroup,
-      maxCountPerOrder,
-      consumptionTypeRules: [],
-      walletDepositRules: []
-    }
     try {
       setIsClick(true)
-      const checkArr = [
-        {
-          data: service,
-          enum: 'SERVICE',
-          errorMessage: '請選擇服務套用的歸屬。'
-        },
-        {
-          data: ticketSellInPerformance,
-          enum: 'TICKETSELLINPERFORMANCE',
-          errorMessage: '請選擇賣卡先入套用的歸屬。'
-        },
-        {
-          data: ticketSellNotInPerformance,
-          enum: 'TICKETSELLNOTINPERFORMANCE',
-          errorMessage: '請選擇賣卡後入套用的歸屬。'
-        },
-        {
-          data: ticketUsePerformanceEntered,
-          enum: 'TICKETUSEPERFORMANCEENTERED',
-          errorMessage: '請選擇用卡先入套用的歸屬。'
-        },
-        {
-          data: ticketUsePerformanceNotEntered,
-          enum: 'TICKETUSEPERFORMANCENOTENTERED',
-          errorMessage: '請選擇用卡後入套用的歸屬。'
-        },
-      ]
-
-      const walletDepositArr = [
-        {
-          data: walletDepositForCash,
-          enum: 'CASH',
-          errorMessage: '入金儲值現金金額門檻不得為0。'
-        },
-        {
-          data: walletDepositForOtherPay,
-          enum: 'OTHERPAY',
-          errorMessage: '入金儲值其他付款方式金額門檻不得為0。'
-        },
-      ]
-
-      if (!submitData.nameForGroup) throw new Error('請輸入規則名稱。')
-      // 至少選一間適用店家（Jason 2026/10/22「照建議」）
-      if (!submitData.merchants || !submitData.merchants.length) throw new Error('請選擇適用店家。')
-
-      if (consumptionTypeUsing !== 'ALL') {
-        if (product) {
-          submitData.consumptionTypeRules.push({
-            consumptionType: 'PRODUCT',
-            attributionRange: 'ALL',
-            attributions: [],
-          })
-        }
-        if (membershipCard) {
-          submitData.consumptionTypeRules.push({
-            consumptionType: 'MEMBERSHIP',
-            attributionRange: 'ALL',
-            attributions: [],
-          })
-        }
-
-        checkArr.forEach(item => {
-          if (item.data.type !== '') {
-            if (item.data.type === 'ALL') {
-              submitData.consumptionTypeRules.push({
-                consumptionType: item.enum,
-                attributionRange: 'ALL',
-                attributions: [],
-              })
-            } else {
-              if (!item.data.belong.length) throw new Error(item.errorMessage)
-              submitData.consumptionTypeRules.push({
-                consumptionType: item.enum,
-                attributionRange: 'SPECIFIC',
-                attributions: item.data.belong,
-              })
-            }
-          }
-        })
-
-        if (!submitData.consumptionTypeRules.length) throw new Error('請選套用的消費類型。')
-      }
-
-      if (!submitData.payTypeUsing.length) throw new Error('請選擇適用付款方式。')
-
-      walletDepositArr.forEach(item => {
-        if (item.data.using) {
-          if (item.data.price === 0) throw new Error(item.errorMessage)
-          submitData.walletDepositRules.push({
-            payType: item.enum,
-            depositThreshold: item.data.price
-          })
-        }
-      })
+      // 整理送出資料與驗證（與建立／編輯頁共用，見 views/EventRuleShared/ruleInput）
+      const submitData = buildRuleSubmitData(inputValue, match.params.id)
       const res = await createRule(submitData)
       if (res.data.createEventRuleGroup) {
         openSnackbar({
@@ -257,12 +103,13 @@ function EventRuleCreate({ match }) {
             <Skeleton className="h-64 w-full" />
           </div>
         ) : (
-          <General
+          <RuleForm
             inputValue={inputValue}
             attributions={attributions}
             setInputValue={setInputValue}
             handleSubmit={handleSubmit}
             isClick={isClick}
+            submitLabel="新增"
             mainEvent={mainEvent}
             eventId={match.params.id}
           />

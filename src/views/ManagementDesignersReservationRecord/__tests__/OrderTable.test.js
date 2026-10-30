@@ -82,3 +82,52 @@ it('設計師名稱依顯示設定：本名、暱稱（沒有暱稱用本名）�
   renderTable('NAME', { designerName: 'BOTH' })
   expect(openChip('成功客')).toBe('orderSuccess|BOTH')
 })
+
+// B2 #17（2026/10/30）：「是否顯示預約備註／顧客備註」設定由父層查詢設定，可能比週曆資料晚到。
+// 設定晚到時，備註過長的色塊要套上跑馬燈；原本 effect 只看週曆資料，設定變了不重算，備註就被截斷看不到。
+describe('備註跑馬燈：顯示備註的設定比週曆晚到', () => {
+  const proto = window.HTMLElement.prototype
+  const original = {
+    offsetHeight: Object.getOwnPropertyDescriptor(proto, 'offsetHeight'),
+    offsetWidth: Object.getOwnPropertyDescriptor(proto, 'offsetWidth'),
+  }
+  beforeEach(() => {
+    // jsdom 不排版；模擬「色塊 40px 高、備註換成兩行以上（≥34px）」
+    Object.defineProperty(proto, 'offsetHeight', { configurable: true, get: () => 40 })
+    Object.defineProperty(proto, 'offsetWidth', { configurable: true, get: () => 100 })
+  })
+  afterEach(() => {
+    Object.defineProperty(proto, 'offsetHeight', original.offsetHeight)
+    Object.defineProperty(proto, 'offsetWidth', original.offsetWidth)
+  })
+
+  it('設定由不顯示改為顯示後，過長的兩種備註都套上跑馬燈', () => {
+    const DesignerCalendar = {
+      loading: false,
+      data: {
+        getMerchantDesignerWeekCalendar: {
+          merchantUnappointCalendar: [],
+          merchantDesignerCalendar: [{
+            designerId: 'd1', designerName: '王大明', designerNickname: '小明', bookingLimit: 1,
+            calendar: [reservation('r1', 1, { nameToDisplay: '成功客', remark: '很長的預約備註', remarkForCustomer: '很長的顧客備註' })],
+          }],
+        },
+      },
+    }
+    const merchant = { data: { merchant: { openingHours: '10:00:00', closingHours: '20:00:00' } } }
+    const checkinSettings = { isBookingCheckinEnabled: false }
+    const { orderRange, calendarData, openTime } = buildWeekCalendar({
+      DesignerCalendar, merchant, date: WEEK, height: 40, isOne: true, checkinMode: false, bookingCusCheck: false, checkinSettings, checkedType: '',
+    })
+    const ndsRef = { current: [] }
+    const props = {
+      orderRange, calendarData, designerNameType: 'NAME', merchantId: 'm1', openTime, refetchData: () => {}, isOne: true,
+      designerId: ['d1'], ndsRef, checkinSettings, checkinMode: false, calendarSize: { width: 150, height: 40, breakWidth: 45 }, cancelPasswordUsing: false,
+    }
+    const { rerender } = render(<OrderTable {...props} remarkDisplay={false} cusRemarkDisplay={false} />)
+    expect(document.querySelector('#remark')).toBeNull()
+    rerender(<OrderTable {...props} remarkDisplay cusRemarkDisplay />)
+    expect(document.querySelector('#remark')).toHaveClass('textAnimation')
+    expect(document.querySelector('#cusRemark')).toHaveClass('textAnimation')
+  })
+})

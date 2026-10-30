@@ -118,6 +118,10 @@ function CheckoutDaily() {
                 isMemberShipCardActive={isMemberShipCardActive}
                 bonusDisplay={bonusDisplay}
                 waitCloseOrderDateLoading={waitCloseOrderDate.loading}
+                onRestored={() => {
+                  waitCloseOrderDate.refetch()
+                  dailyMoneyFlowReport.refetch()
+                }}
               />
             )
         )}

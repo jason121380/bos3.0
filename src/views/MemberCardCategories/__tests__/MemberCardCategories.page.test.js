@@ -91,13 +91,23 @@ describe('會員卡分類設定', () => {
     expect(screen.getByLabelText('全選')).toBeDisabled()
   })
 
-  it('批次刪除送出勾選的 uuid，成功後提示並重新整理', async () => {
-    const { calls } = setup({ deleteMembershipCategory: { deleteMembershipCategory: true } })
+  // 成功後不整頁重新整理（2026/10/28）：重抓分類清單，刪掉的分類從畫面消失
+  it('批次刪除送出勾選的 uuid，成功後提示並重抓清單，不重新整理', async () => {
+    let deleted = []
+    const { calls } = setup({
+      deleteMembershipCategory: (variables) => {
+        deleted = variables.itemUUIDs
+        return { deleteMembershipCategory: true }
+      },
+      FETCH_MEMBERSHIPS_CATEGORY: () => ({ membershipCategories: CATEGORIES.filter(c => !deleted.includes(c.uuid)) }),
+    })
     await screen.findByText('共 3 筆')
     fireEvent.click(screen.getByTestId('category-金卡-checkbox'))
     fireEvent.click(screen.getByTestId('category-銀卡-checkbox'))
     fireEvent.click(within(screen.getByRole('toolbar', { hidden: true })).getByText('刪除'))
-    await wait(() => expect(window.location.reload).toHaveBeenCalled())
+    await screen.findByText('共 1 筆')
+    expect(screen.queryByText('金卡')).toBeNull()
+    expect(window.location.reload).not.toHaveBeenCalled()
     expect(callsOf(calls, 'deleteMembershipCategory')[0].variables).toEqual({ itemUUIDs: ['c1', 'c2'] })
     expect(openSnackbar).toHaveBeenCalledWith({ message: '成功刪除會員卡類別', variant: 'success' })
   })

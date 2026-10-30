@@ -198,6 +198,23 @@ describe('每日結帳', () => {
       expect(openSnackbar).toHaveBeenLastCalledWith(expect.objectContaining({ selectedOrders: [D1, TODAY] }))
     })
 
+    // B2 #13（2026/10/30）：「有掛單未結不可日結」設定比尚未日結列表晚回來時，子層先以預設 false 算全選上限（3 天），
+    // 設定回來後不重算 → 全選只選 2 天、勾選框卻顯示半選。設定改變時必須重算。
+    it('「有掛單未結不可日結」設定較晚回來：全選後仍為完整勾選，不是半選', async () => {
+      const { settle } = setup(
+        {
+          GET_IS_DAILY_CHECKOUT_BLOCKED_BY_DRAFT_ORDER: { getIsDailyCheckoutBlockedByDraftOrder: true },
+          waitCloseOrderDate: { waitCloseOrderDate: { data: WAIT.slice(0, 3), pageLimit: 1000, pageOffset: 0, totalCount: 3 } },
+        },
+        { delays: { GET_IS_DAILY_CHECKOUT_BLOCKED_BY_DRAFT_ORDER: 50 } }
+      )
+      await settle()
+      expand()
+      fireEvent.click(screen.getByLabelText('全選'))
+      expect(screen.getByLabelText('全選').indeterminate).toBe(false)
+      expect(screen.getByLabelText('全選').checked).toBe(true)
+    })
+
     it('設定有掛單未結不可日結：有掛單的日期停用並標示筆數，全選只選沒有掛單的日期', async () => {
       const { settle } = setup({
         GET_IS_DAILY_CHECKOUT_BLOCKED_BY_DRAFT_ORDER: { getIsDailyCheckoutBlockedByDraftOrder: true },
@@ -292,13 +309,18 @@ describe('每日結帳', () => {
       await wait(() => expect(exportedCsv()).toContain('點數折抵金額(-)'))
     })
 
-    it('未設解除密碼：按解除日結直接送出該日並重新整理', async () => {
+    // 解除日結後不整頁重新整理（會丟掉日期區間與捲動位置），改為重抓待結帳日期與日結紀錄：解除的那天要回到待結帳清單（2026/10/28）
+    it('未設解除密碼：按解除日結直接送出該日，成功後重抓兩份清單、不重新整理', async () => {
       const { calls, settle } = setup()
       await settle()
+      const waitBefore = callsOf(calls, 'waitCloseOrderDate').length
+      const reportBefore = callsOf(calls, 'dailyMoneyFlowReport').length
       fireEvent.click(within(screen.getByText('2026/10/19').closest('tr')).getByLabelText('解除日結'))
       await wait(() => expect(callsOf(calls, 'SET_RESTORE_DAILY_ACCOUNT')).toHaveLength(1))
       expect(callsOf(calls, 'SET_RESTORE_DAILY_ACCOUNT')[0].variables).toEqual({ date: new Date(2026, 9, 19).getTime() })
-      await wait(() => expect(reload).toHaveBeenCalled())
+      await wait(() => expect(callsOf(calls, 'waitCloseOrderDate').length).toBeGreaterThan(waitBefore))
+      await wait(() => expect(callsOf(calls, 'dailyMoneyFlowReport').length).toBeGreaterThan(reportBefore))
+      expect(reload).not.toHaveBeenCalled()
       expect(openSnackbar).toHaveBeenCalledWith({ variant: 'success', message: '日結解除成功' })
     })
 
@@ -330,7 +352,8 @@ describe('每日結帳', () => {
       fireEvent.click(screen.getByTestId('confirm'))
       await wait(() => expect(callsOf(calls, 'SET_RESTORE_DAILY_ACCOUNT')).toHaveLength(1))
       expect(callsOf(calls, 'SET_RESTORE_DAILY_ACCOUNT')[0].variables).toEqual({ date: new Date(2026, 9, 20).getTime(), password: '2468' })
-      await wait(() => expect(reload).toHaveBeenCalled())
+      await wait(() => expect(screen.queryByRole('dialog')).toBeNull())
+      expect(reload).not.toHaveBeenCalled()
     })
 
     it('有設解除密碼但密碼錯誤：關閉對話框、不重新整理', async () => {

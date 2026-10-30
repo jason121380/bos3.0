@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
 import idx from 'idx'
+import { storedMerchantId } from 'lib/stored-merchant'
 import { useFetchUserSalaryReportLazy } from 'hooks/useFetchUserSalaryReport'
 import { startOfMonth, startOfDay, endOfDay } from 'date-fns'
 import { useFetchUserAttendanceLazy } from 'hooks/useFetchUser'
@@ -143,10 +144,12 @@ function Settings({ match, history }) {
     if (!getUserPinnedTableSettings.loading) {
       const data = idx(getUserPinnedTableSettings, _ => _.data.getUserPinnedTableSettings)
       if (data) {
-        const pages = JSON.parse(data.pinnedSettings).map(d => d.name)
+        // 尚未設定過釘選時後端可能回 null：當成空清單，不要讓整個個人頁拋錯（2026/10/30 瀏覽器驗收）
+        const pages = (JSON.parse(data.pinnedSettings || '[]') || []).map(d => d.name)
+        const currentMerchantId = storedMerchantId()
         setSubmitValue({
           pages: pages,
-          stores: data.usingStoreIds.filter(id => JSON.parse(localStorage.getItem('userMerchant')).id !== id)
+          stores: (data.usingStoreIds || []).filter(id => currentMerchantId !== id)
         })
       }
     }

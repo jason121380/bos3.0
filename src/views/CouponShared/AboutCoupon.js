@@ -46,8 +46,14 @@ const handlingFeeSelect = [
     label: '每次使用時扣除',
   },
 ]
-function AboutService({ className, onChange, coupon, ...rest }) {
+
+// 新增卡券／編輯卡券共用的「一般資訊」（2026/10/28 自兩頁合併，畫面與行為逐字保留）。
+// isEdit：編輯頁原本多兩個小行為，新增頁沒有，維持原樣——
+//   1. 服務類別查詢回來前下拉先顯示空白（避免帶入的類別 id 對不到選項）；
+//   2. 金額、次數欄位滾動滑鼠滾輪時先移開焦點，避免滾輪改到數字。
+function AboutService({ className, onChange, coupon, isEdit = false, ...rest }) {
   const serviceCategories = useFetchServiceCategories()
+  const loading = isEdit && !idx(serviceCategories, _ => _.data)
   return (
     <Card {...rest}>
       <CardHeader>
@@ -62,7 +68,7 @@ function AboutService({ className, onChange, coupon, ...rest }) {
         </Field>
         <Field label="服務類別">
           <NativeSelect
-            value={coupon.ServiceCategoryId}
+            value={loading ? '' : coupon.ServiceCategoryId}
             onChange={event => onChange({ event, key: 'ServiceCategoryId' })}
           >
             <NativeSelectOption value="" disabled>
@@ -91,6 +97,7 @@ function AboutService({ className, onChange, coupon, ...rest }) {
               })
             }
             value={coupon.price}
+            onWheel={isEdit ? () => document.activeElement.blur() : undefined}
           />
         </Field>
         <Field label="次數">
@@ -107,6 +114,7 @@ function AboutService({ className, onChange, coupon, ...rest }) {
                 key: 'ticketAvailableCount',
               })
             }
+            onWheel={isEdit ? () => document.activeElement.blur() : undefined}
           />
         </Field>
         <Field label="打帳單是否能更改預設價格">
@@ -197,6 +205,7 @@ function AboutService({ className, onChange, coupon, ...rest }) {
 
 AboutService.propTypes = {
   className: PropTypes.object,
+  isEdit: PropTypes.bool,
 }
 
 export default AboutService

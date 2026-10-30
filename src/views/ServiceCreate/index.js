@@ -15,9 +15,10 @@ import helperDeduction from './../../helper/helperDeduction.js'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-import AboutAssistantSetting from './AboutAssistantSetting'
-import AboutDeduction from './AboutDeduction'
-import AboutService from './AboutService'
+// 三個表單區塊與編輯服務共用（views/ServiceShared，2026/10/28）
+import AboutAssistantSetting from 'views/ServiceShared/AboutAssistantSetting'
+import AboutDeduction from 'views/ServiceShared/AboutDeduction'
+import AboutService from 'views/ServiceShared/AboutService'
 
 function ServiceCategoryCreate() {
   const merchantId = localStorage.getItem('userMerchant')
@@ -287,6 +288,7 @@ function ServiceCategoryCreate() {
 
         <AboutDeduction
           ServiceDeductionItems={service.ServiceDeductionItems}
+          stateKey="ServiceDeductionItems"
           onChange={handleOnChange}
           truthPerformPredict={truthPerformPredict}
           helperDeductionNums={helperDeductionNums}
@@ -299,10 +301,16 @@ function ServiceCategoryCreate() {
           onChange={handleOnChange}
         />
 
-        <div>
-          <Button variant="primary" disabled={vaild || saveBtn} onClick={handleSubmit}>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button variant="primary" disabled={vaild || saveBtn} aria-describedby={vaild ? 'service-create-missing' : undefined} onClick={handleSubmit}>
             新增
           </Button>
+          {/* 停用原因（STYLE.md §6）：依 vaild（名稱、服務類別必填） */}
+          {vaild && (
+            <p id="service-create-missing" role="status" className="text-caption text-text-secondary">
+              尚缺：{[!service.name && '名稱', !service.ServiceCategoryId && '服務類別'].filter(Boolean).join('、')}
+            </p>
+          )}
         </div>
       </div>
     </Page>

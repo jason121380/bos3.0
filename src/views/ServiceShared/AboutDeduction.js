@@ -30,19 +30,22 @@ const deductions = [
   },
 ]
 
+// 新增服務／編輯服務共用的扣項設定（2026/10/28 自兩頁合併，畫面與 handler 逐字保留）。
+// stateKey：寫回頁面 state 的欄位名。新增頁的 state 欄位是 ServiceDeductionItems（大寫 S）、編輯頁是 serviceDeductionItems，
+//           兩頁原本各自寫死，這裡改由呼叫端傳入，送出時各頁讀自己的欄位，行為不變。
 function AboutDeduction({
   className,
   deductionItem,
   onChange,
   ServiceDeductionItems,
+  stateKey,
   truthPerformPredict,
   helperDeductionNums,
   helperPoint,
   ...rest
 }) {
   const inputLabel = useRef()
-  // const merchantDeductionItems = useFetchMerchantDeductionItems()
-  // const deductionItems = idx(merchantDeductionItems, _ => _.data.merchantDeductionItems)
+
   const handleAddDeductionContent = (type, deductionOrder) => {
     const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
@@ -61,12 +64,12 @@ function AboutDeduction({
       }
     })
     onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }
 
-  const handleDeleteDeductionContent = (type, index) => {
+  const handleDeleteDeductionContent = (type, index, deductionType) => {
     const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
@@ -74,12 +77,12 @@ function AboutDeduction({
       }
     })
     onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }
 
-  const handleCheckboxChange = (type, index) => {
+  const handleCheckboxChange = (type, index, deductionType) => {
     const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
@@ -96,40 +99,7 @@ function AboutDeduction({
       }
     })
     onChange({
-      key: 'ServiceDeductionItems',
-      event: { target: { value: newServiceDeductionItems } },
-    })
-  }
-
-  // const handleDeductionName = (type, event, index) => {
-  //   const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
-  //   newServiceDeductionItems.forEach(data => {
-  //     if (data.type === type) {
-  //       data.itemSettings.forEach((data2, index2) => {
-  //         if (index === index2) {
-  //           data2.name = event.target.value
-  //         }
-  //       })
-  //     }
-  //   })
-  //   onChange({
-  //     key: 'ServiceDeductionItems',
-  //     event: { target: { value: newServiceDeductionItems } },
-  //   })
-  // }
-  const handleDeductionTypeChange = (type, event, index) => {
-    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
-    newServiceDeductionItems.forEach(data => {
-      if (data.type === type) {
-        data.itemSettings.forEach((data2, index2) => {
-          if (index === index2) {
-            data2.type = event.target.value
-          }
-        })
-      }
-    })
-    onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }
@@ -158,7 +128,7 @@ function AboutDeduction({
       }
     })
     onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }
@@ -175,12 +145,12 @@ function AboutDeduction({
       }
     })
     onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }
 
-  const handleDeductionWay = (type, event, index) => {
+  const handleDeductionWay = (type, event, index, deductionType) => {
     const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
@@ -191,8 +161,9 @@ function AboutDeduction({
         })
       }
     })
+
     onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }
@@ -214,10 +185,28 @@ function AboutDeduction({
       }
     })
     onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }
+
+  const handleDeductionTypeChange = (type, event, index) => {
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
+    newServiceDeductionItems.forEach(data => {
+      if (data.type === type) {
+        data.itemSettings.forEach((data2, index2) => {
+          if (index === index2) {
+            data2.type = event.target.value
+          }
+        })
+      }
+    })
+    onChange({
+      key: stateKey,
+      event: { target: { value: newServiceDeductionItems } },
+    })
+  }
+
   const menuItemGenerate = num => {
     const arr = [{ title: '依業績', value: 0 }]
     if (num === 1) {
@@ -449,6 +438,7 @@ function AboutDeduction({
 
 AboutDeduction.propTypes = {
   className: PropTypes.object,
+  stateKey: PropTypes.oneOf(['ServiceDeductionItems', 'serviceDeductionItems']).isRequired,
 }
 
 export default AboutDeduction

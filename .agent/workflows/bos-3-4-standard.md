@@ -6,6 +6,8 @@ description: BOS 3.4 Compact Administrative Template Standards
 
 > **歷史／已過時，已被取代。** 本文件是 MUI 時代的舊規格（`#E8F0FE` 標頭、`theme.spacing`、MUI `Collapse`）。新畫面以根目錄 `STYLE.md` 為準。版號、測試總數、CI、健康分、後端債只看 [`docs/CURRENT.md`](../../docs/CURRENT.md)。健康分程式是 `v3.10241717`。CI 是 `.github/workflows/frontend-ci.yml`。不要用本檔對分數或測試數字。
 
+`AdminPageHeader`／`PageTitle` 已於 2026/10/28 刪除，頁首一律用 `ui/page-header` 的 `PageHeader`。
+
 以下只供對照。開發或重構請遵守 `STYLE.md`。
 
 2026/10/23 畫面紀錄：MUI 套件已移除；設定／參數／個人資料／報表目錄／顧客詳情採左側淺灰選單＋右側白底內容，兩欄無分隔線；22 張列印報表採一致精簡版、日期選擇器使用主題色、PWA 狀態列白色。正式站唯讀，不可新增、修改、送出或列印真實資料；刪檔先經 Jason 同意。

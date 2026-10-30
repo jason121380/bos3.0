@@ -14,8 +14,25 @@ import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
 
+// 建立規則／編輯規則共用的規則表單（2026/10/28 自 EventRuleCreate／EventRuleEdit 的 General.js 合併，畫面與行為逐字保留）。
+// 兩頁的差異以 props 明確傳入：
+//   isEdit：編輯頁的日期選擇器標題列（「起始時間」「結束時間」＋ M月d日）；建立頁原本沒有，維持不加。
+//           建立頁在「適用付款方式」與「入金儲值」之間有一條分隔線，編輯頁原本沒有，維持原樣。
+//   submitLabel：底部按鈕文字（建立頁「新增」、編輯頁「儲存」）。
+//   isReadOnly：只有編輯頁會傳（已結束的規則唯讀並隱藏底部按鈕）；建立頁不傳，等同原本沒有 readOnly。
 // 已結束規則的歸屬多選一律以 isReadOnly 唯讀（Jason 2026/10/22 授權修正：服務／賣卡先入／賣卡後入原本傳成 readOnly，被元件的 isReadOnly=false 蓋掉而仍可修改）
-function General({ inputValue, attributions, setInputValue, handleSubmit, isClick, mainEvent, isReadOnly, eventId }) {
+const editPickerToolbar = title => ({
+  localeText: {
+    toolbarTitle: title
+  },
+  slotProps: {
+    toolbar: {
+      toolbarFormat: 'M月d日'
+    }
+  }
+})
+
+function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isClick, mainEvent, isReadOnly, eventId, isEdit = false, submitLabel }) {
   const handleDateChange = (value, pickerType) => {
     const newValue = cloneDeep(inputValue)
     newValue[pickerType] = value
@@ -80,14 +97,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
               label="起始時間"
               value={inputValue.startDateForGroup}
               format="yyyy/MM/dd"
-              localeText={{
-                toolbarTitle: '起始時間'
-              }}
-              slotProps={{
-                toolbar: {
-                  toolbarFormat: 'M月d日'
-                }
-              }}
+              {...(isEdit ? editPickerToolbar('起始時間') : {})}
               onChange={value => handleDateChange(new Date(value).getTime(), 'startDateForGroup')}
             />
             <MobileDatePicker
@@ -98,14 +108,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
               label="結束時間"
               value={inputValue.endDateForGroup}
               format="yyyy/MM/dd"
-              localeText={{
-                toolbarTitle: '結束時間'
-              }}
-              slotProps={{
-                toolbar: {
-                  toolbarFormat: 'M月d日'
-                }
-              }}
+              {...(isEdit ? editPickerToolbar('結束時間') : {})}
               onChange={value => handleDateChange(new Date(value).getTime(), 'endDateForGroup')}
             />
           </div>
@@ -442,6 +445,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
               </div>
             </div>
           </div>
+          {isEdit ? null : <div className="h-px bg-border" />}
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-2.5">
               <p className="text-label text-text">入金儲值：</p>
@@ -524,7 +528,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
         {isReadOnly ? '' : (
           <CardFooter>
             <Button disabled={isClick} onClick={handleSubmit} variant="primary">
-              儲存
+              {submitLabel}
             </Button>
           </CardFooter>
         )}
@@ -532,4 +536,4 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
     </Fragment>
   )
 }
-export default General
+export default RuleForm

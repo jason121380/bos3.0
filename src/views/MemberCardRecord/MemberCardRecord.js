@@ -138,6 +138,7 @@ function MemberCardRecord() {
             categories={categories}
             setCategoryFilter={setCategoryFilter}
             onPageChange={handlePageChange}
+            onChanged={() => membershipsData.refetch()}
           />
         ) : <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
         }

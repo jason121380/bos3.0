@@ -127,10 +127,14 @@ describe('材料自購登錄列表', () => {
     fireEvent.click(screen.getByTestId('order-checkbox-1'))
     fireEvent.click(screen.getByTestId('order-checkbox-0'))
     fireEvent.click(screen.getByTestId('order-checkbox-0'))
+    const listCalls = callsOf(calls, 'FETCH_PICKING_RECORD').length
     fireEvent.click(within(screen.getByRole('toolbar', { name: '批次操作' })).getByRole('button', { name: /刪除/ }))
     fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '刪除 員工領料/自購 成功', variant: 'success' }))
     expect(callsOf(calls, 'deletePicking')[0].variables).toEqual({ id: ['pk-2'] })
+    // 刪除後重抓清單、清空勾選，不整頁重新整理（保留篩選與捲動位置）
+    await wait(() => expect(callsOf(calls, 'FETCH_PICKING_RECORD').length).toBeGreaterThan(listCalls))
+    expect(screen.getByRole('toolbar', { name: '批次操作', hidden: true }).closest('[hidden]')).not.toBeNull()
   })
 
   it('日結後禁止領料：已結帳的不可勾選，全選只選未結帳的、再按取消', async () => {

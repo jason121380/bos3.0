@@ -75,7 +75,7 @@ npm run build
 
 ## 交接說明
 
-- **現況**：只看 [`docs/CURRENT.md`](docs/CURRENT.md)。那裡有前端健康分 Before 92 → After 100、CI（`.github/workflows/frontend-ci.yml`）、`QueryFailed`、收據欄位契約、匯出遮罩、怎麼驗證，以及未修的後端債。健康分程式版號是 `v3.10241717`。本檔與 `docs/redesign/` 裡帶日期的 suite 數是 **歷史／已過時**，不要當基線。
+- **現況**：只看 [`docs/CURRENT.md`](docs/CURRENT.md)。那裡有前端健康分 Before 92 → After 100、CI（`.github/workflows/frontend-ci.yml`）、`QueryFailed`、收據欄位契約、匯出遮罩、怎麼驗證，以及未修的後端債。健康分程式版號是 `v3.10241717`。2026/10/28 四面向稽核與 10/30 修正見 [`docs/redesign/AUDIT_20261028.md`](docs/redesign/AUDIT_20261028.md)。本檔與 `docs/redesign/` 裡帶日期的 suite 數是 **歷史／已過時**，不要當基線。
 - **Repo 結構**：`src/views/` 放業務頁面，`src/components/` 與 `src/ui/` 放共用元件，`src/lib/`、`src/helper/`、`src/store/` 放資料與狀態邏輯；主要守則在 `CLAUDE.md`、設計規則在 `STYLE.md`。
 - **本機開發**：使用 Node.js 24、npm；執行 `npm install --legacy-peer-deps` 後以 `npm start` 啟動 Vite。API 連線設定依 `src/lib/api-base.js` 與本機既有環境設定，不要把憑證寫入文件。
 - **部署**：合併／push 到 `main` 會由 Railway 自動部署至正式站 https://bos.lure.com.tw。GitHub 合併成功不代表已上線；確認正式站左上角版號為預期版本才算完成。`cloudbuild.yaml`、`cloudbuild_dev.yaml` 是未使用的 legacy 檔案。
@@ -127,7 +127,6 @@ npm run build
 | `qrcode` | QR Code 產生 |
 | `react-beautiful-dnd` | 拖放排序 |
 | `react-perfect-scrollbar` | 自定義捲軸 |
-| `react-helmet` | 動態 `<title>` 管理 |
 | `@sentry/react` | 前端錯誤追蹤 |
 
 ---
@@ -198,10 +197,11 @@ bos3.0/
     │   └── ...                 # (詳見「業務模組總覽」)
     │
     ├── components/             # 共用元件（55 個）
-    │   ├── AdminPageHeader.js  # 頁面頂部控制列
     │   ├── ManagementTable.js  # 通用管理表格
-    │   ├── PageTitle.js        # 頁面標題 (含藍色垂直條)
-    │   ├── TableEditBar.js     # 底部批量操作列
+    │   ├── QueryFailed.js      # 查詢失敗畫面（無法載入資料＋重新查詢）
+    │   ├── PageLoadingFallback.js # 頁面程式載入中（超過 0.3 秒顯示轉圈）
+    │   ├── ConfirmDeleteDialog.js # 刪除前確認（TableEditBar confirmDelete）
+    │   ├── TableEditBar.js     # 底部批量操作列（confirmDelete 先確認再刪）
     │   ├── DateSelector/       # 日期選擇器 (本月/上月快捷)
     │   ├── SearchBar/          # 搜尋列元件
     │   ├── NavItem.js          # 側邊欄導航項目（依路由展開與高亮）
@@ -242,7 +242,7 @@ bos3.0/
     ├── context/                # React Context
     │   ├── TeachingModeState.js # 教學模式狀態
     │   ├── designerContext.js  # 設計師上下文
-    │   └── useReservationContext.js # 預約上下文
+    │   └── ReservationContext.js # 預約上下文（2026/10/28 由 useReservationContext 改名：它是 context，不是 hook）
     │
     ├── helper/                 # 業務工具函數
     │   ├── pageData.js         # 全站頁面資料定義 (導航用)
@@ -404,32 +404,23 @@ localStorage 儲存：
 
 ## 🧩 共用元件規格
 
-### `AdminPageHeader`
+### `PageHeader`（`src/ui/page-header.js`）
 
-頁面頂部控制列，藍色淺底背景。
+頁首一律用它。`AdminPageHeader`、`PageTitle` 已於 2026/10/28 刪除。
 
 ```jsx
-<AdminPageHeader
+<PageHeader
   title="帳單列表"
-  subTitle="管理作業"
-  primaryAction={{ label: '新增帳單', to: '/order/create' }}
-  secondaryActions={[{ label: '匯出', onClick: handleExport }]}
-  showFilter={showFilter}
-  onFilterClick={() => setShowFilter(!showFilter)}
->
-  <DateSelector ... />
-</AdminPageHeader>
+  actions={
+    <>
+      <Button variant="secondary" onClick={handleExport}><Download />報表匯出</Button>
+      <Button variant="primary" asChild><RouterLink to="/order/create">新增帳單</RouterLink></Button>
+    </>
+  }
+/>
 ```
 
-| Prop | Type | 說明 |
-|---|---|---|
-| `title` | `string` (required) | 頁面標題 |
-| `subTitle` | `string` | 副標題 |
-| `primaryAction` | `{ label, to?, onClick? }` | 主要操作按鈕 |
-| `secondaryActions` | `[{ label, onClick, disabled? }]` | 次要操作按鈕群組 |
-| `showFilter` | `bool` | 篩選開關狀態 |
-| `onFilterClick` | `func` | 篩選按鈕點擊事件 |
-| `children` | `node` | 右側自定義內容 |
+報表頁的日期與篩選放在同檔的 `ReportToolbar`（`date`／`filters`／`actions` 三個槽），規則見 `STYLE.md` §14。
 
 ### `ManagementTable`
 
@@ -467,14 +458,6 @@ localStorage 儲存：
 | `headerAction` | `node` | 標題列右側自定義動作 |
 | `hidePagination` | `bool` | 隱藏分頁 |
 | `size` | `'small' \| 'medium'` | 表格密度 |
-
-### `PageTitle`
-
-帶藍色垂直指示線的標題元件。
-
-```jsx
-<PageTitle title="員工列表" subTitle="管理作業" />
-```
 
 ### `MerchantBar` (店家切換)
 
@@ -627,7 +610,7 @@ Dialog 模式的店家切換器，含搜尋過濾功能。
 |---|---|
 | `TeachingModeState` | 教學模式開關 (全站) |
 | `designerContext` | 設計師相關上下文 |
-| `useReservationContext` | 預約相關上下文 |
+| `ReservationContext` | 預約相關上下文 |
 
 ### LocalStorage Keys
 
@@ -793,9 +776,6 @@ Dockerfile 已內建 npm 網路重試配置（5 次重試、20s~120s 超時）�
 
 ### Q6: 人在國外（或裝置時區設錯）時，報表與帳單時間對嗎？
 對。系統一律以台灣時間計算「今天／本月」與顯示時間，與裝置時區無關；裝置不在台灣時區時進入後台會提示一次。詳見〈時區〉。
-
-### Q7: 為什麼 `PageTitle` 有藍色垂直條，但 `ManagementTable` 的 `CardHeader` 沒有？
-`PageTitle` 元件內建 `4×18px #1A73E8` 藍色垂直指示線；`ManagementTable` 的 `CardHeader` 在 BOS 3.4 標準中已移除此裝飾，保持簡潔。
 
 ---
 

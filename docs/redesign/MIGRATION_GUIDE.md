@@ -25,7 +25,7 @@
 | `ui/select` | `Select`, `SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`, `SelectGroup`, `SelectLabel` | Radix：`value` 必須是**非空字串**，用 `onValueChange(v)`。舊值若為數字／物件／可為空字串，**保留既有 Select 相容元件** |
 | `ui/table` | `Table`, `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableHead`, `TableCell`, `TablePagination` | `TableHead/TableCell numeric` 右對齊＋等寬數字；`TablePagination` 與 MUI 同名 props（`count page rowsPerPage onPageChange(e, p) rowsPerPageOptions onRowsPerPageChange(e)`） |
 | `ui/card` | `Card`, `CardHeader`（`action` prop 放右側按鈕）, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter` | 取代 MUI Card / Paper |
-| `ui/page-header` | `PageHeader`（`title description actions`）, `Toolbar`, `ToolbarSpacer` | 頁首。既有 `AdminPageHeader` 已是新外觀，可保留不換 |
+| `ui/page-header` | `PageHeader`（`title description actions`）, `Toolbar`, `ToolbarSpacer` | 頁首。`AdminPageHeader`、`PageTitle` 已於 2026/10/28 刪除，一律用 `PageHeader`（報表頁加同檔的 `ReportToolbar`） |
 | `ui/dialog` | `Dialog`(`open onOpenChange`), `DialogContent`(`size` sm/md/lg), `DialogHeader`, `DialogTitle`, `DialogDescription`, `DialogBody`, `DialogFooter`, `DialogClose` | `onClose={fn}` → `onOpenChange={o => !o && fn()}`。**共用圖層（MEMORY #195）**：可包含正式／相容日期、Autocomplete、Select、Popover，亦可與 compat Dialog 雙向堆疊；焦點／指標使用 Radix 共用圖層，`ui/layer-stack` 管理視覺順序並同步交接 Esc。原無 `onClose` 者維持不傳 `onOpenChange`＋`hideClose`；有 `onClose` 者映射，沒有舊關閉鈕則加 `hideClose`。保持 `onOpenAutoFocus`／外部事件的 preventDefault。不要自行改成 `modal={false}` |
 | `ui/tabs` | `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent` | 值必須是字串；舊值為數字或 handler 用到 event 時，保留既有 Tabs 相容元件 |
 | `ui/badge` | `Badge`（`variant`: neutral / success / warning / danger / accent） | 取代不可點的 Chip、狀態文字 |

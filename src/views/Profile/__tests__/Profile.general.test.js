@@ -1,6 +1,6 @@
 // 保護「個人頁 › 基本資料」與「密碼設定」：
 // - 帶入登入者個資；儲存送出的 UPDATE_USER_INFO 必須是畫面上的資料（以登入者 id），手機少於 7 碼擋下；成功後重抓 profile 並提示。
-// - 換頭像：選檔後開裁切窗，確認後把裁切壓縮後的檔案送 SET_USER_AVATAR，成功重新整理、失敗（false／錯誤）提示並可再按；取消清空選檔。
+// - 換頭像：選檔後開裁切窗，確認後把裁切壓縮後的檔案送 SET_USER_AVATAR，成功關窗並重抓個人資料（不整頁重新整理）、失敗（false／錯誤）提示並可再按；取消清空選檔。
 // - 密碼設定：兩次密碼相同才可送出，以登入者 id 送 CHANGE_PASSWORD，成功後清空。
 // 裁切（canvas）與壓縮在 jsdom 無法執行，以 mock 回傳檔案；CropImage 本身另有單元測試。GraphQL 全由模擬 link 回應，不連後端。
 import React from 'react'
@@ -174,8 +174,18 @@ describe('個人頁：更換頭像', () => {
     return input
   }
 
-  it('選檔開裁切窗；確認上傳送出壓縮後的檔案，成功提示並重新整理', async () => {
-    const { calls } = renderProfile('general', { fixtures: { SET_USER_AVATAR: { setUserAvatar: true } } })
+  // 成功後不整頁重新整理（2026/10/28）：關閉裁切窗、重抓個人資料，頭像換成新的網址（側欄也讀同一支 PROFILE 查詢）
+  it('選檔開裁切窗；確認上傳送出壓縮後的檔案，成功提示、關窗並重抓個人資料，不重新整理', async () => {
+    let uploaded = false
+    const { calls } = renderProfile('general', {
+      fixtures: {
+        SET_USER_AVATAR: () => {
+          uploaded = true
+          return { setUserAvatar: true }
+        },
+        PROFILE: () => ({ me: { ...ME, avatar: uploaded ? 'https://img.test/new.jpg' : ME.avatar } }),
+      },
+    })
     await ready()
     pickFile()
     const dialog = await screen.findByRole('dialog', { name: '選取頭像範圍' })
@@ -191,8 +201,12 @@ describe('個人頁：更換頭像', () => {
     // 等選取的檔案讀完（FileReader 非同步）並交給裁切元件
     await wait(() => expect(within(dialog).getByRole('button', { name: '模擬裁切' }).getAttribute('data-image')).toMatch(/^data:/))
     fireEvent.click(within(dialog).getByRole('button', { name: '模擬裁切' }))
+    const profileCalls = callsOf(calls, 'PROFILE').length
     fireEvent.click(within(dialog).getByRole('button', { name: '確認上傳' }))
-    await wait(() => expect(window.location.reload).toHaveBeenCalled())
+    await wait(() => expect(screen.queryByRole('dialog', { name: '選取頭像範圍' })).toBeNull())
+    await wait(() => expect(callsOf(calls, 'PROFILE').length).toBeGreaterThan(profileCalls))
+    await wait(() => expect(document.querySelector('img[src="https://img.test/new.jpg"]')).not.toBeNull())
+    expect(window.location.reload).not.toHaveBeenCalled()
     // 以選取的圖片、裁切範圍與旋轉角度裁切
     expect(cropArgs[0]).toMatch(/^data:image\/png;base64,/)
     expect(cropArgs[1]).toEqual({ x: 1, y: 2, width: 30, height: 30 })

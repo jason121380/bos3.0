@@ -35,6 +35,9 @@ const assistantNum = [
   { label: '2', value: '2' },
   { label: '3', value: '3' },
 ]
+// 新增服務／編輯服務共用（2026/10/28 自兩頁合併，畫面與行為逐字保留）。
+// 「協助人員人數」下拉一律綁定目前人數（nameList.length），與編輯頁相同（2026/10/30）。新增頁原本沒有綁 value，
+// 下拉只記住自己選過的值：按「清除此互助設定」後資料已歸零，畫面仍顯示舊人數，與送出資料不一致。
 function AboutAssistantSetting({
   className,
   support,

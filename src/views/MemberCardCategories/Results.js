@@ -12,7 +12,7 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
-function Results({ className, categories, ...rest }) {
+function Results({ className, categories, onChanged, ...rest }) {
   // 被選的checkbox
   const [selectedCategories, setSelectedCcategories] = useState([])
 
@@ -46,7 +46,8 @@ function Results({ className, categories, ...rest }) {
       .then(() => {
         setSelectedCcategories([])
         openSnackbar({ message: '成功刪除會員卡類別', variant: 'success' })
-        window.location.reload()
+        // 原本整頁 reload：改為重抓分類清單（2026/10/28）
+        if (onChanged) onChanged()
       })
       .catch(err => {
         // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
@@ -125,6 +126,7 @@ function Results({ className, categories, ...rest }) {
 }
 
 Results.propTypes = {
+  onChanged: PropTypes.func,
   className: PropTypes.object,
   categories: PropTypes.array,
 }

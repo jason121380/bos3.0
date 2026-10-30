@@ -329,7 +329,8 @@ describe('消費明細：送出', () => {
     await wait(() => expect(currentLocation()).toBe('/management/draft-orders'))
   })
 
-  it('連續打單時明細內掛單：成功後重新載入頁面；失敗提示錯誤', async () => {
+  // 連續打單掛單成功：與結帳成功相同，關閉明細、清空帳單、留在本頁，不整頁重新整理（2026/10/28；原本 reload 要重新下載整頁與重抓所有設定）
+  it('連續打單時明細內掛單：成功後關閉明細、清空帳單留在本頁，不重新整理；失敗提示錯誤', async () => {
     localStorage.setItem('stayInCreateOrder', true)
     const { location } = window
     delete window.location
@@ -340,7 +341,11 @@ describe('消費明細：送出', () => {
       let pending = buttons('掛單')
       fireEvent.click(pending[pending.length - 1])
       act(() => pendingConfirm().usehandleCreateDraftOrder())
-      await wait(() => expect(window.location.reload).toHaveBeenCalled())
+      await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '掛單新增成功', variant: 'success' })))
+      await wait(() => expect(queryButton('結帳並列印')).toBeNull())
+      await wait(() => expect(designerInputs()[0]).toHaveValue(''))
+      expect(currentLocation()).toBe('/order/create')
+      expect(window.location.reload).not.toHaveBeenCalled()
       cleanup()
 
       await prepare({ FETCH_CREATE_ORDER: new Error('網路暫斷') })

@@ -17,7 +17,7 @@ import { cn } from 'ui/utils'
 
 import EditMemberCardRecordModal from './EditMemberCardRecordModal'
 
-function Results({ className, memberships, setCategoryFilter, onPageChange, categories, ...rest }) {
+function Results({ className, memberships, setCategoryFilter, onPageChange, categories, onChanged, ...rest }) {
   const { multipleUpdateMembershipCategory } = useFetchMultipleUpdateMembershipCategory()
   const { deleteMembership } = useFetchDeleteMembership()
   // 選會員卡
@@ -61,7 +61,8 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
         setSelectedMembership([])
         setOpenDialog(false)
         openSnackbar({ message: '成功刪除會員卡', variant: 'success' })
-        window.location.reload()
+        // 原本整頁 reload：改為重抓會員卡清單，保留分類篩選、搜尋與分頁（2026/10/28）
+        if (onChanged) onChanged()
       })
       .catch(err => {
         setSelectedMembership([])
@@ -91,7 +92,7 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
         setSelectedCategoryId('')
         setOpenEditMembershipsCategoryModal(false)
         openSnackbar({ message: '編輯會員類別成功', variant: 'success' })
-        window.location.reload()
+        if (onChanged) onChanged()
       })
       .catch(err => {
         setSelectedMembership([])
