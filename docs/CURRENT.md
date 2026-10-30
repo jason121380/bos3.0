@@ -1,12 +1,14 @@
 # 現況（以此檔為準）
 
-更新：2026/10/25。這是版號、測試總數、CI、前端健康分、後端債的唯一現況。其他 markdown 若衝突，以本檔為準。
+更新：2026/10/30。這是版號、測試總數、CI、前端健康分、後端債的唯一現況。其他 markdown 若衝突，以本檔為準。
 
-產品版號只看 `src/version.js`（`v3.MMDDHHmm`，台灣時間）。正式站左上角已上線版號是 `v3.10251208`。這個版號是 PR #302 squash-merge 進 `main` 的 commit `abe02de`。倉庫是公開的：https://github.com/jason121380/bos3.0。
+產品版號只看 `src/version.js`（`v3.MMDDHHmm`，台灣時間）。`main` 最新是 PR #315 squash-merge 的 commit `63c3680`，版號 `v3.10282323`（2026/10/28）。本批分支 `claude/amazing-keller-sxroaz` 的版號是 `v3.10301527`，PR 是 `PR #316`。倉庫是公開的：https://github.com/jason121380/bos3.0。
 
-前端可控制的健康分是 100。PR #301 把分數從 92 做到 100。PR #302 沒有改這個分數，合併後仍是 100。`v3.10241717` 是 PR #301 健康分程式當時的版號。`v3.10241723` 是那次文件併入 `main` 的 commit。這兩個版號不是現在的正式站版號。
+**正式站版號尚未確認。** 合併 #315 的工作環境連不到 `bos.lure.com.tw`。請看正式站左上角版號是否為 `v3.10282323`（或本批合併後的 `v3.10301527`）。
 
-全套測試的現況數字來自公開倉庫的 Frontend CI，見下方「CI」。不要把 368 suites／4,283 tests 當成 `v3.10251208` 的總數。那組數字是 v3.10241447 的本機全套。
+前端可控制的健康分仍是 100（PR #301 的五項指標，見下方）。2026/10/28 另做了一次四面向程式稽核，分數與修正後狀態見 `docs/redesign/AUDIT_20261028.md`。兩者是不同量尺。
+
+全套測試的現況數字見下方「CI 與測試」。
 
 ## 怎麼讀其他文件
 
@@ -17,17 +19,64 @@
 | `CLAUDE.md` | 代理守則。測試總數不要抄本檔以外的句子 |
 | `STYLE.md` | 畫面規範。不管 CI 與分數 |
 | `docs/redesign/STATUS.md`、`TODO.md` | **歷史／已過時** 的進度與待辦。帶日期的 suite 數是該則當時的結果。開頭提到的 `v3.10241717` 是 PR #301 當時的健康分程式，不是正式站版號 |
-| `MEMORY.md`、`MIGRATION_GUIDE.md`、`VERIFY_REPORT.md`、`AUDIT_20261024.md`、`AUDIT_20261028.md`、`INVENTORY.md`、`PAGE_CHECKLIST.md`、`REPORT_COMPACT.md`、`DATE_PICKER.md`、`B2_EXHAUSTIVE_DEPS.md`、`APOLLO_V3_EXPERIMENT.md` | 專項或決策紀錄。開頭若寫歷史，不要拿來當基線 |
+| `AUDIT_20261028.md` | 2026/10/28 四面向稽核（bug／優化／一致性／UI/UX）與 10/30 修正後狀態 |
+| `MEMORY.md`、`MIGRATION_GUIDE.md`、`VERIFY_REPORT.md`、`AUDIT_20261024.md`、`INVENTORY.md`、`PAGE_CHECKLIST.md`、`REPORT_COMPACT.md`、`DATE_PICKER.md`、`B2_EXHAUSTIVE_DEPS.md`、`APOLLO_V3_EXPERIMENT.md` | 專項或決策紀錄。開頭若寫歷史，不要拿來當基線 |
 
-不要再用這些當現況基線：61／339、4,268、4,262、4,236、4,372、368／4,283。
+不要再用這些當現況基線：61／339、4,268、4,262、4,236、4,372、368／4,283、375／4,350、379／4,407、385／4,473、387／4,520、389／4,528（本批 commit 前的中途結果）。
 
 ## 產品現在是什麼
 
 - 純前端 SPA：Vite 5、React 17、Apollo Client 3、Tailwind + `src/ui/`。單元測試仍是 react-scripts 的 Jest。
-- 正式站版號是 `v3.10251208`。Railway 對這個版號的正式部署結果是 SUCCESS。
+- `main` 最新版號是 `v3.10282323`（PR #315）。正式站是否已是這個版號待確認。
 - 畫面習慣維持：提示在右下、約 3 秒；下拉用自家 combobox，不用系統選單；標籤在欄位上方。
+- 頁首一律用 `ui/page-header` 的 `PageHeader`。`AdminPageHeader`、`PageTitle` 已於 2026/10/28 刪除。
+- 頁面主查詢失敗一律顯示 `QueryFailed`（「無法載入資料」＋「重新查詢」）。頁面程式載入中由各版面的 `PageLoadingFallback` 顯示。
 
-## PR #302 已出貨的五項
+## 2026/10/28–30 稽核與修正
+
+詳細見 `docs/redesign/AUDIT_20261028.md`。只改這個前端倉庫，沒有改 API、後端、資料庫或 GraphQL 查詢內容，也沒有連任何真實後端。
+
+**PR #315（已合併，`v3.10282323`）**
+
+- 查詢失敗不再整頁錯誤或白頁：帳單三頁與 QR 打卡防呆，約 120 個檔案補 `QueryFailed`。新增 `src/__tests__/loadingGuard.test.js`，擋「只看 loading 就讀 data」，baseline 已清空。
+- 新增 `components/PageLoadingFallback`：載入超過 0.3 秒顯示轉圈與「載入中…」，所有版面共用。
+- mutation `.catch` 內重複的錯誤提示移除 63 處。`testkit` 加上與正式相同的 errorLink。
+- 新增 `components/ConfirmDeleteDialog`。`TableEditBar` 新 prop `confirmDelete`。角色、支付方式、第三方卡券、進貨單、領料單刪除前確認。
+- 側欄 hover 細項可用鍵盤開合。深色寫死色改 token。考勤遲到早退加文字標示。
+- 新增 `lib/stored-merchant.js`、`helper/averageOf.js`。
+- 7 支設定查詢登記 `settingsQuery`，共 88 支。`socket.io-client` 改連線時才載入。
+- 移除 `react-helmet`、`react-copy-to-clipboard`。`vite.config.mjs` 加 `experimentalMinChunkSize`。`Dockerfile` 設 `CYPRESS_INSTALL_BINARY=0`。字型去掉 900 權重。
+- `AccountingSubjectModal`、`TotalPrice` 合併到 `views/AccountingShared/`。`CustomMockedProvider` 移到 `src/__tests__/CustomMockedProvider.test.js`。`context/useReservationContext.js` 改名 `context/ReservationContext.js`。
+- 報表 `ReportToolbar` 全站統一。
+- GitHub CI（Lint and build、Unit tests）通過，Codex review 無 finding。
+
+**本批（`PR #316`，`v3.10301527`）**
+
+- 整頁重新整理改重抓資料 11 處：解除日結、薪資解鎖與刪除月結紀錄、上傳大頭照、會員卡紀錄 2 處與分類刪除、重新開單失敗、打帳單掛單後留在本頁、領料單，並刪掉 GeneralSettings 的死碼註解。
+- 保留 7 處：`elements/snackbars`（3）、`PageErrorBoundary`、`NavBar`（2）、`MerchantList`。切換店家要重置全部快取與權限，錯誤復原要整頁重來。
+- effect 依賴：692 個 `exhaustive-deps` 警告分類後有 7 個真 bug，修了 6 個。員工日報表四捨五入時換日期，列印印到前一天；B2 #12、#13、#14、#17。剩下 1 個是紅利換算率，Jason 選 B，見下方。
+- 建檔／編輯頁抽共用：`views/EventRuleShared/`、`views/ServiceShared/`、`views/CouponShared/`，淨減約 1,950 行。卡券的互助、扣項區塊兩頁畫面不同，沒有合併。
+- 新增服務：協助人員人數下拉綁定目前人數。停用的「新增」鈕旁顯示「尚缺：名稱、服務類別」。
+- 瀏覽器驗收（Playwright＋假 GraphQL，沒有連任何後端）：沒有白頁或整頁錯誤。帳單列表、掛單列表手機寬度的卡片標題被擠壓，已修。個人頁 `pinnedSettings` 為 null 時整頁錯誤，已修。營業區間報表因假資料不足沒有驗。
+
+**Jason 2026/10/30 的決定**
+
+1. 後端先不理：LINE 打卡寫死網址、GraphQL 操作名去重，兩項擱置。
+2. always merge：檢查全綠就直接合併，不必再等 Jason。規則見 `CLAUDE.md`「Git 與合併」。
+3. 紅利換算率選 B：換算率比帳單晚到時不重算，舊帳單維持結帳當時的紅利折抵金額。見 `B2_EXHAUSTIVE_DEPS.md`「決策紀錄」。
+
+**待辦（未做）**
+
+- LINE 打卡寫死網址、GraphQL 操作名去重（後端擱置）。
+- 全站 Prettier。
+- 52 個檔名錯字改名。
+- Sentry 延後初始化。
+- 卡券互助／扣項區塊合併。
+- 4 套下拉元件並存。
+- 營業區間報表的瀏覽器驗收。
+- `window.location.reload()` 剩 7 處，都是刻意保留，不算待辦。
+
+## PR #302 已出貨的五項（歷史）
 
 Codex 在 #295、#300、#301 合併後留下五項 P2。PR #302 已 squash-merge 為 `abe02de`，版號 `v3.10251208`。只改這個前端倉庫。沒有改 API、後端、資料庫、Railway 密鑰或伺服器產檔。
 
@@ -41,7 +90,7 @@ Codex 在 #295、#300、#301 合併後留下五項 P2。PR #302 已 squash-merge
 
 這五項已在主線程式裡。正式站對這五項的實機煙測仍**待確認**。左上角版號與 Railway 部署成功，不代表這五項已在正式站逐項點過。
 
-## 前端健康分：Before 92 → After 100
+## 前端健康分：Before 92 → After 100（PR #301 指標）
 
 分數仍是 100。下表是 PR #301 的項目。PR #302 沒有在這張表加分。只動這個前端倉庫。沒有改 API、後端、資料庫、Railway 密鑰或伺服器產檔。
 
@@ -55,17 +104,20 @@ Codex 在 #295、#300、#301 合併後留下五項 P2。PR #302 已 squash-merge
 
 同一支已併入 `main` 的 #300（`v3.10241632`）：掛單結帳成功或逾時後不能再結一次。那是前端行為，不是這張健康分表的新項目。合併衝突只有 `src/version.js`。
 
-## CI 與分支保護
+## CI 與測試
 
 - Workflow 名稱是 Frontend CI。檔案是 `.github/workflows/frontend-ci.yml`。兩個 job：Lint and build、Unit tests。
-- 公開倉庫上，PR #302 的 Frontend CI 已成功。pull_request run [40160834156](https://github.com/jason121380/bos3.0/actions/runs/40160834156) 的 Unit tests 是 375 suites、4,350 tests，全部通過。
-- squash-merge 推上 `main` 的 run 是 [40161775374](https://github.com/jason121380/bos3.0/actions/runs/40161775374)（commit `abe02de`，2026-10-25）。Lint and build 成功。Unit tests 成功：375 suites、4,350 tests，全部通過。現況全套總數用這一次。
-- 4,350 涵蓋 `v3.10241447` 之後、直到 `abe02de` 的測試。它不是「4,283 加上 PR #302 新增的測試」。中間的 commit 先前沒有各自公布全套總數。
-- `v3.10241723` 推上 `main` 的 run [40081933043](https://github.com/jason121380/bos3.0/actions/runs/40081933043) 沒有開始跑。GitHub 註記是帳務付款失敗或 spending limit。那不是測試失敗，也不要把它算進 4,350。
+- 全套測試現況：**389 suites／4,529 tests 全數通過**。這是本批在本機跑 `CI=true npx react-scripts test --watchAll=false` 的結果。GitHub CI 的結果以 PR 頁為準。
+- PR #315 合併前，本機全套是 387 suites／4,520 tests 通過，GitHub CI 兩個 job 都通過。
 - `main` 分支保護仍是關的。自動化 token 讀寫分支保護會 403，沒有代為打開。不要為此關掉 Railway 對 `main` 的自動部署。
-- 合併前仍可在本機跑 `npm run lint`、相關 Jest、`npm run build`。不要連正式或測試後端，不要寫真實資料。
+- 合併前在本機跑 `npm run lint`、全套 Jest、`npm run build`。不要連正式或測試後端，不要寫真實資料。
 
-## 怎麼驗證（不要發明新總數）
+### 歷史紀錄（不要當現況）
+
+- PR #302 的 pull_request run [40160834156](https://github.com/jason121380/bos3.0/actions/runs/40160834156) 與 squash-merge 推上 `main` 的 run [40161775374](https://github.com/jason121380/bos3.0/actions/runs/40161775374)（commit `abe02de`，2026-10-25）是 375 suites、4,350 tests。
+- `v3.10241723` 推上 `main` 的 run [40081933043](https://github.com/jason121380/bos3.0/actions/runs/40081933043) 沒有開始跑。GitHub 註記是帳務付款失敗或 spending limit。
+
+## 怎麼驗證（不要發明新總數；以下是 PR #301／#302 當時的歷史紀錄）
 
 PR #301 實際跑過的是相關測試，不是全套 4,350。
 

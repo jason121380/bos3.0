@@ -23,7 +23,7 @@
 | 收合卡片以 `summaryMeta` 顯示「已填 N 筆 · NT$ 小計」 | 第 4 組 |
 | 金額一律 `NT$` ＋千分位；長帳單用**底部固定合計列**（方案 B）而非 sticky 側欄卡 | sticky 卡只能在並排區內移動，幾乎沒效果；整頁兩欄會壓縮項目列 |
 | 服務下拉：選項顯示 `名稱(代號) - 價格`、以 `id` 當 key、中文「查無符合／載入中」 | 同名同價服務分不出來；MUI 以標籤當 key 會重複 |
-| ~~「always merge」：驗證通過就開 PR 並 merge 進 main，不必再問~~ **已於 2026-10-23 廢止（superseded）** | 使用者 2026/10/18 指示；現行流程：Codex／代理只開 PR，由 CEO 逐行審查且本機 lint／測試／build 全部通過後合併，或由 Jason 決定；見 CLAUDE.md「Git 與合併」。 |
+| ~~「always merge」：驗證通過就開 PR 並 merge 進 main，不必再問~~ **已於 2026-10-23 廢止（superseded）**；**2026/10/30 Jason 再次指示 always merge，此廢止已被取代，見 #202** | 使用者 2026/10/18 指示；10/23 改為代理只開 PR、由 CEO 審查或 Jason 決定合併；10/30 起依 #202 的全綠條件由代理直接合併；見 CLAUDE.md「Git 與合併」。 |
 | 電話不限 10 碼：LoginForm 不做 10～13 碼長度驗證，只有 required | Jason 2026/10/19 拍版；改版前（c41b604）本來就沒有。測試改為驗證非 10 碼電話不會被長度規則擋下 |
 | 店販售價可以低於成本：不做 `sellPrice >= cost` 驗證 | Jason 2026/10/19 拍版；ProductCreate 測試改為 cost=9、sellPrice=5 不報錯，sellPrice<0 仍被擋 |
 | `handleToggleNavBar` 判斷寬度 1280→1024 | 側欄改用 Tailwind `lg`(1024)，判斷值必須與 CSS 斷點一致（唯一的邏輯常數修改） |
@@ -359,3 +359,16 @@
 
 
 196. **瀏覽器才會暴露的圖層生命週期：ref 不等於可見／開啟、FocusScope 回呼不等於開窗當下（Dialog Part A 瀏覽器修正，2026/10/23）**：①Select 關閉後會把內容移入 DocumentFragment，ref 未必解除；以公開 open 狀態登記／解除共享圖層，closed／離線節點不擁有 Esc，避免消失的選單吞掉下一次 Esc。②combobox 選值後重開時 Radix 的 passive effect 監聽交接可能落後於鍵盤事件；選單 DOM 保持穩定，Dialog 由 ref 同步登記的真正頂層接收 Esc，原 onEscapeKeyDown 仍只通知一次並尊重 preventDefault。③真實 PasswordDialog 在 compat 窗上第二次開啟，onOpenAutoFocus 讀到的可能是 body；必須在 Dialog Root 的 open 轉換、Portal 掛載前記錄原觸發鈕。④Chrome 隱藏 keepMounted Popper 的失焦可能晚於 FocusScope 清理；延後到下層 Scope 恢復後還原，且只有焦點仍在 body／已關閉內容時還原，不能搶走使用者點到其他欄位的焦點。⑤harness 不可用固定 150ms 代替退場完成；以節點卸載作為下一次 Esc 的前提。aria-hidden 會使 getByRole 排除仍可見的 Toaster，CSS role 定位仍須通過可見性與真實命中檢查。⑥外部 runner 實跑 11/11 連續兩輪通過：日期桌機／手機、combobox、Select、Popover、兩方向 Dialog、keepMounted、Dropdown、真實巢狀 PasswordDialog、三層桌機／手機日期；不得只憑 Jest 宣稱行為通過。
+
+197. **白頁的主因是「只看 loading 就讀 data」（2026/10/28 稽核，PR #315）**：Apollo 查詢失敗時 `loading=false`、`data=undefined`；全站約 300 處 `if (!x.loading)` 之後直接讀 `x.data.y.z`，任何一次 5xx／斷線都從「載入失敗」放大成整頁錯誤，打帳單、帳單詳細甚至在 render 階段就拋錯。處理方式不是逐頁補丁，而是加 `src/__tests__/loadingGuard.test.js` 掃全站擋新寫法（先以存量當 baseline、只准減少，PR #315 已清空），存量改 `idx`／`?.`，並為主查詢補 `QueryFailed`。編輯頁特別注意：查詢失敗若顯示空白表單，使用者按儲存會把空白蓋回真實資料，所以失敗時要顯示錯誤畫面而不是表單。
+
+198. **平行代理同時改同一批檔會重複加 prop（2026/10/28）**：兩條工作流各自替同一個 `<Table>` 補 `dense`、替同一個連結補 `rel="noopener noreferrer"`，值相同、畫面不變，`lint:build` 也不擋（它只有 `rules-of-hooks`）。合併前要跑 warning 級的 `scripts/redesign/eslint-check.json` 比對前後，抓 `react/jsx-no-duplicate-props` 這類新出現的警告。派工時要把檔案範圍切開（禁區清單），交叉的項目寫進 leftover 由主審處理。
+
+199. **反向驗證測試：拿掉修正要能紅燈（2026/10/30）**：代理回報「新增服務的協助人員人數下拉選了會顯示空白」，照描述寫的測試在拿掉修正後仍是綠的——`ui/form-control` 的 Select 沒綁 `value` 時會自己記住選過的值，選當下並不空白。真正的問題是「清除此互助設定」後資料歸零、下拉仍顯示舊人數。改寫測試後，拿掉修正會失敗（顯示 3）、修正後通過。教訓：代理描述的症狀要自己重現；每支修正測試都要在修正前跑一次確認紅燈。
+
+200. **`window.location.reload()` 會掩蓋 state 依賴的 bug（2026/10/30）**：薪資總覽解鎖／鎖定後原本整頁重載，所以「全選名單的 effect 沒依賴 `isSalaryItemsLock`」（B2 #14）從沒被看見；改成 refetch 後就會出現。改掉 reload 時，要一起檢查該頁從查詢結果複製到 state 的 effect 依賴是否完整。現在只在切換店家（`NavBar`、`MerchantList`）與錯誤復原（`PageErrorBoundary`、`elements/snackbars`）保留整頁重載。
+
+201. **紅利換算率晚到不重算（Jason 2026/10/30 選 B）**：`OrderCreate`／`OrderEdit`／`DraftOrderEdit` 的 `Bonus.js` 計算 `bonusDecount` 的 effect 刻意只依賴 `[bill.bonusUsed, setBill]`。若補上換算率，設定晚到時會把資料庫存的紅利折抵金額改成重算值；Jason 決定舊帳單一律維持結帳當時的金額。三處程式與 `B2_EXHAUSTIVE_DEPS.md`「決策紀錄」都有註明，不要當成漏依賴修掉。
+
+202. **always merge 恢復（Jason 2026/10/30，取代 10/23 的廢止）**：檢查全綠就由代理直接合併，不必再等 Jason。全綠是：本機 `npm run lint`、全套 `npm run test:nowatch`、`npm run build` 通過；GitHub Frontend CI（Lint and build、Unit tests）在最新 head 通過；Codex review 完成且沒有待處理 finding；沒有衝突。任一項不過就不合併。合併方式 squash；合併後確認正式站左上角版號（工作環境連不到 `bos.lure.com.tw` 時請 Jason 確認）。同日 Jason 也指示「後端先不理」：LINE 打卡寫死網址、GraphQL 操作名去重兩項擱置。
+

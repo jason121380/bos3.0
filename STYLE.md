@@ -1,6 +1,6 @@
 # BOS 3.0 設計規範（STYLE.md）
 
-> **本檔是畫面規範，不是現況分數。** 版號、測試總數、CI、健康分、後端債只看 [`docs/CURRENT.md`](docs/CURRENT.md)（健康分程式 `v3.10241717`，CI 為 `frontend-ci.yml`）。下文若出現舊的「CI 已停用」或相容檔案數，都是 **歷史／已過時**。
+> **本檔是畫面規範，不是現況分數。** 版號、測試總數、CI、健康分、後端債只看 [`docs/CURRENT.md`](docs/CURRENT.md)（健康分程式 `v3.10241717`，CI 為 `frontend-ci.yml`；2026/10/28 稽核與修正見 `docs/redesign/AUDIT_20261028.md`）。下文若出現舊的「CI 已停用」或相容檔案數，都是 **歷史／已過時**。
 > 方向：現代、簡約、清楚。參考 OpenAI 產品介面的克制感——大量留白、中性色、黑白灰為底、以品牌藍為唯一主題色點綴、極少陰影。
 > 技術：Tailwind CSS + shadcn/ui（Radix）。本文件是所有新畫面的唯一依據；與本文件衝突的舊樣式一律以本文件為準。
 
@@ -95,7 +95,7 @@
 |---|---|
 | **Button** | 變體只有 `primary`（主題藍底白字、圓角 full）、`secondary`（淺灰實心 `surface-hover`、無框，與輸入框區分）、`ghost`（無框）、`danger`；尺寸 `sm 32px / md 36px / lg 40px`。圖示 16px，與文字間距 6px。 |
 | **Input / Select / DatePicker** | 高 36px、`rounded-md`、1px `border-strong`（hover 加深）；focus 為 2px `accent` 外框。錯誤時 border 變 `danger`，下方 caption 顯示訊息。日期區間一律用 `DateSelector`：「快速選擇」下拉 ＋ 一個日期區間欄位，不平鋪多顆按鈕。日期選擇器為自家實作（`ui/date-picker`＝`ui/calendar`＋`ui/date-field`，2026/10/20 取代 `@mui/x-date-pickers`，見 `docs/redesign/DATE_PICKER.md` 與 MEMORY #150）：標籤放欄位上方；`format`／存值（`onChange` 原樣回傳 `Date`／`null`）／桌機分段輸入與值的生命週期照 MUI 行為；彈層頂欄 `background` 底、`text` 字色、底部 1px `border`，**不要大面主題藍底白字**；主題色 `accent` 只保留在選取日、今天邊框、年／月／時間選取與確認按鈕等小面積。**篩選列例外（MerchantSearchBar/DatePicker）**：自訂 field 本身是日期按鈕且置於 ButtonGroup／flex 單排，不得傳 `label` 給 facade（facade 有 label 會以 `Field` 在欄位上方渲染標籤，會把按鈕群組擠成兩層重疊，見 MEMORY #112）；彈層標題以 `localeText.toolbarTitle` 保留。此類頁面改版以 `uiDateField` 逐頁 opt-in（快捷鈕 ui Button＋UiDateField 單排），其餘引用維持舊版。 |
-| **Form** | 標籤在上；必填以「*」標在標籤後；一列最多 2 欄（桌機）。底部固定動作列：右側「取消 / 儲存」。<br>**標籤只有一種寫法：標籤在欄位上方＋佔位字**，不使用浮動（卡在框線上）的小標籤；備註欄也一樣。<br>**必填 `*` 要有依據**：依該頁既有的驗證規則（例如 `valid`、`billVerify`），並在原始碼註解寫明；空列會被丟掉的欄位，只在該列有填任一欄時才標必填。<br>**RHF 錯誤 aria**：`Field` 的 error 訊息 `<p>` 以 `${htmlFor}-helper-text` 為 id（對齊 MUI TextField helperText 慣例），欄位以 `invalid` 呈現 `aria-invalid` 並以 `aria-describedby` 指向該 id；無 error 時不產生 id。**按鈕停用要說明原因**：在按鈕旁以文字（`role="status"`）寫出「尚缺：…」，同一句只出現一次——不要在每顆按鈕再掛 `title`（讀屏會重複播報）。 |
+| **Form** | 標籤在上；必填以「*」標在標籤後；一列最多 2 欄（桌機）。底部固定動作列：右側「取消 / 儲存」。<br>**標籤只有一種寫法：標籤在欄位上方＋佔位字**，不使用浮動（卡在框線上）的小標籤；備註欄也一樣。<br>**必填 `*` 要有依據**：依該頁既有的驗證規則（例如 `valid`、`billVerify`），並在原始碼註解寫明；空列會被丟掉的欄位，只在該列有填任一欄時才標必填。<br>**RHF 錯誤 aria**：`Field` 的 error 訊息 `<p>` 以 `${htmlFor}-helper-text` 為 id（對齊 MUI TextField helperText 慣例），欄位以 `invalid` 呈現 `aria-invalid` 並以 `aria-describedby` 指向該 id；無 error 時不產生 id。**按鈕停用要說明原因**：在按鈕旁以文字（`role="status"`）寫出「尚缺：…」（例：新增服務「尚缺：名稱、服務類別」，按鈕以 `aria-describedby` 指向這句），同一句只出現一次——不要在每顆按鈕再掛 `title`（讀屏會重複播報）。 |
 | **Table** | 表頭 `surface` 底、`label` 字級；列高 44px；hover `surface-hover`；數字欄右對齊；空狀態置中顯示說明＋主要動作。分頁固定在表格下方右側。 |
 | **Badge** | 狀態專用；文字＋8% 底色；不加邊框陰影。 |
 | **預約狀態色** | 四個預約週曆（主預約頁、設計師預約紀錄、個人頁、員工資料）與圖例一律取 `components/CalendarColorClip` 的 `RESERVATION_COLORS`，不得在頁面寫色號。色票與品牌藍同家族（Google 色系）、保留原色相，**文字一律白色**（Jason 2026/10/21），每色白字對比皆 ≥ 4.5:1（有測試）：不可預約 `#5F6368` 中灰（深色背景上仍可見）、待審核 `#00838F` 青、事件 `#188038` 綠、未來預訂（待確認）`#B06000` 橘、預約成功（不指定）`#D81B60` 粉、預約成功（指定）`#1A73E8` 品牌藍、已完成預約 `#8B6F5A` 灰褐（與不可預約區分）、狀態「已完成」`#9334E6` 紫、報到成功 `#137333` 綠、未報到 `#6B7280` 灰。不可預約時段的格子用 `bg-danger/10`。<br>**預約週曆共用元件**（2026/10/21 合併）：週曆資料整理（色塊顏色、可預約人數、重疊並排、公休標示、跨日拆段）只寫在 `components/ReservationCalendar/weekCalendar`（單週預約紀錄、個人頁、員工資料共用）；個人頁與員工資料的整頁週曆是同一個 `DesignerWeekReservation`；公休編輯彈窗四頁共用 `HolidayEdit`（「取消」secondary 在左、「確定」在右）。改預約表規則時改共用元件，不要在頁面另寫一份。可預約人數＝上限－未完成的預約（已完成的不佔名額）。 |
@@ -103,7 +103,7 @@
 | **Accordion（可展開卡片）** | 用 `ui/accordion`（與 MUI 介面相容）。收合時標題右側以 `summaryMeta` 顯示摘要（「已填 N 筆 · NT$ 小計」，沒填就不顯示），一眼看得到內容概況。 |
 | **圖示按鈕** | 一律是真的 `<button>`，帶 `title` 與 `aria-label`；「新增」類動作要有文字（例如「新增項目」），不能只放「+」。 |
 | **總計列** | 長表單的「業績合計／現金應收」另放底部固定列（`fixed`，lg 以上以 `lg:left-[var(--sidebar-w,264px)]` 讓出側欄——`--sidebar-w` 由 `layouts/Dashboard` 提供，展開 264px、收合 80px 圖示欄；手機讓出 56px 底部導覽、列印隱藏），不靠 `sticky` 側欄卡。 |
-| **Dialog** | 正式與相容浮層共用 Radix 圖層，後開者接管焦點／Esc 並排在上方（MEMORY #195）；日期／下拉可在窗內使用，combobox 選單仍掛在最近的 dialog。寬 480 / 640 / 800；標題、內容、底部動作三段；危險操作需二次確認並寫出後果。<br>**確認框**：`openSnackbar` 的確認型（`resign`／`groupEdit`）由 `elements/snackbars` 畫成 `ui/dialog` 的 `alertdialog`：動詞標題＋呼叫端訊息＋後果說明，「取消」（secondary）／確認（動詞，刪除與離職用 danger）；Esc、點背景、取消只關閉，不觸發確認。<br>**開啟時的焦點**：以「點選」為主的彈窗（切換店家、選店、選人）開啟時不自動聚焦搜尋框，焦點放在彈窗本身（`onOpenAutoFocus` 中 `preventDefault` 後 focus 彈窗），避免手機一開就彈出鍵盤擋住清單；以輸入為主的彈窗（新增、編輯）可聚焦第一個欄位。 |
+| **Dialog** | 正式與相容浮層共用 Radix 圖層，後開者接管焦點／Esc 並排在上方（MEMORY #195）；日期／下拉可在窗內使用，combobox 選單仍掛在最近的 dialog。寬 480 / 640 / 800；標題、內容、底部動作三段；危險操作需二次確認並寫出後果。<br>**刪除確認（2026/10/28）**：列表勾選後的批次刪除走 `TableEditBar` 的 `confirmDelete`（內部是 `components/ConfirmDeleteDialog`，`alertdialog`＋「刪除後無法復原」、「取消」secondary／「刪除」danger）；頁面自己的刪除流程比照，不可直接送出刪除。<br>**確認框**：`openSnackbar` 的確認型（`resign`／`groupEdit`）由 `elements/snackbars` 畫成 `ui/dialog` 的 `alertdialog`：動詞標題＋呼叫端訊息＋後果說明，「取消」（secondary）／確認（動詞，刪除與離職用 danger）；Esc、點背景、取消只關閉，不觸發確認。<br>**開啟時的焦點**：以「點選」為主的彈窗（切換店家、選店、選人）開啟時不自動聚焦搜尋框，焦點放在彈窗本身（`onOpenAutoFocus` 中 `preventDefault` 後 focus 彈窗），避免手機一開就彈出鍵盤擋住清單；以輸入為主的彈窗（新增、編輯）可聚焦第一個欄位。 |
 | **樹狀選擇（TreeView）** | 用 `ui/tree` 的 `TreeView`／`TreeItem`；列高至少 40px、hover `surface-hover`、預設縮排 24px（商品／釘選可 20px）、箭頭與店家圖示 16px。`selected` 呈現 `accent` 12% 底＋主題字色／圖示＋字重 500；既有 `.onSelect` 保留但不作新元件樣式 API。`expanded`／`onToggle(event, ids)` 受控，收合卸載；方向鍵、Home／End、Enter／Space、roving tabindex，Esc 留給外層 Dialog。群組橫排／換行由 `groupClassName` 設定，不覆寫 MUI classes。 |
 | **Rating** | 用 `ui/rating`：原生 radio、每星名稱「N 星」、方向鍵選值、hover 預覽；再次點目前星回傳 `onChange(event, null)`。星形走 `warning` token，空星 `text-tertiary`；每星操作區至少 40px。唯讀可呈現但不可變更。 |
 | **Tag** | 用 `ui/tag` 呈現可刪除選取值；沿用 Badge 的淡底、字色與圓角；純展示仍可用 Badge。刪除鈕至少 40px，命名 `刪除「標籤」`，本體聚焦後 Backspace／Delete 刪除；共用 `focusRing`。 |
@@ -113,7 +113,7 @@
 | **Slider** | 用 `ui/slider`（原生 `<input type="range">`）：主色深藍 `accent-[rgb(var(--primary))]`（對齊 Checkbox／Radio）；對外維持 MUI 簽名 `onChange(event, Number(value))`，`min`／`max`／`step` 原生傳遞，浮點 `step` 依其小數位數四捨五入修正（避免 0.1 步進產生 1.200000047）；`disabled` 與 `aria-label` 原生透傳；鍵盤用原生方向鍵／PageUp／Down／Home／End。**數值泡泡已完成**：行事曆格子尺寸滑桿泡泡由自製元件呈現（PR #197）；維持各頁原有數值與互動語意。 |
 | **Radio** | 用 `ui/radio` 的 `Radio`／`RadioField`（原生 `<input type="radio">`，16px 圓點、`accent` 主色 `primary`、focus 2px `accent` 外框、disabled 40% 透明）：保留圓點外觀，不改成分段按鈕；`RadioField` 以 `<label>` 包覆使點文字可選，`onChange(event, value)` 對齊 MUI `RadioGroup` 簽名（只讀 `event.target.value` 的 handler 亦相容）。同組必須給相同 `name`，互斥、方向鍵移動＋選取、Tab 只停已選／第一顆、空白鍵選取皆由原生行為保留；未選狀態以 `checked` 皆 false 表示，不以空字串另設狀態。 一列一顆「預設」型（如業績扣點參數）同樣用 `RadioField`：各列共用同一 `name`、`value="true"`、`checked` 由資料布林決定、互斥靠 handler 資料回寫（點已選者不取消，不改 checkbox）、`disabled` 原樣傳入。 |
 | **Progress（定值線）** | 用 `ui/progress` 的 `Progress`：只做定值線條（`value` 0–100，超出夾限顯示），高 4px、圓角 3px、軌道 `surface-hover`、進度桿 `primary` 深藍、`role="progressbar"`＋`aria-valuenow`（四捨五入）；寬度以 300ms linear 過渡對齊原呼叫端 timer 節奏。元件只呈現、不計算百分比、不判斷顯示條件；百分比計算／假進度 timer／載入邏輯留在呼叫端，不得搬進元件。定值圓＋%（如結帳 snackbar）與不定值頂線（Suspense）不在此元件範圍，待拍板另案。 |
-| **Empty / Loading** | 一律用 `EmptyState`、`Skeleton` 元件，不得各頁自寫。不定值載入轉圈用 lucide `LoaderCircle`＋`animate-spin`＋`strokeWidth={1.75}`：置中大圈 `h-10 w-10 text-accent`（對原 MUI `CircularProgress` 預設 40px 與主題色）、欄位小圈依原尺寸（如 20px→`h-5 w-5`），原置中容器與間距不動；Backdrop 內轉圈只換圈本體（`h-10 w-10`）、Backdrop 的 open／z-index／透明度不動，MUI Select `renderValue` 的載入小圈同以 20px `LoaderCircle` 回傳、不改 Select 本體與顯示寬度邏輯；定值線用 `ui/progress`（見上列 Progress），定值圓＋% 另案，不以轉圈冒充。 |
+| **Empty / Loading** | 一律用 `EmptyState`、`Skeleton` 元件，不得各頁自寫。不定值載入轉圈用 lucide `LoaderCircle`＋`animate-spin`＋`strokeWidth={1.75}`：置中大圈 `h-10 w-10 text-accent`（對原 MUI `CircularProgress` 預設 40px 與主題色）、欄位小圈依原尺寸（如 20px→`h-5 w-5`），原置中容器與間距不動；Backdrop 內轉圈只換圈本體（`h-10 w-10`）、Backdrop 的 open／z-index／透明度不動，MUI Select `renderValue` 的載入小圈同以 20px `LoaderCircle` 回傳、不改 Select 本體與顯示寬度邏輯；定值線用 `ui/progress`（見上列 Progress），定值圓＋% 另案，不以轉圈冒充。<br>**頁面程式載入中（2026/10/28）**：各版面的 `Suspense` fallback 一律用 `components/PageLoadingFallback`：頂端 2px 進度線，超過 0.3 秒仍未載完才在內容區中央顯示 `LoaderCircle`＋「載入中…」（快的時候不閃），不要只放一條細線讓畫面看起來像白頁。<br>**查詢失敗（2026/10/28）**：頁面主查詢 `error` 時一律顯示 `components/QueryFailed`（「無法載入資料」＋「重新查詢」），不得停在骨架、空表格或空白表單；編輯頁查詢失敗不顯示空白表單（避免被存回蓋掉資料）。 |
 
 ## 7. 文案
 
@@ -137,6 +137,7 @@
 - 圖示按鈕必須有 `aria-label`。
 - 觸控目標不足 40px 的小控制項以**透明偽元素**擴大命中區、不改視覺尺寸：`ui/dialog` 與 `ui/toast` 的關閉鈕、`ui/checkbox` 的 `CheckboxField`／`FormControlLabel` 標籤（手機寬度，`checkboxHitArea`）；圖示鈕用 `size="icon"`（手機 40px），不要再以 `h-8 w-8` 覆寫。
 - 版面殼層：`layouts/Dashboard` 輸出全站唯一的 `<main id="main-content">`，最前面有「跳至主要內容」skip link（平時隱藏、聚焦出現）；`Page` 元件是 `div`，頁面不得再自己輸出 `<main>`。
+- 頁首：一律 `ui/page-header` 的 `PageHeader`（`AdminPageHeader`、`PageTitle` 已於 2026/10/28 刪除）。
 - 詳細頁頁首：`PageHeader` 的 `breadcrumb`（`Breadcrumb` 元件，最後一項 `aria-current="page"`）＋`back`（標題左側返回鈕），返回沿用頁面原本的返回行為。
 
 ## 10. 遷移規則（相容層 → Tailwind + `src/ui/`）

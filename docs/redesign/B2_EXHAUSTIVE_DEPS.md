@@ -73,12 +73,12 @@
 - 情境：`getOrderRecordsData()` 同時發出三個 lazy 查詢；若「紅利是否啟用」這個查詢比另外兩個晚回來，`customerBonusActiveData.data` 為 undefined → TypeError → 內容區顯示錯誤畫面；即使沒拋錯，之後它回來也不會重算 `bonusDisplay`。同樣的邏輯在 `EmployeeManagementDetail/index.js:211` 已寫對（有防呆，依賴也有 `customerBonusActiveData.loading`）。
 - 建議：比照員工資料頁補防呆並加 `customerBonusActiveData.loading`。風險低。**已於 2026/10/22 照此寫入** `Profile/index.js`（`idx` 讀紅利設定，依賴含 `customerBonusActiveData.loading`）。本批不改該檔。
 
-### 4. 全店業績分析：「隱藏虛實業績切換」設定可能失效（待確認）
+### 4. ~~全店業績分析：「隱藏虛實業績切換」設定可能失效（待確認）~~ 已修（PR #315，`v3.10282323`，補 `isMemberShipCardActiveData.loading` 依賴）
 - `src/views/DesignerPerformOverview/index.js:38`（依賴 `[isDisplayTogglePerformanceButtonData.loading]`，條件卻也看 `isMemberShipCardActiveData.loading`）
 - 情境：若「會員卡是否啟用」查詢比「是否顯示切換鈕」晚回來，第一次 effect 被條件擋掉，之後不會再跑 → `isDisplayTogglePerformanceButton` 停在預設 false → 店家設定隱藏的「業績依據」切換鈕仍顯示。
 - 建議：依賴加 `isMemberShipCardActiveData.loading`（或拿掉條件裡不相干的判斷）。風險低。
 
-### 5. 同上：店家每日業績報表（待確認）
+### 5. ~~同上：店家每日業績報表（待確認）~~ 已修（PR #315，`v3.10282323`，同上）
 - `src/views/MerchantDailyPerformanceReport/index.js:46`，與 #4 相同寫法、相同修法。
 
 ### 6. ~~排隊單轉帳單：回饋點數可能沒算（待確認，影響點數）~~ 已修
@@ -111,22 +111,22 @@
 ### 11. ~~同上：草稿單列表（待確認，個資）~~ 已修（v3.10212046，同上，有測試）
 - `src/views/DraftOrderManagementList/ResultsV2.js:107`，相同修法。
 
-### 12. 每日收支明細：會員卡列可能被隱藏（待確認）
+### 12. ~~每日收支明細：會員卡列可能被隱藏（待確認）~~ 已修（2026/10/30，`v3.10301527`，有測試：會員卡設定晚到時重現）
 - `src/views/MoneyFlowDailyReport/Results.js:11`（依賴 `[moneyFlowDailyReport]`，缺 `isMemberShipCardActive`）
 - 父層在兩個查詢都完成時才掛載 `Results`，但 `isMemberShipCardActive` state 由父層 effect 在**之後**才 set；若會員卡設定查詢比報表晚回來，子層用初值 false 計算 → 店家有啟用會員卡、但期間內會員卡消費全為 0 時，「會員卡消費」列與匯出都被拿掉。
 - 建議：依賴加 `isMemberShipCardActive`。風險低。
 
-### 13. 每日結帳「待日結」全選勾選框狀態可能錯（待確認，顯示）
+### 13. ~~每日結帳「待日結」全選勾選框狀態可能錯（待確認，顯示）~~ 已修（2026/10/30，`v3.10301527`，有測試：全選後不再顯示半選）
 - `src/views/CheckoutDaily/WaitCloseOrderResults.js:36`（依賴 `[loading, pageRef.current]`，缺 `checkoutStatus`、`waitCloseOrderResults`）
 - `checkoutStatus`（有掛單不可日結）由父層 effect 設定；若它與列表同一次 commit 完成，子層先以舊值算 `canCheckoutOrder` → 全選後勾選框顯示半選。全選本身用的是最新 `checkoutStatus`，只影響勾選框顯示。
 - 建議：依賴加 `checkoutStatus`、`waitCloseOrderResults`。風險低。
 
-### 14. 薪資總覽：鎖定薪資後「全選」名單沒更新（待確認）
+### 14. ~~薪資總覽：鎖定薪資後「全選」名單沒更新（待確認）~~ 已修（2026/10/30，`v3.10301527`，全選名單補依賴 `isSalaryItemsLock`；原本被解鎖後的整頁重載掩蓋，有測試）
 - `src/views/SalaryOverview/Results.js:72`（依賴 `[usersSalary]`，缺 `isSalaryItemsLock`）
 - 情境：在對話框按「鎖定薪資」後只 refetch 鎖定狀態（解鎖則 `window.location.reload()`），`isSalaryItemsLock` 變了但 `userId`（全選時選哪些人）仍依鎖定前的規則；切換月份時若鎖定查詢比人員列表晚回來也一樣。
 - 建議：依賴加 `isSalaryItemsLock`。風險低（只重算可選名單）。需確認鎖定後是否另有重新整理。
 
-### 15. 店家業績排行匯出可能缺「服務業績月平均」欄（待確認）
+### 15. ~~店家業績排行匯出可能缺「服務業績月平均」欄（待確認）~~ 已修（PR #315，`v3.10282323`，補 `monthlyAverageDisplayForMerchantLeaderBoard` 依賴）
 - `src/views/MerchantLeaderBoard/index.js:88`（缺 `monthlyAverageDisplayForMerchantLeaderBoard`）
 - 該設定由另一個查詢 set；若排行資料先回來，Excel 依舊值（false）產生，之後設定回來不會重算。`performReference` 也缺，但它在查詢變數裡、變更時 loading 會重跑，不是問題。
 - 建議：依賴加 `monthlyAverageDisplayForMerchantLeaderBoard`。風險低。
@@ -136,7 +136,7 @@
 - 情境：服務列在店家設定回來前就存在（例如改帳單／排隊單載入舊項目），`isBindedThirdPartTicketLocked==='UNSET'` 的項目會用 `bindedThirdPart` 初值決定是否鎖定第三方卡券，設定回來後不會重算。打帳單新增項目時設定通常已回來。
 - 建議：依賴加 `bindedThirdPart.service`。風險低。
 
-### 17. 預約週曆的備註跑馬燈樣式不會隨「是否顯示備註」設定更新（待確認，樣式）
+### 17. ~~預約週曆的備註跑馬燈樣式不會隨「是否顯示備註」設定更新（待確認，樣式）~~ 已修（2026/10/30，`v3.10301527`，三份 OrderTable 補依賴，有測試）
 - `src/components/ReservationCalendar/DesignerWeekReservation/OrderTable.js:78`、`src/views/ManagementDesignersReservationRecord/OrderTable.js:92`、`src/views/ManagementReservationRecord/OrderTable.js:68`（依賴 `[ndsRef, calendarData]`，缺 `remarkDisplay`、`cusRemarkDisplay`）
 - 兩個設定由父層查詢 set；若週曆資料先出來，雙備註都過長時的跑馬燈不會套用，直到週曆重算。
 - 建議：依賴加這兩個值。風險低（只改 DOM 樣式）。
@@ -170,3 +170,7 @@
 - 分類腳本以 @babel/parser＋@babel/traverse 依 eslint 回報的行列找到依賴陣列，追每個名稱的 binding：`useState`／`useReducer` 第二個元素、`useRef`、`useDispatch`（限 react-redux）、`useHistory`（限 react-router）、`useToggle().setOpen`、billContext 的 key（逐一比對 4 個 Provider）、props（追全站 JSX 呼叫端）。
 - 修改：只在陣列最後一個元素後插入 `, name`（空陣列則直接填入）；斷言插入前名稱不存在、插入後重新 parse 的元素＝原元素＋新增名稱；宣告位置必須在 hook 呼叫之前（避免 TDZ）。
 - 驗證：修改後重跑 eslint，逐筆比對 771 處：加入的名稱全數從訊息中消失，其餘名稱不變，無新增警告；其他規則數量不變。
+
+## 決策紀錄
+
+- **紅利點數換算率晚到不重算（Jason 2026/10/30 選 B）**：`OrderCreate/Bonus.js`、`OrderEdit/Bonus.js`、`DraftOrderEdit/Bonus.js` 計算 `bonusDecount` 的 effect 依賴只有 `[bill.bonusUsed, setBill]`，刻意不放換算率。換算率比帳單晚到時不重算，舊帳單一律維持結帳當時存的紅利折抵金額；若補依賴，設定到時會把已存金額改成重算值（金額行為變更）。三處程式已加註解，不要當成漏依賴修掉。

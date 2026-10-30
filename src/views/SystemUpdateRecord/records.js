@@ -11,7 +11,7 @@ export function calendarUpdateTime(isoDate) {
 const shippedRecords = [
   {
     title: '2026/10/30 不再整頁重新整理',
-    versionNo: 'v3.10301525',
+    versionNo: 'v3.10301527',
     updateTime: '2026-10-30',
     content: [
       '- 解除日結、薪資解鎖與刪除月結紀錄、上傳大頭照、會員卡紀錄與分類刪除後，只更新畫面資料，不再整頁重新整理（保留篩選與捲動位置）',
