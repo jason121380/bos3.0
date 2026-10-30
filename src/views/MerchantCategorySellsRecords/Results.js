@@ -90,6 +90,7 @@ function Results({
     if (pageRef.current) {
       pagenationLabel(pageRef.current)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [results, sortWay, pageRef.current] 變動時執行；displayResults 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [results, sortWay, pageRef.current])
   const temp = []
   if (results.data != null && sortWay === 'DESIGNER') {

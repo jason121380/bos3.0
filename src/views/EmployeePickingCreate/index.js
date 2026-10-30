@@ -44,6 +44,7 @@ export default function EmployeePickingCreate({ location }) {
       const data = idx(getEmployeePickingPurpose, _ => _.data.getEmployeePickingPurpose)
       setPurpose(data || [])
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getEmployeePickingPurpose.loading])
 
   useEffect(() => {
@@ -55,6 +56,7 @@ export default function EmployeePickingCreate({ location }) {
         })
       )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 網址參數只在進頁時讀一次，換頁會重新掛載
   }, [history])
   const [isClick, setIsClick] = useState(true)
   const handleOnChange = ({ event, key }) => {

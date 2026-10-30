@@ -117,6 +117,7 @@ export default React.memo(function SalaryEdit(props) {
         setAttStatus(data[0])
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [attendanceStatus.loading])
   
 
@@ -130,6 +131,7 @@ export default React.memo(function SalaryEdit(props) {
       })
       setUsersIsSalaryChecked(correctData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [usersMonthCheckoutData.loading])
 
   React.useEffect(() => {
@@ -137,6 +139,7 @@ export default React.memo(function SalaryEdit(props) {
       const isUserSalaryItemLock = idx(isUserSalaryCheckedData, _ => _.data.user.isSalaryItemLocked)
       setIsSalaryItemsLock(isUserSalaryItemLock)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isUserSalaryCheckedData.data, isUserSalaryCheckedData.loading])
 
   React.useEffect(() => {
@@ -144,6 +147,7 @@ export default React.memo(function SalaryEdit(props) {
       const remark = idx(userSalary, _ => _.data.user.remarkForSalary)
       setRemark(remark)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [userSalary.loading])
 
   React.useEffect(() => {
@@ -163,6 +167,7 @@ export default React.memo(function SalaryEdit(props) {
         })
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [usersSalayItemData.loading, designerMonthlyCheckoutRedor…] 變動時執行；match.params.id、usersSalayItemData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [usersSalayItemData.loading, designerMonthlyCheckoutRedordData.loading])
   React.useEffect(() => {
     if (
@@ -277,6 +282,7 @@ export default React.memo(function SalaryEdit(props) {
       setSalaryIncreaseItemsReformatted(increaseReformatted)
       setSalaryDecreaseItemsReformatted(decreaseReformatted)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ userSalayItemData.loading, merchantSalaryIncreaseItems.…] 變動時執行；decreaseReformatted、increaseReformatted、isMemberShipCardActiveData、userSalayItemData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [
     userSalayItemData.loading,
     merchantSalaryIncreaseItems.loading,
@@ -292,6 +298,7 @@ export default React.memo(function SalaryEdit(props) {
       const data = idx(getAttendanceStatistics, _ => _.data.getParameterCheckoutAndSalaryItemsSetting.isAttendanceStatisticsDisplayOnUserSalary)
       setAttendanceDisplay(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAttendanceStatistics.loading])
   
 

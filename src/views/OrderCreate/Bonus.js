@@ -43,6 +43,7 @@ function Bonus({ customerBonus }) {
     }
   // 刻意不把換算率放進依賴（Jason 2026/10/30 選 B）：換算率比帳單晚到時不重算 bonusDecount，
   // 舊帳單一律維持結帳當時存的紅利折抵金額；補依賴會在設定到時把已存金額改成重算值。勿當成漏依賴修掉。
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 紅利換算率晚到時刻意不重算，舊帳單維持結帳當時的折抵金額（Jason 2026/10/30 選 B，見上方註解）
   }, [bill.bonusUsed, setBill])
   return (
     <div className={styles.bonus}>

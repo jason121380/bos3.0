@@ -45,6 +45,7 @@ export default function PannelCouponUse({ expanded, onPanelClick, display, reset
       setTotalCoupons(0)
       setHelper([[]])
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（ticketRecordsForOrderLazyV2）；只在 [bill.customerId] 變動時呼叫，補上會每次 render 重跑
   }, [bill.customerId])
 
   React.useEffect(() => {
@@ -53,6 +54,7 @@ export default function PannelCouponUse({ expanded, onPanelClick, display, reset
       const totalCount = data.reduce((a, b) => a + b.ticketRecordForOrder.length ,0)
       setTotalCoupons(totalCount)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [ticketRecordsForOrderLazyDataV2.loading])
 
   React.useEffect(() => {

@@ -55,6 +55,7 @@ export function useProductPicker() {
       })
       setProductCategories(productCategories)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [products.loading, products.data, productCategoriesData.l…] 變動時執行；productCategoriesData、products、setting 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [products.loading, products.data, productCategoriesData.loading])
 
   const handleOpenProductsModal = () => {
@@ -118,6 +119,7 @@ export function useMembershipPicker() {
       });
       setProductCategories(productCategories);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [products.loading, products.data, productCategoriesData.l…] 變動時執行；productCategoriesData、products、setting 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [products.loading, products.data, productCategoriesData.loading]);
 
   const handleOpenProductsModal = () => {

@@ -117,6 +117,7 @@ function ShortcutCreate() {
       const filtData = doFilter(data, servicesKeyword)
       setServicesData(filtData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [services.loading, servicesKeyword])
 
   useEffect(() => {
@@ -125,6 +126,7 @@ function ShortcutCreate() {
       const filtData = doFilter(data, productKeyword)
       setProductData(filtData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading, productKeyword])
 
   useEffect(() => {
@@ -133,6 +135,7 @@ function ShortcutCreate() {
       const filtData = doFilter(data, ticketKeyword)
       setTicketData(filtData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [tickets.loading, ticketKeyword])
 
   useEffect(() => {
@@ -146,6 +149,7 @@ function ShortcutCreate() {
       const filtData = doFilter(data, memberCardsKeyword)
       setMemberCardsData(filtData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [memberCards.loading, memberCardsKeyword])
 
   return (

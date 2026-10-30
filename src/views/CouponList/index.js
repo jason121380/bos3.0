@@ -32,6 +32,7 @@ function CouponList() {
       const serviceCategories = idx(serviceCategoriesData, _ => _.data.serviceCategories)
       setServiceCategories(serviceCategories)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [serviceCategoriesData.loading])
 
   useEffect(() => {
@@ -39,6 +40,7 @@ function CouponList() {
       // 查詢失敗時以空清單顯示，不整頁錯誤
       setCoupons(idx(couponsData, _ => _.data.ticketsForList) || [])
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [couponsData.loading])
 
   const handleClickCategorie = categorieId => {

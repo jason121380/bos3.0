@@ -58,10 +58,12 @@ function InventoryWork() {
         setFirst(2)
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [inventorysData.loading] 變動時執行；first、inventorysData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [inventorysData.loading])
 
   useEffect(() => {
     getInventorysLazy()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
 

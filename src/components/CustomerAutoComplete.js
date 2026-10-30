@@ -73,6 +73,7 @@ export default React.forwardRef(function CustomerAutoComplete(
       setCustomerKeyword(keyword)
       inputOnChange(keyword)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [currentTime] 變動時執行；inputOnChange、keyword、onChangeTime 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [currentTime])
 
   const options = idx(customers, _ => _.data.customers.customers) || []
@@ -87,6 +88,7 @@ export default React.forwardRef(function CustomerAutoComplete(
         onChange(data[0])
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [customers.loading] 變動時執行；customers、keyCode、onChange 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [customers.loading])
 
   const handleKeyDown = e => {

@@ -37,6 +37,7 @@ function RakeReport({ setRakeReportDate, designerRakeReport, rakeReportDate, loa
       )
       setMembershipDisplay(membership || isMemberShipCardActive)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading, designerRakeReport])
   return (
     <div className="flex flex-col gap-6">

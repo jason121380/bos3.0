@@ -46,6 +46,7 @@ function ServicesIncludesTicketsAutoComplete(
     if (selectedValue?.no === servicesKeyword || selectedValue?.name.includes(servicesKeyword)) {
       setServicesKeyword(selectedValue.name)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [selectedValue] 變動時執行；servicesKeyword 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [selectedValue])
 
   useEffect(() => {

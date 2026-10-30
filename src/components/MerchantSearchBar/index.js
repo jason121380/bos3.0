@@ -338,6 +338,7 @@ function MerchantSearchBar({
         useHandleChangeRef.current({ target: key, value: defaultDate[key] })
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   multiple = multiple.reduce((total, item) => ({ ...total, [item]: true }), {})

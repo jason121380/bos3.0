@@ -93,6 +93,7 @@ const MerchantBusinessIntervalReport = () => {
         setMembershipDisplay(false)
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantDailyReportDataV3.loading])
 
   useEffect(() => {
@@ -103,6 +104,7 @@ const MerchantBusinessIntervalReport = () => {
       )
       setIsMemberShipCardActive(isMemberShipCardActive)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
 
   useEffect(() => {
@@ -113,6 +115,7 @@ const MerchantBusinessIntervalReport = () => {
       )
       setIsServiceTicketMerged(isServiceTicketMerged)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isServiceTicketMergedData.loading])
   return (
     <Page className="ui-root" title="店家區間累計表">

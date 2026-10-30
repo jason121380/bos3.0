@@ -50,6 +50,7 @@ const PaymentReport = () => {
       setIsMemberShipCardActive(Boolean(memberShipCardActive || membershipTotal !== 0))
       setBonusDisplay(Boolean(bonusActive || (bonusTotal != null && bonusTotal !== 0)))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading, customerBonusActive.loading, businessAnalysisReportData.loading])
 
   useEffect(() => {
@@ -108,6 +109,7 @@ const PaymentReport = () => {
         setExcelData(excelData)
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [businessAnalysisReportData.loading, isMemberShipCardActive, bonusDisplay])
 
   useEffect(() => {
@@ -118,6 +120,7 @@ const PaymentReport = () => {
       )
       setIsServiceTicketMerged(isServiceTicketMerged)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isServiceTicketMergedData.loading])
 
   return (

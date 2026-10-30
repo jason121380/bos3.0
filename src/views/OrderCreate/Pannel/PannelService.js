@@ -73,6 +73,7 @@ function PannelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
       setServicesInModal(servicesInModal)
     } else {
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [serviceCategoriesData.loading, servicesData.loading])
   // 打帳單判斷指定助理服務顯示checkbox變數
   useEffect(() => {
@@ -84,6 +85,7 @@ function PannelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
 
       setIsHelperDesignationData(isHelperDesignation)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isHelperDesignationData.loading])
 
   useEffect(() => {

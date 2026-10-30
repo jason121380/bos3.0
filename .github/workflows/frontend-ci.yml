@@ -55,3 +55,36 @@ jobs:
         run: npm run test:nowatch
         env:
           CI: true
+
+  # 全站畫面掃描：每個後台路由在手機（390×844）與桌機（1366×800）各開一次，主要頁面另跑深色模式；
+  # 檢查沒有錯誤邊界「這個頁面發生錯誤」、沒有橫向捲動、沒有未捕捉的 console error（e2e/visual.spec.js）。
+  # 用 vite build 的靜態檔＋假 GraphQL，外部連線一律 abort，不連任何後端（CLAUDE.md 鐵則 5）。
+  visual:
+    name: Visual scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+      - name: Build
+        run: npm run build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Visual scan
+        run: npm run test:e2e
+        env:
+          CI: true
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-scan-results
+          path: e2e/e2e-results/
+          retention-days: 7

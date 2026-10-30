@@ -245,6 +245,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
       d => d.toLowerCase().includes(searchText.toLowerCase())
     );
     setFiltIds(filterMerchantsId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [searchText] 變動時執行；pages 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [searchText]);
 
   return (

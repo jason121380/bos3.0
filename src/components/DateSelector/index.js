@@ -249,6 +249,7 @@ const DateSelector = ({
       }
       dateChange(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   const quickKeys = attributes.filter(key => key !== 'startDate' && key !== 'endDate')

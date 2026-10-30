@@ -29,6 +29,7 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
     if (open) {
       open && setModalValues(values)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [open] 變動時執行；values 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [open])
 
   useEffect(() => {
@@ -49,6 +50,7 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
     if (filterMerchantsId.length > 0 && !expandedArr.includes('ALL')) {
       setExpandedArr(prevExpandedArr => [...prevExpandedArr, 'ALL']);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [value] 變動時執行；expandedArr、productList.all 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [value]);
 
   const renderGroup = group => {

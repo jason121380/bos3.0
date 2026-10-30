@@ -25,10 +25,14 @@ const SystemUpdateRecordCreate = props => {
           return d.systemUpdateId === props.match.params.id
         })
       )
-      setEditData({ ...editData, ...data[0] })
-      setMdValue(data[0].content)
+      // 查詢失敗或找不到這筆紀錄時不帶入（2026/10/30 自動掃描發現）
+      if (data && data[0]) {
+        setEditData({ ...editData, ...data[0] })
+        setMdValue(data[0].content)
+      }
     }
     return () => (cleanUp = false)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [systemUpdateRecord.loading] 變動時執行；editData、props.match.params.id、systemUpdateRecord 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [systemUpdateRecord.loading])
 
   return (

@@ -53,6 +53,7 @@ export default function UsagedResults({
       '卡券使用金額': totalPrice()
     })
     setCsvData(csvData)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（roundDecimal、totalPrice）；只在 [results, isCustomerDataMarked] 變動時呼叫，補上會每次 render 重跑
   }, [results, isCustomerDataMarked])
 
   return (

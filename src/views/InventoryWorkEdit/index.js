@@ -54,11 +54,13 @@ function InventoryWorkEdit({ match }) {
       setInventoryData(sortData(data, sort))
       setInfo({ date, creatorName })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [products.loading, getInventory.loading] 變動時執行；getInventory、products、sort 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [products.loading, getInventory.loading])
 
   useEffect(() => {
     const resData = sortData(inventoryData, sort)
     setInventoryData(resData)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [sort] 變動時執行；inventoryData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [sort])
 
   const handleDeleteInventory = async () => {

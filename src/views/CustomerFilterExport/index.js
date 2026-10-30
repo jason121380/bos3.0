@@ -111,6 +111,7 @@ function CustomerFilterExport() {
       const url = idx(getCustomersWithoutSortingExcelLazyData, _ => _.data.customersWithoutSortingExcel)
       url && window.open(url)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getCustomersWithoutSortingExcelLazyData.loading])
 
   const handlePageChange = ({ value, key }) => {
@@ -223,6 +224,7 @@ function CustomerFilterExport() {
         setDisable([false, false])
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   useEffect(() => {
@@ -230,6 +232,7 @@ function CustomerFilterExport() {
     if (!customerList.loading) {
       once = true
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [customerList.loading, history] 變動時執行；pageSetting 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [customerList.loading, history])
 
   return (

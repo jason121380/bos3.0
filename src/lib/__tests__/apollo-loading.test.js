@@ -28,6 +28,7 @@ function Probe({ log, refetchRef, policy }) {
   const q = useQuery(QUERY, policy ? { fetchPolicy: policy } : {})
   useEffect(() => {
     log.push(`loading=${q.loading} n=${q.data && q.data.n}`)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [q.loading] 變動時執行；log、q.data 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [q.loading])
   refetchRef.current = q.refetch
   return null

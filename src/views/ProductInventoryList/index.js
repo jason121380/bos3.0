@@ -37,6 +37,7 @@ const ProductInventoryList = () => {
       const data = (idx(productCategories, _ => _.data.productCategories) || []).map(d => d.name)
       setCategoryOption(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productCategories.loading])
 
   useEffect(() => {
@@ -115,6 +116,7 @@ const ProductInventoryList = () => {
       }
       setReportData([...sortData])
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productInventoryList.loading, sortType, selectCategory])
 
   return (

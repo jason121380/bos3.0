@@ -171,14 +171,17 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
       setOrderData(data)
       setSummery(data2)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [ordersFastCheckLazyData.loading, isMemberShipCardActiveData.loading, customerBonusActive.loading])
 
   useEffect(() => {
     setSubmitData({ ...submitData, date: date })
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（submitData）；只在 [date] 變動時呼叫，補上會每次 render 重跑
   }, [date])
 
   useEffect(() => {
     open && handleSubmit()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSubmit）；只在 [submitData, open] 變動時呼叫，補上會每次 render 重跑
   }, [submitData, open])
 
   return (

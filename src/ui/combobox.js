@@ -160,6 +160,7 @@ const Autocomplete = React.forwardRef(function Autocomplete(
   // 外部 value 改變（非輸入中）時，單選欄位顯示的文字跟著更新
   React.useEffect(() => {
     if (!multiple && !dirty && inputValueProp === undefined) setInnerInput(selectedLabel)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [selectedLabel] 變動時執行；dirty、inputValueProp、multiple 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [selectedLabel])
 
   const filtered = filterOptions(options, { inputValue: dirty ? inputText : '', getOptionLabel: o => labelOf(getOptionLabel, o) })

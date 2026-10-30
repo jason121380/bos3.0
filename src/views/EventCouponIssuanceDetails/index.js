@@ -92,10 +92,12 @@ function EventCouponIssuanceDetails() {
       )
       setRecordData(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [voucherIssuanceRecordData.loading])
 
   useEffect(() => {
     handleSearch()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [ pageSetting.pageLimit, pageSetting.pageOffset, inputData.startDate, inputData.endDate ] 變動時呼叫，補上會每次 render 重跑
   }, [
     pageSetting.pageLimit, pageSetting.pageOffset,
     inputData.startDate, inputData.endDate

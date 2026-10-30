@@ -51,6 +51,7 @@ function DesignerPerformOverview() {
       setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
     }
     // 兩支查詢都要等：會員卡查詢較晚回來時也要再跑一次（B2 清單 #4／#5）
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isDisplayTogglePerformanceButtonData.loading, isMemberShipCardActiveData.loading])
 
   useEffect(() => {
@@ -107,6 +108,7 @@ function DesignerPerformOverview() {
       setExcelData(excelData)
       setAttributeSwitchs(attributeSwitch)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantDailyPerformanceReportData.loading, isMemberShipCardActiveData.loading])
 
   return (

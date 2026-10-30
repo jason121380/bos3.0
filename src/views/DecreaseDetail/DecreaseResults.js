@@ -78,6 +78,7 @@ function Results({
       })
     }
     setExcelData(excelData)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [results, beenAssistedDesigner, summary2, pointSummary2] 變動時執行；pointSummary、summary 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [results, beenAssistedDesigner, summary2, pointSummary2])
 
   // 點數顯示截短小數（最多 4 個字元），但不可截掉整數位數（原本 12345 會顯示成 1234）

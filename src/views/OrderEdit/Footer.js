@@ -36,6 +36,7 @@ export default function Footer({ enable }) {
       )
       setDisableRecheckoutOrders(disableRecheckoutOrders)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [passwordData.loading])
 
   const { fetchReCheckoutOrder } = useFetchReCheckoutOrder()
@@ -48,6 +49,7 @@ export default function Footer({ enable }) {
   const location = useLocation()
   const status = getQueryString({ key: 'status', location })
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- F9 快捷鍵的 effect 刻意每次 render 重新綁定，才能拿到最新帳單的結帳函式
   const handleReCheckoutOrder = (isPending = false) => {
     setOpen(true)
     const tmp = handleTidyBill(bill)

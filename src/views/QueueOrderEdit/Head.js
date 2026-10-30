@@ -113,6 +113,7 @@ export default function Head() {
         setMembershipPurchase(tmp)
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerData.loading, customerData.data, setIsLineBinded])
 
   // delay send query customers
@@ -139,6 +140,7 @@ export default function Head() {
         }
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [options, customers.loading, tmpCustomerKeyword, setBill] 變動時執行；keyCode 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [options, customers.loading, tmpCustomerKeyword, setBill])
 
   const handleDateChange = date => {

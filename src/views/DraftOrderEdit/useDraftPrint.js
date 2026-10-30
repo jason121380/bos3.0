@@ -78,6 +78,7 @@ export default function useDraftPrint() {
       const data = idx(getDesignerNameDisplayOnInvoice, _ => _.data.getDesignerNameDisplayOnInvoice)
       setNameDisplayOnInvoice(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getDesignerNameDisplayOnInvoice.loading])
   useEffect(() => {
     if (
@@ -191,6 +192,7 @@ export default function useDraftPrint() {
         membershipsDetail: membershipsArr,
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ servicesData.loading, thirdPartyCouponData.loading, pro…] 變動時執行；membershipData、orderDetail、productsData、servicesData、thirdPartyCouponData、ticketRecordData、ticketsData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [
     servicesData.loading,
     thirdPartyCouponData.loading,
@@ -255,6 +257,7 @@ export default function useDraftPrint() {
       )
       setOrderDetailPrintLayout(merchantOrderDetailPrintLayout)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantOrderDetailPrintLayoutData.loading])
 
   return {

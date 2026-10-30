@@ -64,6 +64,7 @@ export default function General({
 
       setProductCategories(productCategories)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productCategoriesData.loading])
 
   const handleOpenProductsModal = () => {
@@ -104,6 +105,7 @@ export default function General({
       })
       setProductList(productsAddCount)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading, picking, setting])
 
   useEffect(() => {
@@ -111,6 +113,7 @@ export default function General({
       setPageLoading(users.loading)
       setPickerOption(idx(users, _ => _.data.users.users) || [])
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [users.loading, setPageLoading])
 
   const productLabel = option => `${option.no === null ? '無代號' : option.no} ${option.name}`

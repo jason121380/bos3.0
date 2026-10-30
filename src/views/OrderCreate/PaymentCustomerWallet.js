@@ -53,6 +53,7 @@ function PaymentCustomerWallet(props, ref) {
     if (bill.walletPay === 0) return
     setWalletPayBalance(usableCustomerWallet - bill.walletPay)
     setWalletPayBalanceForDetail(usableCustomerWallet - bill.walletPay)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [bill.walletPay, setWalletPayBalanceForDetail] 變動時執行；usableCustomerWallet 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [bill.walletPay, setWalletPayBalanceForDetail])
 
   // 本元件只在帳單有顧客時掛上（Payment.js），customerId 一定有值
@@ -80,6 +81,7 @@ function PaymentCustomerWallet(props, ref) {
         allowDepositDeduction: allowDepositDeduction,
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [profileIdentity.loading, merchantAuthorities.loading])
 
   const initWalletPay = () => {
@@ -90,6 +92,7 @@ function PaymentCustomerWallet(props, ref) {
   }
   useEffect(() => {
     initWalletPay()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（initWalletPay）；只在 [customerId] 變動時呼叫，補上會每次 render 重跑
   }, [customerId])
 
   const servicesWithThirdPartyCount = []
@@ -184,6 +187,7 @@ function PaymentCustomerWallet(props, ref) {
         value: 0,
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [walletPayCheckBox] 變動時執行；handleBillChange、usableCustomerWallet、walletPayLimit 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [walletPayCheckBox])
   // 勾「整筆扣入金」之後如果項目變少，上限會下降，但上面的 effect 只在勾選當下寫入。
   // 扣入金留在舊金額會讓現金應收變負數。只往下夾到新上限，不把手動改小的金額拉回去。

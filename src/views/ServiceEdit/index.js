@@ -49,6 +49,7 @@ function ServiceCategoryEdit({ match }) {
   const [helperPoint, setHelperPoint] = useState(0)
   useEffect(() => {
     serviceDetail.refetch()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [match.params.id] 變動時執行；serviceDetail 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [match.params.id])
   // 服務設定初始化useEffect
   useEffect(() => {
@@ -202,6 +203,7 @@ function ServiceCategoryEdit({ match }) {
         })
       )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ serviceDetail.data, serviceDetail.loading, customerCate…] 變動時執行；isDuplicate 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [
     serviceDetail.data,
     serviceDetail.loading,
@@ -398,6 +400,7 @@ function ServiceCategoryEdit({ match }) {
         }
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [services.loading, serviceDetail.loading, match.params.id])
 
   useEffect(() => {

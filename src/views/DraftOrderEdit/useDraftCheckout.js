@@ -61,6 +61,7 @@ export default function useDraftCheckout({ passwordData }) {
       )
       setDisableRecheckoutOrders(disableRecheckoutOrders)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [passwordData.loading])
   const { fetchReCheckoutOrder } = useFetchReCheckoutOrder()
 
@@ -107,8 +108,10 @@ export default function useDraftCheckout({ passwordData }) {
     return () => {
       cancelled = true
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [orderId, orderDate] 變動時執行；client、goToClosedBill、leaveCheckedOutDraft、order 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [orderId, orderDate])
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- F9 快捷鍵的 effect 刻意每次 render 重新綁定，才能拿到最新帳單的結帳函式
   const handleReCheckoutOrder = () => {
     if (isRecheckoutOrders || draftGate === 'checking' || draftGate === 'blocked' || draftGate === 'closed') return
     setIsClick(true)
@@ -262,6 +265,7 @@ export default function useDraftCheckout({ passwordData }) {
           setOpen(false)
         })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [bill, history, setOpen, draftGate] 變動時執行；fetchReCheckoutOrder、orderSetting.orderId 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [bill, history, setOpen, draftGate])
 
   const customerTicketRecords = useFetchTicketRecords({

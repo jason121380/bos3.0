@@ -41,6 +41,7 @@ export default function ({
     if (visible.includes('source') && sourceOption.length === 0) {
       getReferenceLazy()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [visible] 變動時執行；getReferenceLazy、sourceOption.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [visible])
 
   useEffect(() => {
@@ -49,6 +50,7 @@ export default function ({
       const data = idx(referenceLazyData, _ => _.data.getCustomerReference) || []
       setSourceOption(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [referenceLazyData.loading])
 
   useEffect(() => {
@@ -57,6 +59,7 @@ export default function ({
       const payType = idx(accountingTypeData, _ => _.data.getAccountingType) || []
       setPayType(payType)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [accountingTypeData.loading])
 
   const input = {

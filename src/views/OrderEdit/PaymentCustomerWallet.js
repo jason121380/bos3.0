@@ -52,6 +52,7 @@ export default function PaymentCustomerWallet() {
         setWalletPayByOrder(0)
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [order.loading, bill.customerId] 變動時執行；handleBillChange、order 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [order.loading, bill.customerId])
 
   React.useEffect(() => {
@@ -70,6 +71,7 @@ export default function PaymentCustomerWallet() {
         allowDepositDeduction: allowDepositDeduction,
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [profileIdentity.loading, merchantAuthorities.loading])
 
   const walletPayLimit =

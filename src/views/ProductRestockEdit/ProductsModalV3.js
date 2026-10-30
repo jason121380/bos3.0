@@ -51,6 +51,7 @@ function ProductsModal({
         }
       })
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [categorie] 變動時執行；productList、selectedProducts 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [categorie])
 
   useEffect(() => {
@@ -68,6 +69,7 @@ function ProductsModal({
       })
     }
     setSelectedCategorieId(cloneData)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [sortType] 變動時執行；selectedCategorieId 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [sortType])
 
   useEffect(() => {
@@ -79,6 +81,7 @@ function ProductsModal({
       })
       setSelectedCategorieId(productList)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productList.loading])
 
   const handleProductInputOnChange = (e, index, id) => {

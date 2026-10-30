@@ -147,6 +147,7 @@ export default function ProductCreate({ match }) {
         })
       )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [productDetail.loading, productDetail.data] 變動時執行；isDuplicate 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [productDetail.loading, productDetail.data])
 
   useEffect(() => {
@@ -161,6 +162,7 @@ export default function ProductCreate({ match }) {
         }
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading, productDetail.loading])
 
   useEffect(() => {
@@ -168,6 +170,7 @@ export default function ProductCreate({ match }) {
       const data = idx(merchantVendorList,_=>_.data.getMerchantVendorList)
       setMerchantVendor(data || [])
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantVendorList.loading])
 
   useEffect(() => {

@@ -73,6 +73,7 @@ function WebOrderMangagementList() {
       const res = Boolean(idx(getCheckinSettings, _ => _.data.getMerchantCheckinSettings.isBookingCheckinEnabled))
       setCheclInDisplay(res)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getCheckinSettings.loading])
 
   // 同步未來預約確認設置
@@ -81,6 +82,7 @@ function WebOrderMangagementList() {
       const data = idx(getIsBookingCusCheckUsing, _ => _.data.getIsBookingCusCheckUsing)
       setBookingCusCheck(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBookingCusCheckUsing.loading])
 
   return (

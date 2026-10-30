@@ -51,6 +51,7 @@ export default function TopUp({ customer, pagenationLabel }) {
       // 查詢失敗時餘額顯示 0（原本 data 為 undefined 時整頁錯誤；Jason 2026/10/22 fix all）
       setWalletBalance(idx(customerWallet, _ => _.data.customerWallet) || 0)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerWallet.loading])
 
   return (

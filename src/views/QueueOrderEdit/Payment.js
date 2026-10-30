@@ -111,6 +111,7 @@ export default function Payment() {
         value: 0,
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleBillChange）；只在 [bill.serviceOrders, bill.productOrders, bill.ticketOrders, bill.membershipOrders] 變動時呼叫，補上會每次 render 重跑
   }, [bill.serviceOrders, bill.productOrders, bill.ticketOrders, bill.membershipOrders])
   const amountByOtherPay = value => {
     if (value <= otherPayLimit && totalShouldPay > 0 && value <= totalShouldPay) {

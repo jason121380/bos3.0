@@ -69,6 +69,7 @@ function OrderRecord({
         pagenationLabel(pageRef.current)
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [profileOrders.loading, page, rowsPerPage, pageRef.current] 變動時執行；pagenationLabel、profileOrders 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [profileOrders.loading, page, rowsPerPage, pageRef.current])
 
   useEffect(() => {

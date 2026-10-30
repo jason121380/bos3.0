@@ -102,6 +102,7 @@ function Results({ className, coupons, refetch, ...rest }) {
       )
       setDeleteCouponIsUsing(deleteCouponIsUsing)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantPassword.loading])
   // 只有啟用中的卡券可勾選；全選框以可選取的筆數判斷
   const selectableCount = coupons.filter(coupon => coupon.isUsing).length
@@ -268,6 +269,7 @@ function Results({ className, coupons, refetch, ...rest }) {
         )
       )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantCommissions.loading])
 
   const handleOpenEditDeductionModal = () => {

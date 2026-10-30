@@ -98,6 +98,7 @@ function MainEventEdit({ match }) {
       // 查詢失敗或查無活動時不帶入（原本表單資料變 undefined 整頁進入錯誤畫面）
       if (data) setInputValue(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMainEvent.loading])
 
   useEffect(() => {

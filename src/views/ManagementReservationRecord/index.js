@@ -418,6 +418,7 @@ function Calendar() {
         changeData: null
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [DesignerCalendar.loading])
 
   useEffect(() => {
@@ -431,6 +432,7 @@ function Calendar() {
         })
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [reservationData] 變動時執行；date.startDate 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [reservationData])
 
   useEffect(() => {
@@ -468,6 +470,7 @@ function Calendar() {
       }
     }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ checkinMode, checkinSettings.isBookingCheckinEnabled, c…] 變動時執行；editOrder.id、handleSetTimeRange、handleTidyOrder、merchant 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [
     checkinMode, checkinSettings.isBookingCheckinEnabled,
     calendarRowData, checkedType, unCheckDisplay, merchant.loading,
@@ -480,6 +483,7 @@ function Calendar() {
       const data = idx(nameType, _ => _.data.getDesignerNameForCustomerSide) || 'NAME'
       setDesignerName(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [nameType.loading])
 
   useEffect(() => {
@@ -487,6 +491,7 @@ function Calendar() {
       const data = idx(bookingRemarkDisplay, _ => _.data.getIsBookingRemarkDisplay) || false
       setRemarkDisplay(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [bookingRemarkDisplay.loading])
 
   useEffect(() => {
@@ -494,6 +499,7 @@ function Calendar() {
       const data = idx(cusBookingRemarkDisplay, _ => _.data.getIsCusBookingRemarkDisplay) || false
       setCusRemarkDisplay(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [cusBookingRemarkDisplay.loading])
 
   useEffect(() => {
@@ -501,6 +507,7 @@ function Calendar() {
       const data = idx(getEventDisplay, _ => _.data.getParameterAboutSettingFunction.isEventDisplayOnDayBookingRecord) || false
       setEventDisplay(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getEventDisplay.loading])
 
   useEffect(() => {
@@ -511,6 +518,7 @@ function Calendar() {
       }
       setCheckinSettings(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantCheckinSettings.loading])
 
   useEffect(() => {
@@ -518,6 +526,7 @@ function Calendar() {
       const data = idx(getIsBookingCusCheckUsing, _ => _.data.getIsBookingCusCheckUsing) || false
       setBookingCusCheck(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBookingCusCheckUsing.loading])
 
   useEffect(() => {
@@ -526,6 +535,7 @@ function Calendar() {
       // 讀不到推播類型時維持預設（提示待審核）
       setUnCheckDisplay(data ? data.includes('UNCHECK') : true)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBookingTypeForSocket.loading])
 
   useEffect(() => {
@@ -533,6 +543,7 @@ function Calendar() {
       const data = idx(getBookinHistoryDisplay, _ => _.data.getParameterAboutBookingSetting.isBookingHistoryDisplay) || false
       setBookingHistoryDisplay(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBookinHistoryDisplay.loading])
 
   return (

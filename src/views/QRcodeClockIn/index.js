@@ -31,6 +31,7 @@ function QRcodeClockIn() {
 
   useEffect(() => {
     handleSetQRcodeData()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSetQRcodeData）；只在 [key, clockInType] 變動時呼叫，補上會每次 render 重跑
   }, [key, clockInType])
 
   useEffect(() => {
@@ -47,18 +48,21 @@ function QRcodeClockIn() {
     return () => {
       clearInterval(timer)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getQrcodeCheckinCode.loading])
 
   useEffect(() => {
     if (!countDownTime) {
       getQrcodeCheckinCode.refetch()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getQrcodeCheckinCode）；只在 [countDownTime] 變動時呼叫，補上會每次 render 重跑
   }, [countDownTime])
 
   useEffect(() => {
     if (keyFromStore && keyFromStore === key) {
       getQrcodeCheckinCode.refetch()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [keyFromStore] 變動時執行；getQrcodeCheckinCode、key 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [keyFromStore])
 
 

@@ -145,6 +145,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
     return () => {
       clearTimeout(creating)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [isNotification] 變動時執行；usingOrderQueue 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [isNotification])
 
   useEffect(() => {
@@ -203,6 +204,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
       const coupon = filtData.find(d => d.pageName === '預收卡項目扣項設定')?.authority ?? false
       dispatch(deductionDisplayActions.setDisplay({ service, coupon }))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantAuthData.loading, profileIdentity.loading, dispatch])
 
   useEffect(() => {
@@ -240,6 +242,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
         history.push('/profile/general')
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantAuthData.loading, profileIdentity.loading, history])
 
   // getTheme
@@ -263,6 +266,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
       handlesetOrderDetail(tmpData)
       setOrderDetail(tmpData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [usingOrderQueue.loading])
 
   // click away

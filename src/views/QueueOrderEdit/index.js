@@ -84,6 +84,7 @@ export default function KeyIn({ match }) {
       const data = idx(getIsBonusRewardWithLine, _ => _.data.getParameterAboutSettingFunction.isBonusRewardWithLine)
       setBonusRewardWithLINE(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBonusRewardWithLine.loading])
 
   useEffect(() => {
@@ -91,6 +92,7 @@ export default function KeyIn({ match }) {
       const data = idx(getIsLBCusDisplay, _ => _.data.getParameterOrderCreateSetting.isLBCusDisplay)
       setLBCusDisplay(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsLBCusDisplay.loading])
 
   useEffect(() => {
@@ -98,6 +100,7 @@ export default function KeyIn({ match }) {
       const data = idx(getSerialNumberUsing, _ => _.data.getParameterOrderCreateSetting.isOrderSerialNumberUsing)
       setSerialNumberUsing(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getSerialNumberUsing.loading])
 
   useEffect(() => {
@@ -105,6 +108,7 @@ export default function KeyIn({ match }) {
       const data = idx(getBindedThirdPartTicketLockedSetting, _ => _.data.getBindedThirdPartTicketLockedSetting)
       setBindedThirdPart(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBindedThirdPartTicketLockedSetting.loading])
 
   useEffect(() => {
@@ -112,6 +116,7 @@ export default function KeyIn({ match }) {
       const thirdPartyCoupons = idx(thirdPartyCouponsData, _ => _.data.merchant.thirdpartyCoupons)
       setThirdPartyCoupons(thirdPartyCoupons)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [thirdPartyCouponsData.loading])
   useEffect(() => {
     // 佇列帳單讀不到（查詢失敗）時不帶入，畫面改顯示 QueryFailed（原本 JSON.parse(undefined) 整頁錯誤；2026/10/28）
@@ -145,6 +150,7 @@ export default function KeyIn({ match }) {
         })
       )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [order.loading])
   // 換顧客（含清除顧客、改輸入新手機）時清空扣入金；寫在一直顯示的本頁，見 PaymentCustomerWallet
   useClearWalletPayOnCustomerChange({ bill, order, setBill })
@@ -160,12 +166,14 @@ export default function KeyIn({ match }) {
       const data = idx(getBonusRewardRule, _ => _.data.getParameterAboutSettingFunction.bonusRewardRule)
       setBonusSetting(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBonusRewardRule.loading])
   useEffect(() => {
     if(!getIsBonusConversion.loading) {
       const data = idx(getIsBonusConversion,_=>_.data.getParameterAboutSettingFunction)
       setBonusConversion(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBonusConversion.loading])
 
   // 確認欄位資料是否載入完成

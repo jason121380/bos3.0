@@ -70,6 +70,7 @@ function DesignerWeekReservation({ designerId, checkinSettings, bookingCusCheck,
       const data = idx(nameType, _ => _.data.getDesignerNameForCustomerSide)
       setDesignerName(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [nameType.loading])
 
 
@@ -85,6 +86,7 @@ function DesignerWeekReservation({ designerId, checkinSettings, bookingCusCheck,
       setOrderRange(orderRange)
       setCalendarData(calendarData)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ merchant.loading, date, DesignerCalendar.loading, booki…] 變動時執行；DesignerCalendar、checkinSettings、merchant 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [
     merchant.loading, date, DesignerCalendar.loading, bookingCusCheck,
     checkinMode, checkinSettings.isBookingCheckinEnabled, checkedType
@@ -95,6 +97,7 @@ function DesignerWeekReservation({ designerId, checkinSettings, bookingCusCheck,
       const data = idx(bookingRemarkDisplay, _ => _.data.getIsBookingRemarkDisplay)
       setRemarkDisplay(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [bookingRemarkDisplay.loading])
 
   useEffect(() => {
@@ -102,6 +105,7 @@ function DesignerWeekReservation({ designerId, checkinSettings, bookingCusCheck,
       const data = idx(cusBookingRemarkDisplay, _ => _.data.getIsCusBookingRemarkDisplay)
       setCusRemarkDisplay(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [cusBookingRemarkDisplay.loading])
 
   return (

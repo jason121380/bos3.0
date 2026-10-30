@@ -64,6 +64,7 @@ const MerchantLeaderBoard = () => {
       setIsMemberShipCardActive(isMemberShipCardActive)
       setDisplayReportWithMembership(isMemberShipCardActive)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
   // 店家排行榜服務業績月平均是否顯示
   useEffect(() => {
@@ -71,6 +72,7 @@ const MerchantLeaderBoard = () => {
       const monthlyAverageDisplayForMerchantLeaderBoard = idx(isMonthlyAverageDisplayForMerchantLeaderBoard, _ => _.data.getIsMonthlyAverageDisplayForMerchantLeaderBoard)
       setMonthlyAverageDisplayForMerchantLeaderBoard(monthlyAverageDisplayForMerchantLeaderBoard)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMonthlyAverageDisplayForMerchantLeaderBoard.loading]);
   // 隱藏虛實業績切換按鈕 --------------------------------------------------------------------------------
   const isDisplayTogglePerformanceButtonData = useFetchGetIsDisplayTogglePerformanceButton()
@@ -82,6 +84,7 @@ const MerchantLeaderBoard = () => {
         isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
       setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isDisplayTogglePerformanceButtonData.loading])
   // ---------------------------------------------------------------------------------------------------
 
@@ -231,6 +234,7 @@ const MerchantLeaderBoard = () => {
       }
     }
     // 「服務業績月平均」欄位的顯示設定可能比排行資料晚到，補進依賴才不會匯出少一欄（B2 清單 #15）
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [merchantLeaderBoard.loading, valueSelect, isIncludeMembe…] 變動時執行；merchantLeaderBoard、performReference 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [merchantLeaderBoard.loading, valueSelect, isIncludeMembershipPerformance, isMemberShipCardActive, monthlyAverageDisplayForMerchantLeaderBoard])
 
   const handleToggleButtonChange = value => {
@@ -248,6 +252,7 @@ const MerchantLeaderBoard = () => {
       setIsSubmit(true)
       setSubmitValue(valueSelect)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [date] 變動時執行；valueSelect 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [date])
 
   const handleChecked = value => {

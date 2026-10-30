@@ -104,6 +104,7 @@ const MerchantDailyReport = () => {
       )
       setIsMemberShipCardActive(isMemberShipCardActive)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
   useEffect(() => {
     if (!merchantDailyReportCurrentDayData.loading && !merchantDailyReportDataV3.loading) {
@@ -120,6 +121,7 @@ const MerchantDailyReport = () => {
       const b = Boolean(merchantDailyReportData) && merchantDailyReportData.currentDay.membership !== 0
       setMembershipDisplay(a || b)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantDailyReportCurrentDayData.loading, merchantDailyReportDataV3.loading])
   useEffect(() => {
     if (!isServiceTicketMergedData.loading) {
@@ -129,6 +131,7 @@ const MerchantDailyReport = () => {
       )
       setIsServiceTicketMerged(isServiceTicketMerged)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isServiceTicketMergedData.loading])
   return (
     <Page className="ui-root" title="店家日報表">

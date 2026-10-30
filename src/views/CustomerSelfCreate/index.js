@@ -90,6 +90,7 @@ const CustomerSelfCreate = () => {
       const data = Boolean(idx(customerSelfCreateActive, _ => _.data.getIsCustomerSelfCreateActive))
       setPageEnable(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerSelfCreateActive.loading])
 
   useEffect(() => {
@@ -98,6 +99,7 @@ const CustomerSelfCreate = () => {
       const data = idx(getMerchantName, _ => _.data.getMerchantName) || ''
       handleSetInputValue(data, 'merchantName')
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantName.loading])
 
   return (

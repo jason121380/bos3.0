@@ -99,6 +99,7 @@ function AboutSettingFunction({
         variant: 'error'
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [croppedAreaPixels, setMerchantLogo] 變動時執行；imageSrc、rotation、setMerchantAvatar 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [croppedAreaPixels, setMerchantLogo])
 
   const onSelectFile = event => {

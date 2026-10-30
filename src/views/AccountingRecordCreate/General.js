@@ -119,6 +119,7 @@ function Summary({ stayInCreateAccount, ...rest }) {
       setRevenueSubjects(revenueInit)
       setExpenditureSubjects(expenditureInit)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [accountingSubjects.loading])
   const [isClick, setIsClick] = useState(false)
   var valid = !(amount !== null && amount !== '' && accountingSubject && inoutType && walletType)
@@ -141,6 +142,7 @@ function Summary({ stayInCreateAccount, ...rest }) {
       )
       setAccountingType(accountingType)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [accountingTypeData.data, accountingTypeData.loading])
 
   const Submit = async () => {
@@ -198,6 +200,7 @@ function Summary({ stayInCreateAccount, ...rest }) {
       window.removeEventListener('keydown', keyDownSubmit)
     }
     // F8 送出時要讀到最新的日期、登錄者、收付方式、關係人、備註：這些改變時也重新註冊（Jason 2026/10/22）
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（keyDownSubmit）；只在 [accountingSubject, amount, inoutType, date, walletType, userId, relationUserId, remark, stayInCreateAccount, location] 變動時呼叫，補上會每次 render 重跑
   }, [accountingSubject, amount, inoutType, date, walletType, userId, relationUserId, remark, stayInCreateAccount, location])
 
   const employeeOptions =
@@ -227,6 +230,7 @@ function Summary({ stayInCreateAccount, ...rest }) {
       history.push(`/accounting/create?date=${location.search.split('=')[1]}`)
       setDate(Number(location.search.split('=')[1]))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 網址參數只在進頁時讀一次，換頁會重新掛載
   }, [history])
   // 備註快捷
 

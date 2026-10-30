@@ -48,6 +48,7 @@ export default function PannelService({ thirdPartTicket }) {
 
       setIsHelperDesignationData(isHelperDesignation)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isHelperDesignationData.loading])
 
   useEffect(() => {
@@ -59,6 +60,7 @@ export default function PannelService({ thirdPartTicket }) {
       setServicesInModal(servicesInModal)
     } else {
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [serviceCategoriesData.loading, servicesData.loading])
 
   useEffect(() => {
@@ -102,6 +104,7 @@ export default function PannelService({ thirdPartTicket }) {
       }
       setServices(newServices)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [order.loading, servicesForTicketLocked.loading])
 
   function handleAddService() {

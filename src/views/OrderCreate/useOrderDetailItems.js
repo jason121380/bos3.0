@@ -71,6 +71,7 @@ export default function useOrderDetailItems() {
         }
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（ticketRecordsForOrderLazy）；只在 [bill.customerId] 變動時呼叫，補上會每次 render 重跑
   }, [bill.customerId])
 
   useEffect(() => {
@@ -78,6 +79,7 @@ export default function useOrderDetailItems() {
       const data = idx(getDesignerNameDisplayOnInvoice, _ => _.data.getDesignerNameDisplayOnInvoice)
       setNameDisplayOnInvoice(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getDesignerNameDisplayOnInvoice.loading])
 
   useEffect(() => {
@@ -100,6 +102,7 @@ export default function useOrderDetailItems() {
         useTicketsDetail: useTicketsArr,
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ticketRecordsForOrderLazyData.loading] 變動時執行；bill.useTicketOrders、orderDetail、ticketRecordsForOrderLazyData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [ticketRecordsForOrderLazyData.loading])
 
   useEffect(() => {
@@ -190,6 +193,7 @@ export default function useOrderDetailItems() {
       })
     }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [memberCardData.loading, thirdPartyCouponData.loading, ti…] 變動時執行；bill.membershipOrders、bill.productOrders、bill.serviceOrders、bill.ticketOrders、memberCardData、orderDetail、productsData、servicesData、thirdPartyCouponData、ticketsData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [memberCardData.loading, thirdPartyCouponData.loading, ticketsData.loading, productsData.loading, servicesData.loading])
 
   useEffect(() => {

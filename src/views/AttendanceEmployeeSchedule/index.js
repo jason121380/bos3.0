@@ -67,6 +67,7 @@ export default function Employees() {
         link.click()
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getEmployeeClockInScheduleExcelData.loading])
 
   // 儲存資料
@@ -136,6 +137,7 @@ export default function Employees() {
       const data = idx(getIsEmployeeScheduleWorkingHourDisplay, _ => _.data.getIsEmployeeScheduleWorkingHourDisplay)
       setWorkingHourDisplay(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsEmployeeScheduleWorkingHourDisplay.loading])
   useEffect(() => {
     const displayDate = []
@@ -179,6 +181,7 @@ export default function Employees() {
       // 查詢失敗時給空陣列，不整頁壞（Jason 2026/10/22 fix all）
       setEmployeeSchedule(idx(employeeClockInSchedule, _ => _.data.getEmployeeClockInSchedule) || [])
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [employeeClockInSchedule.loading])
 
   useEffect(() => {
@@ -186,6 +189,7 @@ export default function Employees() {
       const data = idx(getUESUsingSetting, _ => _.data.getUESUsingSetting)
       setUESUsing(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getUESUsingSetting.loading])
 
   return (

@@ -104,6 +104,7 @@ function CustomerManagementDetails({ match, history }) {
       const data = idx(getIsBookingCusCheckUsing,_=>_.data.getIsBookingCusCheckUsing)
       setBookingCusCheck(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBookingCusCheckUsing.loading])
 
   useEffect(() => {
@@ -119,6 +120,7 @@ function CustomerManagementDetails({ match, history }) {
       setOrderList(orderList)
       setOrtderIds([...ids])
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getCustomerOrders.loading])
 
   useEffect(() => {
@@ -137,6 +139,7 @@ function CustomerManagementDetails({ match, history }) {
       }
     }
     // 含 getCustomerOrders.loading：重新查詢結果沒變時 data 不會換，但上面的 effect 會以不含明細的資料重設列表，這裡要再補一次明細
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [orderStaticDetail.loading, getCustomerOrders.loading, getCustomerOrders.data])
 
   useEffect(() => {
@@ -149,6 +152,7 @@ function CustomerManagementDetails({ match, history }) {
       const membership = orders.reduce((a, b) => a + b.membership , 0)
       setMembershipDisplay(isMemberShipCardActive || membership !== 0)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading, getCustomerOrders.loading])
 
   useEffect(() => {
@@ -156,6 +160,7 @@ function CustomerManagementDetails({ match, history }) {
       const data = idx(getCustomerEventTicketsForMerchant, _ => _.data.customerEventTicketsForMerchant)
       setEventTickets(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getCustomerEventTicketsForMerchant.loading])
 
   const customerBonusActive = useFetchGetIsCustomerBonusActive()
@@ -195,6 +200,7 @@ function CustomerManagementDetails({ match, history }) {
       setTabs(newTabs)
       setTabsReady(true)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [customerBonusRecords.loading, getIsCustomerBonusActive.l…] 變動時執行；customer、customerBonusRecords、getIsCustomerBonusActive 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [customerBonusRecords.loading, getIsCustomerBonusActive.loading, membershipDisplay, loading])
 
   useEffect(() => {
@@ -203,6 +209,7 @@ function CustomerManagementDetails({ match, history }) {
       const bonusDecount = (orders || []).reduce((a, b) => a + b.bonusDecountForReport , 0)
       setBonusDisplay(idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) || bonusDecount !== 0)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerBonusActive.loading, getCustomerOrders.loading])
 
   const currentTabName = idx(tabs, _ => _.find(tab => tab.value === currentTab).label)

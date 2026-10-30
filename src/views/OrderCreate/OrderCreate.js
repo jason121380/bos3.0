@@ -130,6 +130,7 @@ function OrderCreate() {
     if (!memberShipActive.loading) {
       setMemberShipCardActive(idx(memberShipActive, _ => _.data.getIsMemberShipCardActive) ?? false)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [memberShipActive.loading])
 
   useEffect(() => {
@@ -137,6 +138,7 @@ function OrderCreate() {
       const data = idx(getIsBonusRewardWithLine, _ => _.data.getParameterAboutSettingFunction.isBonusRewardWithLine)
       setBonusRewardWithLINE(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBonusRewardWithLine.loading])
 
   useEffect(() => {
@@ -144,6 +146,7 @@ function OrderCreate() {
       const data = idx(getIsCusWalletUsageForOrder, _ => _.data.getParameterOrderCreateSetting.isCusWalletUsageForOrder)
       setWalletFuncDisplay(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsCusWalletUsageForOrder.loading])
 
   useEffect(() => {
@@ -151,6 +154,7 @@ function OrderCreate() {
       const data = idx(getIsLBCusDisplay, _ => _.data.getParameterOrderCreateSetting.isLBCusDisplay)
       setLBCusDisplay(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsLBCusDisplay.loading])
 
   useEffect(() => {
@@ -158,6 +162,7 @@ function OrderCreate() {
       const data = idx(getSerialNumberUsing, _ => _.data.getParameterOrderCreateSetting.isOrderSerialNumberUsing)
       setSerialNumberUsing(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getSerialNumberUsing.loading])
 
   useEffect(() => {
@@ -165,12 +170,14 @@ function OrderCreate() {
       const data = idx(getIsPrintWindowClosureDelayed, _ => _.data.getParameterOrderCreateSetting.isPrintWindowClosureDelayed)
       setClosureDelayed(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsPrintWindowClosureDelayed.loading])
 
   useEffect(() => {
     if (!customerBonusActive.loading) {
       setBonusActive(idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) ?? false)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerBonusActive.loading])
 
   useEffect(() => {
@@ -178,6 +185,7 @@ function OrderCreate() {
       const data = idx(getIsBonusConversion, _ => _.data.getParameterAboutSettingFunction)
       setBonusConversion(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBonusConversion.loading])
 
   useEffect(() => {
@@ -185,6 +193,7 @@ function OrderCreate() {
       const data = idx(getBindedThirdPartTicketLockedSetting, _ => _.data.getBindedThirdPartTicketLockedSetting)
       setBindedThirdPart(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBindedThirdPartTicketLockedSetting.loading])
 
   // 指不指定依據data
@@ -209,7 +218,8 @@ function OrderCreate() {
         })
         // 依據上一筆訂單的判斷要等後端修改
       } else {
-        if (status !== undefined) {
+        // 查詢失敗或後端回 null 時 idx 回 null，不能只擋 undefined（2026/10/30 自動掃描發現）
+        if (status != null) {
           setDesignationSettingForOrderCreate(status.isDesignate)
           handleBillChange({
             key: 'isDesignate',
@@ -218,12 +228,14 @@ function OrderCreate() {
         }
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [designationSettingForOrderCreateData.loading, lastOrderS…] 變動時執行；designationSettingForOrderCreateData、handleBillChange、lastOrderStatusData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [designationSettingForOrderCreateData.loading, lastOrderStatusData.loading])
 
   // state重置後重新拿上一筆訂單編號跟參數設定的指定不指定
   useEffect(() => {
     designationSettingForOrderCreateData.refetch()
     lastOrderStatusData.refetch()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [reset] 變動時執行；designationSettingForOrderCreateData、lastOrderStatusData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [reset])
 
   useEffect(() => {
@@ -231,6 +243,7 @@ function OrderCreate() {
       const data = idx(getBonusRewardRule, _ => _.data.getParameterAboutSettingFunction.bonusRewardRule)
       setBonusSetting(data)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBonusRewardRule.loading])
 
   // 先請後端更新可打單人員再顯示打帳單。更新失敗（例如網路暫斷）時仍顯示頁面、沿用現有名單：
@@ -241,6 +254,7 @@ function OrderCreate() {
       .then(() => {
         setUpdateUserOrderableListDone(true)
       })
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   const handleDisplayOrderDetail = () => {
@@ -297,6 +311,7 @@ function OrderCreate() {
         serialNumber: null
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [reset] 變動時執行；designationSettingForOrderCreate、stayInCheckoutWithoutCustomer 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [reset])
 
   return (

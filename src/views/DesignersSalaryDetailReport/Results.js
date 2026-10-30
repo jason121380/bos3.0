@@ -41,6 +41,7 @@ function Results({
       })
       setIncreaseItemsSum(increaseItemsSum)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [merchantSalaryIncreaseItems, designersSalaryDetailReport…] 變動時執行；salaryDetailReport.userSalaryDetail 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [merchantSalaryIncreaseItems, designersSalaryDetailReportDataLoading])
 
   useEffect(() => {
@@ -64,6 +65,7 @@ function Results({
       })
       setDecreaseItemsSum(decreaseItemsSum)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [merchantSalaryDecreaseItems, designersSalaryDetailReport…] 變動時執行；salaryDetailReport.userSalaryDetail 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [merchantSalaryDecreaseItems, designersSalaryDetailReportDataLoading])
 
   return (

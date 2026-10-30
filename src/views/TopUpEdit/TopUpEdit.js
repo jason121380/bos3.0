@@ -83,6 +83,7 @@ export default function TopUpCreate({ match }) {
       reset(values)
       setHandlingFeeDecountPrice(handlingFeeDecountPrice)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [walletDepositDetail.loading] 變動時執行；reset、walletDepositDetail 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [walletDepositDetail.loading])
 
   const handleDelete = async () => {

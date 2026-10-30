@@ -42,7 +42,7 @@ function Results({ report, paymentsName }) {
       excelData.push(obj2)
       setExcelData(excelData)
     }
-  }, [report])
+  }, [report, paymentsName])
   return (
     <Card>
       {/* 報表匯出：畫到頁首（STYLE §14），匯出資料不變 */}

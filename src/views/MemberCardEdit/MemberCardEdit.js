@@ -134,6 +134,7 @@ export default function MemberCardEdit({ match }) {
         })
       )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [membership.loading])
 
   // 拿到此筆的index
@@ -147,6 +148,7 @@ export default function MemberCardEdit({ match }) {
         }
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [membershipList, membership.loading])
 
   // 換資料

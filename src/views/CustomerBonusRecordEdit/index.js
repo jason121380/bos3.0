@@ -31,6 +31,7 @@ function CustomerBonusRecordCreate() {
       // 讀取失敗或查無紀錄時保留預設值（原本以 undefined 取代表單資料，整頁錯誤；Jason 2026/10/22 fix all）
       if (data) setSubmitData(data);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [bonusDepositRecord.loading])
 
   const handleSubmitData = () => {

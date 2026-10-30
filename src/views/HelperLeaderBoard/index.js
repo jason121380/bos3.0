@@ -42,6 +42,7 @@ const HelperLeaderBoard = () => {
         isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
       setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isDisplayTogglePerformanceButtonData.loading])
   // ---------------------------------------------------------------------------------------------------
 
@@ -94,6 +95,7 @@ const HelperLeaderBoard = () => {
         setExcelData(excelData)
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [helperLeaboardData.loading, isMemberShipCardActiveData.l…] 變動時執行；helperLeaboardData、inputValue.reference、isMemberShipCardActiveData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [helperLeaboardData.loading, isMemberShipCardActiveData.loading])
 
   const handleSearchReport = () => {
@@ -125,6 +127,7 @@ const HelperLeaderBoard = () => {
 
   useEffect(() => {
     handleSearchReport()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearchReport）；只在 [inputValue.startDay, inputValue.endDay] 變動時呼叫，補上會每次 render 重跑
   }, [inputValue.startDay, inputValue.endDay])
 
   return (

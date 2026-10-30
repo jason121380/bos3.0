@@ -84,6 +84,7 @@ function ServicesModal({
       setServicesModalOpen(false)
     } else {
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（setHelperFromModal、setServicesModalOpen）；只在 [serviceDetail.data, serviceDetail.loading] 變動時呼叫，補上會每次 render 重跑
   }, [serviceDetail.data, serviceDetail.loading])
 
   return (

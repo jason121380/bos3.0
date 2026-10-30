@@ -71,6 +71,7 @@ function Header({ forceUpdate, ...rest }) {
       );
       setOrderDetailPrintLayout(merchantOrderDetailPrintLayout);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantOrderDetailPrintLayoutData.loading]);
 
   useEffect(() => {
@@ -79,6 +80,7 @@ function Header({ forceUpdate, ...rest }) {
       const status = idx(lastOrderStatusData, _ => _.data.getLatestOrderStatus)
       setLastOrderStatus(status)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [lastOrderStatusData.loading])
 
   useEffect(() => {
@@ -173,6 +175,7 @@ function Header({ forceUpdate, ...rest }) {
           setOpen(false)
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleBtnDisabled）；只在 [bill, history, stayInCreateOrderInMemory, setCheckoutBtn, setCheckoutBtnClick, setIsClick, setOpen, setReset] 變動時呼叫，補上會每次 render 重跑
   }, [bill, history, stayInCreateOrderInMemory, setCheckoutBtn, setCheckoutBtnClick, setIsClick, setOpen, setReset]);
 
   // 掛單mutation
@@ -217,6 +220,7 @@ function Header({ forceUpdate, ...rest }) {
           setOpen(false)
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleBtnDisabled）；只在 [bill, history, setCheckoutBtn, setIsClick, setOpen] 變動時呼叫，補上會每次 render 重跑
   }, [bill, history, setCheckoutBtn, setIsClick, setOpen]);
 
   // 連續打單結帳
@@ -276,7 +280,8 @@ function Header({ forceUpdate, ...rest }) {
             <ReceiptText strokeWidth={1.75} />
             帳單速查
           </Button>
-          {lastOrderStatus !== undefined && lastOrderStatus.orderNo !== 0 && (
+          {/* 查詢失敗時 lastOrderStatus 為 null，不能只擋 undefined（2026/10/30 自動掃描發現） */}
+          {lastOrderStatus != null && lastOrderStatus.orderNo !== 0 && (
             <span className="flex items-center gap-1 text-label tabular-nums text-text-secondary">
               <History className="h-4 w-4" strokeWidth={1.75} />
               上一筆帳單 #{lastOrderStatus.orderNo}
