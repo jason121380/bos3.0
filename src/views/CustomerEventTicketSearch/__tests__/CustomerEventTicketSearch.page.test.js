@@ -51,8 +51,11 @@ describe('抽獎券查詢', () => {
   it('未通過驗證不可送出；電話空白提示不送出，按關閉鈕關閉提示', async () => {
     const utils = setup()
     expect(submit()).toBeDisabled()
+    // 停用時說出原因（STYLE.md §6）
+    expect(screen.getByRole('status').textContent).toBe('尚缺：機器人驗證（請勾選上方「我不是機器人」）')
     fireEvent.click(screen.getByText('完成驗證'))
     expect(submit()).not.toBeDisabled()
+    expect(screen.queryByText(/^尚缺：/)).toBeNull()
     fireEvent.change(screen.getByLabelText(/^電話/), { target: { value: '   ' } })
     fireEvent.click(submit())
     expect(await screen.findByText('電話不得為空')).toBeInTheDocument()

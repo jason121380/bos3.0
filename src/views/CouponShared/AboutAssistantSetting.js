@@ -1,19 +1,17 @@
+// 新增／編輯卡券「互助設定」共用（2026/10/30 自兩頁合併，畫面以新增頁為準：操作改為有 aria-label 的按鈕、勾選框直排）。
+// Jason 已知編輯卡券這區的外觀會變成與新增頁一致。新增一列時的預設值兩頁原本不同，會影響送出資料，以 isEdit 保留：
+// 新增頁 peopleCount 0；編輯頁 peopleCount 1 並多 isDesignate: false。
 // 欄位標籤放在上方（Field＋Input／NativeSelect）。協助人員人數的選項值是字串 '0'～'3'、state 存的是數字，
 // NativeSelect 以字串比對（與 MUI Select 一致）且 event.target.value 回傳選項原值（字串），handleAssistantName 的 parseInt 原樣保留；
 // 分指定／互助均分的 Checkbox 使用 ui/checkbox
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
-import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
-import { Field, Input } from 'ui/input'
-import { NativeSelect, NativeSelectOption } from 'ui/native-select'
-import { Add as AddIcon, DeleteForever as DeleteForeverIcon, BackspaceOutlined as BackspaceOutlinedIcon } from 'ui/icons'
+import { Delete, Plus, Trash2 } from 'lucide-react'
 import cloneDeep from 'lodash/cloneDeep'
 import PropTypes from 'prop-types'
-
-const styles = {
-  icons: 'ml-[24px] cursor-pointer mt-[30px]',
-  icons2: 'cursor-pointer mt-[30px]',
-  gap: '[&_span]:whitespace-nowrap',
-}
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
 const deductions = [
   {
@@ -47,8 +45,9 @@ function AboutAssistantSetting({
   className,
   support,
   helperDeductionType,
-  merchantHelperItems,
   onChange,
+  merchantHelperItems,
+  isEdit = false,
   ...rest
 }) {
   const handleAddAssistantContent = () => {
@@ -57,11 +56,10 @@ function AboutAssistantSetting({
       helperDeductionType: 'onSales',
       type: '',
       nameList: [],
-      peopleCount: 1,
+      peopleCount: isEdit ? 1 : 0,
       point: 0,
       cash: 0,
       percent: 0,
-      isDesignate: false,
       designateCash: 0,
       nonDesignateCash: 0,
       designatePercent: 0,
@@ -70,6 +68,7 @@ function AboutAssistantSetting({
       nonDesignatePoint: 0,
       deductionWay: '',
       isSplitted: false,
+      ...(isEdit ? { isDesignate: false } : {}),
     })
     support = newSupport
     onChange({ key: 'helperDeductionSetting', event: { target: { value: support } } })
@@ -90,7 +89,6 @@ function AboutAssistantSetting({
     })
     onChange({ key: 'helperDeductionSetting', event: { target: { value: newSupport } } })
   }
-
   const handleCheckboxChange = index => {
     const newSupport = cloneDeep(support)
     newSupport.forEach((data, index2) => {
@@ -304,8 +302,8 @@ function AboutAssistantSetting({
             </Field>
             <Field label="類別" className="w-full sm:w-36">
               <NativeSelect
-                value={content.type}
                 onChange={event => handleHelperType(event, index)}
+                value={content.type}
               >
                 {merchantHelperItems?.map((data, idx) => (
                   <NativeSelectOption value={data.type} key={`${data.type}-${idx}`}>
@@ -328,8 +326,8 @@ function AboutAssistantSetting({
             </Field>
             <Field label="扣項方式" className="w-full sm:w-36">
               <NativeSelect
-                value={content.deductionWay}
                 onChange={event => handleDeductionWayChange(event, index)}
+                value={content.deductionWay}
               >
                 {deductionWay2.map((data, idx) => (
                   <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
@@ -338,7 +336,6 @@ function AboutAssistantSetting({
                 ))}
               </NativeSelect>
             </Field>
-
             {content.isDesignate ? (
               <div className="flex flex-col gap-1">
                 <div className="flex gap-3">
@@ -365,29 +362,21 @@ function AboutAssistantSetting({
                     />
                   </Field>
                 </div>
-                <div>
-                  <span>
-                    <div>
-                      <FormControlLabel
-                        className={styles.gap}
-                        control={<Checkbox color="primary" />}
-                        label="分指定/不指定"
-                        checked={content.isDesignate}
-                        onChange={() => handleCheckboxChange(index)}
-                        disabled={content.isSplitted}
-                      />
-                    </div>
-                    <div>
-                      <FormControlLabel
-                        className={styles.gap}
-                        control={<Checkbox color="primary" />}
-                        label="互助均分"
-                        checked={content.isSplitted}
-                        onChange={() => handleIsSplittedChange(index)}
-                        disabled={content.isDesignate}
-                      />
-                    </div>
-                  </span>
+                <div className="flex flex-col whitespace-nowrap">
+                  <FormControlLabel
+                    control={<Checkbox color="primary" />}
+                    label="分指定/不指定"
+                    checked={content.isDesignate}
+                    onChange={() => handleCheckboxChange(index)}
+                    disabled={content.isSplitted}
+                  />
+                  <FormControlLabel
+                    control={<Checkbox color="primary" />}
+                    label="互助均分"
+                    checked={content.isSplitted}
+                    onChange={() => handleIsSplittedChange(index)}
+                    disabled={content.isDesignate}
+                  />
                 </div>
               </div>
             ) : (
@@ -405,50 +394,61 @@ function AboutAssistantSetting({
                       />
                     </Field>
                   </div>
-                  <div>
-                    <span>
-                      <div>
-                        <FormControlLabel
-                          className={styles.gap}
-                          control={<Checkbox color="primary" />}
-                          label="分指定/不指定"
-                          checked={content.isDesignate}
-                          onChange={() => handleCheckboxChange(index)}
-                          disabled={content.isSplitted}
-                        />
-                      </div>
-                      <div>
-                        <FormControlLabel
-                          className={styles.gap}
-                          control={<Checkbox color="primary" />}
-                          label="互助均分"
-                          checked={content.isSplitted}
-                          onChange={() => handleIsSplittedChange(index)}
-                          disabled={content.isDesignate}
-                        />
-                      </div>
-                    </span>
+                  <div className="flex flex-col whitespace-nowrap">
+                    <FormControlLabel
+                      control={<Checkbox color="primary" />}
+                      label="分指定/不指定"
+                      checked={content.isDesignate}
+                      onChange={() => handleCheckboxChange(index)}
+                      disabled={content.isSplitted}
+                    />
+                    <FormControlLabel
+                      control={<Checkbox color="primary" />}
+                      label="互助均分"
+                      checked={content.isSplitted}
+                      onChange={() => handleIsSplittedChange(index)}
+                      disabled={content.isDesignate}
+                    />
                   </div>
                 </div>
               )
             )}
-            {content.deductionWay !== '' && (
-              <BackspaceOutlinedIcon
-                className={styles.icons}
-                style={content.isDesignate ? { marginLeft: 'auto' } : {}}
-                onClick={() => handleClear(index)}
-                data-testid={`service-${index}-clear`}
-              />
-            )}
-            {index !== 0 && index === support.length - 1 && (
-              <DeleteForeverIcon
-                className={styles.icons2}
-                onClick={handleDeleteAssistantContent}
-              />
-            )}
-            {index === support.length - 1 && (
-              <AddIcon className={styles.icons2} onClick={handleAddAssistantContent} />
-            )}
+            <div className="flex items-center gap-1">
+              {content.deductionWay !== '' && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-text-secondary"
+                  aria-label="清除此互助設定"
+                  onClick={() => handleClear(index)}
+                  data-testid={`service-${index}-clear`}
+                >
+                  <Delete strokeWidth={1.75} />
+                </Button>
+              )}
+              {index !== 0 && index === support.length - 1 && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-text-secondary hover:text-danger"
+                  aria-label="刪除此互助設定"
+                  onClick={handleDeleteAssistantContent}
+                >
+                  <Trash2 strokeWidth={1.75} />
+                </Button>
+              )}
+              {index === support.length - 1 && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-text-secondary"
+                  aria-label="新增互助設定"
+                  onClick={handleAddAssistantContent}
+                >
+                  <Plus strokeWidth={1.75} />
+                </Button>
+              )}
+            </div>
           </div>
         ))}
       </CardContent>

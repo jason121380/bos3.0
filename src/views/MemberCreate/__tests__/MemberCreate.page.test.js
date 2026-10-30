@@ -53,10 +53,13 @@ describe('成為會員', () => {
     expect(currentLocation()).toBe('/customer/member/create?merchantid=m-9')
     const submit = screen.getByText('註冊')
     expect(submit).toBeDisabled()
+    // 停用時說出還缺什麼（STYLE.md §6）
+    expect(screen.getByRole('status').textContent).toMatch(/^尚缺：.*姓名/)
 
     typeLikeBrowser(screen.getByLabelText('姓名'), '陳小姐')
     expect(screen.getByLabelText('姓名')).toHaveValue('陳小姐')
     expect(submit).not.toBeDisabled()
+    expect(screen.queryByText(/^尚缺：/)).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: '女' }))
     expect(screen.getByRole('button', { name: '女' })).toHaveAttribute('aria-pressed', 'true')
     // 再按一次已選的性別不會變成未選

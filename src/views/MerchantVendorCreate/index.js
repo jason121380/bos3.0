@@ -9,7 +9,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-import AboutMerchantVendorCreate from './AboutMerchantVendorCreate'
+import AboutMerchantVendor from 'views/MerchantVendorShared/AboutMerchantVendor'
 
 function MerchantVendorCreate() {
   const history = useHistory()
@@ -78,7 +78,7 @@ function MerchantVendorCreate() {
     <Page className="ui-root" title="新增廠商">
       <div className="max-w-3xl">
         <PageHeader title="新增廠商" />
-        <AboutMerchantVendorCreate
+        <AboutMerchantVendor
           className="mt-6"
           vendorOption={vendorOption}
           isLodaing={vendorList.loading}

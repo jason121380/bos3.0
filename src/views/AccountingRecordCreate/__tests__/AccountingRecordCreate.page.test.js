@@ -23,3 +23,13 @@ it.each([
   await utils.settle()
   expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
 })
+
+// 新增鈕停用時要說出還缺什麼（STYLE.md §6）；收付方式預設「現場現金」不算缺
+it('進頁時新增鈕停用，旁邊列出尚缺的收入／支出、科目、金額', async () => {
+  const utils = renderCreate('empty')
+  await utils.settle()
+  const reason = screen.getByText('尚缺：收入／支出、科目、金額')
+  expect(reason).toHaveAttribute('role', 'status')
+  expect(screen.getByRole('button', { name: '新增' })).toBeDisabled()
+  expect(screen.getByRole('button', { name: '新增' })).toHaveAttribute('aria-describedby', reason.id)
+})

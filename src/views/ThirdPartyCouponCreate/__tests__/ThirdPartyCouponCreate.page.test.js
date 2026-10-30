@@ -18,6 +18,9 @@ const setup = () =>
   })
 const submit = () => screen.getByText('新增').closest('button')
 
+// 停用鈕旁的「尚缺：…」（STYLE.md §6，2026/10/30）：讓使用者知道還差哪些欄位
+const missingText = () => (screen.queryByText(/^尚缺：/) || {}).textContent
+
 beforeEach(() => {
   loginAs()
 })
@@ -27,13 +30,17 @@ describe('新增第三方卡券', () => {
   it('名稱、扣項方式都填且手續費不為負才可新增', async () => {
     setup()
     expect(submit()).toBeDisabled()
+    expect(missingText()).toMatch(/名稱.*手續費扣項方式/)
     // 名稱欄位在 produce 的 updater 內才讀 event.target，以瀏覽器方式輸入
     typeLikeBrowser(screen.getByTestId('name'), '街口券')
     expect(submit()).toBeDisabled()
+    expect(missingText()).toBe('尚缺：手續費扣項方式')
     pickOption(fieldByLabel('手續費扣項方式'), '百分比')
     expect(submit()).toBeEnabled()
+    expect(missingText()).toBeUndefined()
     fireEvent.change(fieldByLabel('手續費'), { target: { value: '-1' } })
     expect(submit()).toBeDisabled()
+    expect(missingText()).toBe('尚缺：手續費')
     // 清空手續費（NaN）也不能新增
     fireEvent.change(fieldByLabel('手續費'), { target: { value: '' } })
     expect(submit()).toBeDisabled()

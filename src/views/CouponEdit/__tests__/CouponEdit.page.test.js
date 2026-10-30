@@ -135,11 +135,10 @@ describe('編輯卡券項目：帶入與儲存', () => {
     expect(selectedText(controlByLabel('手續費扣款模式'))).toBe('販賣時整筆扣除')
     expect(selectedText(controlByLabel('卡券上架狀態設定'))).toBe('下架')
     expect(callsOf(calls, 'service')[0].variables).toEqual({ serviceId: 't1' })
-    // 「系統預設」以紅字標示並排在最後
+    // 「系統預設」排在最後。2026/10/30 扣項區塊與新增卡券共用（views/CouponShared/AboutDeduction）後不再以紅字標示：
+    // 與新增卡券、服務（ServiceShared）一致，且 STYLE.md §1 顏色只用來表示狀態
     const titles = [...document.querySelectorAll('h3')].filter(h => h.textContent.startsWith('項目扣項設定'))
     expect(titles.map(h => h.textContent)).toEqual([DESIGNER_SECTION, DEFAULT_SECTION])
-    expect(titles[1]).toHaveClass('text-danger')
-    expect(titles[0]).not.toHaveClass('text-danger')
   })
 
   it('儲存：送出 UPDATE_SERVICE（含 itemId 與所有欄位），成功後提示並回卡券列表', async () => {
@@ -191,9 +190,13 @@ describe('編輯卡券項目：帶入與儲存', () => {
   it('名稱清空時不可儲存', async () => {
     const { settle } = setup()
     await settle()
+    expect(screen.queryByText(/^尚缺：/)).toBeNull()
     await typeText(controlByLabel('名稱'), '')
     expect(button('儲存')).toBeDisabled()
     expect(button('儲存並下一筆')).toBeDisabled()
+    // 停用鈕旁說明還缺哪個欄位（STYLE.md §6，2026/10/30）
+    expect(screen.getByText('尚缺：名稱')).toHaveAttribute('role', 'status')
+    expect(button('儲存')).toHaveAttribute('aria-describedby', 'coupon-edit-missing')
   })
 
   it('儲存並上一筆／下一筆依卡券列表順序導頁', async () => {
@@ -456,6 +459,22 @@ describe('編輯卡券項目：互助', () => {
       helper({ type: '吹整', designateCash: 45, nonDesignateCash: 35 }),
       helper({ type: '洗髮', cash: 25 }),
     ])
+  })
+})
+
+describe('編輯卡券項目：互助設定與新增卡券共用', () => {
+  // 2026/10/30 互助設定區塊改與新增卡券共用（views/CouponShared/AboutAssistantSetting）。
+  // 兩頁新增一列的預設人數本來就不同（編輯 1、新增 0）且會進送出資料，共用後必須維持編輯頁原本的 1
+  it('新增一列直接儲存：送出的新列維持編輯頁原本的預設值', async () => {
+    const { settle, calls } = setup()
+    await settle()
+    const last = rowsOf(sectionOf(HELPER)).length - 1
+    fireEvent.click(icon(helperRow(last), 'plus'))
+    fireEvent.click(button('儲存'))
+    await wait(() => expect(callsOf(calls, 'UPDATE_SERVICE')).toHaveLength(1))
+    const sent = callsOf(calls, 'UPDATE_SERVICE')[0].variables.input.helperDeductionSetting
+    // 送出前頁面會整理互助資料（isDesignate／deductionWay 不送），會進送出資料的是人數
+    expect(sent[sent.length - 1]).toMatchObject({ nameList: [], peopleCount: 1 })
   })
 })
 

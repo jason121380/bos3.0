@@ -294,11 +294,18 @@ function Results({
             <Button
               variant="danger"
               disabled={isSalaryItemsLock}
+              aria-describedby={isSalaryItemsLock ? 'salary-delete-locked' : undefined}
               onClick={() => handleDeleteCheckout()}
             >
               <DeleteForeverIcon />
               刪除
             </Button>
+            {/* 停用原因（STYLE.md §6）：薪資已鎖定時不能刪除月結紀錄 */}
+            {isSalaryItemsLock && (
+              <p id="salary-delete-locked" role="status" className="self-center text-caption text-text-secondary">
+                薪資已鎖定，請先按「取消鎖定薪資」才能刪除
+              </p>
+            )}
           </div>
           {!isSalaryItemsLock && (
             <Fragment>

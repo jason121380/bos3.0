@@ -9,7 +9,7 @@ import { useHistory } from 'react-router'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-import AboutThirdPartyCoupon from './AboutThirdPartyCoupon'
+import AboutThirdPartyCoupon from 'views/ThirdPartyCouponShared/AboutThirdPartyCoupon'
 import QueryFailed from 'components/QueryFailed'
 
 function ServiceCategoryEdit(props) {
@@ -77,6 +77,12 @@ function ServiceCategoryEdit(props) {
     thirdPartyCoupon.name &&
     thirdPartyCoupon.handlingFee >= 0
   )
+  // 停用原因（STYLE.md §6）：依 vaild 的三個欄位，依畫面順序列出目前缺的
+  const missing = [
+    !thirdPartyCoupon.name && '名稱',
+    !(thirdPartyCoupon.handlingFee >= 0) && '手續費',
+    !thirdPartyCoupon.type && '手續費扣項方式',
+  ].filter(Boolean)
 
   return (
     <Page className="ui-root" title="編輯第三方卡券">
@@ -91,10 +97,15 @@ function ServiceCategoryEdit(props) {
               thirdPartyCoupon={thirdPartyCoupon}
               onChange={handleOnchange}
             />
-            <div>
-              <Button variant="primary" disabled={vaild} onClick={handleSubmit}>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button variant="primary" disabled={vaild} aria-describedby={vaild ? 'third-party-coupon-edit-missing' : undefined} onClick={handleSubmit}>
                 儲存
               </Button>
+              {vaild && (
+                <p id="third-party-coupon-edit-missing" role="status" className="text-caption text-text-secondary">
+                  尚缺：{missing.join('、')}
+                </p>
+              )}
             </div>
           </>
         )}

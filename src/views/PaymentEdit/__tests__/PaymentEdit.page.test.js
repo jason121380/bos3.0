@@ -34,6 +34,9 @@ const setup = (fixtures = {}, options = {}) =>
 const pick = (testId, index) => fireEvent.change(screen.getByTestId(testId), { target: { value: String(index) } })
 const feeInput = () => document.querySelector('input[data-testid^="fee-"]')
 const submit = () => screen.getByTestId('update-payment')
+
+// 停用鈕旁的「尚缺：…」（STYLE.md §6，2026/10/30）：讓使用者知道還差哪些欄位
+const missingText = () => (screen.queryByText(/^尚缺：/) || {}).textContent
 const selectedText = testId => {
   const select = screen.getByTestId(testId)
   return select.options[select.selectedIndex].textContent
@@ -81,8 +84,10 @@ describe('編輯支付方式', () => {
   it('名稱清空時不能儲存', async () => {
     const { settle } = setup()
     await settle()
+    expect(missingText()).toBeUndefined()
     typeLikeBrowser(screen.getByTestId('name'), '')
     expect(submit()).toBeDisabled()
+    expect(missingText()).toBe('尚缺：名稱')
   })
 
   it('儲存失敗時顯示錯誤、留在本頁', async () => {

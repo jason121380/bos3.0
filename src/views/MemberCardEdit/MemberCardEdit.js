@@ -101,6 +101,12 @@ export default function MemberCardEdit({ match }) {
   const [showColorPicker, setShowColorPicker] = useState(false)
   //disable 儲存
   const valid = !(submitValue.no && submitValue.name && submitValue.MembershipCategoryUUID)
+  // 停用原因（STYLE.md §6）：依上方 valid 的三個必填欄位，只列目前真的缺的
+  const missingFields = [
+    !submitValue.no && '代號',
+    !submitValue.name && '名稱',
+    !submitValue.MembershipCategoryUUID && '會員卡類別',
+  ].filter(Boolean)
 
   // 拿到後端回傳的自來的資料先show出來
   useEffect(() => {
@@ -470,6 +476,11 @@ export default function MemberCardEdit({ match }) {
               </Card>
             )}
             <div className="flex flex-wrap items-center justify-end gap-2">
+              {valid && (
+                <p id="member-card-edit-missing" role="status" className="text-caption text-text-secondary">
+                  {`尚缺：${missingFields.join('、')}`}
+                </p>
+              )}
               <Button
                 variant="secondary"
                 disabled={membershipIndex === 0 || valid}
@@ -484,7 +495,7 @@ export default function MemberCardEdit({ match }) {
               >
                 儲存並下一筆
               </Button>
-              <Button variant="primary" disabled={valid} onClick={handleSubmit}>
+              <Button variant="primary" disabled={valid} aria-describedby={valid ? 'member-card-edit-missing' : undefined} onClick={handleSubmit}>
                 儲存
               </Button>
             </div>

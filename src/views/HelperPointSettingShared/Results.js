@@ -1,3 +1,5 @@
+// 新增／編輯互助點數設定共用（2026/10/30 自兩頁合併，以新增頁為準：欄位以 htmlFor／id 綁標籤、數字欄 tabular-nums；
+// 編輯頁原本自帶的 max-w-3xl 改由呼叫端以 className 傳入）。
 // 勾選（FormControlLabel，handler 使用 (e, v)）與獲得方式切換鈕使用正式 ui 元件
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { Plus, Trash2 } from 'lucide-react'
@@ -7,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import cloneDeep from 'lodash/cloneDeep'
 import PropTypes from 'prop-types'
+import { cn } from 'ui/utils'
 
 const statusEnum = [
   { label: '固定金額', value: 'FIXED' },
@@ -32,7 +35,7 @@ function Results({ className, status, submitData, setSubmitData, ...rest }) {
   }
   return (
     // 設定頁樣板（STYLE §12）：單一表單頁不造假選單，依既有三區塊切分段卡片；欄位、ToggleGroup、增刪與存值 handler 原樣
-    <div {...rest} className={`flex flex-col gap-6${className ? ` ${className}` : ''}`}>
+    <div {...rest} className={cn('flex flex-col gap-6', className)}>
       <Card>
         <CardHeader>
           <CardTitle>基本設定</CardTitle>

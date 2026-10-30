@@ -130,11 +130,18 @@ function ResetPasswordForm({ className, ...rest }) {
         className="mt-6 w-full"
         variant="primary"
         disabled={!formState.isValid}
+        aria-describedby={!formState.isValid ? 'reset-password-missing' : undefined}
         size="lg"
         type="submit"
       >
         {showVerification.open ? '重設密碼' : `發送驗證碼`}
       </Button>
+      {/* 停用原因（STYLE.md §6）：依 validate.js schema 的必填欄位（電話號碼；送出驗證碼後加驗證碼） */}
+      {!formState.isValid && (
+        <p id="reset-password-missing" role="status" className="mt-2 text-center text-caption text-text-secondary">
+          尚缺：{[formState.errors.phone && '電話號碼', formState.errors.verificationCode && '驗證碼'].filter(Boolean).join('、') || '電話號碼'}
+        </p>
+      )}
     </form>
   )
 }

@@ -8,7 +8,7 @@ import idx from 'idx'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-import AboutMerchantVendorCreate from './AboutCustomerBonusRecordEdit'
+import AboutCustomerBonusRecord from 'views/CustomerBonusRecordShared/AboutCustomerBonusRecord'
 import QueryFailed from 'components/QueryFailed'
 
 function CustomerBonusRecordCreate() {
@@ -95,7 +95,7 @@ function CustomerBonusRecordCreate() {
           <QueryFailed onRetry={() => bonusDepositRecord.refetch()} />
         ) : (
           <>
-          <AboutMerchantVendorCreate
+          <AboutCustomerBonusRecord
             submitData={submitData}
             setSubmitData={setSubmitData}
           />

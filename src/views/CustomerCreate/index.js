@@ -130,8 +130,14 @@ export default function Customer() {
           handleOnClick={handleOnClick}
           handleBirthdayChange={handleBirthdayChange}
         />
-        <div className="flex justify-end pt-6">
-          <Button variant="primary" onClick={handleOnClick} disabled={vaild || disableAfterSubmit}>
+        <div className="flex flex-wrap items-center justify-end gap-3 pt-6">
+          {/* 停用原因（STYLE.md §6）：依 vaild（手機必填）；上方卡片的新增鈕共用同一句，只顯示一次 */}
+          {vaild && (
+            <p id="customer-create-missing" role="status" className="text-caption text-text-secondary">
+              尚缺：手機
+            </p>
+          )}
+          <Button variant="primary" onClick={handleOnClick} disabled={vaild || disableAfterSubmit} aria-describedby={vaild ? 'customer-create-missing' : undefined}>
             新增
           </Button>
         </div>

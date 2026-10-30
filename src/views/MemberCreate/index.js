@@ -130,9 +130,15 @@ export default function Reservation({ location }) {
                 onChange={handleFieldChange}
               />
             </Field>
-            <Button type="submit" variant="primary" size="lg" className="h-11 w-full" disabled={vaild}>
+            <Button type="submit" variant="primary" size="lg" className="h-11 w-full" disabled={vaild} aria-describedby={vaild ? 'member-create-missing' : undefined}>
               註冊
             </Button>
+            {/* 停用原因（STYLE.md §6）：依 vaild（姓名、性別、生日必填） */}
+            {vaild && (
+              <p id="member-create-missing" role="status" className="text-center text-caption text-text-secondary">
+                尚缺：{[!profile.name && '姓名', !profile.gender && '性別', !(profile.birthday > 0) && '生日'].filter(Boolean).join('、')}
+              </p>
+            )}
           </CardContent>
         </Card>
       </form>

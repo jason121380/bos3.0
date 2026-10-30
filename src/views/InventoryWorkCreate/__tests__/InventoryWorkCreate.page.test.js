@@ -54,6 +54,8 @@ describe('新增盤點', () => {
   it('盤點數量預設為目前庫存（負庫存帶 0）；進頁依目前庫存由少到多；差異以 +／- 標示', async () => {
     const { settle } = renderCreate()
     await settle()
+    // 與編輯頁共用盤點列表後，新增頁仍不顯示建立時間／建立者（只有編輯草稿才有）
+    expect(screen.queryByText(/^建立時間:/)).toBeNull()
     expect(names()).toEqual(['髮蠟', '護髮油', '洗髮精'])
     expect(countInput('洗髮精')).toHaveValue('8')
     expect(countInput('髮蠟')).toHaveValue('0')

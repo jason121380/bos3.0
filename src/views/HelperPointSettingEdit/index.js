@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import idx from 'idx'
 
-import Results from './Results'
+import Results from 'views/HelperPointSettingShared/Results'
 import QueryFailed from 'components/QueryFailed'
 
 function HelperPointSettingEdit({ match }) {
@@ -102,6 +102,7 @@ function HelperPointSettingEdit({ match }) {
           <QueryFailed onRetry={() => getMerchantPointValueSettingsForEdit.refetch()} />
         ) : !getMerchantPointValueSettingsForEdit.loading ?
           <Results
+            className="max-w-3xl"
             status={submitData.retrievePointWay}
             submitData={submitData}
             setSubmitData={setSubmitData}

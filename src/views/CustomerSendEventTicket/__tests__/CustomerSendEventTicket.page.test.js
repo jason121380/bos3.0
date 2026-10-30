@@ -80,8 +80,11 @@ describe('抽獎資格登錄', () => {
     fireEvent.focusOut(phone())
     await wait(() => expect(name()).not.toBeDisabled())
     expect(name()).toHaveValue('')
+    // 姓名空白時提交鈕停用並說明原因（STYLE.md §6）
+    expect(screen.getByText('尚缺：姓名')).toHaveAttribute('role', 'status')
     fireEvent.change(name(), { target: { value: '林先生' } })
     expect(name()).toHaveValue('林先生')
+    expect(screen.queryByText('尚缺：姓名')).toBeNull()
   })
 
   it('既有顧客但後端沒有姓名時以空白帶入', async () => {

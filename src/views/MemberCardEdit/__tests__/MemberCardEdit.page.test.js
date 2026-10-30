@@ -174,10 +174,16 @@ describe('編輯會員卡', () => {
   it('名稱清空時三個儲存鈕都停用', async () => {
     setup()
     await loaded()
+    expect(screen.queryByText(/^尚缺：/)).toBeNull()
     typeLikeBrowser(fieldByLabel('名稱'), '')
     expect(button('儲存')).toBeDisabled()
     expect(button('儲存並上一筆')).toBeDisabled()
     expect(button('儲存並下一筆')).toBeDisabled()
+    // 停用時說出缺什麼（STYLE.md §6）；補回名稱就不再顯示
+    expect(screen.getByText('尚缺：名稱')).toHaveAttribute('role', 'status')
+    expect(button('儲存')).toHaveAttribute('aria-describedby', 'member-card-edit-missing')
+    typeLikeBrowser(fieldByLabel('名稱'), '金卡')
+    expect(screen.queryByText(/^尚缺：/)).toBeNull()
   })
 
   it.each(['儲存', '儲存並上一筆', '儲存並下一筆'])('「%s」：有效天數為負時提示錯誤、不送出', async label => {

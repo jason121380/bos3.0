@@ -5,7 +5,7 @@ import useFetchUpdateMainEvent from 'hooks/useFetchUpdateMainEvent'
 import cloneDeep from 'lodash/cloneDeep'
 import { useHistory } from 'react-router'
 import produce from 'immer'
-import General from './General'
+import General from 'views/MainEventShared/General'
 import { openSnackbar } from 'elements/snackbars'
 import idx from 'idx'
 import { startOfDay, endOfDay, isBefore } from 'date-fns'
@@ -124,6 +124,7 @@ function MainEventEdit({ match }) {
           <QueryFailed onRetry={() => getMainEvent.refetch()} />
         ) : !getMainEvent.loading ? (
           <General
+            isEdit
             dateChange={handleDateChange}
             valueChange={handleValueChange}
             inputValue={inputValue}

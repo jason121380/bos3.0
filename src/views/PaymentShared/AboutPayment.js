@@ -1,10 +1,10 @@
-// 欄位標籤放在上方（Field＋Input／NativeSelect）；下拉選項值為字串（含空字串），event.target.value 回傳選項原值，onChange 原樣保留。
-// 下拉是自家清單（不是系統選單）；FormControlLabel＋Checkbox 使用 ui/checkbox
+// 新增／編輯付款方式共用（2026/10/30 自兩頁合併，兩份只差屬性排列順序）。
+// 欄位標籤放在上方（Field＋Input／NativeSelect）；手續費類別、扣項方式的值可為空字串，NativeSelect 以 disabled 空值選項顯示提示、onChange 回原始值。
+// 下拉是自家清單（不是系統選單）；Checkbox 使用 ui/checkbox
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { PaymentEnum } from 'helper/enum'
 import idx from 'idx'
 import PropTypes from 'prop-types'
-import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
@@ -34,20 +34,20 @@ function AboutProject({ className, payment, onChange, ...rest }) {
         <Field label="名稱" className="w-full">
           <Input
             value={payment.name}
-            data-testid="name"
             onChange={event => onChange({ event, key: 'name' })}
+            data-testid="name"
           />
         </Field>
         <Field label="手續費類別" className="w-full">
           <NativeSelect
             value={payment.amountType}
+            data-testid="fee-category"
             onChange={event =>
               onChange({
                 event,
                 key: 'amountType',
               })
             }
-            data-testid="fee-category"
           >
             <NativeSelectOption value="" disabled>
               選擇手續費類別
@@ -59,17 +59,14 @@ function AboutProject({ className, payment, onChange, ...rest }) {
             ))}
           </NativeSelect>
         </Field>
-        <Field
-          label={`手續費${payment.amountType ? ' - ' + PaymentEnum[payment.amountType] : ''}`}
-          className="w-full"
-        >
+        <Field label={`手續費${payment.amountType ? ' - ' + PaymentEnum[payment.amountType] : ''}`} className="w-full">
           <Input
             type="text"
             value={payment.fee}
-            data-testid={`fee-${PaymentEnum[payment.amountType]}`}
             onFocus={event => {
               idx(event, _ => _.target.select())
             }}
+            data-testid={`fee-${PaymentEnum[payment.amountType]}`}
             onChange={event =>
               onChange({
                 event: {
@@ -86,13 +83,13 @@ function AboutProject({ className, payment, onChange, ...rest }) {
         <Field label="手續費扣項方式" className="w-full">
           <NativeSelect
             value={payment.type}
+            data-testid="payment-deductions"
             onChange={event =>
               onChange({
                 event,
                 key: 'type',
               })
             }
-            data-testid="payment-deductions"
           >
             <NativeSelectOption value="" disabled>
               選擇手續費扣項方式

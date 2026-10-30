@@ -99,12 +99,16 @@ describe('不指定設計師', () => {
     // 網址帶的時間已選好
     expect(time.options[time.selectedIndex].textContent).toBe('14:00')
     expect(submit()).toBeDisabled()
+    // 停用時說出還缺什麼（STYLE.md §6）
+    expect(screen.getByText('尚缺：顧客姓名、顧客電話（09 開頭 10 碼）')).toHaveAttribute('role', 'status')
     fillCustomer('吳小姐', '0912')
     expect(screen.getByText('＊請輸入有效手機號碼')).toBeInTheDocument()
     expect(submit()).toBeDisabled()
+    expect(screen.getByText('尚缺：顧客電話（09 開頭 10 碼）')).toBeInTheDocument()
     fireEvent.change(screen.getByTestId('customer-cellphone-0'), { target: { value: '0912345678' } })
     expect(screen.queryByText('＊請輸入有效手機號碼')).toBeNull()
     expect(submit()).not.toBeDisabled()
+    expect(screen.queryByText(/^尚缺：/)).toBeNull()
     // 清空電話：不顯示格式錯誤，但仍不能送出
     fireEvent.change(screen.getByTestId('customer-cellphone-0'), { target: { value: '' } })
     expect(screen.queryByText('＊請輸入有效手機號碼')).toBeNull()

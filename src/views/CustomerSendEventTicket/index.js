@@ -171,8 +171,15 @@ const CustomerSendEventTicket = () => {
         size="lg"
         className="h-11 w-full"
         disabled={checkExistData.loading || !data.name.trim()}
+        aria-describedby={!checkExistData.loading && !data.name.trim() ? 'send-ticket-missing' : undefined}
         onClick={handleSubmit}
       >{isClick ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : '提交'}</Button>
+      {/* 停用原因（STYLE.md §6）：姓名空白時不能提交；查詢顧客中不列原因 */}
+      {!checkExistData.loading && !data.name.trim() && (
+        <p id="send-ticket-missing" role="status" className="mt-2 text-center text-caption text-text-secondary">
+          尚缺：姓名
+        </p>
+      )}
     </Page>
   )
 }

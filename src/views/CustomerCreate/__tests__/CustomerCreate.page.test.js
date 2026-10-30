@@ -50,8 +50,13 @@ describe('新增客戶', () => {
     expect(screen.getByText('最新顧客編號: C099')).toBeInTheDocument()
     expect(addButtons()).toHaveLength(2)
     addButtons().forEach(b => expect(b).toBeDisabled())
+    // 停用原因只顯示一次，兩顆新增鈕都指向同一句（STYLE.md §6）
+    const reason = screen.getByText('尚缺：手機')
+    expect(reason).toHaveAttribute('role', 'status')
+    addButtons().forEach(b => expect(b).toHaveAttribute('aria-describedby', reason.id))
     typeLikeBrowser(inputOf('手機'), '0912345678')
     addButtons().forEach(b => expect(b).not.toBeDisabled())
+    expect(screen.queryByText(/^尚缺：/)).toBeNull()
   })
 
   it('顧客編號：輸入後查詢是否重複，重複顯示錯誤；未重複顯示通過；清空不查詢', async () => {

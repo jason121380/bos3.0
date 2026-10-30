@@ -1,3 +1,6 @@
+// 新增／編輯卡券「項目扣項設定」共用（2026/10/30 自兩頁合併，畫面以新增頁為準：操作改為有 aria-label 的按鈕）。
+// Jason 已知編輯卡券這區的外觀會變成與新增頁一致（原編輯頁「系統預設」標題紅字、序號位移也一併統一）。
+// stateKey：寫回頁面 state 的欄位名，會影響送出資料，不能統一——新增頁是 ServiceDeductionItems（大寫 S）、編輯頁是 serviceDeductionItems。
 // 欄位標籤放在上方（Field＋Input／NativeSelect）。扣項基準點的選項值是數字，NativeSelect 的 event.target.value 回傳原始數字，
 // 所以 handleDeductionReference 的 parseInt 等既有處理原樣保留；分指定／不指定的 Checkbox 使用 ui/checkbox
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
@@ -30,7 +33,7 @@ const deductions = [
   },
 ]
 
-function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionItems, ...rest }) {
+function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionItems, stateKey = 'ServiceDeductionItems', ...rest }) {
   // const merchantDeductionItems = useFetchMerchantDeductionItems()
   // const deductionItems = idx(merchantDeductionItems, _ => _.data.merchantDeductionItems)
 
@@ -52,7 +55,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
       }
     })
     onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }
@@ -65,7 +68,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
       }
     })
     onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }
@@ -87,7 +90,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
       }
     })
     onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }
@@ -104,7 +107,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
       }
     })
     onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }
@@ -133,7 +136,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
       }
     })
     onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }
@@ -150,7 +153,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
       }
     })
     onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }
@@ -167,7 +170,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
       }
     })
     onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }
@@ -189,7 +192,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
       }
     })
     onChange({
-      key: 'ServiceDeductionItems',
+      key: stateKey,
       event: { target: { value: newServiceDeductionItems } },
     })
   }

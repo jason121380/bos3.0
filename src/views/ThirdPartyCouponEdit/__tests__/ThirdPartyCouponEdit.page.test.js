@@ -26,6 +26,9 @@ const setup = (id = 't2', fixtures = {}) =>
   })
 const save = () => screen.getByText('儲存').closest('button')
 
+// 停用鈕旁的「尚缺：…」（STYLE.md §6，2026/10/30）：讓使用者知道還差哪些欄位
+const missingText = () => (screen.queryByText(/^尚缺：/) || {}).textContent
+
 beforeEach(() => {
   loginAs()
 })
@@ -64,10 +67,13 @@ describe('編輯第三方卡券', () => {
     expect(save()).toBeEnabled()
     fireEvent.change(fieldByLabel('手續費'), { target: { value: '-1' } })
     expect(save()).toBeDisabled()
+    expect(missingText()).toBe('尚缺：手續費')
     fireEvent.change(fieldByLabel('手續費'), { target: { value: '0' } })
     expect(save()).toBeEnabled()
+    expect(missingText()).toBeUndefined()
     typeLikeBrowser(screen.getByTestId('name'), '')
     expect(save()).toBeDisabled()
+    expect(missingText()).toBe('尚缺：名稱')
   })
 
   // Jason 2026/10/22「照建議」：百分比手續費限制 0～100，超過時提示且不送出；固定金額不受此限。

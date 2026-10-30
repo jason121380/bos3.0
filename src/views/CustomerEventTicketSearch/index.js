@@ -111,8 +111,15 @@ const CustomerEventTicketSearch = () => {
         size="lg"
         className="h-11 w-full"
         disabled={!submitData.recaptchaToken || customerTicketData.loading}
+        aria-describedby={!submitData.recaptchaToken ? 'ticket-search-missing' : undefined}
         onClick={handleSearchData}
       >{customerTicketData.loading ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : '提交'}</Button>
+      {/* 停用原因（STYLE.md §6）：要先完成上方的 reCAPTCHA 驗證；查詢中不列原因 */}
+      {!submitData.recaptchaToken && !customerTicketData.loading && (
+        <p id="ticket-search-missing" role="status" className="mt-2 text-center text-caption text-text-secondary">
+          尚缺：機器人驗證（請勾選上方「我不是機器人」）
+        </p>
+      )}
       {/* 查詢用的 reCAPTCHA token 只能用一次，失敗時請使用者重新提交，不提供直接重查 */}
       {!customerTicketData.loading && customerTicketData.error && (
         <QueryFailed description="請稍後再按一次「提交」。" />

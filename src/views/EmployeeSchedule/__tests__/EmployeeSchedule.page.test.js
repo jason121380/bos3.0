@@ -391,8 +391,11 @@ describe('班表', () => {
     expect(await screen.findByText('新增設計師')).toBeInTheDocument()
     const addButton = () => screen.getAllByRole('button', { name: '新增' }).find(b => !b.textContent.includes('人員') && b.closest('[role="dialog"]'))
     expect(addButton()).toBeDisabled()
+    // 停用時說出還缺什麼（STYLE.md §6）
+    expect(screen.getByText('尚缺：服務人員')).toHaveAttribute('role', 'status')
     // 選第一位後自動多一列空白可再選
     fireEvent.click(screen.getAllByRole('button', { name: '選小陳' })[0])
+    expect(screen.queryByText('尚缺：服務人員')).toBeNull()
     expect(screen.getAllByTestId('employee-picker')).toHaveLength(2)
     fireEvent.click(screen.getAllByRole('button', { name: '選小林' })[1])
     expect(screen.getAllByTestId('employee-picker')).toHaveLength(3)

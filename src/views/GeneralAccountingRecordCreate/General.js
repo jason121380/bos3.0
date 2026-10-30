@@ -487,9 +487,16 @@ function Summary({ stayInCreateAccount, ...rest }) {
           setInoutType={setInoutType}
         />
       )}
-      <div className="flex justify-end py-6">
+      <div className="flex flex-wrap items-center justify-end gap-3 py-6">
+        {/* 停用原因（STYLE.md §6）：依 valid（收支類別、科目、金額、收付方式必填）；送出中不顯示 */}
+        {valid && (
+          <p id="general-accounting-create-missing" role="status" className="text-caption text-text-secondary">
+            尚缺：{[!inoutType && '收入／支出', !accountingSubject && '科目', (amount === null || amount === '') && '金額', !walletType && '收付方式'].filter(Boolean).join('、')}
+          </p>
+        )}
         <Button
           variant="primary"
+          aria-describedby={valid ? 'general-accounting-create-missing' : undefined}
           disabled={valid || isClick}
           onClick={() => {
             Submit()

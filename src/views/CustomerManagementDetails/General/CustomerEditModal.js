@@ -463,9 +463,15 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
             </div>
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="flex-wrap">
+          {/* 停用原因（STYLE.md §6）：依 vaild（客戶姓名、性別、電話必填；沒有目前店家時無法儲存） */}
+          {vaild && (
+            <p id="customer-edit-missing" role="status" className="mr-auto text-caption text-text-secondary">
+              尚缺：{[!values.name && '客戶姓名', !values.gender && '性別', !values.cellphone && '電話', !values.OfficialBrandMerchantId && '目前店家（請重新選擇店家）'].filter(Boolean).join('、')}
+            </p>
+          )}
           <Button variant="secondary" onClick={onClose}>取消</Button>
-          <Button variant="primary" onClick={handleSubmit} disabled={vaild}>
+          <Button variant="primary" onClick={handleSubmit} disabled={vaild} aria-describedby={vaild ? 'customer-edit-missing' : undefined}>
             儲存
           </Button>
         </CardFooter>

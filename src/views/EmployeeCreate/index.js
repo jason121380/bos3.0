@@ -134,8 +134,14 @@ function ServiceCategoryCreate() {
           service={service}
           setEmployee={setEmployee}
         />
-        <div className="mt-6 flex justify-end">
-          <Button variant="primary" onClick={handleOnClick} disabled={vaild}>
+        <div className="mt-6 flex flex-wrap items-center justify-end gap-3">
+          {/* 停用原因（STYLE.md §6）：依 vaild（姓氏、名字、手機號碼必填；送出中不列原因） */}
+          {vaild && !createBtnDisabled && (
+            <p id="employee-create-missing" role="status" className="text-caption text-text-secondary">
+              尚缺：{[!employee.lastName && '姓氏', !employee.firstName && '名字', !employee.cellphone && '手機號碼'].filter(Boolean).join('、')}
+            </p>
+          )}
+          <Button variant="primary" onClick={handleOnClick} disabled={vaild} aria-describedby={vaild && !createBtnDisabled ? 'employee-create-missing' : undefined}>
             新增
           </Button>
         </div>
