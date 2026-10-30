@@ -5,7 +5,7 @@
 // - 從 LINE 進來（usingLineLogin 未帶或為 1）：登入 LIFF 取 userId、帶入上次的姓名電話；預約完成後把預約資訊傳回 LINE 並關閉視窗
 // 原本的已知缺口已於 2026/10/22 修正（Jason fix all，見各測試註解）。日期選擇器以簡化版代替；LIFF SDK 以假物件代替；GraphQL 全由模擬 link 回應，不建立真實預約。
 import React from 'react'
-import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
+import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
 import { renderPage, callsOf, currentLocation } from '../../../__tests__/testkit.test'
 import Reservation from '..'
@@ -63,6 +63,20 @@ const fillCustomer = (name, phone) => {
   fireEvent.change(screen.getByTestId('customer-cellphone-0'), { target: { value: phone } })
 }
 const submit = () => screen.getByTestId('booking-submit')
+// 服務設計師是可打字搜尋的 combobox（Jason 2026/10/30）：打字篩選後點清單裡的設計師；清空用欄位的「清除」鈕
+const designerOptions = () => within(screen.getByRole('listbox')).queryAllByRole('option').map(o => o.textContent)
+const pickDesigner = (text, typed = text) => {
+  const input = screen.getByTestId('designer-name')
+  // 先清空再打字：欄位已顯示同一個名字時，相同的值不會觸發 change
+  fireEvent.change(input, { target: { value: '' } })
+  fireEvent.change(input, { target: { value: typed } })
+  fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: text }))
+}
+const clearDesigner = () => {
+  const input = screen.getByTestId('designer-name')
+  act(() => input.focus())
+  fireEvent.mouseDown(within(input.closest('.ui-root')).getByRole('button', { name: '清除' }))
+}
 
 // 預約失敗、取不到 LINE 資料時，頁面原本在 catch 裡把錯誤再拋出（訊息變成「undefined: …」），形成沒人接的 rejection；
 // 2026/10/22 改為提示錯誤、不再拋出（Jason fix all）。沒人接的 rejection 會讓 Jest 判測試失敗，因此這裡不再攔截。
@@ -155,15 +169,23 @@ describe('指定設計師', () => {
     await utils.settle()
     expect(screen.getByTestId('designer-assigned')).toHaveAttribute('aria-pressed', 'true')
     const designer = screen.getByTestId('designer-name')
-    expect(optionTexts(designer)).toEqual(['', 'Amy', '李大華'])
+    // 網址帶的設計師已帶入（有暱稱顯示暱稱）；清單：有暱稱用暱稱，沒有用本名
+    expect(designer).toHaveAttribute('role', 'combobox')
+    expect(designer).toHaveValue('Amy')
+    fireEvent.change(designer, { target: { value: '' } })
+    expect(designerOptions()).toEqual(['Amy', '李大華'])
     expect(callsOf(utils.calls, 'designerBookingTimes').pop().variables).toEqual({
       GetBookingTimesInput: { designerId: 'd-1', storeId: MERCHANT, date: at(10) },
     })
     const time = screen.getByTestId('service-time')
     expect(optionTexts(time)).toEqual(['', '10:00', '10:30', '11:00'])
     expect(time.options[time.selectedIndex].textContent).toBe('10:00')
-    choose(designer, '李大華')
+    // 打字篩選：只剩符合的設計師
+    fireEvent.change(designer, { target: { value: '李' } })
+    expect(designerOptions()).toEqual(['李大華'])
+    pickDesigner('李大華', '李')
     await utils.settle()
+    expect(screen.getByTestId('designer-name')).toHaveValue('李大華')
     expect(callsOf(utils.calls, 'designerBookingTimes').pop().variables.GetBookingTimesInput.designerId).toBe('d-2')
     const cleared = screen.getByTestId('service-time')
     expect(cleared.options[cleared.selectedIndex].textContent).toBe('')
@@ -181,7 +203,7 @@ describe('指定設計師', () => {
     fireEvent.click(screen.getByTestId('designer-assigned'))
     // 已選了不指定的時段，但還沒選設計師
     expect(submit()).toBeDisabled()
-    choose(screen.getByTestId('designer-name'), 'Amy')
+    pickDesigner('Amy')
     await utils.settle()
     choose(screen.getByTestId('service-time'), '11:00')
     expect(submit()).not.toBeDisabled()
@@ -216,7 +238,7 @@ describe('從 LINE 進來', () => {
     expect(liff.init).toHaveBeenCalledWith({ liffId: 'liff-123' })
     await wait(() => expect(screen.getByTestId('customer-name-0')).toHaveValue('老客人'))
     expect(screen.getByTestId('customer-cellphone-0')).toHaveValue('0987654321')
-    choose(screen.getByTestId('designer-name'), 'Amy')
+    pickDesigner('Amy')
     await utils.settle()
     choose(screen.getByTestId('service-time'), '10:00')
     fireEvent.click(submit())
@@ -236,7 +258,7 @@ describe('從 LINE 進來', () => {
   it('待審核的預約傳回「審核中」訊息，設計師與選單一致（有暱稱用暱稱，沒有用本名）', async () => {
     const utils = setup({ search: '?usingLineLogin=1&designerId=d-1', extra: { bookingV2: { bookingV2: { id: 'b-1', status: '待審核' } } } })
     await utils.settle()
-    choose(screen.getByTestId('designer-name'), 'Amy')
+    pickDesigner('Amy')
     await utils.settle()
     choose(screen.getByTestId('service-time'), '10:00')
     fillCustomer('吳小姐', '0912345678')
@@ -251,9 +273,14 @@ describe('從 LINE 進來', () => {
     const again = setup({ search: '?usingLineLogin=1&designerId=d-2', extra: { bookingV2: { bookingV2: { id: 'b-2', status: '待審核' } } } })
     await again.settle()
     // 先選回空白（不拋錯；設計師清空後回到不指定），再切回指定、選設計師
-    choose(screen.getByTestId('designer-name'), '')
+    clearDesigner()
+    // 清空設計師：回到不指定、設計師欄位隱藏（與原本選回空白相同）
+    expect(screen.getByTestId('designer-not-assigned')).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.queryByTestId('designer-name')).toBeNull()
     fireEvent.click(screen.getByTestId('designer-assigned'))
-    choose(screen.getByTestId('designer-name'), '李大華')
+    expect(screen.getByTestId('designer-name')).toHaveValue('')
+    expect(screen.getByTestId('designer-name')).toHaveAttribute('placeholder', '請選擇…')
+    pickDesigner('李大華', '大華')
     await again.settle()
     choose(screen.getByTestId('service-time'), '10:00')
     fillCustomer('吳小姐', '0912345678')
@@ -286,7 +313,7 @@ describe('從 LINE 進來', () => {
   it('指定預約回其他狀態：不傳訊息內容', async () => {
     const utils = setup({ search: '?designerId=d-1', extra: { bookingV2: { bookingV2: { id: 'b-1', status: '已取消' } } } })
     await utils.settle()
-    choose(screen.getByTestId('designer-name'), 'Amy')
+    pickDesigner('Amy')
     await utils.settle()
     choose(screen.getByTestId('service-time'), '10:00')
     fillCustomer('吳小姐', '0912345678')

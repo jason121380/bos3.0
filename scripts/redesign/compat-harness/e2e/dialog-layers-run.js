@@ -99,7 +99,7 @@ async function main() {
         await page.keyboard.press('Escape')
         await page.getByRole('listbox').waitFor({ state: 'detached' })
         await exists(page, '#lower')
-        // 相容 Select 使用原生 select，選值型別與既有表單相同。
+        // NativeSelect 同層的隱藏 select，選值型別與既有表單相同。
         await page.locator('select[name="gender"]').selectOption({ label: '女' })
         assert.equal(await page.locator('select[name="gender"] option:checked').textContent(), '女')
         await exists(page, '#lower')

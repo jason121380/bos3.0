@@ -1,4 +1,4 @@
-// 人員身分下拉的值可能為空字串（尚未載入預設值），使用 ui/form-control Select
+// 人員身分下拉的值可能為空字串（尚未載入預設值），使用 ui/native-select NativeSelect
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import PropTypes from 'prop-types'
 import React from 'react'

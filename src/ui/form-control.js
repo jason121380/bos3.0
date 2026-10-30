@@ -1,17 +1,11 @@
 import React from 'react'
-import { ChevronDown } from 'lucide-react'
-import { inputClass } from './input'
 import { cn } from './utils'
-import { CompatLayer } from './compat-layer'
-import { useLayerRef } from './layer-stack'
-import { IndexSelect } from './index-select'
 
-// 自家下拉組（取代 MUI FormControl／InputLabel／Select／MenuItem／FormHelperText，Jason 2026/10/20 拍版「MUI 整包移除」）。
-// 介面與 MUI 相容：頁面只換 import，<FormControl><InputLabel/><Select value onChange><MenuItem value/></Select></FormControl> 原樣保留。
-// - 單選：自家清單（Jason 2026/10/24 不使用原生系統選單），選項值可為任何型別，以索引對應；onChange 與 MUI 相同（event.target.value 為原始值、event.target.name 為 name）
-// - renderValue：在按鈕上顯示自訂內容（如載入中轉圈）
-// - multiple：自家勾選清單（MenuItem 內容原樣渲染）
-// - InputLabel 一律成為欄位上方標籤（STYLE §6）；Select 的 label、variant、sx 只影響 MUI 外框，接收後忽略
+// 自家表單欄位外框（取代 MUI FormControl／InputLabel／FormHelperText，Jason 2026/10/20 拍版「MUI 整包移除」）。
+// - FormControl：版面容器，把 error／required／disabled／size／focused 傳給子元件（useFormControl 可讀）
+// - InputLabel 一律成為欄位上方標籤（STYLE §6）；FormHelperText 跟隨 FormControl 的 error
+// 下拉不在這裡：單選用 ui/native-select、搜尋與多選用 ui/combobox
+// （原本的 Select／MultipleSelect／MenuItem 已無頁面使用，Jason 2026/10/30 核准移除）。
 
 const FormControlContext = React.createContext(null)
 let seed = 0
@@ -19,37 +13,6 @@ const useStableId = () => {
   const ref = React.useRef(null)
   if (ref.current === null) ref.current = `fc-${(seed += 1)}`
   return ref.current
-}
-
-const assignRef = (ref, node) => {
-  if (!ref) return
-  if (typeof ref === 'function') ref(node)
-  else ref.current = node
-}
-
-const textOf = node => {
-  if (node === null || node === undefined || typeof node === 'boolean') return ''
-  if (typeof node === 'string' || typeof node === 'number') return String(node)
-  if (Array.isArray(node)) return node.map(textOf).join('')
-  if (React.isValidElement(node)) return textOf(node.props.children)
-  return ''
-}
-
-// MUI 比對規則：非物件值以字串比較（1 與 '1' 視為相同）
-const same = (a, b) => a === b || (a !== null && b !== null && typeof a !== 'object' && typeof b !== 'object' && String(a) === String(b))
-
-function collectOptions(children) {
-  const options = []
-  React.Children.forEach(children, child => {
-    if (!React.isValidElement(child)) return
-    if (child.type === React.Fragment) {
-      options.push(...collectOptions(child.props.children))
-      return
-    }
-    // MenuItem 或 native 模式的 <option>
-    options.push({ value: child.props.value, disabled: child.props.disabled, children: child.props.children, props: child.props })
-  })
-  return options
 }
 
 const FormControl = React.forwardRef(function FormControl(
@@ -93,10 +56,6 @@ const InputLabel = React.forwardRef(function InputLabel({ children, htmlFor, id,
   )
 })
 
-// MenuItem 只是選項資料的載體（由 Select 收集），本身不渲染
-const MenuItem = () => null
-MenuItem.displayName = 'MenuItem'
-
 const FormHelperText = ({ children, className, error, ...rest }) => {
   const ctx = React.useContext(FormControlContext)
   const isError = error !== undefined ? error : ctx && ctx.error
@@ -107,233 +66,7 @@ const FormHelperText = ({ children, className, error, ...rest }) => {
   )
 }
 
-function MultipleSelect({ id, value, onChange, name, options, renderValue, disabled, className, labelId }) {
-  const [open, setOpen] = React.useState(false)
-  const rootRef = React.useRef(null)
-  const triggerRef = React.useRef(null)
-  // 與 IndexSelect 相同：可捲動清單裡第一次觸控常常沒有 click，改在 pointerup 選取。
-  const touchPressRef = React.useRef(null)
-  const suppressClickRef = React.useRef(null)
-  const suppressTimerRef = React.useRef(null)
-  const swallowClickRef = React.useRef(null)
-  // 多選清單登記共用圖層與 Scope，避免 Escape 關閉外窗、外點移除 DOM 時搶焦點。
-  const escape = event => {
-    event.preventDefault()
-    setOpen(false)
-    if (triggerRef.current) triggerRef.current.focus()
-  }
-  const { ref: listRef, zIndex } = useLayerRef(null, open, escape)
-  React.useEffect(() => {
-    if (!open) return undefined
-    let pendingClose
-    const close = event => {
-      if (!rootRef.current || rootRef.current.contains(event.target)) return
-      const dialog = rootRef.current.closest('[role="dialog"]')
-      // 同窗滑鼠預設聚焦尚未完成，先保留 DOM，讓 FocusScope observer 不會插隊。
-      if (dialog && dialog.contains(event.target)) pendingClose = setTimeout(() => setOpen(false), 0)
-      else setOpen(false)
-    }
-    document.addEventListener('mousedown', close)
-    return () => {
-      document.removeEventListener('mousedown', close)
-      clearTimeout(pendingClose)
-    }
-  }, [open])
-  React.useEffect(() => () => {
-    clearTimeout(suppressTimerRef.current)
-    if (swallowClickRef.current) window.removeEventListener('click', swallowClickRef.current, true)
-  }, [])
-  const list = Array.isArray(value) ? value : []
-  const toggle = (event, optionValue) => {
-    const exists = list.some(v => same(v, optionValue))
-    const next = exists ? list.filter(v => !same(v, optionValue)) : [...list, optionValue]
-    const target = { value: next, name }
-    if (onChange) onChange(Object.assign(Object.create(event), { target, currentTarget: target }))
-  }
-  const armSuppressClick = key => {
-    suppressClickRef.current = key
-    if (swallowClickRef.current) window.removeEventListener('click', swallowClickRef.current, true)
-    clearTimeout(suppressTimerRef.current)
-    const swallow = event => {
-      event.preventDefault()
-      event.stopPropagation()
-      window.removeEventListener('click', swallow, true)
-      if (swallowClickRef.current === swallow) swallowClickRef.current = null
-    }
-    swallowClickRef.current = swallow
-    window.addEventListener('click', swallow, true)
-    suppressTimerRef.current = setTimeout(() => {
-      window.removeEventListener('click', swallow, true)
-      if (swallowClickRef.current === swallow) swallowClickRef.current = null
-      if (suppressClickRef.current === key) suppressClickRef.current = null
-    }, 500)
-  }
-  return (
-    <div ref={rootRef} className={cn('relative w-full', className)}>
-      <CompatLayer open={open} onEscapeKeyDown={escape} />
-      <button ref={triggerRef}
-        type="button"
-        id={id}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        aria-labelledby={labelId}
-        disabled={disabled}
-        onClick={() => setOpen(o => !o)}
-        className={cn(inputClass, 'flex items-center justify-between gap-2 pr-9 text-left')}
-      >
-        <span className="min-w-0 truncate">{renderValue ? renderValue(list) : list.map(v => textOf((options.find(o => same(o.value, v)) || {}).children)).join(', ')}</span>
-      </button>
-      <ChevronDown aria-hidden="true" strokeWidth={1.75} className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
-      {open && (
-        <ul ref={listRef} style={{ zIndex }} role="listbox" aria-multiselectable="true" className="absolute left-0 right-0 top-full z-[1500] m-0 mt-1 max-h-80 list-none overflow-y-auto rounded-lg border border-solid border-border bg-background p-1 shadow-float">
-          {options.map((o, i) => {
-            const selected = list.some(v => same(v, o.value))
-            return (
-              <li
-                key={i}
-                role="option"
-                aria-selected={selected}
-                aria-disabled={o.disabled || undefined}
-                onPointerDown={event => {
-                  if (o.disabled || event.pointerType === 'mouse') return
-                  touchPressRef.current = { index: i, x: event.clientX, y: event.clientY }
-                }}
-                onPointerUp={event => {
-                  const press = touchPressRef.current
-                  touchPressRef.current = null
-                  if (event.pointerType === 'mouse' || !press || press.index !== i || o.disabled) return
-                  const moved = Math.abs(event.clientX - press.x) > 10 || Math.abs(event.clientY - press.y) > 10
-                  armSuppressClick(i)
-                  if (!moved) toggle(event, o.value)
-                }}
-                onPointerCancel={() => { touchPressRef.current = null }}
-                onClick={event => {
-                  if (suppressClickRef.current === i) {
-                    suppressClickRef.current = null
-                    clearTimeout(suppressTimerRef.current)
-                    return
-                  }
-                  if (!o.disabled) toggle(event, o.value)
-                }}
-                className={cn('flex min-h-9 max-sm:min-h-10 cursor-pointer select-none items-center gap-2 rounded-md px-3 py-1.5 text-body text-text hover:bg-surface-hover', o.disabled && 'pointer-events-none opacity-40')}
-              >
-                {o.children}
-              </li>
-            )
-          })}
-        </ul>
-      )}
-    </div>
-  )
-}
-
-const Select = React.forwardRef(function Select(
-  {
-    value: valueProp,
-    defaultValue,
-    onChange,
-    onKeyDown,
-    onFocus,
-    onBlur,
-    name,
-    id: idProp,
-    labelId,
-    inputRef,
-    inputProps,
-    readOnly = false,
-    disabled: disabledProp,
-    error: errorProp,
-    multiple = false,
-    renderValue,
-    displayEmpty,
-    native,
-    fullWidth,
-    size,
-    className,
-    style,
-    children,
-    // MUI 外觀專用，忽略
-    label,
-    variant,
-    sx,
-    MenuProps,
-    css: _css,
-    ...rest
-  },
-  ref
-) {
-  const ctx = React.useContext(FormControlContext)
-  const id = idProp || (ctx && ctx.id)
-  const disabled = disabledProp !== undefined ? disabledProp : !!(ctx && ctx.disabled)
-  const error = errorProp !== undefined ? errorProp : !!(ctx && ctx.error)
-  const options = collectOptions(children)
-  const [inner, setInner] = React.useState(defaultValue !== undefined ? defaultValue : multiple ? [] : '')
-  const value = valueProp !== undefined ? valueProp : inner
-
-  if (multiple) {
-    return (
-      <MultipleSelect
-        id={id}
-        labelId={labelId}
-        value={value}
-        name={name}
-        options={options}
-        renderValue={renderValue}
-        disabled={disabled}
-        className={className}
-        onChange={event => {
-          if (valueProp === undefined) setInner(event.target.value)
-          if (onChange) onChange(event)
-        }}
-      />
-    )
-  }
-
-  const index = options.findIndex(o => same(o.value, value))
-  const handleChange = event => {
-    if (readOnly) return
-    const picked = options[Number(event.target.value)]
-    const next = picked ? picked.value : ''
-    if (valueProp === undefined) setInner(next)
-    if (!onChange) return
-    const target = { value: next, name }
-    // 以原事件為原型建立新事件：保留 preventDefault／persist 等方法，只替換 target（與 MUI 相同簽名 onChange(event, child)）
-    onChange(Object.assign(Object.create(event), { target, currentTarget: target }), picked ? { props: picked.props } : undefined)
-  }
-  const small = size === 'small' || (ctx && ctx.size === 'small')
-  // 比照 MUI：值為空（''／null／undefined）且未設 displayEmpty 時欄位顯示空白，即使有對應選項（如 <MenuItem value=''>None</MenuItem>）
-  const showBlank = !displayEmpty && (value === '' || value === null || value === undefined)
-  const inputRest = inputProps ? Object.fromEntries(Object.entries(inputProps).filter(([k]) => k !== 'ref')) : {}
-  const selected = index === -1 ? null : options[index]
-  return (
-    <div ref={ref} className={cn('relative w-full min-w-0', className)} style={style}>
-      <IndexSelect
-        inputRef={node => {
-          assignRef(inputRef, node)
-          if (inputProps && inputProps.ref) assignRef(inputProps.ref, node)
-        }}
-        id={id}
-        name={name}
-        valueIndex={index}
-        options={options.map(o => ({ disabled: o.disabled, text: textOf(o.children) }))}
-        blank={showBlank}
-        display={renderValue ? renderValue(value) : selected ? textOf(selected.children) : ''}
-        onChange={handleChange}
-        onKeyDown={onKeyDown}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        disabled={disabled}
-        readOnly={readOnly}
-        invalid={error}
-        small={small}
-        labelledBy={labelId}
-        buttonProps={{ ...inputRest, ...rest }}
-      />
-    </div>
-  )
-})
-
 // 與 MUI useFormControl 相容：在 FormControl 內回傳 { focused, error, required, disabled }，否則 undefined
 const useFormControl = () => React.useContext(FormControlContext) || undefined
 
-export { FormControl, InputLabel, Select, MenuItem, FormHelperText, useFormControl }
+export { FormControl, InputLabel, FormHelperText, useFormControl }

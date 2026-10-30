@@ -1,4 +1,4 @@
-// 扣項欄位的值可能為空字串或數字（扣項基準點），使用 ui/form-control Select；同列的數字欄位也使用 ui/text-field TextField 以維持標籤樣式一致
+// 扣項欄位的值可能為空字串或數字（扣項基準點），使用 ui/native-select NativeSelect；同列的數字欄位也使用 ui/text-field TextField 以維持標籤樣式一致
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField } from 'ui/text-field'
@@ -255,24 +255,6 @@ function AboutDeduction({
                       ))}
                     </NativeSelect>
                   </div>
-                  {/* <FormControl variant="outlined" css={styles.formGroup} fullWidth>
-                    <InputLabel ref={inputLabel} id="select-item-label">
-                      項目
-                    </InputLabel>
-                    <Select
-                      labelId="select-item-label"
-                      id="select-item"
-                      label='項目'
-                      onChange={event => handleDeductionName(data.type, event, index)}
-                      value={content.name}
-                    >
-                      {deductionItems?.map((data, idx) => (
-                        <MenuItem value={data.name} key={idx}>
-                          {data.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl> */}
                   {content.name && (
                     <div className="w-full sm:w-36">
                       <NativeSelect

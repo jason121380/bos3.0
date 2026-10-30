@@ -10,6 +10,16 @@ export function calendarUpdateTime(isoDate) {
 
 const shippedRecords = [
   {
+    title: '2026/10/30 預約頁設計師可搜尋',
+    versionNo: 'v3.10302141',
+    updateTime: '2026-10-30',
+    content: [
+      '- 線上預約頁的「服務設計師」可打暱稱或本名搜尋，並有清除鈕',
+      '- 可搜尋的下拉選單：點目前已選的項目會收起清單',
+      '- 移除已不再使用的舊版下拉元件；使用上沒有變化',
+    ].join('\n'),
+  },
+  {
     title: '2026/10/30 檔名修正',
     versionNo: 'v3.10302000',
     updateTime: '2026-10-30',

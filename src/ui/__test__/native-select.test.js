@@ -75,6 +75,23 @@ describe('NativeSelect 唯讀與其他轉傳', () => {
     expect(onChange).not.toHaveBeenCalled()
   })
 
+  // 原本由 form-control Select 的測試守住（2026/10/30 移除 Select 時搬來）：唯讀欄位仍可 Enter 跳欄、Tab 離開
+  it('readOnly：方向鍵等按鍵被擋下，Enter／Tab 保留；onKeyDown 照常收到', () => {
+    const onKeyDown = jest.fn()
+    const { rerender } = render(<NativeSelect label="狀態" value="A" readOnly onKeyDown={onKeyDown}>{options}</NativeSelect>)
+    const press = key => {
+      const ev = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true })
+      trigger().dispatchEvent(ev)
+      return ev.defaultPrevented
+    }
+    expect(press('ArrowDown')).toBe(true)
+    expect(press('Enter')).toBe(false)
+    expect(press('Tab')).toBe(false)
+    expect(onKeyDown).toHaveBeenCalledTimes(3)
+    rerender(<NativeSelect label="狀態" value="A" onChange={() => {}}>{options}</NativeSelect>)
+    expect(press('Tab')).toBe(false)
+  })
+
   it('renderValue：按鈕顯示自訂內容（偏好設計師載入中）', () => {
     render(<NativeSelect label="狀態" value="loading" renderValue={v => `顯示:${v}`} onChange={() => {}}>{options}</NativeSelect>)
     expect(trigger()).toHaveTextContent('顯示:loading')

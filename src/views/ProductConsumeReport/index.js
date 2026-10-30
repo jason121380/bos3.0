@@ -1,4 +1,4 @@
-// 用途下拉含空字串選項（全部），Radix Select 不支援空值，使用 ui/form-control Select
+// 用途下拉含空字串選項（全部），Radix Select 不支援空值，使用 ui/native-select NativeSelect
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import Page from 'components/Page'
 import idx from 'idx'

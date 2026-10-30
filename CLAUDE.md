@@ -1,6 +1,6 @@
 # CLAUDE.md — BOS 3.0 前端工作守則
 
-BOS 3.0 是美業 ERP 的純前端 SPA（Vite 5 + React 17 + Apollo GraphQL + Redux Toolkit；2026/10/20 由 CRA 改為 Vite，單元測試仍用 react-scripts 的 Jest）。畫面已從 MUI 改版為 **Tailwind + `src/ui/`（shadcn/Radix 風格）**；MUI 套件已於 2026/10/20 全數移除，頁面與共用元件已完成正式 `src/ui/` 遷移；未使用的相容元件已於 2026/10/23 經 Jason 核准移除，僅保留 combobox 與 form-control 多選清單使用的 `src/ui/compat-layer.js` 共用行為 helper。日期時間一律以**台灣時間**計算與顯示（見架構速記）。回覆一律使用專業、清楚的**繁體中文**。
+BOS 3.0 是美業 ERP 的純前端 SPA（Vite 5 + React 17 + Apollo GraphQL + Redux Toolkit；2026/10/20 由 CRA 改為 Vite，單元測試仍用 react-scripts 的 Jest）。畫面已從 MUI 改版為 **Tailwind + `src/ui/`（shadcn/Radix 風格）**；MUI 套件已於 2026/10/20 全數移除，頁面與共用元件已完成正式 `src/ui/` 遷移；未使用的相容元件已於 2026/10/23 經 Jason 核准移除，僅保留 combobox 與 NativeSelect 清單（index-select）使用的 `src/ui/compat-layer.js` 共用行為 helper。日期時間一律以**台灣時間**計算與顯示（見架構速記）。回覆一律使用專業、清楚的**繁體中文**。
 
 > **現況只看 `docs/CURRENT.md`。** 本檔與 STATUS／TODO／README 裡的 suite 數、「CI 已手動停用」是 **歷史／已過時**。健康分程式是 `v3.10241717`（PR #301）；2026/10/28 四面向稽核與 10/30 修正見 `docs/redesign/AUDIT_20261028.md`。CI 為 `.github/workflows/frontend-ci.yml`；查詢失敗用 `src/components/QueryFailed.js`、載入中用 `src/components/PageLoadingFallback.js`；頁首一律 `ui/page-header` 的 `PageHeader`（`AdminPageHeader`／`PageTitle` 已於 2026/10/28 刪除）；四份收據有 `src/views/OrderShared/receiptFieldChecklist.js`（掛單不印點數餘額）；前端 CSV 一律遮罩。後端債（卡券授權、跨店 userMerchantId、伺服器端匯出遮罩、訂單 UUID isPending）沒有修。產品版號以 `src/version.js` 為準。
 
@@ -58,7 +58,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 
 ## 架構速記
 
-- `src/ui/`：新元件（Button、Input／Field、Select、NativeSelect、Table、Card、Dialog、Accordion、ToggleGroup、Switch、Checkbox、Badge、Avatar、Stat、Toast、Popover、DropdownMenu、Sidebar、PageHeader、EmptyState…）與 `icons`（lucide 轉接層）、`compat-layer.js`（combobox 與 form-control 多選清單使用的共用 Radix DismissableLayer／FocusScope helper；其餘舊相容元件已退役）、`format`（`formatNumber`／`formatMoney`）。
+- `src/ui/`：新元件（Button、Input／Field、NativeSelect、Combobox、Table、Card、Dialog、Accordion、ToggleGroup、Switch、Checkbox、Badge、Avatar、Stat、Toast、Popover、DropdownMenu、Sidebar、PageHeader、EmptyState…）與 `icons`（lucide 轉接層）、`compat-layer.js`（combobox 與 NativeSelect 清單〔index-select〕使用的共用 Radix DismissableLayer／FocusScope helper；其餘舊相容元件已退役）、`format`（`formatNumber`／`formatMoney`）。
 - `src/styles/tokens.css`：CSS 變數 tokens＋`.ui-root` 基礎層（preflight 關閉）；淺色文字與狀態色已調到 WCAG AA。
 - `src/lib/api-base.js`：後端位址單一來源（GraphQL、WebSocket、REST outer_store、Sentry environment 都從這裡取）；不要在頁面寫死網址。有 `REACT_APP_API_URL` 就用它。沒有時只有核准的正式站網域（`bos.lure.com.tw`、`www.bos.lure.com.tw`、`app.beautyos.co`）連正式 API；localhost／含 `dev`／`beautyos2` 連測試 API；IP、預覽網址、Railway 預設網域、認不得的網域與沒有 window 改連測試 API，並由 `ApiEnvBanner` 提示，不得默默連正式（2026/10/24）。
 - `src/lib/init-apollo.js`：Apollo client 單例；errorLink 統一提示 GraphQL／網路錯誤（`TKN_ERROR` 導回登入）；`inflightLink` 只計數進行中的查詢（給 `after-first-load` 用）。client 為 `@apollo/client` 3（2026/10/21 自 apollo-boost 換版、舊套件已移除，實驗報告 `docs/redesign/APOLLO_V3_EXPERIMENT.md`）；`createApolloClient` 不開 `notifyOnNetworkStatusChange`（refetch 的 loading 行為與 v2 相同，有測試）。

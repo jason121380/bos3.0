@@ -1,145 +1,40 @@
-import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import React from 'react'
 
-import { FormControl, InputLabel, Select, MenuItem, useFormControl } from '../form-control'
-
-const installedPointerEvent = typeof window.PointerEvent !== 'function'
-if (installedPointerEvent) {
-  window.PointerEvent = class PointerEvent extends window.MouseEvent {
-    constructor(type, props = {}) {
-      super(type, props)
-      this.pointerId = props.pointerId == null ? 1 : props.pointerId
-      this.pointerType = props.pointerType || ''
-      this.isPrimary = props.isPrimary !== false
-    }
-  }
-}
-afterAll(() => {
-  if (installedPointerEvent) delete window.PointerEvent
-})
+import { FormControl, InputLabel, useFormControl } from '../form-control'
 import { Checkbox, FormControlLabel } from '../checkbox'
+
+// 下拉（Select／MultipleSelect／MenuItem）已於 2026/10/30 移除（Jason 核准；單選改 ui/native-select、搜尋與多選改 ui/combobox），
+// 這裡只保護留下來的 FormControl／InputLabel 與 checkbox。
 
 afterEach(cleanup)
 
-const renderSelect = (props = {}) =>
-  render(
-    <FormControl fullWidth>
-      <InputLabel>抽成類別</InputLabel>
-      <Select label="抽成類別" name="kind" {...props}>
-        <MenuItem value={null}>全部</MenuItem>
-        <MenuItem value={1}>指定</MenuItem>
-        <MenuItem value="NONE">不指定</MenuItem>
-      </Select>
-    </FormControl>
-  )
-
-describe('ui/form-control（與 MUI FormControl／InputLabel／Select／MenuItem 相容）', () => {
-  // InputLabel 成為欄位上方標籤，並與 select 關聯（無障礙與 STYLE「標籤在上」）
-  it('InputLabel 關聯到 Select', () => {
-    renderSelect({ value: 1, onChange: () => {} })
-    expect(screen.getByLabelText('抽成類別').tagName).toBe('BUTTON')
-    expect(screen.getByLabelText('抽成類別')).toHaveAttribute('aria-haspopup', 'listbox')
-  })
-
-  // 頁面沿用 MUI handler：event.target.value 是 MenuItem 的原始值（null、數字、字串都不能被轉成字串）
-  it('onChange 的 event.target.value 為原始值，並帶 name', () => {
-    const seen = []
-    renderSelect({ value: 1, onChange: event => seen.push([event.target.value, event.target.name]) })
-    const select = screen.getByLabelText('抽成類別')
-    fireEvent.change(select, { target: { value: '0' } })
-    fireEvent.change(select, { target: { value: '2' } })
-    expect(seen).toEqual([[null, 'kind'], ['NONE', 'kind']])
-  })
-
-  // MUI 以字串比對非物件值：value='1' 也要選到值為 1 的選項
-  it('value 與選項以字串比對（1 與 "1" 視為相同）', () => {
-    renderSelect({ value: '1', onChange: () => {} })
-    const select = screen.getByLabelText('抽成類別')
-    expect(select.options[select.selectedIndex].textContent).toBe('指定')
-  })
-
-  // MUI：值為空且未設 displayEmpty 時顯示空白（新增商品的類別預設 '' 對應 None 選項，不應顯示 None）
-  it('值為空字串時欄位顯示空白，displayEmpty 時顯示選項文字', () => {
-    const { rerender } = render(
-      <Select value="" onChange={() => {}} inputProps={{ 'aria-label': '類別' }}>
-        <MenuItem value="">None</MenuItem>
-        <MenuItem value="a">甲</MenuItem>
-      </Select>
-    )
-    expect(screen.getByLabelText('類別')).toHaveClass('text-transparent')
-    rerender(
-      <Select value="" displayEmpty onChange={() => {}} inputProps={{ 'aria-label': '類別' }}>
-        <MenuItem value="">None</MenuItem>
-        <MenuItem value="a">甲</MenuItem>
-      </Select>
-    )
-    expect(screen.getByLabelText('類別')).not.toHaveClass('text-transparent')
-  })
-
-  // readOnly：顯示值但不允許改值（14 處用於鎖定欄位）
-  it('readOnly 時改值不會呼叫 onChange', () => {
-    const onChange = jest.fn()
-    renderSelect({ value: 1, readOnly: true, onChange })
-    fireEvent.change(screen.getByLabelText('抽成類別'), { target: { value: '2' } })
-    expect(onChange).not.toHaveBeenCalled()
-  })
-
-  // inputRef 取得 select 元素，供 Enter 跳欄 focus
-  it('inputRef 取得 select 元素', () => {
-    const inputRef = React.createRef()
-    renderSelect({ value: 1, onChange: () => {}, inputRef })
-    expect(inputRef.current).toBe(screen.getByLabelText('抽成類別'))
-  })
-
-  // renderValue：載入中以自訂內容顯示（偏好設計師載入轉圈）
-  it('renderValue 的內容會顯示出來', () => {
+describe('ui/form-control（FormControl／InputLabel）', () => {
+  it('InputLabel 在 FormControl 內自動關聯同一個 id；自訂 htmlFor 優先', () => {
     render(
-      <Select value="loading" onChange={() => {}} renderValue={() => <span>載入中圖示</span>}>
-        <MenuItem value="loading">Loading...</MenuItem>
-      </Select>
+      <>
+        <FormControl fullWidth>
+          <InputLabel>抽成類別</InputLabel>
+        </FormControl>
+        <FormControl>
+          <InputLabel htmlFor="own-field">付款方式</InputLabel>
+        </FormControl>
+      </>
     )
-    expect(screen.getByText('載入中圖示')).toBeInTheDocument()
+    const auto = screen.getByText('抽成類別')
+    expect(auto.getAttribute('for')).toMatch(/^fc-\d+$/)
+    expect(auto.closest('div').className).toContain('w-full')
+    expect(screen.getByText('付款方式').getAttribute('for')).toBe('own-field')
+    expect(screen.getByText('付款方式').closest('div').className).toContain('min-w-[120px]')
   })
 
-  // multiple：點選項切換加入／移除，onChange 收到陣列
-  it('multiple 點選選項以陣列呼叫 onChange', () => {
-    const seen = []
-    render(
-      <Select multiple value={['a']} onChange={event => seen.push(event.target.value)} renderValue={v => v.join('+')}>
-        <MenuItem value="a">甲</MenuItem>
-        <MenuItem value="b">乙</MenuItem>
-      </Select>
-    )
-    fireEvent.click(screen.getByRole('button'))
-    fireEvent.click(screen.getByText('乙'))
-    expect(seen).toEqual([['a', 'b']])
-  })
-
-  it('單選觸控 pointerup 第一次就選到原始值', () => {
-    const seen = []
-    renderSelect({ value: 1, onChange: event => seen.push(event.target.value) })
-    fireEvent.click(screen.getByLabelText('抽成類別'))
-    const option = within(screen.getByRole('listbox')).getByRole('option', { name: '不指定' })
-    fireEvent.pointerDown(option, { pointerType: 'touch', pointerId: 1, clientX: 2, clientY: 2 })
-    fireEvent.pointerUp(option, { pointerType: 'touch', pointerId: 1, clientX: 3, clientY: 2 })
-    fireEvent.click(option)
-    expect(seen).toEqual(['NONE'])
-  })
-
-  it('多選觸控 pointerup 加入一次，接著的 click 不重複切換', () => {
-    const seen = []
-    render(
-      <Select multiple value={['a']} onChange={event => seen.push(event.target.value)} renderValue={v => v.join('+')}>
-        <MenuItem value="a">甲</MenuItem>
-        <MenuItem value="b">乙</MenuItem>
-      </Select>
-    )
-    fireEvent.click(screen.getByRole('button'))
-    const option = screen.getByRole('option', { name: '乙' })
-    fireEvent.pointerDown(option, { pointerType: 'touch', pointerId: 1, clientX: 1, clientY: 1 })
-    fireEvent.pointerUp(option, { pointerType: 'touch', pointerId: 1, clientX: 2, clientY: 1 })
-    fireEvent.click(option)
-    expect(seen).toEqual([['a', 'b']])
+  it('InputLabel 不在 FormControl 內時為一般標籤色、沒有星號與 for', () => {
+    render(<InputLabel id="lonely">單獨標籤</InputLabel>)
+    const label = screen.getByText('單獨標籤')
+    expect(label).toHaveAttribute('id', 'lonely')
+    expect(label.hasAttribute('for')).toBe(false)
+    expect(label.className).toContain('text-text-secondary')
+    expect(label.querySelector('.text-danger')).toBeNull()
   })
 })
 

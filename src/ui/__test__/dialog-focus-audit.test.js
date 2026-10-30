@@ -2,7 +2,6 @@ import React from 'react'
 import { act, cleanup, fireEvent, render, screen, wait, within } from '@testing-library/react'
 import { Dialog, DialogContent, DialogTitle } from '../dialog'
 import { NativeSelect, NativeSelectOption } from '../native-select'
-import { Select as CompatSelect, MenuItem } from '../form-control'
 import { Popover, PopoverTrigger, PopoverContent } from '../popover'
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '../dropdown-menu'
 import { DatePicker, MobileDatePicker } from '../date-picker'
@@ -27,9 +26,7 @@ function Field({ kind }) {
   if (kind === 'popover') return <Popover><PopoverTrigger>欄位</PopoverTrigger><PopoverContent><input aria-label="浮層輸入" /></PopoverContent></Popover>
   if (kind === 'dropdown') return <DropdownMenu><DropdownMenuTrigger>欄位</DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem>甲</DropdownMenuItem></DropdownMenuContent></DropdownMenu>
   if (kind === 'desktop' || kind === 'mobile') return React.createElement(kind === 'desktop' ? DatePicker : MobileDatePicker, { value: initial, onChange: () => {} })
-  if (kind === 'multiple') return <CompatSelect multiple defaultValue={[]}><MenuItem value="a">甲</MenuItem></CompatSelect>
   if (kind === 'native') return <NativeSelect label="欄位" value="a"><NativeSelectOption value="a">甲</NativeSelectOption></NativeSelect>
-  if (kind === 'compat') return <CompatSelect value="a" inputProps={{ 'aria-label': '欄位' }}><MenuItem value="a">甲</MenuItem></CompatSelect>
   if (kind === 'date-field') return <DateField label="欄位" value={initial} format="yyyy/MM/dd" />
   return <TextField label="欄位" />
 }
@@ -49,7 +46,7 @@ const openField = async kind => {
   let trigger
   if (kind === 'desktop') trigger = screen.getByRole('button', { name: /^選擇日期/ })
   else if (kind === 'mobile') trigger = screen.getByRole('textbox')
-  else if (['native', 'compat'].includes(kind)) trigger = screen.getByRole('combobox')
+  else if (kind === 'native') trigger = screen.getByRole('combobox')
   else trigger = screen.getAllByRole('button')[0]
   act(() => trigger.focus())
   if (kind === 'dropdown') fireEvent.keyDown(trigger, { key: 'ArrowDown' })
@@ -76,10 +73,10 @@ async function mouseTransfer(target, { pointer = false } = {}) {
   expect(target).toHaveFocus()
 }
 
-test.each(['popover', 'desktop', 'multiple', 'native', 'compat', 'date-field', 'text-field', 'toast'])('%s：同窗滑鼠交接與密碼窗取消不搶焦點', async kind => {
+test.each(['popover', 'desktop', 'native', 'date-field', 'text-field', 'toast'])('%s：同窗滑鼠交接與密碼窗取消不搶焦點', async kind => {
   const lowerClose = jest.fn()
   render(<Harness kind={kind} lowerClose={lowerClose} />)
-  if (['native', 'compat', 'date-field', 'text-field', 'toast'].includes(kind)) act(() => screen.getByRole(kind === 'native' || kind === 'compat' ? 'combobox' : 'textbox').focus())
+  if (['native', 'date-field', 'text-field', 'toast'].includes(kind)) act(() => screen.getByRole(kind === 'native' ? 'combobox' : 'textbox').focus())
   else await openField(kind)
   const after = screen.getByRole('button', { name: '下一欄' })
   await mouseTransfer(after, { pointer: kind === 'popover' })
@@ -88,7 +85,6 @@ test.each(['popover', 'desktop', 'multiple', 'native', 'compat', 'date-field', '
   const target = screen.getByRole('button', { name: '開啟密碼窗' })
   await wait(() => {
     if (kind === 'desktop') expect(screen.queryByRole('grid')).toBeNull()
-    if (kind === 'multiple') expect(screen.queryByRole('listbox')).toBeNull()
     if (kind === 'popover') expect(screen.queryByLabelText('浮層輸入')).toBeNull()
   })
   await mouseTransfer(target)
@@ -99,13 +95,13 @@ test.each(['popover', 'desktop', 'multiple', 'native', 'compat', 'date-field', '
   expect(lowerClose).not.toHaveBeenCalled()
 })
 
-test.each(['dropdown', 'popover', 'desktop', 'mobile', 'multiple'])('%s：Escape 只關浮層並還原觸發點', async kind => {
+test.each(['dropdown', 'popover', 'desktop', 'mobile'])('%s：Escape 只關浮層並還原觸發點', async kind => {
   const lowerClose = jest.fn()
   render(<Harness kind={kind} lowerClose={lowerClose} />)
   const trigger = await openField(kind)
   const popup = screen.getByRole(popupRole(kind))
   // Portal 可以位於 body；焦點由上層 Radix scope 接管，下層不得把它拉回。
-  if (kind !== 'multiple') expect(popup.contains(document.activeElement) || popup === document.activeElement).toBe(true)
+  expect(popup.contains(document.activeElement) || popup === document.activeElement).toBe(true)
   fireEvent.keyDown(document.activeElement, { key: 'Escape' })
   await wait(() => expect(screen.queryByRole(popupRole(kind))).toBeNull())
   await wait(() => expect(trigger).toHaveFocus())
@@ -126,19 +122,6 @@ test.each(['native', 'dropdown', 'mobile'])('%s：modal 關閉後可移焦並開
   await wait(() => expect(target).toHaveFocus())
 })
 
-
-test('多選外點的延後收尾不影響已開啟的密碼窗焦點', async () => {
-  render(<Harness kind="multiple" />)
-  await openField('multiple')
-  const opener = screen.getByRole('button', { name: '開啟密碼窗' })
-  await mouseTransfer(opener)
-  fireEvent.click(opener)
-  expect(screen.getByLabelText('操作密碼')).toHaveFocus()
-  await wait(() => expect(screen.queryByRole('listbox')).toBeNull())
-  expect(screen.getByLabelText('操作密碼')).toHaveFocus()
-  fireEvent.click(screen.getByRole('button', { name: '取消' }))
-  await wait(() => expect(opener).toHaveFocus())
-})
 
 test.each(['desktop', 'mobile'])('%s：窗內開啟時即聚焦所選日期', async kind => {
   render(<Harness kind={kind} />)

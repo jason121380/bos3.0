@@ -323,3 +323,32 @@ describe('選單位置與欄位外觀', () => {
     expect(screen.getByText('服務').className).toContain('text-text-secondary')
   })
 })
+
+// 2026/10/30：點（或 Enter）目前已選的那一項，原本清單停著、輸入框留著搜尋字；比照選別項收起清單、還原文字，
+// 仍比照 MUI 不呼叫 onChange（員工下拉另由 StaffCombobox 補送給 handler）。
+describe('單選再選一次目前的項目', () => {
+  it('點選：不呼叫 onChange，收起清單、文字還原成已選項目', () => {
+    const { input, onChange } = renderAc({ value: options[1], isOptionEqualToValue: (o, v) => o.id === v.id })
+    fireEvent.change(input, { target: { value: '剪' } })
+    fireEvent.click(screen.getByRole('option', { name: '剪髮' }))
+    expect(onChange).not.toHaveBeenCalled()
+    expect(screen.queryAllByRole('option')).toHaveLength(0)
+    expect(input).toHaveValue('剪髮')
+  })
+
+  it('Enter：同樣收起；disableCloseOnSelect 時維持原狀（清單保持開啟、不呼叫 onChange）', () => {
+    const { input, onChange, unmount } = renderAc({ value: options[1], autoHighlight: true, isOptionEqualToValue: (o, v) => o.id === v.id })
+    act(() => input.focus())
+    fireEvent.change(input, { target: { value: '剪' } })
+    fireEvent.keyDown(input, { key: 'Enter' })
+    expect(onChange).not.toHaveBeenCalled()
+    expect(screen.queryAllByRole('option')).toHaveLength(0)
+    expect(input).toHaveValue('剪髮')
+    unmount()
+    const again = renderAc({ value: options[1], disableCloseOnSelect: true, isOptionEqualToValue: (o, v) => o.id === v.id })
+    fireEvent.change(again.input, { target: { value: '剪' } })
+    fireEvent.click(screen.getByRole('option', { name: '剪髮' }))
+    expect(again.onChange).not.toHaveBeenCalled()
+    expect(screen.getAllByRole('option').length).toBeGreaterThan(0)
+  })
+})
