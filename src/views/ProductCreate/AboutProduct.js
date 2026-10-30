@@ -1,5 +1,6 @@
 import { Switch } from 'ui/switch'
-import { FormControl, InputLabel, MenuItem, Select, FormHelperText } from 'ui/form-control'
+import { FormControl, FormHelperText } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField } from 'ui/text-field'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import idx from 'idx'
@@ -115,9 +116,7 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
           }}
         />
         <FormControl error={!!errors.ProductCategoryId} variant="outlined" fullWidth>
-          <InputLabel ref={inputLabel}>商品類別</InputLabel>
-          <Select
-            label='商品類別'
+          <NativeSelect
             name="ProductCategoryId"
             defaultValue=""
             data-testid="btn"
@@ -127,18 +126,23 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
                 clearErrors(['ProductCategoryId'])
               }
             }}
+            displayEmpty={false}
+            placeholder="請選擇…"
+            error={!!errors.ProductCategoryId}
+            label="商品類別"
+            labelRef={inputLabel}
           >
-            <MenuItem value="">None</MenuItem>
+            <NativeSelectOption value="">None</NativeSelectOption>
             {categories.map((data, idx) => (
-              <MenuItem
+              <NativeSelectOption
                 key={`${data.id}-${idx}`}
                 value={data.id}
                 data-testid={`ProductCategoryId-${data.name}`}
               >
                 {data.no} {data.name}
-              </MenuItem>
+              </NativeSelectOption>
             ))}
-          </Select>
+          </NativeSelect>
 
           {errors.ProductCategoryId && (
             <FormHelperText data-testid="ProductCategoryId-helperText">
@@ -274,9 +278,7 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
           fullWidth
           error={!!errors.stockUnit}
         >
-          <InputLabel ref={inputLabel}>庫存單位</InputLabel>
-          <Select
-            label='庫存單位'
+          <NativeSelect
             name="stockUnit"
             error={!!errors.stockUnit}
             defaultValue=""
@@ -289,20 +291,24 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
                 clearErrors(['stockUnit'])
               }
             }}
+            displayEmpty={false}
+            placeholder="請選擇…"
+            label="庫存單位"
+            labelRef={inputLabel}
           >
-            <MenuItem value="">
+            <NativeSelectOption value="">
               <em>None</em>
-            </MenuItem>
+            </NativeSelectOption>
             {stockUnit.map((data, idx) => (
-              <MenuItem
+              <NativeSelectOption
                 key={`${data.label}-${idx}`}
                 value={data.value}
                 data-testid={`stockUnit-${data.label}`}
               >
                 {data.label}
-              </MenuItem>
+              </NativeSelectOption>
             ))}
-          </Select>
+          </NativeSelect>
 
           {errors.stockUnit && (
             <FormHelperText data-testid="stockUnit-helpertext">
@@ -310,24 +316,24 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
             </FormHelperText>
           )}
         </FormControl>
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel ref={inputLabel}>打帳單是否能更改預設價格</InputLabel>
-          <Select
-            label='打帳單是否能更改預設價格'
-            defaultValue=""
-            name="isLocked"
-            onChange={event => {
-              setValue('isLocked', event.target.value)
-            }}
-            value={watchList.isLocked}
-          >
-            {lockStatus.map((data, idx) => (
-              <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                {data.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <NativeSelect
+          defaultValue=""
+          name="isLocked"
+          onChange={event => {
+            setValue('isLocked', event.target.value)
+          }}
+          value={watchList.isLocked}
+          displayEmpty={false}
+          placeholder="請選擇…"
+          label="打帳單是否能更改預設價格"
+          labelRef={inputLabel}
+        >
+          {lockStatus.map((data, idx) => (
+            <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+              {data.label}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
       </CardContent>
     </Card>
   )

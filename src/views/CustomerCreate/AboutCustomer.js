@@ -1,5 +1,5 @@
 // 純文字欄（姓名／暱稱／Email／地址／LINE ID／備註）改 Field 上方標籤＋ui Input（TextField 試點）；代號（重複檢查 error／endAdornment）、手機 tel、民國年生日、Select／來源下拉使用正式 ui 元件；性別 ToggleButton 為 ui/toggle-group（合成 event.target.value 傳遞不變）
-import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField, InputAdornment } from 'ui/text-field'
 import { LoaderCircle } from 'lucide-react'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
@@ -199,25 +199,26 @@ function AboutProject({
             onChange={event => onChange({ event, key: 'lineId' })}
           />
         </Field>
-        <FormControl variant="outlined" className="w-full !mb-[24px]">
-          <InputLabel>設計師</InputLabel>
-          <Select
-            label='設計師'
-            value={customer.DesignerId}
-            onChange={event => onChange({ event, key: 'PreferDesignerId' })}
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            {idx(designers.data, _ =>
-              _.merchantDesigners.map((data, index) => (
-                <MenuItem value={data.id} key={`designer-${index}`}>
-                  {data.name}
-                </MenuItem>
-              ))
-            )}
-          </Select>
-        </FormControl>
+        <NativeSelect
+          value={customer.DesignerId}
+          onChange={event => onChange({ event, key: 'PreferDesignerId' })}
+          displayEmpty={false}
+          placeholder="請選擇…"
+          label="設計師"
+          fullWidth={false}
+          className="min-w-[120px] align-top w-full !mb-[24px]"
+        >
+          <NativeSelectOption value="">
+            <em>None</em>
+          </NativeSelectOption>
+          {idx(designers.data, _ =>
+            _.merchantDesigners.map((data, index) => (
+              <NativeSelectOption value={data.id} key={`designer-${index}`}>
+                {data.name}
+              </NativeSelectOption>
+            ))
+          )}
+        </NativeSelect>
         <SourceSelect
           emptyOption
           className="w-full !mb-[24px]"

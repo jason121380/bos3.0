@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField } from 'ui/text-field'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import idx from 'idx'
@@ -67,25 +67,24 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
               onChange={event => onChange({ event, key: 'name' })}
             />
           </Field>
-          <FormControl variant="outlined" fullWidth>
-            <InputLabel>商品類別</InputLabel>
-            <Select
-              label='商品類別'
-              value={product.ProductCategoryId}
-              onChange={event => onChange({ event, key: 'ProductCategoryId' })}
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              {idx(productCategories.data, _ =>
-                _.productCategories.map((data, idx) => (
-                  <MenuItem key={`${data.id}-${idx}`} value={data.id}>
-                    {data.no} {data.name}
-                  </MenuItem>
-                ))
-              )}
-            </Select>
-          </FormControl>
+          <NativeSelect
+            value={product.ProductCategoryId}
+            onChange={event => onChange({ event, key: 'ProductCategoryId' })}
+            displayEmpty={false}
+            placeholder="請選擇…"
+            label="商品類別"
+          >
+            <NativeSelectOption value="">
+              <em>None</em>
+            </NativeSelectOption>
+            {idx(productCategories.data, _ =>
+              _.productCategories.map((data, idx) => (
+                <NativeSelectOption key={`${data.id}-${idx}`} value={data.id}>
+                  {data.no} {data.name}
+                </NativeSelectOption>
+              ))
+            )}
+          </NativeSelect>
           <Autocomplete
             options={merchantVendor}
             autoHighlight
@@ -204,48 +203,46 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
             }
             onWheel={() => document.activeElement.blur()}              
           />
-          <FormControl variant="outlined" fullWidth>
-            <InputLabel>庫存單位</InputLabel>
-            <Select
-              label='庫存單位'
-              value={product.stockUnit}
-              onChange={event =>
-                onChange({
-                  event,
-                  key: 'stockUnit',
-                })
-              }
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              {stockUnit.map((data, idx) => (
-                <MenuItem key={`${data.label}-${idx}`} value={data.value}>
-                  {data.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl variant="outlined" fullWidth>
-            <InputLabel>打帳單是否能更改預設價格</InputLabel>
-            <Select
-              label='打帳單是否能更改預設價格'
-              name="isLocked"
-              value={product.isLocked}
-              onChange={event =>
-                onChange({
-                  event,
-                  key: 'isLocked',
-                })
-              }
-            >
-              {lockStatus.map((data, idx) => (
-                <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                  {data.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <NativeSelect
+            value={product.stockUnit}
+            onChange={event =>
+              onChange({
+                event,
+                key: 'stockUnit',
+              })
+            }
+            displayEmpty={false}
+            placeholder="請選擇…"
+            label="庫存單位"
+          >
+            <NativeSelectOption value="">
+              <em>None</em>
+            </NativeSelectOption>
+            {stockUnit.map((data, idx) => (
+              <NativeSelectOption key={`${data.label}-${idx}`} value={data.value}>
+                {data.label}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
+          <NativeSelect
+            name="isLocked"
+            value={product.isLocked}
+            onChange={event =>
+              onChange({
+                event,
+                key: 'isLocked',
+              })
+            }
+            displayEmpty={false}
+            placeholder="請選擇…"
+            label="打帳單是否能更改預設價格"
+          >
+            {lockStatus.map((data, idx) => (
+              <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                {data.label}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
         </form>
       </CardContent>
     </Card>

@@ -43,8 +43,8 @@ const RANGES = {
 const ALL_QUICK = Object.keys(RANGES)
 const trigger = () => screen.getByRole('combobox', { name: '快速選擇日期區間' })
 const pickQuick = title => {
-  fireEvent.keyDown(trigger(), { key: 'Enter' })
-  fireEvent.keyDown(screen.getByRole('option', { name: title }), { key: 'Enter' })
+  fireEvent.click(trigger())
+  fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: title }))
 }
 
 describe('DateSelector 快速選擇', () => {

@@ -119,8 +119,10 @@ export const exportedCsv = (linkText = '報表匯出') =>
 
 // 日期快速選擇（components/DateSelector 的「快速選擇日期區間」下拉）
 export function pickQuickDate(title) {
-  fireEvent.keyDown(screen.getByRole('combobox', { name: '快速選擇日期區間' }), { key: 'Enter' })
-  fireEvent.keyDown(screen.getByRole('option', { name: title }), { key: 'Enter' })
+  const quick = screen.getByRole('combobox', { name: '快速選擇日期區間' })
+  fireEvent.click(quick)
+  // 頁面上可能還開著別的下拉（例如剛選過的人員清單），以觸發鈕的 aria-controls 找到自己的清單
+  fireEvent.click(within(document.getElementById(quick.getAttribute('aria-controls'))).getByRole('option', { name: title }))
 }
 
 // 原生 select：依選項文字選取

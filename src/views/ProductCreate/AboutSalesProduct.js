@@ -1,4 +1,5 @@
-import { FormControl, InputLabel, MenuItem, Select, FormHelperText } from 'ui/form-control'
+import { FormControl, FormHelperText } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField } from 'ui/text-field'
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
@@ -59,9 +60,7 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
           fullWidth
           error={!!errors.commissionWay}
         >
-          <InputLabel ref={inputLabel}>抽成方式</InputLabel>
-          <Select
-            label='抽成方式'
+          <NativeSelect
             name="commissionWay"
             onChange={event => {
               setValue('commissionWay', event.target.value)
@@ -70,16 +69,21 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
               }
             }}
             defaultValue=""
+            displayEmpty={false}
+            placeholder="請選擇…"
+            error={!!errors.commissionWay}
+            label="抽成方式"
+            labelRef={inputLabel}
           >
-            <MenuItem value="">
+            <NativeSelectOption value="">
               <em>None</em>
-            </MenuItem>
+            </NativeSelectOption>
             {commissionWay.map((data, idx) => (
-              <MenuItem value={data.value} key={`${data.label}-${idx}`}>
+              <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                 {data.label}
-              </MenuItem>
+              </NativeSelectOption>
             ))}
-          </Select>
+          </NativeSelect>
           {errors.commissionWay && <FormHelperText>{errors.commissionWay.message}</FormHelperText>}
         </FormControl>
         <TextField

@@ -501,7 +501,8 @@ describe('新增服務項目：設定查詢失敗', () => {
     })
     await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-    expect([...controlByLabel('服務類別').options].map(o => o.textContent)).toEqual(['選擇服務類別'])
+    // 未選時欄位顯示「請選擇…」（Jason 2026/10/30 決定），隱藏 select 因此多一個不可選的空白未選項（hidden），不算選項
+    expect([...controlByLabel('服務類別').options].filter(o => !o.hidden).map(o => o.textContent)).toEqual(['選擇服務類別'])
     expect([...controlByLabel('類別', rowsOf(sectionOf('互助點數設定'))[0]).options].map(o => o.textContent)).toEqual([''])
     expect(submitButton()).toBeDisabled()
     expect(callsOf(calls, 'CREATE_SERVICE')).toHaveLength(0)

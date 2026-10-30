@@ -1,7 +1,7 @@
 // 設計師日報表：店家開啟「日報表四捨五入」時，列印區要印出這一天的設計師（2026/10/30）。
 // 原因：Results 在日報查詢完成那次 render 才掛載，子層 effect 比父層早跑；四捨五入的列印資料原本只在設定 loading 變化時算一次，
 // 讀到的是父層尚未更新的舊列印資料（第一次進頁為空、換日期為前一天），畫面表格正確、印出來卻是空白或前一天。
-import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
+import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import React from 'react'
 
 import { loginAs, renderPage } from '__tests__/testkit.test'
@@ -50,8 +50,8 @@ describe('設計師日報表：四捨五入時的列印資料', () => {
     })
     await settle()
     expect(printCards()).toHaveLength(1)
-    fireEvent.keyDown(screen.getByRole('combobox', { name: '快速選擇日期區間' }), { key: 'Enter' })
-    fireEvent.keyDown(screen.getByRole('option', { name: '昨天' }), { key: 'Enter' })
+    fireEvent.click(screen.getByRole('combobox', { name: '快速選擇日期區間' }))
+    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: '昨天' }))
     await settle()
     await wait(() => expect(screen.getAllByText(/昨天甲/).length).toBeGreaterThan(0))
     expect(printCards()).toHaveLength(2)

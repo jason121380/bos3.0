@@ -1,5 +1,6 @@
 // 欄位使用 Autocomplete / Select / DatePicker 與 inputRef 焦點串接，使用正式 ui 元件
-import { Select, MenuItem, FormControl, InputLabel } from 'ui/form-control'
+import { FormControl } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField } from 'ui/text-field'
 import { DatePicker } from 'ui/date-picker'
 import { useFetchProductsInEmployeePicking } from 'hooks/useFetchProducts'
@@ -488,12 +489,10 @@ export default function General({
           className="w-full !mb-[24px]"
           variant="outlined"
         >
-          <InputLabel>用途</InputLabel>
-          <Select
+          <NativeSelect
             disabled={purpose.length === 0}
             inputRef={purposeRef}
             value={picking.purpose}
-            label='用途'
             onFocus={() => setFocus('purpose')}
             onKeyDown={event => {
               if (event.key === 'Enter') {
@@ -504,11 +503,14 @@ export default function General({
               onChange({ event, key: 'purpose' })
               setFocus('remark')
             }}
+            displayEmpty={false}
+            placeholder="請選擇…"
+            label="用途"
           >
             {purpose.map(data => (
-              <MenuItem key={data} value={data}>{data}</MenuItem>
+              <NativeSelectOption key={data} value={data}>{data}</NativeSelectOption>
             ))}
-          </Select>
+          </NativeSelect>
         </FormControl>
         <TextField
           inputRef={remarkRef}

@@ -73,8 +73,8 @@ describe('營業統計分析表', () => {
     expect(first).toMatchObject({ startDate: startOfMonth(new Date()).getTime(), pageLimit: 100, pageOffset: 0 })
     expect(first.endDate).toBeGreaterThanOrEqual(before)
     expect(first.endDate).toBeLessThanOrEqual(Date.now())
-    fireEvent.keyDown(screen.getByRole('combobox', { name: '快速選擇日期區間' }), { key: 'Enter' })
-    fireEvent.keyDown(screen.getByRole('option', { name: '昨天' }), { key: 'Enter' })
+    fireEvent.click(screen.getByRole('combobox', { name: '快速選擇日期區間' }))
+    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: '昨天' }))
     await wait(() =>
       expect(lastInput(calls)).toEqual({
         startDate: startOfDay(subDays(new Date(), 1)).getTime(),

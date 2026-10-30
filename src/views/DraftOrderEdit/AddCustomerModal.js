@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter } from 'ui/dialog'
 import { Button } from 'ui/button'
-import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { LoaderCircle } from 'lucide-react'
 import { Field, Input } from 'ui/input'
 import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
@@ -17,6 +16,7 @@ import useFetchGetCheckIsCustomerNoUsed from 'hooks/useFetchGetCheckIsCustomerNo
 import useFetchGetLastCustomerNo from 'hooks/useFetchGetLastCustomerNo'
 import cloneDeep from 'lodash/cloneDeep'
 import SourceSelect from 'components/SourceSelect'
+import StaffCombobox from 'components/StaffCombobox'
 import { GENDER_OPTIONS, makeFieldChange, makeBirthdayChange } from 'views/OrderShared/customerFormInput'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
@@ -411,44 +411,16 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               </Field>
             </div>
             <div className="min-w-0">
-              {designers.data ? (
-                <Field label="偏好設計師" htmlFor="addCustomerModal-preferDesigner">
-                  <NativeSelect
-                    className="ui-root"
-                    id="addCustomerModal-preferDesigner"
-                    value={values.PreferDesignerId}
-                    onChange={handleFieldChange}
-                    name="PreferDesignerId"
-                  >
-                    <NativeSelectOption value="">
-                      <em>None</em>
-                    </NativeSelectOption>
-                    {idx(designers, _ =>
-                      _.data.users.users.map((data, index) => (
-                        <NativeSelectOption value={data.id} key={`${data.id}-${index}`}>
-                          {data.name}
-                        </NativeSelectOption>
-                      ))
-                    )}
-                  </NativeSelect>
-                </Field>
-              ) : (
-                // 載入中用 renderValue 顯示轉圈，使用 ui/form-control Select
-                <FormControl variant="outlined" fullWidth>
-                  <InputLabel ref={inputLabel}>偏好設計師</InputLabel>
-                  <Select
-                    label='偏好設計師'
-                    value='loading'
-                    onChange={handleFieldChange}
-                    name="PreferDesignerId"
-                    renderValue={() => <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />}
-                  >
-                    <MenuItem value="loading">
-                      <em>載入中…</em>
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-              )}
+              {/* 員工清單可打字搜尋（Jason 2026/10/30 決定）；清除鈕＝原本的「None」 */}
+              <StaffCombobox
+                id="addCustomerModal-preferDesigner"
+                label="偏好設計師"
+                name="PreferDesignerId"
+                value={values.PreferDesignerId}
+                users={idx(designers, _ => _.data.users.users)}
+                loading={!designers.data}
+                onChange={handleFieldChange}
+              />
             </div>
             <div className="min-w-0">
               <Field label="備註">

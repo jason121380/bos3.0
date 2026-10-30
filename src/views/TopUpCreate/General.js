@@ -1,5 +1,6 @@
 import { Input, TextField, InputAdornment } from 'ui/text-field'
-import { FormControl, InputLabel, MenuItem, Select, FormHelperText } from 'ui/form-control'
+import { FormControl, InputLabel, FormHelperText } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import React from 'react'
@@ -40,22 +41,22 @@ export default function General() {
   }, [register])
 
   const paymentCashOption = [
-    <MenuItem value="現金" key={99}>
+    <NativeSelectOption value="現金" key={99}>
       現金
-    </MenuItem>,
+    </NativeSelectOption>,
   ]
 
   const paymentOptions = paymentCashOption.concat(
     payments.loading ? (
-      <MenuItem value={null} key={98}>
+      <NativeSelectOption value={null} key={98}>
         <em>None</em>
-      </MenuItem>
+      </NativeSelectOption>
     ) : (
       // 查詢失敗時只留「現金」（原本 data 為 undefined 時整頁錯誤；Jason 2026/10/22 fix all）
       (idx(payments, _ => _.data.merchantPayWays) || []).map((data, index) => (
-        <MenuItem value={data.name} key={index}>
+        <NativeSelectOption value={data.name} key={index}>
           {data.name}
-        </MenuItem>
+        </NativeSelectOption>
       ))
     )
   )
@@ -167,9 +168,7 @@ export default function General() {
           fullWidth
           error={Boolean(errors?.payType)}
         >
-          <InputLabel>付款方式</InputLabel>
-          <Select
-            label='付款方式'
+          <NativeSelect
             name="payType"
             defaultValue=""
             error={Boolean(errors?.payType)}
@@ -183,29 +182,33 @@ export default function General() {
                 clearErrors(['payType'])
               }
             }}
+            displayEmpty={false}
+            placeholder="請選擇…"
+            label="付款方式"
           >
             {paymentOptions}
-          </Select>
+          </NativeSelect>
           {errors.payType && <FormHelperText>{errors.payType.message}</FormHelperText>}
         </FormControl>
         {payType !== '現金' && (
           <FormControl variant="outlined" className={FORM_CONTROL} fullWidth>
-            <InputLabel>選擇入金儲值手續費負擔方</InputLabel>
-            <Select
+            <NativeSelect
               name="handlingFeeDecountWay"
-              label='選擇入金儲值手續費負擔方'
               defaultValue=""
               error={Boolean(errors?.handlingFeeDecountWay)}
               onChange={event => {
                 setValue('handlingFeeDecountWay', event.target.value)
               }}
+              displayEmpty={false}
+              placeholder="請選擇…"
+              label="選擇入金儲值手續費負擔方"
             >
               {handlingFeeDecountWayArray.map((data, index) => (
-                <MenuItem value={data.value} key={index}>
+                <NativeSelectOption value={data.value} key={index}>
                   {data.label}
-                </MenuItem>
+                </NativeSelectOption>
               ))}
-            </Select>
+            </NativeSelect>
             {errors.handlingFeeDecountWay && <FormHelperText>{errors.handlingFeeDecountWay.message}</FormHelperText>}
           </FormControl>
         )}

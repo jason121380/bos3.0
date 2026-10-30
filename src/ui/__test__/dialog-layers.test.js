@@ -1,12 +1,12 @@
 import React from 'react'
-import { cleanup, fireEvent, render, screen, wait as waitFor } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, wait as waitFor, within } from '@testing-library/react'
 import PasswordDialog from '../../components/PasswordDialog'
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../dialog'
 import { DatePicker, MobileDatePicker } from '../date-picker'
 import Autocomplete from '../combobox'
 import { Popover, PopoverTrigger, PopoverContent } from '../popover'
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '../dropdown-menu'
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '../select'
+import { NativeSelect, NativeSelectOption } from '../native-select'
 
 const Shell = ({ children, onOpenChange, ...props }) => <Dialog open onOpenChange={onOpenChange}><DialogContent aria-describedby={undefined} {...props}><DialogTitle>下層對話框</DialogTitle>{children}</DialogContent></Dialog>
 const pressEscape = target => fireEvent.keyDown(target || document.activeElement, { key: 'Escape', code: 'Escape' })
@@ -102,14 +102,13 @@ describe('共用對話框跨圖層互動', () => {
     expect(onOpenChange).not.toHaveBeenCalled()
   })
 
-  test('Select 可選值且不關閉下層', async () => {
-    const onValueChange = jest.fn()
+  test('下拉選單可選值且不關閉下層', async () => {
+    const onChange = jest.fn()
     const onOpenChange = jest.fn()
-    render(<Shell onOpenChange={onOpenChange}><Select onValueChange={onValueChange}><SelectTrigger aria-label="狀態"><SelectValue placeholder="選狀態" /></SelectTrigger><SelectContent><SelectItem value="published">已發佈</SelectItem></SelectContent></Select></Shell>)
-    fireEvent.keyDown(screen.getByRole('combobox'), { key: 'ArrowDown' })
-    const option = await screen.findByRole('option', { name: '已發佈' })
-    fireEvent.keyDown(option, { key: 'Enter' })
-    expect(onValueChange).toHaveBeenCalledWith('published')
+    render(<Shell onOpenChange={onOpenChange}><NativeSelect value="" placeholder="選狀態" onChange={onChange} inputProps={{ 'aria-label': '狀態' }}><NativeSelectOption value="published">已發佈</NativeSelectOption></NativeSelect></Shell>)
+    fireEvent.click(screen.getByRole('combobox'))
+    fireEvent.click(within(await screen.findByRole('listbox')).getByRole('option', { name: '已發佈' }))
+    expect(onChange.mock.calls[0][0].target.value).toBe('published')
     expect(onOpenChange).not.toHaveBeenCalled()
   })
 
@@ -154,14 +153,13 @@ describe('共用對話框跨圖層互動', () => {
 })
 
 describe('圖層重新開啟', () => {
-  test.each(['正式彈窗', 'Popover', 'Select'])('%s 關閉再開啟後仍高於下層', async kind => {
+  test.each(['正式彈窗', 'Popover'])('%s 關閉再開啟後仍高於下層', async kind => {
     const Harness = () => {
       const [open, setOpen] = React.useState(false)
       return <Shell data-testid="順序下層">
         <button onClick={() => setOpen(true)}>開啟順序上層</button>
         {kind === '正式彈窗' && <Dialog open={open} onOpenChange={setOpen}><DialogContent data-testid="順序上層" aria-describedby={undefined}><DialogTitle>順序上層</DialogTitle><button onClick={() => setOpen(false)}>關閉順序上層</button></DialogContent></Dialog>}
         {kind === 'Popover' && <Popover open={open} onOpenChange={setOpen}><PopoverTrigger>浮層錨點</PopoverTrigger><PopoverContent data-testid="順序上層"><button onClick={() => setOpen(false)}>關閉順序上層</button></PopoverContent></Popover>}
-        {kind === 'Select' && <Select open={open} onOpenChange={setOpen}><SelectTrigger aria-label="順序選單"><SelectValue /></SelectTrigger><SelectContent data-testid="順序上層"><SelectItem value="關閉">關閉順序上層</SelectItem></SelectContent></Select>}
       </Shell>
     }
     render(<Harness />)
@@ -170,7 +168,7 @@ describe('圖層重新開啟', () => {
       clickPointer(screen.getByText('開啟順序上層'))
       const upper = screen.getByTestId('順序上層')
       expect(Number(upper.style.zIndex)).toBeGreaterThan(Number(lower.style.zIndex))
-      pressEscape(kind === 'Select' ? screen.getByRole('option') : screen.getByText('關閉順序上層'))
+      pressEscape(screen.getByText('關閉順序上層'))
       await waitFor(() => expect(screen.queryByTestId('順序上層')).toBeNull())
       expect(lower).toBeInTheDocument()
     }
@@ -216,17 +214,6 @@ describe('正式對話框內層互動', () => {
     clickPointer(screen.getByText('日期浮層外動作'))
     await waitFor(() => expect(screen.queryByTestId('日期Popover')).toBeNull())
     expect(lowerClose).not.toHaveBeenCalled()
-  })
-
-  test('正式 Dialog 內 Select 開啟時禁用下層 pointer，關閉後還原', async () => {
-    render(<Dialog open><DialogContent hideClose aria-label="下層對話框" aria-labelledby={undefined} aria-describedby={undefined} data-testid="相容根"><Select><SelectTrigger aria-label="內層選單"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="甲">甲選項</SelectItem></SelectContent></Select></DialogContent></Dialog>)
-    const root = screen.getByTestId('相容根')
-    fireEvent.keyDown(screen.getByRole('combobox'), { key: 'ArrowDown' })
-    const option = await screen.findByRole('option')
-    await waitFor(() => expect(root.style.pointerEvents).toBe('none'))
-    pressEscape(option)
-    await waitFor(() => expect(screen.queryByRole('option')).toBeNull())
-    await waitFor(() => expect(root.style.pointerEvents).toBe('auto'))
   })
 
 })
@@ -305,18 +292,15 @@ test('搜尋選單選值後可重開兩次，每次 Esc 只關選單', async () 
   expect(lowerClose).toHaveBeenCalledTimes(1)
 })
 
-test('Select 非受控選值關閉後解除圖層，下次 Esc 關下層', async () => {
+test('下拉選單選值關閉後解除圖層，下次 Esc 關下層', async () => {
   const lowerClose = jest.fn()
-  const selectOpen = jest.fn()
   const selected = jest.fn()
-  render(<Shell onOpenChange={lowerClose}><Select onOpenChange={selectOpen} onValueChange={selected}><SelectTrigger aria-label="重開選項"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="染髮">染髮</SelectItem></SelectContent></Select></Shell>)
+  render(<Shell onOpenChange={lowerClose}><NativeSelect defaultValue="" onChange={selected} inputProps={{ 'aria-label': '重開選項' }}><NativeSelectOption value="染髮">染髮</NativeSelectOption></NativeSelect></Shell>)
   const trigger = screen.getByRole('combobox')
-  fireEvent.keyDown(trigger, { key: 'ArrowDown' })
-  const option = screen.getByRole('option')
-  fireEvent.keyDown(option, { key: 'Enter' })
-  await waitFor(() => expect(screen.queryByRole('option')).toBeNull())
-  expect(selected).toHaveBeenCalledWith('染髮')
-  expect(selectOpen.mock.calls).toEqual([[true], [false]])
+  fireEvent.click(trigger)
+  fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: '染髮' }))
+  await waitFor(() => expect(screen.queryByRole('listbox')).toBeNull())
+  expect(selected.mock.calls[0][0].target.value).toBe('染髮')
   pressEscape(trigger)
   expect(lowerClose).toHaveBeenCalledTimes(1)
 })

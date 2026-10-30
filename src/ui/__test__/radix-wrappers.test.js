@@ -1,87 +1,25 @@
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import React from 'react'
 
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSeparator, SelectTrigger, SelectValue } from '../select'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../dropdown-menu'
 import { Popover, PopoverContent, PopoverTrigger } from '../popover'
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../dialog'
 import { Tabs, TabsContent } from '../tabs'
 import { SettingsSectionHeading, SettingsTabsList, SettingsTabsTrigger } from '../settings-nav'
 
-// 保護什麼：包在 Radix 之上的浮層／選單元件（Select、DropdownMenu、Popover、Dialog、Tabs、設定頁選單）。
+// 保護什麼：包在 Radix 之上的浮層／選單元件（DropdownMenu、Popover、Dialog、Tabs、設定頁選單）。
 // 這些元件畫在 Portal（body 底下），必須自帶 .ui-root（CLAUDE.md 踩雷：Portal 內沒有 ui-root 就沒有 box-sizing 重置），
 // 層級要高於相容層 Dialog（z-1300），並維持 Radix 的鍵盤／ARIA 行為（選取、關閉、分頁切換）。
 
 afterEach(cleanup)
 
-// jsdom 沒有 scrollIntoView（Radix Select 開啟時會把選中項目捲進可視範圍）
+// jsdom 沒有 scrollIntoView（保留給其他 Radix 浮層）
 const realScrollIntoView = Element.prototype.scrollIntoView
 beforeAll(() => {
   Element.prototype.scrollIntoView = () => {}
 })
 afterAll(() => {
   Element.prototype.scrollIntoView = realScrollIntoView
-})
-
-describe('Select（Radix）', () => {
-  it('展開時選單畫在 Portal、帶 ui-root 與高於 Dialog 的層級，選項標示目前值', () => {
-    const onValueChange = jest.fn()
-    render(
-      <Select open value="b" onValueChange={onValueChange}>
-        <SelectTrigger aria-label="付款方式" className="w-40">
-          <SelectValue placeholder="請選擇" />
-        </SelectTrigger>
-        <SelectContent className="extra">
-          <SelectGroup>
-            <SelectLabel>常用</SelectLabel>
-            <SelectItem value="a">現金</SelectItem>
-            <SelectSeparator data-testid="sep" />
-            <SelectItem value="b">刷卡</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    )
-    const listbox = screen.getByRole('listbox')
-    expect(listbox.className).toContain('ui-root')
-    expect(listbox.className).toContain('z-[1400]')
-    // popper 模式下寬度跟觸發鈕一致
-    expect(listbox.className).toContain('w-[var(--radix-select-trigger-width)]')
-    expect(screen.getByText('常用').className).toContain('text-caption')
-    expect(screen.getByTestId('sep').className).toContain('bg-border')
-    expect(screen.getByRole('option', { name: '刷卡' })).toHaveAttribute('data-state', 'checked')
-    expect(screen.getByRole('option', { name: '現金' })).toHaveAttribute('data-state', 'unchecked')
-    fireEvent.keyDown(screen.getByRole('option', { name: '現金' }), { key: 'Enter' })
-    expect(onValueChange).toHaveBeenCalledWith('a')
-  })
-
-  it('item-aligned 模式不套觸發鈕寬度；invalid 時觸發鈕帶 aria-invalid 與紅框', () => {
-    render(
-      <Select open defaultValue="a">
-        <SelectTrigger aria-label="付款方式" invalid>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent position="item-aligned">
-          <SelectItem value="a">現金</SelectItem>
-        </SelectContent>
-      </Select>
-    )
-    expect(screen.getByRole('listbox').className).not.toContain('w-[var(--radix-select-trigger-width)]')
-    const trigger = screen.getByRole('combobox', { hidden: true })
-    expect(trigger).toHaveAttribute('aria-invalid', 'true')
-    expect(trigger.className).toContain('border-danger')
-  })
-
-  it('沒有錯誤時觸發鈕不帶 aria-invalid', () => {
-    render(
-      <Select>
-        <SelectTrigger aria-label="付款方式">
-          <SelectValue placeholder="請選擇" />
-        </SelectTrigger>
-      </Select>
-    )
-    expect(screen.getByRole('combobox')).not.toHaveAttribute('aria-invalid')
-    expect(screen.getByText('請選擇')).toBeInTheDocument()
-  })
 })
 
 describe('DropdownMenu（Radix）', () => {

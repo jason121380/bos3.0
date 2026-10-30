@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Plus, Download, Search, Trash2 } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Input, Field } from 'ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'ui/select'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TablePagination } from 'ui/table'
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose } from 'ui/dialog'
 import { Badge } from 'ui/badge'
@@ -84,14 +83,11 @@ export default function UiPreview() {
               <Input id="p-phone" defaultValue="0912" invalid />
             </Field>
             <Field label="付款方式">
-              <Select defaultValue="cash">
-                <SelectTrigger><SelectValue placeholder="請選擇" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="cash">現金</SelectItem>
-                  <SelectItem value="card">信用卡</SelectItem>
-                  <SelectItem value="linepay">LINE Pay</SelectItem>
-                </SelectContent>
-              </Select>
+              <NativeSelect defaultValue="cash" placeholder="請選擇">
+                <NativeSelectOption value="cash">現金</NativeSelectOption>
+                <NativeSelectOption value="card">信用卡</NativeSelectOption>
+                <NativeSelectOption value="linepay">LINE Pay</NativeSelectOption>
+              </NativeSelect>
             </Field>
             <Field label="停用欄位">
               <Input disabled defaultValue="不可編輯" />

@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter } from 'ui/dialog'
 import { Button } from 'ui/button'
-import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
+import { FormControl } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
 import { LoaderCircle } from 'lucide-react'
 import { Field, Input } from 'ui/input'
@@ -391,25 +391,27 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                 focused={focus === 'gender'}
                 onKeyDown={e => e.key === 'Enter' && setFocus('email')}
                 variant="outlined" fullWidth>
-                <InputLabel focused={focus === 'gender'} ref={inputLabel}>性別</InputLabel>
-                <Select
+                <NativeSelect
                   inputRef={genderRef}
-                  label='性別'
                   value={values.gender}
                   name='gender'
                   onChange={event => {
                     handleFieldChange(event)
                   }}
+                  displayEmpty={false}
+                  placeholder="請選擇…"
+                  label="性別"
+                  labelRef={inputLabel}
                 >
-                  <MenuItem value="UNKNOWN">
+                  <NativeSelectOption value="UNKNOWN">
                     <em>未知</em>
-                  </MenuItem>
+                  </NativeSelectOption>
                   {GENDER_OPTIONS.map((data, index) => (
-                    <MenuItem value={data.value} key={`${data.value}-${index}`}>
+                    <NativeSelectOption value={data.value} key={`${data.value}-${index}`}>
                       {data.label}
-                    </MenuItem>
+                    </NativeSelectOption>
                   ))}
-                </Select>
+                </NativeSelect>
               </FormControl>
             </div>
             <div className="min-w-0">

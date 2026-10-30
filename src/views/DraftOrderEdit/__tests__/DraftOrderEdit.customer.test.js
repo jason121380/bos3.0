@@ -46,6 +46,12 @@ const choose = (select, label) => {
   const index = Array.from(select.options).findIndex(o => o.textContent === label)
   fireEvent.change(select, { target: { value: String(index) } })
 }
+// 偏好設計師改為可打字搜尋的 ui/combobox（Jason 2026/10/30 決定：員工清單可搜尋）：打字後點選選項
+const chooseStaff = async (input, text) => {
+  fireEvent.change(input, { target: { value: '' } })
+  fireEvent.change(input, { target: { value: text } })
+  fireEvent.click(within(await screen.findByRole('listbox')).getByText(text))
+}
 const selectedLabel = select => select.options[select.selectedIndex].textContent
 
 const ready = async page => {
@@ -287,7 +293,7 @@ describe('掛單詳細：新增顧客', () => {
     typeLikeBrowser(input(modal, 'year'), '85')
     typeLikeBrowser(input(modal, 'month'), '3')
     typeLikeBrowser(input(modal, 'day'), '4')
-    choose(modal.querySelector('#addCustomerModal-preferDesigner'), DESIGNER.userName)
+    await chooseStaff(modal.querySelector('#addCustomerModal-preferDesigner-input'), DESIGNER.userName)
     fireEvent.click(add)
     await wait(() => expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')).toHaveLength(1))
     expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')[0].variables.input).toEqual(
@@ -360,7 +366,7 @@ describe('掛單詳細：編輯顧客', () => {
     await wait(() => expect(customerInput()).toHaveValue('陳小姐/0912345678/C01'))
     fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
     const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
-    await wait(() => expect(selectedLabel(modal.querySelector('#addCustomerModal-preferDesigner'))).toBe(DESIGNER.userName))
+    await wait(() => expect(modal.querySelector('#addCustomerModal-preferDesigner-input')).toHaveValue(DESIGNER.userName))
     expect(modal.querySelector('input[name="remark"]')).toHaveValue('敏感肌')
     fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
     await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))

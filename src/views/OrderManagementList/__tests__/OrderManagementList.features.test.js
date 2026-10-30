@@ -169,8 +169,8 @@ const lastInput = calls => {
 const rowOf = no => screen.getByText(new RegExp(`^#${no}`)).closest('tr')
 const exportedCsv = () => decodeURIComponent(screen.getByText('報表匯出').closest('a').getAttribute('href'))
 const quickOptions = () => {
-  fireEvent.keyDown(screen.getByRole('combobox', { name: '快速選擇日期區間' }), { key: 'Enter' })
-  const list = screen.getAllByRole('option').map(o => o.textContent)
+  fireEvent.click(screen.getByRole('combobox', { name: '快速選擇日期區間' }))
+  const list = within(screen.getByRole('listbox')).getAllByRole('option').map(o => o.textContent)
   fireEvent.keyDown(screen.getByRole('listbox'), { key: 'Escape' })
   return list
 }
@@ -216,8 +216,8 @@ describe('帳單列表：日期權限', () => {
   it('快速選擇「昨天」後改查昨天整天（台灣時間）', async () => {
     const { calls, settle } = setup()
     await settle()
-    fireEvent.keyDown(screen.getByRole('combobox', { name: '快速選擇日期區間' }), { key: 'Enter' })
-    fireEvent.keyDown(screen.getByRole('option', { name: '昨天' }), { key: 'Enter' })
+    fireEvent.click(screen.getByRole('combobox', { name: '快速選擇日期區間' }))
+    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: '昨天' }))
     await wait(() =>
       expect(lastInput(calls).dateRange).toEqual({
         startDate: startOfDay(subDays(new Date(), 1)).getTime(),

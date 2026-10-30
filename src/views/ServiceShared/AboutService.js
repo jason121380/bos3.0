@@ -1,5 +1,6 @@
 // 純文字欄（代號／名稱）改 Field 上方標籤＋ui Input（TextField 試點）；Select 與金額／%數欄位使用正式 ui 元件
-import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
+import { FormControl } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
@@ -75,25 +76,25 @@ function AboutService({ className, onChange, service, handleCheckboxChange, rese
             onChange={event => onChange({ event, key: 'name' })}
           />
         </Field>
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel ref={inputLabel}>服務類別</InputLabel>
-          <Select
-            label='服務類別'
-            value={service.ServiceCategoryId}
-            onChange={event => onChange({ event, key: 'ServiceCategoryId' })}
-          >
-            <MenuItem value="" disabled>
-              <em>選擇服務類別</em>
-            </MenuItem>
-            {idx(serviceCategories, _ =>
-              _.data.serviceCategories.map((data, idx) => (
-                <MenuItem value={data.id} key={`service-category-${idx}`}>
-                  {data.name}
-                </MenuItem>
-              ))
-            )}
-          </Select>
-        </FormControl>
+        <NativeSelect
+          value={service.ServiceCategoryId}
+          onChange={event => onChange({ event, key: 'ServiceCategoryId' })}
+          displayEmpty={false}
+          placeholder="請選擇…"
+          label="服務類別"
+          labelRef={inputLabel}
+        >
+          <NativeSelectOption value="" disabled>
+            <em>選擇服務類別</em>
+          </NativeSelectOption>
+          {idx(serviceCategories, _ =>
+            _.data.serviceCategories.map((data, idx) => (
+              <NativeSelectOption value={data.id} key={`service-category-${idx}`}>
+                {data.name}
+              </NativeSelectOption>
+            ))
+          )}
+        </NativeSelect>
         <TextField
           type="number"
           label="價格"
@@ -112,20 +113,20 @@ function AboutService({ className, onChange, service, handleCheckboxChange, rese
           value={service.price}
           onWheel={() => document.activeElement.blur()}
         />
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel ref={inputLabel}>打帳單是否能更改預設價格</InputLabel>
-          <Select
-            label='打帳單是否能更改預設價格'
-            value={service.isLocked}
-            onChange={event => onChange({ event, key: 'isLocked' })}
-          >
-            {lockStatus.map((data, idx) => (
-              <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                {data.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <NativeSelect
+          value={service.isLocked}
+          onChange={event => onChange({ event, key: 'isLocked' })}
+          displayEmpty={false}
+          placeholder="請選擇…"
+          label="打帳單是否能更改預設價格"
+          labelRef={inputLabel}
+        >
+          {lockStatus.map((data, idx) => (
+            <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+              {data.label}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
         {/* <FormControl variant="outlined" fullWidth>
           <FormControlLabel
             // css={styles.isUsing}
@@ -181,35 +182,33 @@ function AboutService({ className, onChange, service, handleCheckboxChange, rese
             )}
           </div>
         </FormControl>
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel >綁定第三方卡券</InputLabel>
-          <Select
-            label='綁定第三方卡券'
-            value={service.bindedThirdPartTicketId}
-            onChange={event => onChange({ event, key: 'bindedThirdPartTicketId' })}
-          >
-            <MenuItem value='none'>無</MenuItem>
-            {thirdParty.map((data, idx) => (
-              <MenuItem value={data.id} key={`${data.name}-${idx}`}>
-                {data.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel >是否鎖定第三方卡券</InputLabel>
-          <Select
-            label='是否鎖定第三方卡券'
-            value={service.isBindedThirdPartTicketLocked}
-            onChange={event => onChange({ event, key: 'isBindedThirdPartTicketLocked' })}
-          >
-            {TicketlockStatus.map((data, idx) => (
-              <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                {data.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <NativeSelect
+          value={service.bindedThirdPartTicketId}
+          onChange={event => onChange({ event, key: 'bindedThirdPartTicketId' })}
+          displayEmpty={false}
+          placeholder="請選擇…"
+          label="綁定第三方卡券"
+        >
+          <NativeSelectOption value='none'>無</NativeSelectOption>
+          {thirdParty.map((data, idx) => (
+            <NativeSelectOption value={data.id} key={`${data.name}-${idx}`}>
+              {data.name}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
+        <NativeSelect
+          value={service.isBindedThirdPartTicketLocked}
+          onChange={event => onChange({ event, key: 'isBindedThirdPartTicketLocked' })}
+          displayEmpty={false}
+          placeholder="請選擇…"
+          label="是否鎖定第三方卡券"
+        >
+          {TicketlockStatus.map((data, idx) => (
+            <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+              {data.label}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
       </CardContent>
     </Card>
   )

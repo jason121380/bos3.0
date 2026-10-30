@@ -1,6 +1,6 @@
 // 扣項欄位的值可能為空字串或數字（扣項基準點），使用 ui/form-control Select；同列的數字欄位也使用 ui/text-field TextField 以維持標籤樣式一致
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
-import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField } from 'ui/text-field'
 import { Delete, Plus, Trash2 } from 'lucide-react'
 import cloneDeep from 'lodash/cloneDeep'
@@ -238,24 +238,22 @@ function AboutDeduction({
                     {content.deductionOrder}
                   </span>
                   <div className="w-full sm:w-36">
-                    <FormControl variant="outlined" fullWidth>
-                      <InputLabel ref={inputLabel} id="select-item-label">
-                        扣項類別
-                      </InputLabel>
-                      <Select
-                        labelId="select-item-label"
-                        id="select-item"
-                        label='扣項類別'
-                        onChange={event => handleDeductionTypeChange(data.type, event, index)}
-                        value={content.type}
-                      >
-                        {deductions.map((data, idx) => (
-                          <MenuItem value={data.value} key={`${data.value}-${idx}`}>
-                            {data.label}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <NativeSelect
+                      labelId="select-item-label"
+                      id="select-item"
+                      onChange={event => handleDeductionTypeChange(data.type, event, index)}
+                      value={content.type}
+                      displayEmpty={false}
+                      placeholder="請選擇…"
+                      label="扣項類別"
+                      labelRef={inputLabel}
+                    >
+                      {deductions.map((data, idx) => (
+                        <NativeSelectOption value={data.value} key={`${data.value}-${idx}`}>
+                          {data.label}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
                   </div>
                   {/* <FormControl variant="outlined" css={styles.formGroup} fullWidth>
                     <InputLabel ref={inputLabel} id="select-item-label">
@@ -277,24 +275,22 @@ function AboutDeduction({
                   </FormControl> */}
                   {content.name && (
                     <div className="w-full sm:w-36">
-                      <FormControl variant="outlined" fullWidth>
-                        <InputLabel ref={inputLabel} id="select-item-label">
-                          扣成方式
-                        </InputLabel>
-                        <Select
-                          label='扣成方式'
-                          labelId="select-item-label"
-                          id="select-item"
-                          onChange={event => handleDeductionWay(data.type, event, index)}
-                          value={content.deductionWay}
-                        >
-                          {deductionWay2.map((data, idx) => (
-                            <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                              {data.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                      <NativeSelect
+                        labelId="select-item-label"
+                        id="select-item"
+                        onChange={event => handleDeductionWay(data.type, event, index)}
+                        value={content.deductionWay}
+                        displayEmpty={false}
+                        placeholder="請選擇…"
+                        label="扣成方式"
+                        labelRef={inputLabel}
+                      >
+                        {deductionWay2.map((data, idx) => (
+                          <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                            {data.label}
+                          </NativeSelectOption>
+                        ))}
+                      </NativeSelect>
                     </div>
                   )}
                   {content.isSpecial && content.name ? (
@@ -360,24 +356,22 @@ function AboutDeduction({
                     )
                   )}
                   <div className="w-full sm:w-36">
-                    <FormControl variant="outlined" fullWidth>
-                      <InputLabel ref={inputLabel} id="select-item-label">
-                        扣項基準點
-                      </InputLabel>
-                      <Select
-                        value={index === 0 ? 0 : content.deductionReference}
-                        label='扣項基準點'
-                        labelId="select-item-label"
-                        id="select-item"
-                        onChange={event => handleDeductionReference(data.type, event, index)}
-                      >
-                        {menuItemGenerate(content.deductionOrder).map((data, index) => (
-                          <MenuItem value={data.value} key={index}>
-                            {data.title}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <NativeSelect
+                      value={index === 0 ? 0 : content.deductionReference}
+                      labelId="select-item-label"
+                      id="select-item"
+                      onChange={event => handleDeductionReference(data.type, event, index)}
+                      displayEmpty={false}
+                      placeholder="請選擇…"
+                      label="扣項基準點"
+                      labelRef={inputLabel}
+                    >
+                      {menuItemGenerate(content.deductionOrder).map((data, index) => (
+                        <NativeSelectOption value={data.value} key={index}>
+                          {data.title}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
                   </div>
                   <div className="flex items-center gap-1">
                     {content.name !== '' && (

@@ -78,7 +78,8 @@ const selectLikeBrowser = (select, value) => {
   Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value').set.call(select, value)
   select.dispatchEvent(new window.Event('change', { bubbles: true }))
 }
-const preferSelect = () => within(modal()).getByText('偏好設計師').parentElement.querySelector('select')
+// 偏好設計師改為可打字搜尋的 ui/combobox（Jason 2026/10/30 決定：員工清單可搜尋）
+const preferInput = () => within(modal()).getByLabelText('偏好設計師')
 
 beforeEach(() => loginAs())
 afterEach(cleanup)
@@ -184,9 +185,10 @@ describe('編輯顧客', () => {
   it('改偏好設計師後儲存：送出顧客 id 與新的偏好設計師，成功後帳單重新指向這位顧客、手機清空', async () => {
     const page = renderModal(EXISTING)
     expect(await screen.findByText('編輯客戶資料')).toBeInTheDocument()
-    // 偏好設計師（相容層 Select 以原生 select 呈現；選項依序為 None、王小美、李助理）
-    await wait(() => expect(within(preferSelect()).getByText('李助理')).toBeInTheDocument())
-    selectLikeBrowser(preferSelect(), within(preferSelect()).getByText('李助理').value)
+    // 偏好設計師：打字篩選後點選（帶入原本的王小美）
+    await wait(() => expect(preferInput()).toHaveValue('王小美'))
+    fireEvent.change(preferInput(), { target: { value: '李' } })
+    fireEvent.click(within(await screen.findByRole('listbox')).getByText('李助理'))
     fireEvent.click(within(modal()).getByText('儲存', { selector: 'button' }))
     await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))
     expect(callsOf(page.calls, 'SET_CUSTOMER')[0].variables.input).toEqual(
@@ -226,8 +228,10 @@ describe('編輯顧客', () => {
   it('設計師名單還在載入：偏好設計師顯示載入中，不可選', async () => {
     renderPage(<Harness initialCustomer={EXISTING} />, { fixtures: fixtures(), delays: { FETCH_USERS: 200 } })
     await screen.findByText('編輯客戶資料')
-    expect(within(preferSelect()).getByText('載入中…')).toBeInTheDocument()
-    expect(within(preferSelect()).queryByText('王小美')).toBeNull()
+    expect(preferInput()).toHaveAttribute('placeholder', '載入中…')
+    fireEvent.click(preferInput())
+    expect(within(screen.getByRole('listbox')).getByText('載入中…')).toBeInTheDocument()
+    expect(within(screen.getByRole('listbox')).queryByText('王小美')).toBeNull()
   })
 })
 

@@ -44,6 +44,12 @@ const setup = (overrides = {}, options = {}) => renderDetails({ fixtures: fixtur
 
 const row = label => screen.getByText(label, { selector: 'dt' }).parentElement
 const inputOf = label => screen.getAllByLabelText(label).find(el => el.tagName === 'INPUT')
+// 偏好設計師改為可打字搜尋的 ui/combobox（Jason 2026/10/30 決定：員工清單可搜尋）：打字後點選選項
+const chooseStaff = async (input, text) => {
+  fireEvent.change(input, { target: { value: '' } })
+  fireEvent.change(input, { target: { value: text } })
+  fireEvent.click(within(await screen.findByRole('listbox')).getByText(text))
+}
 const choose = (select, text) => {
   const option = Array.from(select.querySelectorAll('option')).find(o => o.textContent === text)
   fireEvent.change(select, { target: { value: option.value } })
@@ -164,7 +170,7 @@ describe('編輯客戶資料', () => {
     typeLikeBrowser(inputOf('客戶暱稱'), '美美')
     typeLikeBrowser(inputOf('地址'), '新北市')
     choose(screen.getByLabelText('客戶來源'), '網路')
-    choose(screen.getByLabelText('偏好設計師'), 'Amy')
+    await chooseStaff(screen.getByLabelText('偏好設計師'), 'Amy')
     typeLikeBrowser(inputOf('備註'), 'VIP')
     const before = callsOf(utils.calls, 'FETCH_CUSTOMER_DETAIL').length
     fireEvent.click(screen.getByText('儲存'))
@@ -198,8 +204,7 @@ describe('編輯客戶資料', () => {
     const utils = setup()
     await utils.settle()
     await openEdit()
-    const select = screen.getByLabelText('偏好設計師')
-    expect(select.options[select.selectedIndex].textContent).toBe('Amy')
+    expect(screen.getByLabelText('偏好設計師')).toHaveValue('Amy')
     fireEvent.click(screen.getByText('儲存'))
     await wait(() => expect(callsOf(utils.calls, 'SET_CUSTOMER')).toHaveLength(1))
     expect(callsOf(utils.calls, 'SET_CUSTOMER')[0].variables.input.PreferDesignerId).toBe('d2')
@@ -207,7 +212,9 @@ describe('編輯客戶資料', () => {
     const none = setup({ FETCH_CUSTOMER_DETAIL: { customer: { ...CUSTOMER, preferDesigner: null } } })
     await none.settle()
     await openEdit()
-    expect(screen.getByLabelText('偏好設計師').value).toBe('0')
+    // 沒有偏好設計師：搜尋框空白、顯示「請選擇…」
+    expect(screen.getByLabelText('偏好設計師')).toHaveValue('')
+    expect(screen.getByLabelText('偏好設計師')).toHaveAttribute('placeholder', '請選擇…')
     fireEvent.click(screen.getByText('儲存'))
     await wait(() => expect(callsOf(none.calls, 'SET_CUSTOMER')).toHaveLength(1))
     expect(callsOf(none.calls, 'SET_CUSTOMER')[0].variables.input.PreferDesignerId).toBe('')
@@ -262,13 +269,13 @@ describe('編輯客戶資料', () => {
     )
     await screen.findByText('編輯')
     await openEdit()
-    expect(screen.getByText('載入中…')).toBeInTheDocument()
+    expect(screen.getByLabelText('偏好設計師')).toHaveAttribute('placeholder', '載入中…')
     expect(inputOf('客戶編號')).toHaveValue('')
     expect(inputOf('電話')).toHaveValue('0')
     expect(inputOf('民國年')).toHaveValue('')
     expect(inputOf('客戶姓名')).toHaveValue('')
     await utils.settle()
-    expect(screen.queryByText('載入中…')).toBeNull()
+    expect(screen.getByLabelText('偏好設計師')).toHaveAttribute('placeholder', '請選擇…')
   })
 })
 

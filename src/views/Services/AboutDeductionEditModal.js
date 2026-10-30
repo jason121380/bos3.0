@@ -1,6 +1,7 @@
 // 共用圖層支援窗內 picker；保留原受控開關與表單行為。
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter } from 'ui/dialog'
-import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
+import { FormControl } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import PropTypes from 'prop-types'
@@ -226,41 +227,41 @@ function AboutDeductionEditModal({
                         style={{ width: '6rem' }}
                         fullWidth
                       >
-                        <InputLabel ref={inputLabel} id="select-item-label">
-                          扣項類別
-                        </InputLabel>
-                        <Select
+                        <NativeSelect
                           labelId="select-item-label"
                           id="select-item"
-                          label='扣項類別'
                           onChange={event => handleDeductionTypeChange(data.type, event, index)}
                           value={content.type}
+                          displayEmpty={false}
+                          placeholder="請選擇…"
+                          label="扣項類別"
+                          labelRef={inputLabel}
                         >
                           {deductions.map((data, idx) => (
-                            <MenuItem value={data.value} key={`${data.value}-${idx}`}>
+                            <NativeSelectOption value={data.value} key={`${data.value}-${idx}`}>
                               {data.label}
-                            </MenuItem>
+                            </NativeSelectOption>
                           ))}
-                        </Select>
+                        </NativeSelect>
                       </FormControl>
                       {content.name && (
                         <FormControl variant="outlined" style={{ width: '6rem' }} fullWidth>
-                          <InputLabel ref={inputLabel} id="select-item-label">
-                            抽成方式
-                          </InputLabel>
-                          <Select
+                          <NativeSelect
                             labelId="select-item-label"
                             id="select-item"
-                            label='抽成方式'
                             onChange={event => handleDeductionWay(data.type, event, index)}
                             value={content.deductionWay}
+                            displayEmpty={false}
+                            placeholder="請選擇…"
+                            label="抽成方式"
+                            labelRef={inputLabel}
                           >
                             {deductionWay2.map((data, idx) => (
-                              <MenuItem value={data.value} key={`${data.label}-${idx}`}>
+                              <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                                 {data.label}
-                              </MenuItem>
+                              </NativeSelectOption>
                             ))}
-                          </Select>
+                          </NativeSelect>
                         </FormControl>
                       )}
                       {content.name && (
@@ -313,22 +314,22 @@ function AboutDeductionEditModal({
                       )}
 
                       <FormControl variant="outlined" style={{ width: '6rem' }} fullWidth>
-                        <InputLabel ref={inputLabel} id="select-item-label">
-                          扣項基準點
-                        </InputLabel>
-                        <Select
+                        <NativeSelect
                           value={index === 0 ? 0 : content.deductionReference}
-                          label='扣項基準點'
                           labelId="select-item-label"
                           id="select-item"
                           onChange={event => handleDeductionReference(data.type, event, index)}
+                          displayEmpty={false}
+                          placeholder="請選擇…"
+                          label="扣項基準點"
+                          labelRef={inputLabel}
                         >
                           {menuItemGenerate(content.deductionOrder).map((data, index) => (
-                            <MenuItem value={data.value} key={index}>
+                            <NativeSelectOption value={data.value} key={index}>
                               {data.title}
-                            </MenuItem>
+                            </NativeSelectOption>
                           ))}
-                        </Select>
+                        </NativeSelect>
                       </FormControl>
                       <div className="flex items-center gap-1">
                         {content.name !== '' && (

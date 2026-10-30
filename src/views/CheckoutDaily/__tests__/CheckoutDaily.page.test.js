@@ -127,8 +127,8 @@ describe('每日結帳', () => {
     }
     expect(callsOf(calls, 'dailyMoneyFlowReport')[0].variables.input).toEqual(expected)
     expect(callsOf(calls, 'waitCloseOrderDate')[0].variables.input).toEqual(expected)
-    fireEvent.keyDown(screen.getByRole('combobox', { name: '快速選擇日期區間' }), { key: 'Enter' })
-    fireEvent.keyDown(screen.getByRole('option', { name: '本月' }), { key: 'Enter' })
+    fireEvent.click(screen.getByRole('combobox', { name: '快速選擇日期區間' }))
+    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: '本月' }))
     const month = { startDate: startOfMonth(now).getTime(), endDate: require('date-fns').endOfMonth(now).getTime(), pageLimit: 1000, pageOffset: 0 }
     await wait(() => expect(lastInput(calls, 'dailyMoneyFlowReport')).toEqual(month))
     expect(lastInput(calls, 'waitCloseOrderDate')).toEqual(month)

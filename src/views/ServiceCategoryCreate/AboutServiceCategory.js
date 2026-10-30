@@ -1,5 +1,6 @@
 // 代號／類別名稱改 Field＋ui Input：register 仍以 ref 掛 react-hook-form、error 訊息由 Field 呈現（文字／驗證時機不變）；備註 multiline 與 Select 使用 ui/form-control
-import { FormControl, InputLabel, Select, FormHelperText, MenuItem } from 'ui/form-control'
+import { FormControl, FormHelperText } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField } from 'ui/text-field'
 import PropTypes from 'prop-types'
 import useStore from 'hooks/useStore'
@@ -43,22 +44,24 @@ function AboutServiceCategory({ className, attributions, setAttr, attr, ...rest 
           fullWidth
           error={!!errors.attribution}
         >
-          <InputLabel>服務歸屬</InputLabel>
-          <Select
-            label="服務歸屬"
+          <NativeSelect
             name="attribution"
             value={attr}
             onChange={e => setAttr(e.target.value)}
+            displayEmpty={false}
+            placeholder="請選擇…"
+            error={!!errors.attribution}
+            label="服務歸屬"
           >
             {attributions.map((data, idx) => (
-              <MenuItem
+              <NativeSelectOption
                 value={data.value}
                 key={`attribution-${idx}`}
               >
                 {data.name}
-              </MenuItem>
+              </NativeSelectOption>
             ))}
-          </Select>
+          </NativeSelect>
           {errors.attribution && <FormHelperText>{errors.attribution.message}</FormHelperText>}
         </FormControl>
         <TextField

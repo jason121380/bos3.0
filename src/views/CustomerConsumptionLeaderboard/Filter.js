@@ -1,6 +1,7 @@
 // 排序依據使用 ui/form-control Select（與同列 ui/combobox Autocomplete 並排）
 import { Checkbox } from 'ui/checkbox'
-import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
+import { FormControl } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField } from 'ui/text-field'
 import { Button } from 'ui/button'
 import { ReportToolbar } from 'ui/page-header'
@@ -65,17 +66,19 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit }) =>
               fullWidth variant='outlined'
               style={{ width: 100 }}
             >
-              <InputLabel>排序依據</InputLabel>
-              <Select
+              <NativeSelect
                 value={inputData.orderType}
-                label='排序依據'
                 onChange={e => dataChange(e.target.value, 'orderType')}
+                displayEmpty={false}
+                placeholder="請選擇…"
+                disabled={loading || userOrderableList.loading}
+                label="排序依據"
 
               >
                 {accordance.map(({ label, value }) => (
-                  <MenuItem key={value} value={value}>{label}</MenuItem>
+                  <NativeSelectOption key={value} value={value}>{label}</NativeSelectOption>
                 ))}
-              </Select>
+              </NativeSelect>
             </FormControl>
           </div>
           <div className="min-w-0 flex-1 sm:w-auto sm:min-w-[200px] sm:max-w-[480px] sm:flex-initial">

@@ -1,6 +1,7 @@
 // 表單控制項（日期、收支切換、科目／人員 Autocomplete、備註快捷 Select、金額與備註 TextField）
 // 使用正式 ui 元件：皆以 ref 串接 Enter 鍵焦點流程（樣式由正式 ui 元件提供）
-import { FormControl, MenuItem, InputLabel, Select } from 'ui/form-control'
+import { FormControl } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { TextField } from 'ui/text-field'
 import { Copy, Trash2 } from 'lucide-react'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
@@ -570,10 +571,8 @@ export default function AccountingRecordDetail(props) {
                         }
                       }}
                     >
-                      <InputLabel>備註快捷鍵</InputLabel>
-                      <Select
+                      <NativeSelect
                         inputRef={remarkItemRef}
-                        label='備註快捷鍵'
                         onChange={event => {
                           onChange(event)
                           setFocus('remark')
@@ -586,11 +585,14 @@ export default function AccountingRecordDetail(props) {
                             remarkRef.current.focus()
                           }
                         }}
+                        displayEmpty={false}
+                        placeholder="請選擇…"
+                        label="備註快捷鍵"
                       >
                         {remarkItem.map((data, index) => (
-                          <MenuItem key={index} value={data.value}>{data.label}</MenuItem>
+                          <NativeSelectOption key={index} value={data.value}>{data.label}</NativeSelectOption>
                         ))}
-                      </Select>
+                      </NativeSelect>
                     </FormControl>
                   </div>
                   <div>

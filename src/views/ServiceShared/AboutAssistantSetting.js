@@ -1,5 +1,5 @@
 // 選項值可能為空字串或數字（協助人員人數），使用 ui/form-control Select；同列的數字欄位也使用 ui/text-field TextField 以維持標籤樣式一致
-import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { Delete, Plus, Trash2 } from 'lucide-react'
@@ -262,82 +262,75 @@ function AboutAssistantSetting({
         {support.map((content, index) => (
           <div className="flex flex-wrap items-start gap-4" key={index}>
             <div className="w-full sm:w-36">
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel ref={inputLabel} id="select-item-label">
-                  扣項類別
-                </InputLabel>
-                <Select
-                  labelId="select-item-label"
-                  id="select-item"
-                  label='扣項類別'
-                  onChange={event => handleDeductionTypeChange(event, index)}
-                  value={content.helperDeductionType}
-                >
-                  {deductions.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.value}-${idx}`}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <NativeSelect
+                labelId="select-item-label"
+                id="select-item"
+                onChange={event => handleDeductionTypeChange(event, index)}
+                value={content.helperDeductionType}
+                displayEmpty={false}
+                placeholder="請選擇…"
+                label="扣項類別"
+                labelRef={inputLabel}
+              >
+                {deductions.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.value}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
             </div>
             <div className="w-full sm:w-36">
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel ref={inputLabel} id="select-item-label">
-                  類別
-                </InputLabel>
-                <Select
-                  labelId="select-item-label"
-                  id="select-item"
-                  label='類別'
-                  onChange={event => handleHelperType(event, index)}
-                  value={content.type}
-                >
-                  {merchantHelperItems?.map((data, idx) => (
-                    <MenuItem value={data.type} key={`${data.type}-${idx}`}>
-                      {data.type}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <NativeSelect
+                labelId="select-item-label"
+                id="select-item"
+                onChange={event => handleHelperType(event, index)}
+                value={content.type}
+                displayEmpty={false}
+                placeholder="請選擇…"
+                label="類別"
+                labelRef={inputLabel}
+              >
+                {merchantHelperItems?.map((data, idx) => (
+                  <NativeSelectOption value={data.type} key={`${data.type}-${idx}`}>
+                    {data.type}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
             </div>
             <div className="w-full sm:w-36">
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel ref={inputLabel} id="select-item-label">
-                  協助人員人數
-                </InputLabel>
-                <Select
-                  label='協助人員人數'
-                  onChange={event => handleAssistantName(event, index)}
-                  value={content.nameList.length}
-                >
-                  {assistantNum.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <NativeSelect
+                onChange={event => handleAssistantName(event, index)}
+                value={content.nameList.length}
+                displayEmpty={false}
+                placeholder="請選擇…"
+                label="協助人員人數"
+                labelRef={inputLabel}
+                labelId="select-item-label"
+              >
+                {assistantNum.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
             </div>
             <div className="w-full sm:w-36">
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel ref={inputLabel} id="select-item-label">
-                  扣項方式
-                </InputLabel>
-                <Select
-                  labelId="select-item-label"
-                  id="select-item"
-                  label='扣項方式'
-                  onChange={event => handleDeductionWayChange(event, index)}
-                  value={content.deductionWay}
-                >
-                  {deductionWay2.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <NativeSelect
+                labelId="select-item-label"
+                id="select-item"
+                onChange={event => handleDeductionWayChange(event, index)}
+                value={content.deductionWay}
+                displayEmpty={false}
+                placeholder="請選擇…"
+                label="扣項方式"
+                labelRef={inputLabel}
+              >
+                {deductionWay2.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
             </div>
             {content.isDesignate ? (
               <div className="flex flex-col gap-1">

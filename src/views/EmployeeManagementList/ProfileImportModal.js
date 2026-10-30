@@ -1,7 +1,7 @@
 // 共用圖層支援窗內 Select；保留無 onClose 的受控開關。
 import { Dialog, DialogTitle, DialogContent, DialogHeader, DialogBody, DialogFooter } from 'ui/dialog'
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
-import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { useEffect, useState } from "react"
 import { useFetchMerchantJobTitleForEmployeeList } from 'hooks/useFetchMerchantJobTitlePoint'
 import useFetchSetPerformanceRuleFromPersonProfile from 'hooks/useFetchSetPerformanceRuleFromPersonProfile'
@@ -115,18 +115,17 @@ const ProfileImportModal = ({ open, onClose, selectedDesigners, setSelectedDesig
         <DialogHeader><DialogTitle>由人員身分設定檔導入</DialogTitle></DialogHeader>
         <div className="h-px bg-border" />
         <DialogBody>
-          <FormControl fullWidth variant="outlined" >
-            <InputLabel>選擇人員身份類別</InputLabel>
-            <Select
-              label='選擇人員身份類別'
-              value={inputData.jobTitlePointId}
-              onChange={({ target }) => handleSetInputData('jobTitlePointId', target.value)}
-            >
-              {jobTitle.map(({ id, jobTitle }) => (
-                <MenuItem value={id} key={id}>{jobTitle}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <NativeSelect
+            value={inputData.jobTitlePointId}
+            onChange={({ target }) => handleSetInputData('jobTitlePointId', target.value)}
+            displayEmpty={false}
+            placeholder="請選擇…"
+            label="選擇人員身份類別"
+          >
+            {jobTitle.map(({ id, jobTitle }) => (
+              <NativeSelectOption value={id} key={id}>{jobTitle}</NativeSelectOption>
+            ))}
+          </NativeSelect>
           {options.map(({ label, key }) => (
             <div key={label}>
               <FormControlLabel
