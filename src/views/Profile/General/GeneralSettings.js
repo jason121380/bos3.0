@@ -63,18 +63,6 @@ function GeneralSettings({
         openSnackbar({ message: '儲存成功', variant: 'success' })
       })
     }
-    // const themeData = {
-    //   userId: values.userId,
-    //   theme: themeChange.theme,
-    // }
-    // setThemeChangeData({ input: themeData })
-    //   .then(() => {
-    //     openSnackbar({ message: '儲存成功', variant: 'success' })
-    //     window.location.reload()
-    //   })
-    //   .catch(() => {
-    //     openSnackbar({ message: '佈景主題更新失敗', variant: 'error' })
-    //   })
   }
   const handleBirthday = e => {
     setValues(

@@ -167,15 +167,25 @@ describe('會員卡列表', () => {
     expect(screen.getByTestId('membership-年卡-checkbox')).toBeChecked()
   })
 
-  it('批次刪除確認後送出勾選的 uuid，成功後提示並重新整理', async () => {
-    const { calls } = setup({ deleteMembership: { deleteMembership: true } })
+  // 成功後不整頁重新整理（會丟掉分類篩選、搜尋與分頁，2026/10/28）：重抓清單，刪掉的會員卡從畫面消失
+  it('批次刪除確認後送出勾選的 uuid，成功後提示並重抓清單，不重新整理', async () => {
+    let deleted = []
+    const { calls } = setup({
+      deleteMembership: (variables) => {
+        deleted = variables.itemUUIDs
+        return { deleteMembership: true }
+      },
+      FETCH_MEMBERSHIPS: () => ({ memberships: { data: CARDS.filter(c => !deleted.includes(c.uuid)) } }),
+    })
     await screen.findByText('共 3 筆')
     fireEvent.click(screen.getByTestId('membership-萬元儲值卡-checkbox'))
     fireEvent.click(screen.getByTestId('membership-年卡-checkbox'))
     fireEvent.click(toolbar().getByText('刪除'))
     expect(callsOf(calls, 'deleteMembership')).toHaveLength(0)
     fireEvent.click(await screen.findByTestId('confirm'))
-    await wait(() => expect(window.location.reload).toHaveBeenCalled())
+    await screen.findByText('共 1 筆')
+    expect(screen.queryByText('年卡')).toBeNull()
+    expect(window.location.reload).not.toHaveBeenCalled()
     expect(callsOf(calls, 'deleteMembership')[0].variables).toEqual({ itemUUIDs: ['m1', 'm2'] })
     expect(openSnackbar).toHaveBeenCalledWith({ message: '成功刪除會員卡', variant: 'success' })
   })
@@ -191,7 +201,7 @@ describe('會員卡列表', () => {
     expect(window.location.reload).not.toHaveBeenCalled()
   })
 
-  it('批次改類別：選類別後送出勾選的會員卡與類別 uuid，成功重新整理；可按關閉取消', async () => {
+  it('批次改類別：選類別後送出勾選的會員卡與類別 uuid，成功後重抓清單、不重新整理；可按關閉取消', async () => {
     const { calls } = setup({ multipleUpdateMembershipCategory: { multipleUpdateMembershipCategory: true } })
     await screen.findByText('共 3 筆')
     fireEvent.click(screen.getByTestId('membership-萬元儲值卡-checkbox'))
@@ -203,8 +213,10 @@ describe('會員卡列表', () => {
     fireEvent.click(toolbar().getByText('編輯會員卡類別'))
     const reopened = within(await screen.findByRole('dialog'))
     pickOption(reopened.getByRole('combobox'), 'A02 年卡類')
+    const listCalls = callsOf(calls, 'FETCH_MEMBERSHIPS').length
     fireEvent.click(reopened.getByText('儲存'))
-    await wait(() => expect(window.location.reload).toHaveBeenCalled())
+    await wait(() => expect(callsOf(calls, 'FETCH_MEMBERSHIPS').length).toBeGreaterThan(listCalls))
+    expect(window.location.reload).not.toHaveBeenCalled()
     expect(callsOf(calls, 'multipleUpdateMembershipCategory')[0].variables).toEqual({
       input: { membershipUUIDs: ['m1'], membershipCategoryUUIDs: 'cat-2' },
     })

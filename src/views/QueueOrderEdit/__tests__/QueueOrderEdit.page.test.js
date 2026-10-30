@@ -168,17 +168,30 @@ describe('重新開單：重試', () => {
     expect(callsOf(calls, 'FETCH_CREATE_ORDER')[0].variables.input.isPending).toBe(true)
   })
 
-  it('成立帳單失敗：提示「重結失敗」且不刪除佇列（帳單不遺失）', async () => {
-    const { calls } = setup({ FETCH_CREATE_ORDER: new Error('伺服器忙碌') })
-    const retry = await screen.findByTestId('checkout')
-    await wait(() => expect(retry).not.toBeDisabled())
-    // 失敗後頁面會重新整理（jsdom 不支援導覽，這裡只確認不刪佇列與提示）
-    fireEvent.click(retry)
-    await wait(() =>
-      expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('重結失敗') }))
-    )
-    expect(callsOf(calls, 'DELETE_QUEUE')).toHaveLength(0)
-    expect(currentLocation()).toBe('/queue-order-edit/queue-1')
+  // 失敗後不整頁重新整理（2026/10/28）：原本 reload 會把櫃檯改過的內容蓋回、錯誤提示也一閃就消失；
+  // 現在留在本頁、按鈕恢復可按，修正後可直接再送
+  it('成立帳單失敗：提示「重結失敗」、不刪除佇列（帳單不遺失）、不重新整理，可直接再送', async () => {
+    const realLocation = window.location
+    const reload = jest.fn()
+    delete window.location
+    window.location = { ...realLocation, reload }
+    try {
+      const { calls } = setup({ FETCH_CREATE_ORDER: new Error('伺服器忙碌') })
+      const retry = await screen.findByTestId('checkout')
+      await wait(() => expect(retry).not.toBeDisabled())
+      fireEvent.click(retry)
+      await wait(() =>
+        expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('重結失敗') }))
+      )
+      expect(callsOf(calls, 'DELETE_QUEUE')).toHaveLength(0)
+      expect(currentLocation()).toBe('/queue-order-edit/queue-1')
+      expect(reload).not.toHaveBeenCalled()
+      await wait(() => expect(retry).not.toBeDisabled())
+      fireEvent.click(retry)
+      await wait(() => expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(2))
+    } finally {
+      window.location = realLocation
+    }
   })
 
   // 帳單已成立但佇列紀錄刪不掉：原本什麼都不提示、留在本頁且「重試」可再按，再按一次就重複成立帳單（coverage wave 1，2026/10/22）

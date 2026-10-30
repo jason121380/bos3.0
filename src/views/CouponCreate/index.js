@@ -13,7 +13,8 @@ import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
 import AboutAssistantSetting from './AboutAssistantSetting'
-import AboutCoupon from './AboutCoupon'
+// 一般資訊區塊與另一頁共用（views/CouponShared，2026/10/28）
+import AboutCoupon from 'views/CouponShared/AboutCoupon'
 import AboutDeduction from './AboutDeduction'
 
 function ServiceCategoryCreate() {

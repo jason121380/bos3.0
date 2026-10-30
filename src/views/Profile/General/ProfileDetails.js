@@ -16,11 +16,16 @@ import { Card } from 'ui/card'
 
 function ProfileDetails({
   profile,
+  refetchProfile,
   className,
   ...rest
 }) {
   const [imageSrc, setImageSrc] = useState('');
   const [avatarSrc, setAvatarSrc] = useState(profile.avatar);
+  // 上傳成功後重抓個人資料，新的頭像網址要跟著換上（原本靠整頁 reload）
+  useEffect(() => {
+    setAvatarSrc(profile.avatar)
+  }, [profile.avatar])
   const [open, setOpen] = useState(false)
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
@@ -68,7 +73,9 @@ function ProfileDetails({
               message: '頭像上傳成功',
               variant: 'success'
             })
-            window.location.reload()
+            // 原本整頁 reload：改為關閉裁切窗並重抓個人資料，本頁與側欄的頭像一起更新（同一支 PROFILE 查詢，2026/10/28）
+            handleClose()
+            if (refetchProfile) refetchProfile()
           } else {
             openSnackbar({
               message: '頭像上傳失敗',
@@ -192,6 +199,7 @@ function ProfileDetails({
 }
 
 ProfileDetails.propTypes = {
+  refetchProfile: PropTypes.func,
   className: PropTypes.string,
   profile: PropTypes.object.isRequired,
 }

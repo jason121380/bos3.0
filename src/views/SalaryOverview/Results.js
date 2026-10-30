@@ -38,6 +38,7 @@ function Results({
   isSalaryItemsLock,
   isSalaryChackedData,
   borrowDisplay,
+  onDataChanged,
   ...rest
 }) {
   const [excelData, setExcelData] = useState([])
@@ -80,7 +81,7 @@ function Results({
       }
     })
     setUserId(data)
-  }, [usersSalary])
+  }, [usersSalary, isSalaryItemsLock])
 
   const handleSelectAll = event => {
     const newSelectedPayment = event.target.checked ? userId : []
@@ -120,7 +121,9 @@ function Results({
         })
       })
       .then(() => {
-        window.location.reload()
+        // 原本整頁 reload：改為清空勾選並重抓名單與月結狀態（2026/10/28）
+        setSelectedOrders([])
+        if (onDataChanged) onDataChanged()
       })
   }
 
@@ -328,6 +331,7 @@ function Results({
 }
 
 Results.propTypes = {
+  onDataChanged: PropTypes.func,
   className: PropTypes.string,
   customers: PropTypes.array,
 }

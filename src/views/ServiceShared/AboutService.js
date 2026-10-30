@@ -40,7 +40,9 @@ const TicketlockStatus = [
   },
 ]
 
-function AboutService({ className, onChange, service, handleCheckboxChange, ...rest }) {
+// 新增服務／編輯服務共用（2026/10/28 自兩頁合併，畫面與行為逐字保留）。
+// resetSpecialRakeOnToggle：編輯頁切換「特殊抽成」時把特殊抽成歸 0；新增頁原本不歸 0，維持原樣。
+function AboutService({ className, onChange, service, handleCheckboxChange, resetSpecialRakeOnToggle = false, ...rest }) {
   const inputLabel = useRef()
   const [thirdParty, setThirdParty] = useState([])
   const serviceCategories = useFetchServiceCategories()
@@ -144,14 +146,16 @@ function AboutService({ className, onChange, service, handleCheckboxChange, ...r
                   value: !service.isSpecialRakeUsing,
                   key: 'isSpecialRakeUsing',
                 })
-                onChange({
-                  event: {
-                    target: {
-                      value: 0,
+                if (resetSpecialRakeOnToggle) {
+                  onChange({
+                    event: {
+                      target: {
+                        value: 0,
+                      },
                     },
-                  },
-                  key: 'specialRake',
-                })
+                    key: 'specialRake',
+                  })
+                }
               }}
             />
             {service.isSpecialRakeUsing && (
@@ -211,6 +215,7 @@ function AboutService({ className, onChange, service, handleCheckboxChange, ...r
 }
 
 AboutService.propTypes = {
+  resetSpecialRakeOnToggle: PropTypes.bool,
   className: PropTypes.object,
 }
 

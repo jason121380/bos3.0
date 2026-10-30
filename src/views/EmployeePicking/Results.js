@@ -115,8 +115,8 @@ function Results({
       })
       // 原本整頁 reload：改為重抓清單並清空勾選，保留篩選與捲動位置
       setSelectedOrders([])
-      if (typeof refetch === 'function') refetch()
-      else window.location.reload()
+      // 唯一的呼叫端（index.js）一定會傳 refetch，不再保留整頁 reload 的退路
+      if (refetch) refetch()
     })
   }
   return (

@@ -41,7 +41,8 @@ function Results({
         setCanCheckoutOrder(filterResults.length)
       }
     }
-  }, [loading])
+    // 「有掛單未結不可日結」設定由父層 state 傳入、可能比列表晚一拍更新；設定改變時重算全選上限（B2 #13）
+  }, [loading, checkoutStatus])
   const [selectedOrders, setSelectedOrders] = React.useState([])
   const handleSelectAll = event => {
     if (checkoutStatus) {

@@ -16,9 +16,10 @@ import { useSelector } from 'react-redux'
 import useFetchMerchantJobTitlePoint from 'hooks/useFetchMerchantJobTitlePoint'
 import helperDeduction from './../../helper/helperDeduction.js'
 
-import AboutAssistantSetting from './AboutAssistantSetting'
+// 表單區塊與新增服務共用（views/ServiceShared，2026/10/28）；扣項區塊經本目錄 AboutDeduction 包一層
+import AboutAssistantSetting from 'views/ServiceShared/AboutAssistantSetting'
 import AboutDeduction from './AboutDeduction'
-import AboutService from './AboutService'
+import AboutService from 'views/ServiceShared/AboutService'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 import QueryFailed from 'components/QueryFailed'
@@ -553,6 +554,7 @@ function ServiceCategoryEdit({ match }) {
           service={service}
           onChange={handleOnChange}
           handleCheckboxChange={handleCheckboxChange}
+          resetSpecialRakeOnToggle
         />
 
         {(isDuplicate || deductionDisplay) && service2.itemId !== '' && (

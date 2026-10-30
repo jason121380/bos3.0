@@ -31,7 +31,7 @@ function ComodityCategories() {
         {membershipCategories.error ? (
           <QueryFailed onRetry={() => membershipCategories.refetch()} />
         ) : !membershipCategories.loading ?
-          <Results categories={categories} /> :
+          <Results categories={categories} onChanged={() => membershipCategories.refetch()} /> :
           <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
         }
       </div>

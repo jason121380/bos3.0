@@ -15,9 +15,10 @@ import helperDeduction from './../../helper/helperDeduction.js'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-import AboutAssistantSetting from './AboutAssistantSetting'
-import AboutDeduction from './AboutDeduction'
-import AboutService from './AboutService'
+// 三個表單區塊與編輯服務共用（views/ServiceShared，2026/10/28）
+import AboutAssistantSetting from 'views/ServiceShared/AboutAssistantSetting'
+import AboutDeduction from 'views/ServiceShared/AboutDeduction'
+import AboutService from 'views/ServiceShared/AboutService'
 
 function ServiceCategoryCreate() {
   const merchantId = localStorage.getItem('userMerchant')
@@ -287,6 +288,7 @@ function ServiceCategoryCreate() {
 
         <AboutDeduction
           ServiceDeductionItems={service.ServiceDeductionItems}
+          stateKey="ServiceDeductionItems"
           onChange={handleOnChange}
           truthPerformPredict={truthPerformPredict}
           helperDeductionNums={helperDeductionNums}

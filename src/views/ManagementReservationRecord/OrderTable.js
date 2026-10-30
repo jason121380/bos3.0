@@ -103,7 +103,8 @@ const OrderTable = ({
         }
       }
     });
-  }, [ndsRef, calendarData])
+    // 顯示備註的兩個設定由父層查詢設定，可能比週曆晚到；設定改變時重算跑馬燈（只改 DOM 樣式，B2 #17）
+  }, [ndsRef, calendarData, remarkDisplay, cusRemarkDisplay])
 
   const findNDSWidth = () => {
     return nonDesignate.length > 1 ? (nonDesignate.length - 1) * calendarSize.width + noNdWidth : limitWidth

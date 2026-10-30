@@ -25,6 +25,7 @@ function Results({
   waitCloseOrderDateLoading,
   isMemberShipCardActive,
   bonusDisplay,
+  onRestored,
   ...rest
 }) {
   const [excelData, setExcelData] = useState([])
@@ -124,7 +125,8 @@ function Results({
         setRestorePwd('')
         setDateForRestore(null)
         setDateOnDialogTitle('')
-        window.location.reload()
+        // 原本整頁 reload：改為重抓待結帳日期與日結紀錄（解除的那天回到待結帳），保留日期區間與捲動位置（2026/10/28）
+        if (onRestored) onRestored()
       })
       .catch(err => {
         setOpenDialog(false)
@@ -324,6 +326,7 @@ function Results({
 }
 
 Results.propTypes = {
+  onRestored: PropTypes.func,
   className: PropTypes.string,
   orders: PropTypes.array,
 }

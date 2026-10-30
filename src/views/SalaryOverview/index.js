@@ -69,7 +69,7 @@ export default function SalaryOverview() {
       const data = idx(salaryItemLockData, _ => _.data.isSalaryitemLocked)
       setIsSalaryItemsLock(data)
     }
-  }, [salaryItemLockData.loading])
+  }, [salaryItemLockData.loading, salaryItemLockData.data])
   const latestMonthlyCheckoutTime = useFetchMerchantLatestMonthlyCheckoutTime({
     date: setting.date,
   })
@@ -81,7 +81,7 @@ export default function SalaryOverview() {
         idx(latestMonthlyCheckoutTime, _ => _.data.merchantLatestMonthlyCheckoutTime)
       )
     }
-  }, [latestMonthlyCheckoutTime.loading])
+  }, [latestMonthlyCheckoutTime.loading, latestMonthlyCheckoutTime.data])
   // -------------------------------------------------------------
   const showOption = [
     { label: '全部', value: 'ALL' },
@@ -100,7 +100,7 @@ export default function SalaryOverview() {
       const isUsersSalaryChacked = idx(users, _ => _.data.users.users)
       setUsersIsSalaryChecked(isUsersSalaryChacked)
     }
-  }, [users.loading])
+  }, [users.loading, users.data])
 
   const userSalayItemData = useFetchUsersSalaryItems({
     date: setting.date,
@@ -121,7 +121,7 @@ export default function SalaryOverview() {
       const isSalaryChacked = idx(isSalaryChackedData, _ => _.data.isSalaryChacked)
       setIsThisMonthSalaryChacked(isSalaryChacked)
     }
-  }, [isSalaryChackedData.loading])
+  }, [isSalaryChackedData.loading, isSalaryChackedData.data])
 
   const handleOnChangePage = (event, page) => {
     setSetting(
@@ -153,11 +153,21 @@ export default function SalaryOverview() {
       history.push(`/salary/overview?startDate=${date}`)
     }
   }
+  // 解鎖、刪除月結紀錄後要更新的資料：鎖定狀態、月結時間、員工月結狀態與名單。
+  // 原本整頁 reload，會丟掉月份以外的篩選與捲動位置；改為重抓這幾支查詢（2026/10/28）。
+  // 上面拷貝到 state 的 effect 也看 data：cache-first／network-only 的查詢 refetch 時 loading 不會變（本站不開 notifyOnNetworkStatusChange），只看 loading 會停在舊值
+  const refetchOverview = () => {
+    salaryItemLockData.refetch()
+    latestMonthlyCheckoutTime.refetch()
+    users.refetch()
+    isSalaryChackedData.refetch()
+    userSalayItemData.refetch()
+    salaryUserList.refetch()
+  }
   const handleIsSalaryItemsLock = () => {
     if (isSalaryItemsLock) {
       setUserSalaryItemUnlock({ date: setting.date }).then(res => {
-        salaryItemLockData.refetch()
-        window.location.reload()
+        refetchOverview()
         openSnackbar({
           message: '加扣項已解鎖',
           variant: 'warning',
@@ -183,7 +193,7 @@ export default function SalaryOverview() {
       const btnStatus = idx(salaryItemLockData, _ => _.data.isSalaryitemLocked)
       setEditBtnStatus(btnStatus)
     }
-  }, [salaryItemLockData.loading])
+  }, [salaryItemLockData.loading, salaryItemLockData.data])
 
   React.useEffect(() => {
     if (!getIsBorrowDisplayInSalaryOverview.loading) {
@@ -299,6 +309,7 @@ export default function SalaryOverview() {
                   usersIsSalaryChecked={usersIsSalaryChecked}
                   isSalaryItemsLock={isSalaryItemsLock}
                   borrowDisplay={borrowDisplay}
+                  onDataChanged={refetchOverview}
                 />
               </React.Fragment>
             )

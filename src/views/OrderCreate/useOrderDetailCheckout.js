@@ -216,7 +216,17 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
             variant: 'success',
           })
           if (stayInCreateOrder) {
-            window.location.reload()
+            // 連續打單：原本整頁 reload，改為與「結帳」成功相同的清空方式（關明細、reset 帳單、0.5 秒後恢復按鈕），
+            // 不必重新下載整頁與重抓所有設定（2026/10/28）
+            sentRef.current = false
+            setReset('reset')
+            closeModal()
+            setTimeout(() => {
+              setCheckoutBtn(false)
+              setCheckoutBtnClick(false)
+              setIsClick(false)
+              setReset('')
+            }, 500)
           } else {
             history.push('/management/draft-orders')
           }
@@ -231,7 +241,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
           setOpen(false)
         })
     }
-  }, [bill, history, setCheckoutBtnClick, setOpen])
+  }, [bill, history, setCheckoutBtnClick, setOpen, setReset])
 
   useEffect(() => {
     // 監聽一直掛著（彈窗關閉時由 cleanup 移除），以 sentRef 防重複送出：被檢查擋下或送出失敗後可再按

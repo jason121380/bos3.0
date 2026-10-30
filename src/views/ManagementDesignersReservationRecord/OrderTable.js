@@ -99,7 +99,8 @@ const OrderTable = ({
         }
       }
     });
-  }, [ndsRef, calendarData])
+    // 顯示備註的兩個設定由父層查詢設定，可能比週曆晚到；設定改變時重算跑馬燈（只改 DOM 樣式，B2 #17）
+  }, [ndsRef, calendarData, remarkDisplay, cusRemarkDisplay])
 
   const handleShowCheckinIcon = (orderTime, isCheckin) => {
     if (!checkinSettings.isBookingCheckinEnabled) return null

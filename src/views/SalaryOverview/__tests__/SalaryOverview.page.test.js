@@ -7,7 +7,7 @@
 // - 月份以台灣時間計算（網址的 startDate，沒有時為上個月 1 日 00:00）。
 // GraphQL 全由模擬 link 回應；月結／鎖定的確認對話框（openSnackbar）以 mock 驗證帶入的參數，不真的月結。
 import React from 'react'
-import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { startOfMonth, subMonths } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import { renderPage, loginAs, callsOf, currentLocation, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
@@ -204,14 +204,29 @@ describe('薪資總表：月結（未鎖定）', () => {
     expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ monthlyCheckoutInput: [[{ userId: 'd' }]] }))
   })
 
-  it('刪除月結紀錄：送出所選員工與月份，成功提示後重新整理', async () => {
-    const { calls } = setup({ DESTROY_CHECKOUT_RECORD: { destroyUserSalaryMonthlyCheckoutRecord: true } })
+  // 刪除後不整頁重新整理（會丟掉狀態篩選與捲動位置）：清空勾選並重抓名單，畫面顯示刪除後的月結狀態（2026/10/28）
+  it('刪除月結紀錄：送出所選員工與月份，成功後清空勾選並重抓名單，不重新整理', async () => {
+    let deleted = false
+    const { calls } = setup({
+      DESTROY_CHECKOUT_RECORD: () => {
+        deleted = true
+        return { destroyUserSalaryMonthlyCheckoutRecord: true }
+      },
+      GET_SALARY_USER_LIST: () => ({
+        getSalaryUserList: USERS.map(u => (deleted && u.id === 'a' ? { ...u, isSalaryChecked: false } : u)),
+      }),
+    })
     await screen.findByText('共 4 筆')
+    expect(cells('小美')[1]).toBe('詳情')
+    const listCalls = callsOf(calls, 'GET_SALARY_USER_LIST').length
     fireEvent.click(screen.getByLabelText('選取 小美'))
     fireEvent.click(screen.getByRole('button', { name: '刪除' }))
-    await wait(() => expect(reload).toHaveBeenCalled())
+    await wait(() => expect(callsOf(calls, 'GET_SALARY_USER_LIST').length).toBeGreaterThan(listCalls))
     expect(callsOf(calls, 'DESTROY_CHECKOUT_RECORD')[0].variables).toEqual({ date: SEPT, userIds: ['a'] })
     expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '刪除成功', variant: 'success' }))
+    await wait(() => expect(cells('小美')[1]).toBe('未結算'))
+    expect(screen.getByLabelText('選取 小美')).not.toBeChecked()
+    expect(reload).not.toHaveBeenCalled()
   })
 
   it('鎖定薪資：跳確認並帶入月份', async () => {
@@ -219,6 +234,26 @@ describe('薪資總表：月結（未鎖定）', () => {
     await screen.findByText('共 4 筆')
     fireEvent.click(screen.getByRole('button', { name: '鎖定薪資' }))
     expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ salaryItemsLock: true, settingDate: SEPT }))
+  })
+
+  // B2 #14：「全選」可選名單依鎖定狀態計算（鎖定後只能選有加扣項的在職員工），原本 effect 只看名單、不看鎖定狀態。
+  // 以前解鎖靠整頁 reload 掩蓋了這件事；改成重抓後，鎖定確認框按下確定（呼叫傳入的 salaryItemLockDataRefetch），全選範圍必須跟著變
+  it('鎖定薪資成功後重抓鎖定狀態：按鈕變成「取消鎖定薪資」、全選只選有加扣項的在職員工，不重新整理', async () => {
+    let locked = false
+    setup({ FETCH_SALARY_ITEM_LOCK: () => ({ isSalaryitemLocked: locked }) })
+    await screen.findByText('共 4 筆')
+    expect(screen.getByText('新人')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: '鎖定薪資' }))
+    const { salaryItemLockDataRefetch } = openSnackbar.mock.calls.find(([arg]) => arg.salaryItemsLock)[0]
+    locked = true
+    act(() => {
+      salaryItemLockDataRefetch()
+    })
+    await screen.findByRole('button', { name: '取消鎖定薪資' })
+    await wait(() => expect(screen.queryByText('新人')).toBeNull())
+    fireEvent.click(screen.getByLabelText('全選'))
+    expect(screen.getByText('2 selected')).toBeInTheDocument()
+    expect(reload).not.toHaveBeenCalled()
   })
 
   it('狀態篩選送出 CHECKED／UNCHECKED', async () => {
@@ -262,12 +297,23 @@ describe('薪資總表：已鎖定', () => {
     expect(screen.getByLabelText('選取 老王')).not.toBeChecked()
   })
 
-  it('取消鎖定薪資：送出所選月份，提示並重新整理', async () => {
-    const { calls } = setup({ locked: true, SET_USER_SALARY_ITEM_UNLOCK: { unlockUserSalaryItem: true } })
+  // 解鎖後不整頁重新整理：重抓鎖定狀態與名單，按鈕變回「鎖定薪資」、加扣項皆為 0 的員工重新出現（2026/10/28）
+  it('取消鎖定薪資：送出所選月份，提示並重抓鎖定狀態，不重新整理', async () => {
+    let unlocked = false
+    const { calls } = setup({
+      FETCH_SALARY_ITEM_LOCK: () => ({ isSalaryitemLocked: !unlocked }),
+      SET_USER_SALARY_ITEM_UNLOCK: () => {
+        unlocked = true
+        return { unlockUserSalaryItem: true }
+      },
+    })
     await screen.findByText('共 4 筆')
     fireEvent.click(await screen.findByRole('button', { name: '取消鎖定薪資' }))
-    await wait(() => expect(reload).toHaveBeenCalled())
+    await wait(() => expect(callsOf(calls, 'SET_USER_SALARY_ITEM_UNLOCK')).toHaveLength(1))
     expect(callsOf(calls, 'SET_USER_SALARY_ITEM_UNLOCK')[0].variables).toEqual({ date: SEPT })
     expect(openSnackbar).toHaveBeenCalledWith({ message: '加扣項已解鎖', variant: 'warning' })
+    await screen.findByRole('button', { name: '鎖定薪資' })
+    await wait(() => expect(screen.getByText('新人')).toBeInTheDocument())
+    expect(reload).not.toHaveBeenCalled()
   })
 })
