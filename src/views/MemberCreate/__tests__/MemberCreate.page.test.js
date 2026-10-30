@@ -41,9 +41,7 @@ describe('成為會員', () => {
   it('未登入：提示尚未登入並導到顧客登入頁', async () => {
     setup()
     await wait(() => expect(currentLocation()).toMatch(/^\/customer\/login\?/))
-    expect(decodeURIComponent(currentLocation())).toBe(
-      '/customer/login?merchantid=m-9&redirect=/customer/member/create?merchantid=m-9'
-    )
+    expect(decodeURIComponent(currentLocation())).toBe('/customer/login?merchantid=m-9&redirect=/customer/member/create?merchantid=m-9')
     expect(openSnackbar).toHaveBeenCalledWith({ message: '尚未登入', variant: 'warning' })
   })
 

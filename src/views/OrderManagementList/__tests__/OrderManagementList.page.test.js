@@ -99,7 +99,16 @@ describe('帳單列表', () => {
   it('列出每張帳單的編號、顧客、設計師與營業現金應收（千分位），並顯示筆數', async () => {
     const { settle } = setup([
       order(),
-      order({ id: 'o-2', orderNo: 'A002', customerName: '林先生', customerNo: 'C02', businessCash: 2500, service: 2500, product: 0, performanceIncome: 2500 }),
+      order({
+        id: 'o-2',
+        orderNo: 'A002',
+        customerName: '林先生',
+        customerNo: 'C02',
+        businessCash: 2500,
+        service: 2500,
+        product: 0,
+        performanceIncome: 2500,
+      }),
     ])
     expect(await screen.findByText(/共 2 筆/)).toBeInTheDocument()
     await settle()

@@ -90,7 +90,7 @@ function NavItem({
   }
 
   // 「報表及分析」未開啟細項時，點擊直接前往報表目錄、不展開（與舊版行為相同）
-  const goReportList = () => (title === '報表及分析' && !reportListExtended) && history.push('/dashboard-list-detail')
+  const goReportList = () => title === '報表及分析' && !reportListExtended && history.push('/dashboard-list-detail')
 
   // 揭露目前位置：群組含目前頁面（或搜尋命中）時，換頁後自動展開；使用者手動收合仍有效，直到下次換頁
   // 「報表及分析」未開啟細項時本來就不展開，維持原樣
@@ -112,10 +112,13 @@ function NavItem({
     }
   }, [iconRail])
 
-  useEffect(() => () => {
-    clearCloseTimer()
-    releaseSidebarFlyout(tokenRef.current)
-  }, [])
+  useEffect(
+    () => () => {
+      clearCloseTimer()
+      releaseSidebarFlyout(tokenRef.current)
+    },
+    []
+  )
 
   const exact = location.pathname === href
   const active = !hasSubmenu && isWithinHref(location.pathname, href)
@@ -207,7 +210,9 @@ function NavItem({
           icon={Icon}
           open={open}
           hideChevron={hideChevron || (useHoverMenu && !showInline)}
-          {...(useHoverMenu && !showInline ? { 'aria-expanded': showFlyout, 'aria-haspopup': 'true', 'aria-controls': showFlyout ? flyoutId : undefined } : {})}
+          {...(useHoverMenu && !showInline
+            ? { 'aria-expanded': showFlyout, 'aria-haspopup': 'true', 'aria-controls': showFlyout ? flyoutId : undefined }
+            : {})}
           onClick={event => {
             if (!useHoverMenu) handleToggle()
             goReportList()
@@ -230,9 +235,7 @@ function NavItem({
         >
           {title}
         </SidebarGroupButton>
-        {showInline && (
-          <div className="flex flex-col gap-0.5 pt-0.5 lg:group-data-[rail=true]/sidebar:hidden">{renderSubmenu()}</div>
-        )}
+        {showInline && <div className="flex flex-col gap-0.5 pt-0.5 lg:group-data-[rail=true]/sidebar:hidden">{renderSubmenu()}</div>}
         {showFlyout && (
           <SidebarFlyout
             id={flyoutId}
@@ -296,7 +299,7 @@ NavItem.propTypes = {
 NavItem.defaultProps = {
   open: false,
   forceOpen: false,
-  className: {}
+  className: {},
 }
 
 export default NavItem

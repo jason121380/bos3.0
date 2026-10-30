@@ -11,12 +11,7 @@ function Error404() {
         className="max-w-xl"
         icon={FileQuestion}
         title="404: The page you are looking for isn’t here"
-        description={
-          <>
-            You either tried some shady route or you came here by mistake. Whichever it is, try using
-            the navigation
-          </>
-        }
+        description={<>You either tried some shady route or you came here by mistake. Whichever it is, try using the navigation</>}
         action={
           <Button asChild variant="primary">
             <RouterLink to="/">Back to home</RouterLink>

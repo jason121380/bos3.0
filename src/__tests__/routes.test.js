@@ -99,7 +99,12 @@ describe('路由表結構', () => {
       <MemoryRouter initialEntries={['/designer-perforamnce-analyze-report']}>
         <Switch>
           <Route path={legacy.path} exact component={legacy.component} />
-          <Route render={props => { location = props.location; return null }} />
+          <Route
+            render={props => {
+              location = props.location
+              return null
+            }}
+          />
         </Switch>
       </MemoryRouter>
     )

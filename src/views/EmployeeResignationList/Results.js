@@ -9,7 +9,6 @@ import { Checkbox } from 'ui/checkbox'
 import { EmptyState } from 'ui/empty-state'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
-
 export default function Results({ className, employees, resignationList, setCreateResignedUser, ...rest }) {
   const [selectedDesigners, setSelectedDesigners] = useState([])
 
@@ -18,7 +17,8 @@ export default function Results({ className, employees, resignationList, setCrea
     setSelectedDesigners(newSelectedPayment)
   }
   const handleSelectOne = id => {
-    const newSelect = [...selectedDesigners], index = newSelect.indexOf(id)
+    const newSelect = [...selectedDesigners],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -28,26 +28,28 @@ export default function Results({ className, employees, resignationList, setCrea
   }
   const onReinstatement = () => {
     setCreateResignedUser({
-      userIds: selectedDesigners
-    }).then(d => {
-      if (d.data.createResignedUser) {
-        openSnackbar({
-          message: '更改成功',
-          variant: 'success'
-        })
-        resignationList.refetch()
-      } else {
-        openSnackbar({
-          message: '更改失敗',
-          variant: 'error'
-        })
-      }
-    }).catch(error => {
-      openSnackbar({
-        message: error.message,
-        variant: 'error'
-      })
+      userIds: selectedDesigners,
     })
+      .then(d => {
+        if (d.data.createResignedUser) {
+          openSnackbar({
+            message: '更改成功',
+            variant: 'success',
+          })
+          resignationList.refetch()
+        } else {
+          openSnackbar({
+            message: '更改失敗',
+            variant: 'error',
+          })
+        }
+      })
+      .catch(error => {
+        openSnackbar({
+          message: error.message,
+          variant: 'error',
+        })
+      })
   }
   return (
     <div {...rest} className={className}>
@@ -66,13 +68,8 @@ export default function Results({ className, employees, resignationList, setCrea
                 <TableHead className="w-12">
                   <Checkbox
                     aria-label="全選"
-                    checked={
-                      selectedDesigners.length === employees.length && employees.length > 0
-                    }
-                    indeterminate={
-                      selectedDesigners.length > 0 &&
-                      selectedDesigners.length < employees.length
-                    }
+                    checked={selectedDesigners.length === employees.length && employees.length > 0}
+                    indeterminate={selectedDesigners.length > 0 && selectedDesigners.length < employees.length}
                     onChange={handleSelectAll}
                     disabled={employees.length === 0}
                   />
@@ -115,10 +112,7 @@ export default function Results({ className, employees, resignationList, setCrea
           {employees.length === 0 && <EmptyState title="目前沒有離職員工" />}
         </div>
       </Card>
-      <TableEditBar
-        selected={selectedDesigners}
-        onReinstatement={onReinstatement}
-      />
+      <TableEditBar selected={selectedDesigners} onReinstatement={onReinstatement} />
     </div>
   )
 }

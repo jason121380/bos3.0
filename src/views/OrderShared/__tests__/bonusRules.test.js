@@ -45,17 +45,13 @@ describe('點數折抵金額上限', () => {
 
   it('扣掉其他付款方式與扣入金已付的部分', () => {
     expect(
-      getBonusWalletPayLimit(
-        bill({ serviceOrders: [{ price: 1000, thirdPartyCouponMerchantId: null }], amountByOtherPay: 300, walletPay: 200 })
-      )
+      getBonusWalletPayLimit(bill({ serviceOrders: [{ price: 1000, thirdPartyCouponMerchantId: null }], amountByOtherPay: 300, walletPay: 200 }))
     ).toBe(500)
   })
 
   it('沒有項目、或所有項目都是第三方卡券時上限為 0（不能折抵）', () => {
     expect(getBonusWalletPayLimit(bill())).toBe(0)
-    expect(
-      getBonusWalletPayLimit(bill({ serviceOrders: [{ price: 2500, thirdPartyCouponMerchantId: 'gomaji' }] }))
-    ).toBe(0)
+    expect(getBonusWalletPayLimit(bill({ serviceOrders: [{ price: 2500, thirdPartyCouponMerchantId: 'gomaji' }] }))).toBe(0)
   })
 })
 

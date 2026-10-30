@@ -22,7 +22,12 @@ const merchantList = {
   groups: [
     { no: 'G1', name: '北區', merchants: [M1, M2], groups: [] },
     // 三層：總部 → 南區 → 高雄（群組底下的店家要一路往下收集）
-    { no: null, name: '總部', merchants: [], groups: [{ no: 'G2', name: '南區', merchants: [], groups: [{ no: 'G3', name: '高雄', merchants: [M3], groups: [] }] }] },
+    {
+      no: null,
+      name: '總部',
+      merchants: [],
+      groups: [{ no: 'G2', name: '南區', merchants: [], groups: [{ no: 'G3', name: '高雄', merchants: [M3], groups: [] }] }],
+    },
   ],
   merchants: [M4],
 }
@@ -41,7 +46,9 @@ const chips = () => screen.queryAllByRole('button', { name: /^移除 / }).map(b 
 describe('MerchantListAutocomplete 選擇店家（跨店報表）', () => {
   const setup = async () => {
     const onValueChange = jest.fn()
-    const utils = renderPage(<MerchantListAutocomplete onValueChange={onValueChange} />, { fixtures: { GET_USER_MERCHANTS: { getUserMerchant: json } } })
+    const utils = renderPage(<MerchantListAutocomplete onValueChange={onValueChange} />, {
+      fixtures: { GET_USER_MERCHANTS: { getUserMerchant: json } },
+    })
     await utils.settle()
     return { ...utils, onValueChange }
   }
@@ -328,7 +335,11 @@ describe('MerchantListAutocompleteForPinnedTable 選擇店家（個人頁釘選�
     fireEvent.click(all)
     expect(all).not.toBeChecked()
     fireEvent.change(within(dialog()).getByPlaceholderText('搜尋店家'), { target: { value: '丁' } })
-    expect(itemsIn('全部(4)').filter(li => li.classList.contains('outline-danger')).map(li => li.textContent)).toEqual(['丁店'])
+    expect(
+      itemsIn('全部(4)')
+        .filter(li => li.classList.contains('outline-danger'))
+        .map(li => li.textContent)
+    ).toEqual(['丁店'])
     // 未分組的丁店也標紅框
     fireEvent.change(within(dialog()).getByPlaceholderText('搜尋店家'), { target: { value: '' } })
     fireEvent.change(within(dialog()).getByPlaceholderText('搜尋店家'), { target: { value: 'x' } })

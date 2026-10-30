@@ -13,12 +13,8 @@ import CouponSells from './CouponSells'
 import useOncePerOrder from './useOncePerOrder'
 import CouponSellModal from 'views/OrderShared/EditCouponSellModal'
 
-
 export default function PanelCouponSells({ expanded, setExpanded }) {
-  const {
-    handleBillChange, orderId, pannelEditable,
-    couponSells, setCouponSells, tData, setTData
-  } = React.useContext(billContext)
+  const { handleBillChange, orderId, pannelEditable, couponSells, setCouponSells, tData, setTData } = React.useContext(billContext)
   const order = useFetchOrder({ id: orderId })
   const isFirstLoad = useOncePerOrder()
   const useHandleBillChangeRef = React.useRef(handleBillChange)
@@ -31,7 +27,7 @@ export default function PanelCouponSells({ expanded, setExpanded }) {
   const [pageSetting, setPageSetting] = React.useState({
     keyword: '',
     categoryIds: [],
-    isLaunched: true
+    isLaunched: true,
   })
 
   // 要聚焦的列：開頁時 -1（沒有）。帶入既有資料時會自動展開區塊，原本「展開就設第 1 列」的 effect（[expanded]）讓第 1 列的
@@ -44,7 +40,6 @@ export default function PanelCouponSells({ expanded, setExpanded }) {
     !tData.length && setTData(value)
   }
 
-
   React.useEffect(() => {
     if (!tickets.loading && !serviceCategoriesData.loading) {
       const conponInModal = idx(tickets, _ => _.data.tickets)
@@ -53,7 +48,7 @@ export default function PanelCouponSells({ expanded, setExpanded }) {
       setCouponCategories(couponCategories)
     } else {
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [tickets.loading, serviceCategoriesData.loading])
   React.useEffect(() => {
     if (couponSells.length > 0) {
@@ -79,32 +74,32 @@ export default function PanelCouponSells({ expanded, setExpanded }) {
       const newCouponSells =
         order.data.order.ticketOrders.length > 0
           ? order.data.order.ticketOrders.map(ticketOrder => ({
-            id: uuid(),
-            serviceId: ticketOrder.service.id,
-            availableCount: ticketOrder.availableCount,
-            price: ticketOrder.price,
-            count: ticketOrder.count,
-            remark: ticketOrder.remark,
-            isLocked: ticketOrder.service.isLocked,
-            intoPerformanceWhileBuying: ticketOrder.intoPerformanceWhileBuying,
-          }))
-          : [
-            {
               id: uuid(),
-              serviceId: '',
-              availableCount: 0,
-              price: 0,
-              count: 1,
-              remark: '',
-            },
-          ]
+              serviceId: ticketOrder.service.id,
+              availableCount: ticketOrder.availableCount,
+              price: ticketOrder.price,
+              count: ticketOrder.count,
+              remark: ticketOrder.remark,
+              isLocked: ticketOrder.service.isLocked,
+              intoPerformanceWhileBuying: ticketOrder.intoPerformanceWhileBuying,
+            }))
+          : [
+              {
+                id: uuid(),
+                serviceId: '',
+                availableCount: 0,
+                price: 0,
+                count: 1,
+                remark: '',
+              },
+            ]
 
       if (newCouponSells.length > 0 && newCouponSells[0].serviceId !== '') {
         setExpanded(true)
       }
       setCouponSells(newCouponSells)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [order.loading, order.data, setCouponSells, setExpanded, isFirstLoad, orderId])
 
   function handleAddCouponSell() {
@@ -215,10 +210,13 @@ export default function PanelCouponSells({ expanded, setExpanded }) {
         data-testid="couponSells"
         onClick={handleAccordionClick}
         style={{ width: '100%' }}
-        summaryMeta={!expanded && panelSummary(
-          couponSells.filter(d => d.serviceId).length,
-          couponSells.filter(d => d.serviceId).reduce((total, d) => total + d.price * d.count, 0)
-        )}
+        summaryMeta={
+          !expanded &&
+          panelSummary(
+            couponSells.filter(d => d.serviceId).length,
+            couponSells.filter(d => d.serviceId).reduce((total, d) => total + d.price * d.count, 0)
+          )
+        }
       >
         <p className="m-0 !text-[16px] font-bold text-text">預收卡販賣</p>
       </AccordionSummary>

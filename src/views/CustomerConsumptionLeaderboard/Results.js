@@ -42,7 +42,6 @@ function Results({ reportData }) {
           <EmptyState title="無資料" />
         </Card>
       )}
-
     </>
   )
 }

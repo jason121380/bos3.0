@@ -26,11 +26,7 @@ function AboutThirdPartyCoupon({ className, thirdPartyCoupon, onChange, ...rest 
       </CardHeader>
       <CardContent className="flex flex-col items-start gap-6">
         <Field label="名稱" className="w-full">
-          <Input
-            value={thirdPartyCoupon.name}
-            onChange={event => onChange({ event, key: 'name' })}
-            data-testid="name"
-          />
+          <Input value={thirdPartyCoupon.name} onChange={event => onChange({ event, key: 'name' })} data-testid="name" />
         </Field>
         <Field label="手續費" className="w-full">
           <Input

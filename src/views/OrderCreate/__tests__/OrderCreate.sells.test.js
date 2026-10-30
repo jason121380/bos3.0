@@ -10,8 +10,25 @@ import addDays from 'date-fns/addDays'
 import format from 'date-fns/format'
 import { loginAs, callsOf } from '../../../__tests__/testkit.test'
 import {
-  setupPage, waitPageReady, pickEmployee, checkoutButton, sentOrder, summaryValue,
-  DESIGNER, HELPER, PRODUCT, PRODUCT_LOCKED, TICKET, TICKET_LOCKED, MEMBERSHIP, MEMBERSHIP_FOREVER, button, buttonsIn, findButton, currentDialog, findDialog,
+  setupPage,
+  waitPageReady,
+  pickEmployee,
+  checkoutButton,
+  sentOrder,
+  summaryValue,
+  DESIGNER,
+  HELPER,
+  PRODUCT,
+  PRODUCT_LOCKED,
+  TICKET,
+  TICKET_LOCKED,
+  MEMBERSHIP,
+  MEMBERSHIP_FOREVER,
+  button,
+  buttonsIn,
+  findButton,
+  currentDialog,
+  findDialog,
 } from './orderCreateKit.test'
 
 jest.setTimeout(20000)
@@ -65,9 +82,7 @@ describe('店販銷售', () => {
     fireEvent.change(count, { target: { value: '3' } })
     await wait(() => expect(summaryValue('店販消費')).toHaveTextContent('1,200'))
     const { productOrders } = await checkout(calls)
-    expect(productOrders).toEqual([
-      expect.objectContaining({ sellerId: HELPER.userId, productId: PRODUCT.id, price: 400, count: 3 }),
-    ])
+    expect(productOrders).toEqual([expect.objectContaining({ sellerId: HELPER.userId, productId: PRODUCT.id, price: 400, count: 3 })])
   })
 
   it('價格清空視為 0；數量清空視為 0、該列不計入；鎖價商品不能改價', async () => {
@@ -237,9 +252,7 @@ describe('預收卡販賣', () => {
     await wait(() => expect(summaryValue('預收卡販賣')).toHaveTextContent('16,000'))
     expect(summaryValue('業績合計')).toHaveTextContent('0')
     const { ticketOrders } = await checkout(calls)
-    expect(ticketOrders).toEqual([
-      expect.objectContaining({ serviceId: TICKET.id, availableCount: 12, price: 8000, count: 2, remark: '生日優惠' }),
-    ])
+    expect(ticketOrders).toEqual([expect.objectContaining({ serviceId: TICKET.id, availableCount: 12, price: 8000, count: 2, remark: '生日優惠' })])
   })
 
   it('次數、張數清空視為 1；價格清空視為 0；鎖定卡券不能改次數與價格，選定後焦點到張數', async () => {

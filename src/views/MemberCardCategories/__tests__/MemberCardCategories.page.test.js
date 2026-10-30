@@ -95,7 +95,7 @@ describe('會員卡分類設定', () => {
   it('批次刪除送出勾選的 uuid，成功後提示並重抓清單，不重新整理', async () => {
     let deleted = []
     const { calls } = setup({
-      deleteMembershipCategory: (variables) => {
+      deleteMembershipCategory: variables => {
         deleted = variables.itemUUIDs
         return { deleteMembershipCategory: true }
       },

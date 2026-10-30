@@ -167,7 +167,14 @@ describe('CustomerTicketRecordAutoCompleteForOrderCreate 使用卡券（打帳�
     cleanup()
     // 已選（value 為該組某一張）時清除：回傳 null（帳單頁以 !value 清空該列與協助人員）
     const used = [{ customerTicketId: 'a2' }]
-    render(<CustomerTicketRecordAutoCompleteForOrderCreate couponUsages={used} value="a2" ticketRecordsForOrderLazyDataV2={lazy(groups)} onChange={onChange} />)
+    render(
+      <CustomerTicketRecordAutoCompleteForOrderCreate
+        couponUsages={used}
+        value="a2"
+        ticketRecordsForOrderLazyDataV2={lazy(groups)}
+        onChange={onChange}
+      />
+    )
     await wait(() => expect(combo()).toHaveValue('洗髮券 '))
     fireEvent.focusIn(combo())
     fireEvent.mouseDown(screen.getByRole('button', { name: '清除' }))

@@ -30,15 +30,7 @@ const FETCH_WALLET_DEPOSIT_RECORD = gql`
   }
 `
 
-export default function useFetchWalletDepositRecord({
-  start,
-  end,
-  pageLimit,
-  pageOffset,
-  customerId,
-  designerId,
-  payType,
-}) {
+export default function useFetchWalletDepositRecord({ start, end, pageLimit, pageOffset, customerId, designerId, payType }) {
   return useQuery(FETCH_WALLET_DEPOSIT_RECORD, {
     variables: {
       input: {

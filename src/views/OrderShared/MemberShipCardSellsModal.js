@@ -83,9 +83,7 @@ const MemberShipCardSellsModal = ({
           cell: product => (product.membershipCategory !== null ? product.membershipCategory.name : ''),
         },
         { header: '名稱', cell: product => product.name },
-        ...(showEffectiveDays
-          ? [{ header: '天數', numeric: true, cell: product => <>{product.effecitveDay}天</> }]
-          : []),
+        ...(showEffectiveDays ? [{ header: '天數', numeric: true, cell: product => <>{product.effecitveDay}天</> }] : []),
         { header: '參考價格', numeric: true, cell: product => formatNumber(product.sellPrice) },
       ]}
       rows={productList.data}

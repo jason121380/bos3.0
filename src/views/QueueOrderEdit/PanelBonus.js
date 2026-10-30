@@ -19,11 +19,11 @@ export default function PanelBonus({ bonusActive }) {
     if (bill.customerId && bonusActive) {
       getCustomerBonusRecord({
         variables: {
-          customerId: bill.customerId
-        }
+          customerId: bill.customerId,
+        },
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [bill.customerId] 變動時執行；bonusActive、getCustomerBonusRecord 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [bill.customerId] 變動時執行；bonusActive、getCustomerBonusRecord 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [bill.customerId])
 
   useEffect(() => {
@@ -31,15 +31,12 @@ export default function PanelBonus({ bonusActive }) {
       const total = customerBonusRecordData.data.customerBonusRecord.reduce((a, b) => a + b.bonus, 0)
       setCustomerBonus(total)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerBonusRecordData.loading])
 
   useEffect(() => {
     if (!order.loading && order.data) {
-      const isExpanded = 
-        bill.bonusDecount > 0 ||
-        bill.bonusDeposit > 0 ||
-        bill.bonusUsed > 0
+      const isExpanded = bill.bonusDecount > 0 || bill.bonusDeposit > 0 || bill.bonusUsed > 0
 
       setExpanded(isExpanded)
     }
@@ -53,20 +50,15 @@ export default function PanelBonus({ bonusActive }) {
         data-testid="panelRemark"
         style={{ width: '100%' }}
       >
-        <p className="m-0 flex items-center !text-[16px] font-bold text-text">紅利點數
-          <span className="ml-2.5 text-caption">
-            {bill.customerId ? `剩餘點數: ${customerBonus}` : ''}
-          </span>
-          {bonusConversion.isBonusConversion && (
-            <span className="ml-2.5 text-caption">
-              {`換算比率: ${bonusConversion.bonusConversionRate}`}
-            </span>
-          )}
+        <p className="m-0 flex items-center !text-[16px] font-bold text-text">
+          紅利點數
+          <span className="ml-2.5 text-caption">{bill.customerId ? `剩餘點數: ${customerBonus}` : ''}</span>
+          {bonusConversion.isBonusConversion && <span className="ml-2.5 text-caption">{`換算比率: ${bonusConversion.bonusConversionRate}`}</span>}
         </p>
       </AccordionSummary>
       <AccordionDetails className="overflow-x-auto">
         <div className="flex flex-col items-start justify-start">
-          <Bonus expanded={expanded} customerBonus={customerBonus}/>
+          <Bonus expanded={expanded} customerBonus={customerBonus} />
         </div>
       </AccordionDetails>
     </Accordion>

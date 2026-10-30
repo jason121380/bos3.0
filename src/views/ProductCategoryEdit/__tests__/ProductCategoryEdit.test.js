@@ -3,10 +3,7 @@ import CustomMockedProvider from '__tests__/CustomMockedProvider.test'
 import { render, fireEvent, cleanup } from '@testing-library/react'
 import { GET_PRODUCT_CATEGORY, mockedProductCategoryResp } from 'hooks/useFetchProductCategory'
 import { GET_PRODUCT_CATEGORIES, mockedProductCateResp } from 'hooks/useFetchProductCategories'
-import {
-  UPDATE_PRODUCT_CATEGORY,
-  mockedUpdateProductCategory,
-} from 'hooks/useFetchUpdateProductCategory'
+import { UPDATE_PRODUCT_CATEGORY, mockedUpdateProductCategory } from 'hooks/useFetchUpdateProductCategory'
 import { Router } from 'react-router-dom'
 
 import ProductCategoryEdit from '../ProductCategoryEdit'

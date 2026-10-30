@@ -31,7 +31,8 @@ function Results({ className, categories, onChanged, ...rest }) {
 
   // 單選checkbox
   const handleSelectOne = uuid => {
-    const newSelect = [...selectedCategories], index = newSelect.indexOf(uuid)
+    const newSelect = [...selectedCategories],
+      index = newSelect.indexOf(uuid)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -59,9 +60,7 @@ function Results({ className, categories, onChanged, ...rest }) {
         <CardHeader className="pb-4">
           <div className="flex items-baseline gap-3">
             <CardTitle>會員卡分類列表</CardTitle>
-            <span className="text-label text-text-secondary tabular-nums">
-              共 {categories.length} 筆
-            </span>
+            <span className="text-label text-text-secondary tabular-nums">共 {categories.length} 筆</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -74,10 +73,7 @@ function Results({ className, categories, onChanged, ...rest }) {
                     checked={isAllSelected}
                     indeterminate={selectedCategories.length > 0 && !isAllSelected}
                     onChange={handleSelectAll}
-                    disabled={
-                      categories.length === 0 ||
-                      categories.filter(d => !d.isUsing).length === categories.length
-                    }
+                    disabled={categories.length === 0 || categories.filter(d => !d.isUsing).length === categories.length}
                   />
                 </TableHead>
                 <TableHead>操作</TableHead>

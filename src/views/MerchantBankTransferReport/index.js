@@ -36,39 +36,29 @@ export default function MerchantBankTransferReport() {
 
   useEffect(() => {
     if (!getUserSalaryTransferReport.loading) {
-      const data = idx(
-        getUserSalaryTransferReport,
-        _ => _.data.userSalaryTransferReport
-      )
+      const data = idx(getUserSalaryTransferReport, _ => _.data.userSalaryTransferReport)
       setSalaryData(data || [])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getUserSalaryTransferReport.loading])
 
   useEffect(() => {
     if (!merchantBankSettingsData.loading) {
-      const merchantBankSettings = idx(
-        merchantBankSettingsData,
-        _ => _.data.getMerchantBankSettings
-      )
+      const merchantBankSettings = idx(merchantBankSettingsData, _ => _.data.getMerchantBankSettings)
       // 查詢失敗時保留空白預設值（原本設成 undefined，明細讀 .remitterBankAccount 整頁錯誤；2026/10/28）
       if (merchantBankSettings) setMerchantBankSettings(merchantBankSettings)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantBankSettingsData.loading])
 
   return (
-    <Page className='MerchantBankTransferReport min-h-full' title="薪資轉帳明細">
+    <Page className="MerchantBankTransferReport min-h-full" title="薪資轉帳明細">
       <div>
         <PageHeader
-          title='薪資轉帳明細'
+          title="薪資轉帳明細"
           actions={
             <>
-              <Button
-                variant="secondary"
-                className="noprint"
-                onClick={() => window.print()}
-              >
+              <Button variant="secondary" className="noprint" onClick={() => window.print()}>
                 <Printer strokeWidth={1.75} />
                 列印
               </Button>
@@ -81,9 +71,9 @@ export default function MerchantBankTransferReport() {
             attributes={['lastmonth', 'thismonth', 'startDate']}
             dateChange={value => setDate(value)}
             onlyStart
-            inputFormat='yyyy/MM'
+            inputFormat="yyyy/MM"
             pickerOption={{
-              views: ['month', 'year']
+              views: ['month', 'year'],
             }}
           />
         </Toolbar>
@@ -96,7 +86,9 @@ export default function MerchantBankTransferReport() {
           <QueryFailed onRetry={() => getUserSalaryTransferReport.refetch()} />
         ) : getUserSalaryTransferReport.loading ? (
           <Skeleton className="h-64 w-full" />
-        ) : <Results salaryData={salaryData} />}
+        ) : (
+          <Results salaryData={salaryData} />
+        )}
       </div>
     </Page>
   )

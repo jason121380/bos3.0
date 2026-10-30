@@ -16,7 +16,17 @@ jest.setTimeout(20000)
 jest.mock('lib/after-first-load', () => ({ __esModule: true, default: () => true, useHoldFirstLoad: () => {} }))
 
 const fixtures = ({ me = {}, pinned = [], pending = { disablePendingOrder: false }, ...overrides } = {}) => ({
-  PROFILE: { me: { id: 'user-1', name: '店長小林', status: 'active', theme: null, avatar: null, merchantIdentity: { authorityName: '高階主管', authorityId: 'auth-1' }, ...me } },
+  PROFILE: {
+    me: {
+      id: 'user-1',
+      name: '店長小林',
+      status: 'active',
+      theme: null,
+      avatar: null,
+      merchantIdentity: { authorityName: '高階主管', authorityId: 'auth-1' },
+      ...me,
+    },
+  },
   FETCH_USER: { user: { id: 'user-1', pageAuthority: { authorityName: '高階主管', pageAuthority: [] } } },
   GET_IS_MEMBERSHIP_CARD_ACTIVE: { getIsMemberShipCardActive: true },
   GET_CUSTOMER_BONUS: { getIsCustomerBonusActive: false },
@@ -221,7 +231,9 @@ describe('重新渲染條件', () => {
       return (
         <Sidebar desktopOpen={desktopOpen}>
           <span id="sidebar-search-slot" />
-          <button type="button" onClick={() => setDesktopOpen(false)}>改為圖示欄</button>
+          <button type="button" onClick={() => setDesktopOpen(false)}>
+            改為圖示欄
+          </button>
           <NavBar onMobileClose={() => {}} openMobile={false} openDesktop={desktopOpen} />
         </Sidebar>
       )

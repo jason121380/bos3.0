@@ -7,7 +7,7 @@ import General from './General'
 const SystemUpdateRecordCreate = () => {
   return (
     <Page title="新增版本更新紀錄">
-      <PageHeader title='新增版本紀錄' />
+      <PageHeader title="新增版本紀錄" />
       <General />
     </Page>
   )

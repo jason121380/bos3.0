@@ -20,7 +20,9 @@ jest.mock('elements/snackbars', () => ({
 
 const FIXTURES = {
   UPDATE_USER_INFO: { setUserInfo: true },
-  FETCH_UPDATE_USER_MERCHANT_IDENTITY: { updateUserMerchantIdentity: { designer: { id: EMP_ID, name: '王小美' }, MerchantUserAuthorityId: 'auth-1' } },
+  FETCH_UPDATE_USER_MERCHANT_IDENTITY: {
+    updateUserMerchantIdentity: { designer: { id: EMP_ID, name: '王小美' }, MerchantUserAuthorityId: 'auth-1' },
+  },
   CHANGE_PASSWORD: { changePassword: true },
 }
 
@@ -71,7 +73,10 @@ describe('密碼與安全', () => {
       lastName: '王',
       isCellphoneLogin: false,
     })
-    expect(callsOf(calls, 'FETCH_UPDATE_USER_MERCHANT_IDENTITY')[0].variables.input).toEqual({ designerId: EMP_ID, MerchantUserAuthorityId: 'auth-1' })
+    expect(callsOf(calls, 'FETCH_UPDATE_USER_MERCHANT_IDENTITY')[0].variables.input).toEqual({
+      designerId: EMP_ID,
+      MerchantUserAuthorityId: 'auth-1',
+    })
     await wait(() => expect(callsOf(calls, 'DESIGNER').length).toBeGreaterThan(before))
     expect(openSnackbar).toHaveBeenCalledWith({ message: '更新成功', variant: 'success' })
   })
@@ -138,7 +143,15 @@ describe('Permission（舊版權限勾選，元件單獨測試）', () => {
       merchant: {
         id: 'merchant-1',
         permissions: [
-          { id: 'p1', name: '帳單', code: 'ORDER', actions: [{ id: 'a1', name: '開單', code: 'C' }, { id: 'a2', name: '刪單', code: 'D' }] },
+          {
+            id: 'p1',
+            name: '帳單',
+            code: 'ORDER',
+            actions: [
+              { id: 'a1', name: '開單', code: 'C' },
+              { id: 'a2', name: '刪單', code: 'D' },
+            ],
+          },
         ],
       },
     },

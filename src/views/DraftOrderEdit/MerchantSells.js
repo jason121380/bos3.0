@@ -81,8 +81,9 @@ export default function MerchantSells({
 
   useEffect(() => {
     // 使用者自己點了這一列的欄位（焦點已在本列欄位上）時不搶焦點（比照帳單詳細；開頁時沒有要聚焦的列，第一次點欄位才指定本列，Jason 2026/10/22 fix all）
-    const fieldFocused = [employeeRef, productRef, priceRef, countRef, thirdPartyRef]
-      .some(ref => ref.current && ref.current === document.activeElement)
+    const fieldFocused = [employeeRef, productRef, priceRef, countRef, thirdPartyRef].some(
+      ref => ref.current && ref.current === document.activeElement
+    )
     if (expanded && focusFirstField && !fieldFocused) {
       idx(employeeRef, _ => _.current.focus())
       setFocus('employee')
@@ -237,9 +238,7 @@ export default function MerchantSells({
                   />
                 </Field>
               )}
-              {teachingMode && (
-                <p className={`m-0 ${styles.heading2}`}>勾選將入業績但不收費用**</p>
-              )}
+              {teachingMode && <p className={`m-0 ${styles.heading2}`}>勾選將入業績但不收費用**</p>}
               {sells.thirdPartyCouponMerchantId &&
                 thirdPartyCoupons.map(data => {
                   if (data.id === sells.thirdPartyCouponMerchantId) {
@@ -297,13 +296,7 @@ export default function MerchantSells({
         ''
       )}
       {productsModalOpen && (
-        <ProductsModal
-          {...pickerModalProps}
-          onProductChange={onProductChange}
-          sells={sellsItem}
-          productLength={productLength}
-          sellsItem={sells}
-        />
+        <ProductsModal {...pickerModalProps} onProductChange={onProductChange} sells={sellsItem} productLength={productLength} sellsItem={sells} />
       )}
     </Fragment>
   )

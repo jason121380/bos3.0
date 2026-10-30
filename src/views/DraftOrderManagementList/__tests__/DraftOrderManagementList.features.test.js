@@ -49,7 +49,14 @@ const draft = (overrides = {}) => ({
   designer: { id: 'u-1', name: '王小美', nickName: '小美', designerNo: '01', firstName: '小美', lastName: '王' },
   isCloseAccount: false,
   serviceOrders: [
-    { id: 's-1', price: 1000, thirdPartyPayName: null, thirdPartyPayId: null, service: { id: 'svc-1', name: '剪髮' }, helperList: [{ helper: { id: 'h-1' }, type: '助理', isDesignate: false, helperDeductionType: 'PERCENT' }] },
+    {
+      id: 's-1',
+      price: 1000,
+      thirdPartyPayName: null,
+      thirdPartyPayId: null,
+      service: { id: 'svc-1', name: '剪髮' },
+      helperList: [{ helper: { id: 'h-1' }, type: '助理', isDesignate: false, helperDeductionType: 'PERCENT' }],
+    },
     { id: 's-2', price: 300, thirdPartyPayName: '團購券', thirdPartyPayId: 'tp-1', service: { id: 'svc-2', name: '洗髮' }, helperList: [] },
   ],
   productOrders: [
@@ -61,7 +68,17 @@ const draft = (overrides = {}) => ({
   membershipOrders: [],
   useTicketTotal: 0,
   staticDetail: [
-    { designerName: '王小美', serviceType: '項目消費', itemName: '剪髮', count: 1, price: 1000, helperList: [{ helperName: '小助', helperType: '助理', helperNo: 'H1' }, { helperName: '阿洗', helperType: '洗髮', helperNo: '' }] },
+    {
+      designerName: '王小美',
+      serviceType: '項目消費',
+      itemName: '剪髮',
+      count: 1,
+      price: 1000,
+      helperList: [
+        { helperName: '小助', helperType: '助理', helperNo: 'H1' },
+        { helperName: '阿洗', helperType: '洗髮', helperNo: '' },
+      ],
+    },
     { designerName: '王小美', serviceType: '店販銷售', itemName: '洗髮精', count: 2, price: 200, helperList: [] },
     { designerName: '王小美', serviceType: '會員卡銷售', itemName: '金卡', count: 1, price: 600, helperList: [] },
     { designerName: '王小美', serviceType: '卡券販賣(不入業績)', itemName: '護髮券', count: 2, price: 150, helperList: [] },
@@ -81,14 +98,36 @@ const draft = (overrides = {}) => ({
 const DRAFTS = [
   draft(),
   draft({
-    id: 'd-2', no: 'D002', date: new Date(2026, 9, 20, 9, 0).getTime(), isDesignate: false, payType2: ['街口'],
+    id: 'd-2',
+    no: 'D002',
+    date: new Date(2026, 9, 20, 9, 0).getTime(),
+    isDesignate: false,
+    payType2: ['街口'],
     customer: { id: 'c-2', name: '王明', cellphone: '0922111222', no: 'C02' },
     designer: { id: 'u-2', name: '阿哲', nickName: '', designerNo: '', firstName: '哲', lastName: '阿' },
-    serviceOrders: [], productOrders: [{ product: { id: 'p-3' }, price: 80, count: 1, thirdPartyPayName: '商品券', thirdPartyPayId: 'tp-2', seller: { id: 'u-2' } }],
-    membershipOrders: [{ seller: { id: 'u-2' }, purchaseDate: 1, expiryDate: 2, price: 900, thirdPartyPayId: 'tp-3', thirdPartyPayName: '會員券', remark: '', membership: { uuid: 'm-1', name: '金卡' } }],
+    serviceOrders: [],
+    productOrders: [{ product: { id: 'p-3' }, price: 80, count: 1, thirdPartyPayName: '商品券', thirdPartyPayId: 'tp-2', seller: { id: 'u-2' } }],
+    membershipOrders: [
+      {
+        seller: { id: 'u-2' },
+        purchaseDate: 1,
+        expiryDate: 2,
+        price: 900,
+        thirdPartyPayId: 'tp-3',
+        thirdPartyPayName: '會員券',
+        remark: '',
+        membership: { uuid: 'm-1', name: '金卡' },
+      },
+    ],
     staticDetail: [],
   }),
-  draft({ id: 'd-3', no: 'D003', date: new Date(2026, 9, 21, 9, 0).getTime(), isCloseAccount: true, customer: { id: 'c-3', name: '歐陽小明', cellphone: '0933444555', no: 'C03' } }),
+  draft({
+    id: 'd-3',
+    no: 'D003',
+    date: new Date(2026, 9, 21, 9, 0).getTime(),
+    isCloseAccount: true,
+    customer: { id: 'c-3', name: '歐陽小明', cellphone: '0933444555', no: 'C03' },
+  }),
   draft({ id: 'd-4', no: 'D004', date: new Date(2026, 9, 22, 9, 0).getTime() }),
   draft({ id: 'd-5', no: 'D005', date: new Date(2026, 9, 23, 9, 0).getTime() }),
   draft({ id: 'd-6', no: 'D006', date: new Date(2026, 9, 24, 9, 0).getTime() }),
@@ -303,7 +342,14 @@ describe('掛單列表：列表與匯出', () => {
 
   it('設計師沒有編號（null）時匯出只有姓名，不帶「/null」（Jason 2026/10/22）', async () => {
     const { settle } = setup({
-      FETCH_PENDING_ORDERS: { pendingOrders: { pageLimit: 1000, pageOffset: 0, totalCount: 1, orders: [draft({ designer: { id: 'u-9', name: '小林', designerNo: null, firstName: '林', lastName: '小' } })] } },
+      FETCH_PENDING_ORDERS: {
+        pendingOrders: {
+          pageLimit: 1000,
+          pageOffset: 0,
+          totalCount: 1,
+          orders: [draft({ designer: { id: 'u-9', name: '小林', designerNo: null, firstName: '林', lastName: '小' } })],
+        },
+      },
     })
     await settle()
     await wait(() => expect(exportedCsv()).toContain('"小林"'))
@@ -334,7 +380,9 @@ describe('掛單列表：列表與匯出', () => {
   })
 
   it('有點數折抵或啟用點數時顯示點數欄；兩者皆無時不顯示', async () => {
-    const { settle } = setup({ FETCH_PENDING_ORDERS: { pendingOrders: { pageLimit: 1000, pageOffset: 0, totalCount: 1, orders: [draft({ bonusDecount: 0 })] } } })
+    const { settle } = setup({
+      FETCH_PENDING_ORDERS: { pendingOrders: { pageLimit: 1000, pageOffset: 0, totalCount: 1, orders: [draft({ bonusDecount: 0 })] } },
+    })
     await settle()
     expect(headers()).not.toContain('點數折抵金額(-)')
     await wait(() => expect(exportedCsv()).toContain('營業現金應收'))
@@ -350,9 +398,16 @@ describe('掛單列表：列表與匯出', () => {
     const o = DRAFTS[0]
     expect(serviceOrders(o)).toBe('含 團購券')
     expect(productOrders({ productOrders: [{ thirdPartyPayName: 'A' }, { thirdPartyPayName: 'B' }] })).toBe('含 A, 含 B')
-    expect(membershipOrders({ membershipOrders: [{ thirdPartyPayName: 'M1' }, { thirdPartyPayName: null }, { thirdPartyPayName: 'M2' }] })).toBe('含 M1, 含 M2')
+    expect(membershipOrders({ membershipOrders: [{ thirdPartyPayName: 'M1' }, { thirdPartyPayName: null }, { thirdPartyPayName: 'M2' }] })).toBe(
+      '含 M1, 含 M2'
+    )
     expect(serviceOrders({ serviceOrders: [{ thirdPartyPayName: 'S1' }, { thirdPartyPayName: 'S2' }] })).toBe('含 S1, 含 S2')
-    expect(thirdParty({ serviceOrders: [{ thirdPartyPayName: 'A' }, { thirdPartyPayName: null }], productOrders: [{ thirdPartyPayName: 'A' }, { thirdPartyPayName: 'B' }, { thirdPartyPayName: null }] })).toBe('含 A, 含 B')
+    expect(
+      thirdParty({
+        serviceOrders: [{ thirdPartyPayName: 'A' }, { thirdPartyPayName: null }],
+        productOrders: [{ thirdPartyPayName: 'A' }, { thirdPartyPayName: 'B' }, { thirdPartyPayName: null }],
+      })
+    ).toBe('含 A, 含 B')
     expect(weekDisplay('x')).toBeUndefined()
   })
 })
@@ -419,14 +474,21 @@ describe('掛單列表：結帳', () => {
     isPending: false,
     serviceOrders: [
       // 服務助理讀查詢的 helperDeductionType（送出的欄位名仍是 helperDeductiontype），Jason 2026/10/22
-      { serviceId: 'svc-1', price: 1000, serviceOrderHelpers: [{ helperDeductiontype: 'PERCENT', helperId: 'h-1', isDesignate: false, type: '助理' }], thirdPartyCouponMerchantId: null },
+      {
+        serviceId: 'svc-1',
+        price: 1000,
+        serviceOrderHelpers: [{ helperDeductiontype: 'PERCENT', helperId: 'h-1', isDesignate: false, type: '助理' }],
+        thirdPartyCouponMerchantId: null,
+      },
       { serviceId: 'svc-2', price: 300, serviceOrderHelpers: [], thirdPartyCouponMerchantId: 'tp-1' },
     ],
     productOrders: [
       { productId: 'p-1', price: 200, count: 2, sellerId: 'u-1', thirdPartyCouponMerchantId: null },
       { productId: 'p-2', price: 50, count: 1, sellerId: 'u-1', thirdPartyCouponMerchantId: 'tp-1' },
     ],
-    useTicketOrders: [{ customerTicketId: 'ut-1', useTicketOrderHelpers: [{ helperDeductiontype: 'AMOUNT', helperId: 'h-2', isDesignate: true, type: '洗髮' }] }],
+    useTicketOrders: [
+      { customerTicketId: 'ut-1', useTicketOrderHelpers: [{ helperDeductiontype: 'AMOUNT', helperId: 'h-2', isDesignate: true, type: '洗髮' }] },
+    ],
     designerId: 'u-1',
     ticketOrders: [{ serviceId: 'svc-3', availableCount: 5, price: 150, count: 2, remark: '', intoPerformanceWhileBuying: false }],
     membershipOrders: [],
@@ -459,7 +521,9 @@ describe('掛單列表：結帳', () => {
     await wait(() => expect(callsOf(calls, 'reCheckoutOrder')).toHaveLength(1))
     expect(callsOf(calls, 'reCheckoutOrder')[0].variables.input.orderInput).toMatchObject({
       payType: ['街口'],
-      membershipOrders: [{ sellerId: 'u-2', membershipUUID: 'm-1', purchaseDate: 1, expiryDate: 2, price: 900, thirdPartyCouponMerchantId: 'tp-3', remark: '' }],
+      membershipOrders: [
+        { sellerId: 'u-2', membershipUUID: 'm-1', purchaseDate: 1, expiryDate: 2, price: 900, thirdPartyCouponMerchantId: 'tp-3', remark: '' },
+      ],
     })
   })
 
@@ -480,10 +544,14 @@ describe('掛單列表：結帳', () => {
     })
     await settle()
     fireEvent.click(within(rowOf('D001')).getByLabelText('結帳'))
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
-      variant: 'warning',
-      message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
-    })))
+    await wait(() =>
+      expect(openSnackbar).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variant: 'warning',
+          message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+        })
+      )
+    )
     expect(callsOf(calls, 'reCheckoutOrder')).toHaveLength(1)
     await wait(() => expect(currentLocation()).toBe('/management/orders'))
   })
@@ -497,9 +565,13 @@ describe('掛單列表：結帳', () => {
     })
     await settle()
     fireEvent.click(within(rowOf('D001')).getByLabelText('結帳'))
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
-      message: '無法確認結帳是否成功。請先到帳單列表查看，不要重複結帳。',
-    })))
+    await wait(() =>
+      expect(openSnackbar).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: '無法確認結帳是否成功。請先到帳單列表查看，不要重複結帳。',
+        })
+      )
+    )
     expect(callsOf(calls, 'reCheckoutOrder')).toHaveLength(1)
     expect(within(rowOf('D001')).getByLabelText('結帳')).toBeDisabled()
     fireEvent.click(within(rowOf('D001')).getByLabelText('結帳'))
@@ -584,13 +656,35 @@ describe('掛單列表：列印', () => {
     const { settle } = setup({
       FETCH_PENDING_ORDERS: {
         pendingOrders: {
-          pageLimit: 1000, pageOffset: 0, totalCount: 1,
-          orders: [draft({
-            membershipOrders: [
-              { seller: { id: 'u-1' }, purchaseDate: 1, expiryDate: 2, price: 600, thirdPartyPayId: null, thirdPartyPayName: null, remark: '', membership: { uuid: 'm-1', name: '金卡' } },
-              { seller: { id: 'u-1' }, purchaseDate: 1, expiryDate: 2, price: 900, thirdPartyPayId: 'tp-3', thirdPartyPayName: '會員券', remark: '', membership: { uuid: 'm-2', name: '銀卡' } },
-            ],
-          })],
+          pageLimit: 1000,
+          pageOffset: 0,
+          totalCount: 1,
+          orders: [
+            draft({
+              membershipOrders: [
+                {
+                  seller: { id: 'u-1' },
+                  purchaseDate: 1,
+                  expiryDate: 2,
+                  price: 600,
+                  thirdPartyPayId: null,
+                  thirdPartyPayName: null,
+                  remark: '',
+                  membership: { uuid: 'm-1', name: '金卡' },
+                },
+                {
+                  seller: { id: 'u-1' },
+                  purchaseDate: 1,
+                  expiryDate: 2,
+                  price: 900,
+                  thirdPartyPayId: 'tp-3',
+                  thirdPartyPayName: '會員券',
+                  remark: '',
+                  membership: { uuid: 'm-2', name: '銀卡' },
+                },
+              ],
+            }),
+          ],
         },
       },
     })
@@ -628,8 +722,19 @@ describe('掛單列表：列印', () => {
   })
 
   it('不留客資或沒有點數且未啟用點數時不印點數；啟用點數時即使為 0 也印', async () => {
-    const noBonus = { pendingOrders: { pageLimit: 1000, pageOffset: 0, totalCount: 1, orders: [draft({ bonusDeposit: 0, bonusUsed: 0, bonusDecountForReport: 0 })] } }
-    let ctx = setup({ FETCH_PENDING_ORDERS: { pendingOrders: { pageLimit: 1000, pageOffset: 0, totalCount: 1, orders: [draft({ customer: { id: 'c-0', name: '不留客資', cellphone: '0900000000', no: '' } })] } } })
+    const noBonus = {
+      pendingOrders: { pageLimit: 1000, pageOffset: 0, totalCount: 1, orders: [draft({ bonusDeposit: 0, bonusUsed: 0, bonusDecountForReport: 0 })] },
+    }
+    let ctx = setup({
+      FETCH_PENDING_ORDERS: {
+        pendingOrders: {
+          pageLimit: 1000,
+          pageOffset: 0,
+          totalCount: 1,
+          orders: [draft({ customer: { id: 'c-0', name: '不留客資', cellphone: '0900000000', no: '' } })],
+        },
+      },
+    })
     await ctx.settle()
     expect(await printOf()).not.toContain('增點')
     cleanup()
@@ -651,7 +756,9 @@ describe('掛單列表：列印', () => {
   it('收據抬頭：logo（轉 data URL）、QR code、訊息；只開訊息但沒內容時不印抬頭；logo 抓不到不影響', async () => {
     let ctx = setup({
       GET_LOGO_DISPLAY_INVOICE: { getLogoDisplayOnInvoice: { isDisplay: true, imageUrl: 'https://img.example/logo.png' } },
-      GET_QRCODE_DISPLAY_ON_INVOICE: { getQrcodeDisplayOnInvoice: { isDisplay: true, url: 'https://line.me/x', imageUrl: 'https://img.example/qr.png' } },
+      GET_QRCODE_DISPLAY_ON_INVOICE: {
+        getQrcodeDisplayOnInvoice: { isDisplay: true, url: 'https://line.me/x', imageUrl: 'https://img.example/qr.png' },
+      },
       GET_MESSAGE_DISPLAY_ON_INVOICE: { getMessageDisplayOnInvoice: { isDisplay: true, message: '感謝光臨' } },
     })
     await ctx.settle()
@@ -697,9 +804,17 @@ describe('掛單列表：列印', () => {
 
   it('設定類查詢還沒回來時先用預設值：不需密碼、A4、顯示姓名、未啟用點數', async () => {
     const slow = 400
-    const { calls, settle } = setup({}, {
-      delays: { GET_CUSTOMER_BONUS: slow, GET_MERCHANT_PASSWORD_IS_USING: slow, GET_MERCHANT_ORDER_PRINT_LAYOUT: slow, GET_DESIGNER_NAME_DISPLAY_ON_INVOICE: slow },
-    })
+    const { calls, settle } = setup(
+      {},
+      {
+        delays: {
+          GET_CUSTOMER_BONUS: slow,
+          GET_MERCHANT_PASSWORD_IS_USING: slow,
+          GET_MERCHANT_ORDER_PRINT_LAYOUT: slow,
+          GET_DESIGNER_NAME_DISPLAY_ON_INVOICE: slow,
+        },
+      }
+    )
     await screen.findByText('#D001')
     expect(await printOf()).toContain('style="margin: 0mm 5mm;"')
     fireEvent.click(within(rowOf('D001')).getByLabelText('結帳'))

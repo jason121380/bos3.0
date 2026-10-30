@@ -4,7 +4,7 @@ import { Button } from 'ui/button'
 import { useState, useEffect } from 'react'
 import { startOfDay, endOfDay } from 'date-fns'
 import { useFetchOrdersFastCheckLazy } from 'hooks/useFetchOrders'
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusActive'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
@@ -68,11 +68,11 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
           employeeId: submitData.designerId,
           isReserved: false,
           isDesignate: submitData.designate,
-        }
-      }
+        },
+      },
     })
   }
-  const serviceOrders = (order) => {
+  const serviceOrders = order => {
     const arr = []
     let returnString = ''
 
@@ -90,7 +90,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
     })
     return returnString
   }
-  const productOrders = (order) => {
+  const productOrders = order => {
     const arr = []
     let returnString = ''
 
@@ -108,7 +108,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
     })
     return returnString
   }
-  const membershipOrders = (order) => {
+  const membershipOrders = order => {
     const arr = []
     let returnString = ''
 
@@ -126,7 +126,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
     })
     return returnString
   }
-  const thirdParty = (order) => {
+  const thirdParty = order => {
     const arr = []
     let returnString = ''
 
@@ -160,88 +160,106 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
       !isMemberShipCardActiveData.loading &&
       !customerBonusActive.loading
     ) {
-      const data = idx(ordersFastCheckLazyData,_=>_.data.orders.orders)
-      const data2 = idx(ordersFastCheckLazyData,_=>_.data.orders.intervalSummary)
-      const isMemberShipCardActive = idx(isMemberShipCardActiveData,_ => _.data.getIsMemberShipCardActive)
+      const data = idx(ordersFastCheckLazyData, _ => _.data.orders.orders)
+      const data2 = idx(ordersFastCheckLazyData, _ => _.data.orders.intervalSummary)
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const membership = idx(ordersFastCheckLazyData, _ => _.data.orders.intervalSummary.membership)
-      const bonusActive = idx(customerBonusActive,_ => _.data.getIsCustomerBonusActive)
+      const bonusActive = idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive)
       const bonus = idx(ordersFastCheckLazyData, _ => _.data.orders.intervalSummary.bonusDecountForReport)
       setBonusDisplay(bonusActive || bonus !== 0)
       setMembershipDisplay(isMemberShipCardActive || membership !== 0)
       setOrderData(data)
       setSummery(data2)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [ordersFastCheckLazyData.loading, isMemberShipCardActiveData.loading, customerBonusActive.loading])
 
   useEffect(() => {
     setSubmitData({ ...submitData, date: date })
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（submitData）；只在 [date] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（submitData）；只在 [date] 變動時呼叫，補上會每次 render 重跑
   }, [date])
 
   useEffect(() => {
     open && handleSubmit()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSubmit）；只在 [submitData, open] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSubmit）；只在 [submitData, open] 變動時呼叫，補上會每次 render 重跑
   }, [submitData, open])
 
   return (
-    <Dialog open={open} onOpenChange={o => { if (!o) handleCloseModal() }}>
+    <Dialog
+      open={open}
+      onOpenChange={o => {
+        if (!o) handleCloseModal()
+      }}
+    >
       {/* 保留原 xl 1536px 寬度與寬表捲動。 */}
-      <DialogContent hideClose
-          onOpenAutoFocus={event => {
-            // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
-            event.preventDefault()
-            if (!event.target.contains(document.activeElement)) event.target.focus()
-          }} aria-describedby={undefined} className='FastCheckOrdersModal !max-w-[1536px] overflow-hidden'>
-      <DialogTitle className="flex items-center justify-between !p-[8px_8px_8px_24px]">
-        帳單速查
-        <Button variant="ghost" size="icon" className="shrink-0" aria-label="關閉" title="關閉" onClick={handleCloseModal}>
-          <CloseIcon/>
-        </Button>
-      </DialogTitle>
-      <div className="h-px bg-border" />
-      <DialogBody style={{ padding: '0px 24px 24px' }}>
-        <div className="flex flex-wrap items-center gap-x-[20px] gap-y-[10px] py-[14px]">
-          <DateSelector
-            date={{ startDate: submitData.date, endDate: submitData.date }}
-            attributes={['startDate']}
-            dateChange={({ startDate }) => setSubmitData({ ...submitData, date: startDate })}
-          />
-          <EmployeeAutoComplete
-            label="服務人員姓名/編號"
-            value={submitData.designerId}
-            className="!w-[200px]"
-            name="designer"
-            onChange={
-              value => value.userId ?
-                setSubmitData({ ...submitData, designerId: value.userId }) :
-                setSubmitData({ ...submitData, designerId: '' })
-            }
-          />
-          <ToggleGroup
-            size="small"
-            exclusive
-            value={submitData.designate}
-            onChange={(e, value) => setSubmitData({ ...submitData, designate: value })}
-          >
-            <ToggleGroupItem value={true}>指定</ToggleGroupItem>
-            <ToggleGroupItem value={false}>不指定</ToggleGroupItem>
-          </ToggleGroup>
-          <Button
-            disabled={ordersFastCheckLazyData.data === undefined || ordersFastCheckLazyData.loading}
-            variant="secondary" onClick={handleReset}
-          >重設</Button>
-        </div>
-        {(ordersFastCheckLazyData.data === undefined || ordersFastCheckLazyData.loading) ?
-          <div className="mt-[50px] text-center"><LoaderCircle className="mx-auto h-10 w-10 animate-spin text-accent" strokeWidth={1.75} /></div> :
-          orderData.length > 0 ?
+      <DialogContent
+        hideClose
+        onOpenAutoFocus={event => {
+          // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
+          event.preventDefault()
+          if (!event.target.contains(document.activeElement)) event.target.focus()
+        }}
+        aria-describedby={undefined}
+        className="FastCheckOrdersModal !max-w-[1536px] overflow-hidden"
+      >
+        <DialogTitle className="flex items-center justify-between !p-[8px_8px_8px_24px]">
+          帳單速查
+          <Button variant="ghost" size="icon" className="shrink-0" aria-label="關閉" title="關閉" onClick={handleCloseModal}>
+            <CloseIcon />
+          </Button>
+        </DialogTitle>
+        <div className="h-px bg-border" />
+        <DialogBody style={{ padding: '0px 24px 24px' }}>
+          <div className="flex flex-wrap items-center gap-x-[20px] gap-y-[10px] py-[14px]">
+            <DateSelector
+              date={{ startDate: submitData.date, endDate: submitData.date }}
+              attributes={['startDate']}
+              dateChange={({ startDate }) => setSubmitData({ ...submitData, date: startDate })}
+            />
+            <EmployeeAutoComplete
+              label="服務人員姓名/編號"
+              value={submitData.designerId}
+              className="!w-[200px]"
+              name="designer"
+              onChange={value =>
+                value.userId ? setSubmitData({ ...submitData, designerId: value.userId }) : setSubmitData({ ...submitData, designerId: '' })
+              }
+            />
+            <ToggleGroup
+              size="small"
+              exclusive
+              value={submitData.designate}
+              onChange={(e, value) => setSubmitData({ ...submitData, designate: value })}
+            >
+              <ToggleGroupItem value={true}>指定</ToggleGroupItem>
+              <ToggleGroupItem value={false}>不指定</ToggleGroupItem>
+            </ToggleGroup>
+            <Button
+              disabled={ordersFastCheckLazyData.data === undefined || ordersFastCheckLazyData.loading}
+              variant="secondary"
+              onClick={handleReset}
+            >
+              重設
+            </Button>
+          </div>
+          {ordersFastCheckLazyData.data === undefined || ordersFastCheckLazyData.loading ? (
+            <div className="mt-[50px] text-center">
+              <LoaderCircle className="mx-auto h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
+            </div>
+          ) : orderData.length > 0 ? (
             <Table wrapperClassName="h-[calc(100%-100px)]">
               <TableHeader className="!sticky top-0 z-[100] bg-background ![outline:1px_solid_rgb(var(--border))]">
                 <TableRow>
-                  <TableHead className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '42px'}}></TableHead>
-                  <TableHead className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '50px', left: '42px'}}>編號</TableHead>
-                  <TableHead className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '100px', left: '92px'}}>客戶</TableHead>
-                  <TableHead className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '100px', left: '192px'}}>設計師</TableHead>
+                  <TableHead className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{ minWidth: '42px' }}></TableHead>
+                  <TableHead className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{ minWidth: '50px', left: '42px' }}>
+                    編號
+                  </TableHead>
+                  <TableHead className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{ minWidth: '100px', left: '92px' }}>
+                    客戶
+                  </TableHead>
+                  <TableHead className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{ minWidth: '100px', left: '192px' }}>
+                    設計師
+                  </TableHead>
                   <TableHead>指定</TableHead>
                   <TableHead className="cellHighlight">營業現金應收</TableHead>
                   <TableHead>服務消費</TableHead>
@@ -261,37 +279,52 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-              {orderData.map(d => 
-                (
+                {orderData.map(d => (
                   <TableRow key={d.id}>
-                    <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{ width: '42px', padding: '2px'}}>
-                      <Button variant="ghost" size="icon" className="h-9 w-9 [&_svg]:size-6" aria-label="編輯帳單" title="編輯帳單" onClick={() => { history.push(`/order/${d.id}`); handleCloseModal() }}><EditOutlinedIcon /></Button>
+                    <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{ width: '42px', padding: '2px' }}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-9 [&_svg]:size-6"
+                        aria-label="編輯帳單"
+                        title="編輯帳單"
+                        onClick={() => {
+                          history.push(`/order/${d.id}`)
+                          handleCloseModal()
+                        }}
+                      >
+                        <EditOutlinedIcon />
+                      </Button>
                     </TableCell>
-                    <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '50px', left: '42px'}}>{d.no}</TableCell>
-                    <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '100px', left: '92px'}}>{d.customer.name}</TableCell>
-                    <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '100px', left: '192px'}}>{d.designer.name}</TableCell>
+                    <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{ minWidth: '50px', left: '42px' }}>
+                      {d.no}
+                    </TableCell>
+                    <TableCell
+                      className="!sticky left-0 top-0 z-[99] box-content break-all bg-background"
+                      style={{ minWidth: '100px', left: '92px' }}
+                    >
+                      {d.customer.name}
+                    </TableCell>
+                    <TableCell
+                      className="!sticky left-0 top-0 z-[99] box-content break-all bg-background"
+                      style={{ minWidth: '100px', left: '192px' }}
+                    >
+                      {d.designer.name}
+                    </TableCell>
                     <TableCell>{d.isDesignate ? 'Y' : 'N'}</TableCell>
-                    <TableCell className="cellHighlight">
-                      {formatNumber(Math.round(d.businessCash))}
-                    </TableCell>
-                    <TableCell style={{ whiteSpace: 'nowrap'}}>
+                    <TableCell className="cellHighlight">{formatNumber(Math.round(d.businessCash))}</TableCell>
+                    <TableCell style={{ whiteSpace: 'nowrap' }}>
                       {formatNumber(Math.round(d.serviceFakeTotal))}
-                      <p className="m-0 text-[14px] leading-5 text-text-secondary">
-                        {d.serviceOrders.length > 0 && serviceOrders(d)}
-                      </p>
+                      <p className="m-0 text-[14px] leading-5 text-text-secondary">{d.serviceOrders.length > 0 && serviceOrders(d)}</p>
                     </TableCell>
-                    <TableCell style={{ whiteSpace: 'nowrap'}}>
+                    <TableCell style={{ whiteSpace: 'nowrap' }}>
                       {formatNumber(Math.round(d.productFakeTotal))}
-                      <p className="m-0 text-[14px] leading-5 text-text-secondary">
-                        {d.productOrders.length > 0 && productOrders(d)}
-                      </p>
+                      <p className="m-0 text-[14px] leading-5 text-text-secondary">{d.productOrders.length > 0 && productOrders(d)}</p>
                     </TableCell>
                     {membershipDisplay && (
-                      <TableCell style={{ whiteSpace: 'nowrap'}}>
+                      <TableCell style={{ whiteSpace: 'nowrap' }}>
                         {formatNumber(Math.round(d.membershipFakeTotal))}
-                        <p className="m-0 text-[14px] leading-5 text-text-secondary">
-                          {d.membershipOrders.length > 0 && membershipOrders(d)}
-                        </p>
+                        <p className="m-0 text-[14px] leading-5 text-text-secondary">{d.membershipOrders.length > 0 && membershipOrders(d)}</p>
                       </TableCell>
                     )}
                     <TableCell>{formatNumber(truncateDecimal(d.useTicketTotal))}</TableCell>
@@ -299,15 +332,13 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                     <TableCell>{formatNumber(Math.round(d.performanceIncome))}</TableCell>
                     <TableCell>{formatNumber(Math.round(d.ticketSellNotIntoPerformance))}</TableCell>
                     <TableCell>{formatNumber(truncateDecimal(d.usedTicketForDecount))}</TableCell>
-                    <TableCell style={{ whiteSpace: 'nowrap'}}>
+                    <TableCell style={{ whiteSpace: 'nowrap' }}>
                       {formatNumber(Math.round(d.thirdPartTicketForDecount))}
                       <p className="m-0 text-[14px] leading-5 text-text-secondary">
-                        {(d.serviceOrders.length > 0 ||
-                          d.productOrders.length > 0) &&
-                          thirdParty(d)}
+                        {(d.serviceOrders.length > 0 || d.productOrders.length > 0) && thirdParty(d)}
                       </p>
                     </TableCell>
-                    <TableCell style={{ whiteSpace: 'nowrap'}}>
+                    <TableCell style={{ whiteSpace: 'nowrap' }}>
                       {formatNumber(Math.round(d.otherPayWayForDecount))}
                       <p className="m-0 text-[14px] leading-5 text-text-secondary">{d.payType2}</p>
                     </TableCell>
@@ -316,14 +347,22 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                     <TableCell>{d.remark}</TableCell>
                     <TableCell style={{ whiteSpace: 'nowrap' }}>{d.source}</TableCell>
                   </TableRow>
-                )
-              )}
+                ))}
                 <TableRow>
-                  <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '42px'}}></TableCell>
-                  <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '50px', left: '42px'}}></TableCell>
-                  <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '100px', left: '92px'}}></TableCell>
-                  <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '100px', left: '192px'}}></TableCell>
-                  <TableCell style={{fontWeight: 'bold'}}>合計</TableCell>
+                  <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{ minWidth: '42px' }}></TableCell>
+                  <TableCell
+                    className="!sticky left-0 top-0 z-[99] box-content break-all bg-background"
+                    style={{ minWidth: '50px', left: '42px' }}
+                  ></TableCell>
+                  <TableCell
+                    className="!sticky left-0 top-0 z-[99] box-content break-all bg-background"
+                    style={{ minWidth: '100px', left: '92px' }}
+                  ></TableCell>
+                  <TableCell
+                    className="!sticky left-0 top-0 z-[99] box-content break-all bg-background"
+                    style={{ minWidth: '100px', left: '192px' }}
+                  ></TableCell>
+                  <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
                   <TableCell className="cellHighlight">{formatNumber(summery.businessCash || 0)}</TableCell>
                   <TableCell>{formatNumber(summery.service || 0)}</TableCell>
                   <TableCell>{formatNumber(summery.product || 0)}</TableCell>
@@ -340,12 +379,11 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                   <TableCell></TableCell>
                 </TableRow>
               </TableBody>
-            </Table> :
-          <h3 className="m-0 !mt-[80px] text-center text-title text-text">
-            無資料
-          </h3>
-        }
-      </DialogBody>
+            </Table>
+          ) : (
+            <h3 className="m-0 !mt-[80px] text-center text-title text-text">無資料</h3>
+          )}
+        </DialogBody>
       </DialogContent>
     </Dialog>
   )

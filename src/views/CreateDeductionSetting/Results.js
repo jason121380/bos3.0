@@ -99,7 +99,6 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
         } else if (d.attribute === value) {
           // 不分指定（上一個條件已處理分指定；原本此處多判斷一個拼錯、恆為 undefined 的 designationUsag，結果相同）
           if (newProfitSharing.nonSegmented[index].rakeData.designate.length === 0) {
-
             newProfitSharing.nonSegmented[index] = {
               ...d,
             }
@@ -125,7 +124,7 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
         setDeductionIndex(0)
       }
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [tabValue] 變動時執行；profitSharing.nonSegmented 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [tabValue] 變動時執行；profitSharing.nonSegmented 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [tabValue])
   return (
     <Fragment>
@@ -135,31 +134,19 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
         </CardHeader>
         <div className="grid gap-4 p-5 sm:grid-cols-2">
           <Field label="抽成設定編號" htmlFor="deduction-no">
-            <Input
-              id="deduction-no"
-              type="text"
-              onChange={event => onChange({ value: event.target.value, key: 'deductionNo' })
-              }
-            />
+            <Input id="deduction-no" type="text" onChange={event => onChange({ value: event.target.value, key: 'deductionNo' })} />
           </Field>
           <Field label="抽成設定名稱" htmlFor="deduction-name">
-            <Input
-              id="deduction-name"
-              type="text"
-              onChange={event => onChange({ value: event.target.value, key: 'deductionName' })
-              }
-            />
+            <Input id="deduction-name" type="text" onChange={event => onChange({ value: event.target.value, key: 'deductionName' })} />
           </Field>
         </div>
         {!profitSharing.isSegmented && (
-          <Tabs
-            value={tabValue}
-            onValueChange={value => handleTabsChange(null, value)}
-            activationMode="manual"
-          >
+          <Tabs value={tabValue} onValueChange={value => handleTabsChange(null, value)} activationMode="manual">
             <TabsList className="px-5">
               {attributions.map(tab => (
-                <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
+                <TabsTrigger key={tab.value} value={tab.value}>
+                  {tab.label}
+                </TabsTrigger>
               ))}
             </TabsList>
           </Tabs>
@@ -168,21 +155,10 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
           <div className="overflow-x-auto">
             <div className="flex min-w-[995px] flex-col gap-3 pb-5">
               <div className="flex flex-wrap items-center gap-4">
-                <h3 className="text-heading text-text">
-                  抽成模式
-                </h3>
-                <ToggleGroup
-                  size="small"
-                  value={profitSharing.isSegmented}
-                  onChange={handleToggleButtonChange}
-                  exclusive
-                >
+                <h3 className="text-heading text-text">抽成模式</h3>
+                <ToggleGroup size="small" value={profitSharing.isSegmented} onChange={handleToggleButtonChange} exclusive>
                   {isSegmented.map((data, idx) => (
-                    <ToggleGroupItem
-                      key={`${data.label}-${idx}`}
-                      value={data.value}
-                      data-testid={`assign-designer-${data.value}`}
-                    >
+                    <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} data-testid={`assign-designer-${data.value}`}>
                       {data.label}
                     </ToggleGroupItem>
                   ))}
@@ -194,17 +170,13 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                   onClick={handleDesignateChange}
                 />
               </div>
-              {!profitSharing.designationUsage ? (
-                !profitSharing.isSegmented ? (
-                  renderNonSegmentedNonDistinguish(tierProps)
-                ) : (
-                  renderSegmentedNonDistinguish(tierProps)
-                )
-              ) : !profitSharing.isSegmented ? (
-                renderNonSegmentedDesignation(tierProps)
-              ) : (
-                renderSegmentedDesignation(tierProps)
-              )}
+              {!profitSharing.designationUsage
+                ? !profitSharing.isSegmented
+                  ? renderNonSegmentedNonDistinguish(tierProps)
+                  : renderSegmentedNonDistinguish(tierProps)
+                : !profitSharing.isSegmented
+                  ? renderNonSegmentedDesignation(tierProps)
+                  : renderSegmentedDesignation(tierProps)}
             </div>
           </div>
         </CardContent>

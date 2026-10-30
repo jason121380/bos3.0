@@ -83,7 +83,7 @@ function Panel() {
       const thirdPartTicket = idx(thirdPartTicketData, _ => _.data.getIsThirdPartTicketDisplay)
       setthirdPartTicketData(thirdPartTicket)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [thirdPartTicketData.loading])
 
   useEffect(() => {
@@ -191,11 +191,7 @@ function Panel() {
         thirdPartTicket={thirdPartTicket}
         reset={reset}
       />
-      <PanelCouponSells
-        expanded={pannel.couponSells.expaned}
-        onPanelClick={() => handlePannelClick('couponSells')}
-        reset={reset}
-      />
+      <PanelCouponSells expanded={pannel.couponSells.expaned} onPanelClick={() => handlePannelClick('couponSells')} reset={reset} />
       {!bill.withoutCustomerData && (
         <PanelCouponUse
           expanded={pannel.couponUse.expaned}
@@ -204,22 +200,19 @@ function Panel() {
           reset={reset}
         />
       )}
-      {memberShipCardActive && <PanelMemberShipCardSells
-        expanded={pannel.memberShipCardSells.expaned}
-        onPanelClick={() => handlePannelClick('memberShipCardSells')}
-        thirdPartTicket={thirdPartTicket}
-        reset={reset}
-      />}
+      {memberShipCardActive && (
+        <PanelMemberShipCardSells
+          expanded={pannel.memberShipCardSells.expaned}
+          onPanelClick={() => handlePannelClick('memberShipCardSells')}
+          thirdPartTicket={thirdPartTicket}
+          reset={reset}
+        />
+      )}
       <div className={styles.container}>
         <div className={styles.leftColumn}>
-          {(bonusActive && !bill.withoutCustomerData) &&
-            <PanelBonus
-              expanded={pannel.bonus.expaned}
-              bonusActive={bonusActive}
-              onPanelClick={() => handlePannelClick('bonus')}
-              reset={reset}
-            />
-          }
+          {bonusActive && !bill.withoutCustomerData && (
+            <PanelBonus expanded={pannel.bonus.expaned} bonusActive={bonusActive} onPanelClick={() => handlePannelClick('bonus')} reset={reset} />
+          )}
           <PanelPayment />
           <PanelRemark />
         </div>

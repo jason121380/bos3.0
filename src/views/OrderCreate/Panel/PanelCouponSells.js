@@ -22,9 +22,7 @@ const styles = {
 export default function PanelCouponSells({ expanded, onPanelClick, reset }) {
   const techingModeContext = useContext(TeachingModeContext)
   const { teachingMode } = techingModeContext
-  const {
-    handleBillChange, couponSells, setCouponSells, bill
-  } = React.useContext(billContext)
+  const { handleBillChange, couponSells, setCouponSells, bill } = React.useContext(billContext)
   const [couponModalOpen, setCouponModalOpen] = React.useState(false)
   const [conpunInModal, setConpunInModal] = React.useState([])
   const [couponCategories, setCouponCategories] = React.useState([])
@@ -33,10 +31,10 @@ export default function PanelCouponSells({ expanded, onPanelClick, reset }) {
   const [pageSetting, setPageSetting] = React.useState({
     keyword: '',
     categoryIds: [],
-    isLaunched: true
+    isLaunched: true,
   })
   const [focusRow, setFocusRow] = React.useState(0)
-  
+
   const tickets = useFetchTickets(pageSetting)
   const serviceCategoriesData = useFetchServiceCategories()
 
@@ -48,7 +46,7 @@ export default function PanelCouponSells({ expanded, onPanelClick, reset }) {
       setCouponCategories(couponCategories)
     } else {
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [tickets.loading, serviceCategoriesData.loading])
 
   React.useEffect(() => {
@@ -72,7 +70,7 @@ export default function PanelCouponSells({ expanded, onPanelClick, reset }) {
   }, [setCouponSells])
 
   React.useEffect(() => {
-    if(reset === 'reset'){
+    if (reset === 'reset') {
       setCouponSells([
         {
           id: uuid(),
@@ -207,19 +205,18 @@ export default function PanelCouponSells({ expanded, onPanelClick, reset }) {
     <Accordion key="panelCouponSells" expanded={expanded}>
       <AccordionSummary
         onClick={onPanelClick}
-        summaryMeta={!expanded && panelSummary(
-          bill.ticketOrders.length,
-          bill.ticketOrders.reduce((total, d) => total + d.price * d.count, 0)
-        )}
+        summaryMeta={
+          !expanded &&
+          panelSummary(
+            bill.ticketOrders.length,
+            bill.ticketOrders.reduce((total, d) => total + d.price * d.count, 0)
+          )
+        }
         data-testid="couponSells"
         style={{ width: '100%' }}
       >
         <p className={`m-0 ${styles.heading}`}>預收卡販賣</p>
-        {teachingMode && (
-          <p className={`m-0 ${styles.couponTeachTitle}`}>
-            這邊賣的卡將『不入業績』，但會先跟客人『收費』**
-          </p>
-        )}
+        {teachingMode && <p className={`m-0 ${styles.couponTeachTitle}`}>這邊賣的卡將『不入業績』，但會先跟客人『收費』**</p>}
       </AccordionSummary>
       <AccordionDetails className={styles.details}>
         <div className={styles.fieldOutter}>

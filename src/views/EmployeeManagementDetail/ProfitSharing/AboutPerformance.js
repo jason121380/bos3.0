@@ -99,7 +99,6 @@ function AboutPerformance({ className = '', profitSharing, onChange, attribution
           }
         } else if (d.attribute === value && !profitSharing.designationUsag) {
           if (newProfitSharing.nonSegmented[index].rakeData.designate.length === 0) {
-
             newProfitSharing.nonSegmented[index] = {
               ...d,
             }
@@ -131,14 +130,12 @@ function AboutPerformance({ className = '', profitSharing, onChange, attribution
           <CardTitle>抽成方式設定</CardTitle>
         </CardHeader>
         {!profitSharing.isSegmented && (
-          <Tabs
-            value={tabValue}
-            onValueChange={value => handleTabsChange(null, value)}
-            activationMode="manual"
-          >
+          <Tabs value={tabValue} onValueChange={value => handleTabsChange(null, value)} activationMode="manual">
             <TabsList>
               {attributions.map(tab => (
-                <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
+                <TabsTrigger key={tab.value} value={tab.value}>
+                  {tab.label}
+                </TabsTrigger>
               ))}
             </TabsList>
           </Tabs>
@@ -147,22 +144,10 @@ function AboutPerformance({ className = '', profitSharing, onChange, attribution
           <PerfectScrollbar>
             <div className="min-w-[995px] pb-[20px]">
               <div>
-                <h4 className="my-4 text-heading text-text">
-                  抽成模式
-                </h4>
-                <ToggleGroup
-                  size="small"
-                  className="ml-[20px]"
-                  value={profitSharing.isSegmented}
-                  onChange={handleToggleButtonChange}
-                  exclusive
-                >
+                <h4 className="my-4 text-heading text-text">抽成模式</h4>
+                <ToggleGroup size="small" className="ml-[20px]" value={profitSharing.isSegmented} onChange={handleToggleButtonChange} exclusive>
                   {isSegmented.map((data, idx) => (
-                    <ToggleGroupItem
-                      key={`${data.label}-${idx}`}
-                      value={data.value}
-                      data-testid={`assign-designer-${data.value}`}
-                    >
+                    <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} data-testid={`assign-designer-${data.value}`}>
                       {data.label}
                     </ToggleGroupItem>
                   ))}
@@ -175,17 +160,13 @@ function AboutPerformance({ className = '', profitSharing, onChange, attribution
                   onClick={handleDesignateChange}
                 />
               </div>
-              {!profitSharing.designationUsage ? (
-                !profitSharing.isSegmented ? (
-                  renderNonSegmentedNonDistinguish(tierProps)
-                ) : (
-                  renderSegmentedNonDistinguish(tierProps)
-                )
-              ) : !profitSharing.isSegmented ? (
-                renderNonSegmentedDesignation(tierProps)
-              ) : (
-                renderSegmentedDesignation(tierProps)
-              )}
+              {!profitSharing.designationUsage
+                ? !profitSharing.isSegmented
+                  ? renderNonSegmentedNonDistinguish(tierProps)
+                  : renderSegmentedNonDistinguish(tierProps)
+                : !profitSharing.isSegmented
+                  ? renderNonSegmentedDesignation(tierProps)
+                  : renderSegmentedDesignation(tierProps)}
             </div>
           </PerfectScrollbar>
         </CardContent>

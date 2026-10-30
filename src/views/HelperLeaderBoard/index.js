@@ -5,7 +5,7 @@ import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
 import { endOfDay, startOfMonth, format } from 'date-fns'
 import idx from 'idx'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import produce from 'immer'
 import useFetchHelperLeaderboard from 'hooks/useFetchHelperLeaderboard'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
@@ -28,7 +28,7 @@ const HelperLeaderBoard = () => {
     endDay: endOfDay(new Date()).getTime(),
     merchantId: [],
     reference: 'FAKE',
-    orderBy: 'POINT'
+    orderBy: 'POINT',
   })
   const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
   const helperLeaboardData = useFetchHelperLeaderboard(inputValue)
@@ -38,11 +38,10 @@ const HelperLeaderBoard = () => {
 
   useEffect(() => {
     if (!isDisplayTogglePerformanceButtonData.loading) {
-      const isDisplayTogglePerformanceButton = idx(
-        isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
+      const isDisplayTogglePerformanceButton = idx(isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
       setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isDisplayTogglePerformanceButtonData.loading])
   // ---------------------------------------------------------------------------------------------------
 
@@ -87,7 +86,7 @@ const HelperLeaderBoard = () => {
           obj[key2] = Math.round(usersReport.reduce((accu, curVal) => accu + curVal.membershipTotal, 0))
         }
         excelData.push({
-          設計師: "合計",
+          設計師: '合計',
           '互助獲得(點數)': Math.round(usersReport.reduce((accu, curVal) => accu + curVal.helperReceivedPoint, 0)),
           '互助使用(點數)': Math.round(usersReport.reduce((accu, curVal) => accu + curVal.helperReceivedPrice, 0)),
           ...obj,
@@ -95,7 +94,7 @@ const HelperLeaderBoard = () => {
         setExcelData(excelData)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [helperLeaboardData.loading, isMemberShipCardActiveData.l…] 變動時執行；helperLeaboardData、inputValue.reference、isMemberShipCardActiveData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [helperLeaboardData.loading, isMemberShipCardActiveData.l…] 變動時執行；helperLeaboardData、inputValue.reference、isMemberShipCardActiveData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [helperLeaboardData.loading, isMemberShipCardActiveData.loading])
 
   const handleSearchReport = () => {
@@ -127,13 +126,13 @@ const HelperLeaderBoard = () => {
 
   useEffect(() => {
     handleSearchReport()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearchReport）；只在 [inputValue.startDay, inputValue.endDay] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearchReport）；只在 [inputValue.startDay, inputValue.endDay] 變動時呼叫，補上會每次 render 重跑
   }, [inputValue.startDay, inputValue.endDay])
 
   return (
-    <Page className='HelperLeaderBoard ui-root' title="互助排行榜">
+    <Page className="HelperLeaderBoard ui-root" title="互助排行榜">
       <div>
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'none', justifyContent: 'space-between' }}>
           <div className="merchantNamePrint">
             {JSON.parse(localStorage.getItem('userMerchant')).name +
               '   ' +
@@ -143,20 +142,13 @@ const HelperLeaderBoard = () => {
               '   ' +
               '互助排行榜'}
           </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' +
-              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-          </div>
+          <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
         </div>
         <PageHeader
-          title='互助排行榜'
+          title="互助排行榜"
           actions={
             <>
-              <CSVLink
-                data={excelData}
-                filename="互助排行榜.csv"
-                style={{ display: 'inline' }}
-              >
+              <CSVLink data={excelData} filename="互助排行榜.csv" style={{ display: 'inline' }}>
                 <Button variant="secondary">
                   <Download strokeWidth={1.75} />
                   報表匯出
@@ -181,24 +173,17 @@ const HelperLeaderBoard = () => {
             <>
               <div className="flex flex-col gap-1.5">
                 <span className="text-label text-text-secondary">排序依據</span>
-                <ToggleGroup
-                  size="small"
-                  exclusive
-                  value={inputValue.orderBy}
-                  onChange={(e, v) => handleValueChange('orderBy', v)}
-                >
-                  <ToggleGroupItem value='POINT'>依點數</ToggleGroupItem>
-                  <ToggleGroupItem value='PRICE'>依金額</ToggleGroupItem>
+                <ToggleGroup size="small" exclusive value={inputValue.orderBy} onChange={(e, v) => handleValueChange('orderBy', v)}>
+                  <ToggleGroupItem value="POINT">依點數</ToggleGroupItem>
+                  <ToggleGroupItem value="PRICE">依金額</ToggleGroupItem>
                 </ToggleGroup>
               </div>
-              {!isDisplayTogglePerformanceButton &&
+              {!isDisplayTogglePerformanceButton && (
                 <div className="flex flex-col gap-1.5">
                   <span className="text-label text-text-secondary">業績依據</span>
-                  <ReferToggleButton
-                    value={inputValue.reference}
-                    onChange={value => value && handleValueChange('reference', value)}
-                  />
-                </div>}
+                  <ReferToggleButton value={inputValue.reference} onChange={value => value && handleValueChange('reference', value)} />
+                </div>
+              )}
               <div className="min-w-0 flex-1">
                 <MerchantListAutocomplete
                   onValueChange={value => {
@@ -209,11 +194,7 @@ const HelperLeaderBoard = () => {
             </>
           }
           actions={
-            <Button
-              variant="primary"
-              onClick={handleSearchReport}
-              className="w-[100px] shrink-0"
-            >
+            <Button variant="primary" onClick={handleSearchReport} className="w-[100px] shrink-0">
               搜尋
             </Button>
           }

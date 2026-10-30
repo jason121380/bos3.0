@@ -136,15 +136,28 @@ test('登入後站內換頁：lazy 頁面還在下載時不放行，頁面掛載
   let resolveChunk
   let endPageQuery
   function Page() {
-    React.useState(() => { endPageQuery = beginRequest() }) // 頁面掛載即發出查詢（同 useQuery）
+    React.useState(() => {
+      endPageQuery = beginRequest()
+    }) // 頁面掛載即發出查詢（同 useQuery）
     return null
   }
-  const LazyPage = React.lazy(() => new Promise(resolve => { resolveChunk = () => resolve({ default: Page }) }))
+  const LazyPage = React.lazy(
+    () =>
+      new Promise(resolve => {
+        resolveChunk = () => resolve({ default: Page })
+      })
+  )
   const latest = renderProbe()
-  render(<Suspense fallback={<Hold />}><LazyPage /></Suspense>)
+  render(
+    <Suspense fallback={<Hold />}>
+      <LazyPage />
+    </Suspense>
+  )
   act(() => runIdle()) // 等頁面程式下載時主執行緒是閒的
   expect(latest()).toBe(false)
-  await act(async () => { resolveChunk() })
+  await act(async () => {
+    resolveChunk()
+  })
   act(() => runIdle())
   expect(latest()).toBe(false) // 頁面查詢還在等回應
   act(() => endPageQuery())

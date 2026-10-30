@@ -7,7 +7,6 @@ import idx from 'idx'
 import PropTypes from 'prop-types'
 import { Card, CardContent } from 'ui/card'
 
-
 const SectionTitle = ({ children }) => <h3 className="mb-4 text-heading text-text">{children}</h3>
 
 function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...rest }) {
@@ -27,7 +26,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 <Input
                   name="lastName"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.lastName || ""}
+                  value={profile.lastName || ''}
                 />
               </Field>
             </div>
@@ -36,7 +35,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 <Input
                   name="firstName"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.firstName || ""}
+                  value={profile.firstName || ''}
                 />
               </Field>
             </div>
@@ -46,7 +45,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                   name="nickName"
                   placeholder="例如: 小王"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.nickName || ""}
+                  value={profile.nickName || ''}
                 />
               </Field>
             </div>
@@ -55,7 +54,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 className="w-full"
                 label="出生日期"
                 value={profile.birthday || null}
-                format='yyyy/MM/dd'
+                format="yyyy/MM/dd"
                 onChange={value => onChange({ value: new Date(value).getTime(), key: 'birthday' })}
                 slotProps={{ textField: { variant: 'outlined', fullWidth: true } }}
               />
@@ -65,8 +64,20 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 <span className="text-label text-text-secondary">性別</span>
                 <div className="box-border flex h-[42px] items-center gap-6 rounded-md border border-solid border-border-strong px-3.5 hover:border-accent">
                   <div role="radiogroup" aria-label="性別" className="flex items-center gap-4">
-                    <RadioField name="gender" value="MALE" checked={(profile.gender || "") === 'MALE'} onChange={event => onChange({ value: event.target.value, key: 'gender' })} label="男" />
-                    <RadioField name="gender" value="FEMALE" checked={(profile.gender || "") === 'FEMALE'} onChange={event => onChange({ value: event.target.value, key: 'gender' })} label="女" />
+                    <RadioField
+                      name="gender"
+                      value="MALE"
+                      checked={(profile.gender || '') === 'MALE'}
+                      onChange={event => onChange({ value: event.target.value, key: 'gender' })}
+                      label="男"
+                    />
+                    <RadioField
+                      name="gender"
+                      value="FEMALE"
+                      checked={(profile.gender || '') === 'FEMALE'}
+                      onChange={event => onChange({ value: event.target.value, key: 'gender' })}
+                      label="女"
+                    />
                   </div>
                 </div>
               </div>
@@ -76,7 +87,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 <Input
                   name="designerNo"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.designerNo || ""}
+                  value={profile.designerNo || ''}
                 />
               </Field>
             </div>
@@ -85,7 +96,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 <Input
                   name="cellphone"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.cellphone || ""}
+                  value={profile.cellphone || ''}
                 />
               </Field>
             </div>
@@ -94,7 +105,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 <Input
                   name="email"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.email || ""}
+                  value={profile.email || ''}
                 />
               </Field>
             </div>
@@ -103,7 +114,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 className="w-full"
                 label="到職日期"
                 value={profile.employmentStartDate || null}
-                format='yyyy/MM/dd'
+                format="yyyy/MM/dd"
                 onChange={value => onChange({ value: new Date(value).getTime(), key: 'employmentStartDate' })}
                 slotProps={{ textField: { variant: 'outlined', fullWidth: true } }}
               />
@@ -113,7 +124,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 <Input
                   name="contactAddress"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.contactAddress || ""}
+                  value={profile.contactAddress || ''}
                 />
               </Field>
             </div>
@@ -122,7 +133,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 <Input
                   name="address"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.address || ""}
+                  value={profile.address || ''}
                 />
               </Field>
             </div>
@@ -139,7 +150,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                   name="bankCode"
                   placeholder="例如: 822"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.bankCode || ""}
+                  value={profile.bankCode || ''}
                 />
               </Field>
             </div>
@@ -149,7 +160,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                   name="bankName"
                   placeholder="例如: 中國信託"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.bankName || ""}
+                  value={profile.bankName || ''}
                 />
               </Field>
             </div>
@@ -158,7 +169,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 <Input
                   name="bankBranchName"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.bankBranchName || ""}
+                  value={profile.bankBranchName || ''}
                 />
               </Field>
             </div>
@@ -167,7 +178,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 <Input
                   name="bankAccount"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.bankAccount || ""}
+                  value={profile.bankAccount || ''}
                 />
               </Field>
             </div>
@@ -183,7 +194,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 <Input
                   name="familyMemberName"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.familyMemberName || ""}
+                  value={profile.familyMemberName || ''}
                 />
               </Field>
             </div>
@@ -192,7 +203,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 <Input
                   name="familyMemberRelation"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.familyMemberRelation || ""}
+                  value={profile.familyMemberRelation || ''}
                 />
               </Field>
             </div>
@@ -201,7 +212,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 <Input
                   name="familyMemberPhone"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.familyMemberPhone || ""}
+                  value={profile.familyMemberPhone || ''}
                 />
               </Field>
             </div>
@@ -210,7 +221,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 <Input
                   name="familyMemberAddress"
                   onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                  value={profile.familyMemberAddress || ""}
+                  value={profile.familyMemberAddress || ''}
                 />
               </Field>
             </div>
@@ -222,7 +233,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 label="員工備註"
                 name="remark"
                 onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.remark || ""}
+                value={profile.remark || ''}
                 variant="outlined"
               />
             </div>

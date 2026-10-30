@@ -9,7 +9,7 @@ const GET_CUSTOMER_SELF_CREATE_ACTIVE = gql`
 export default function useFetchGetIsCustomerSelfCreateActive({ input }) {
   return useQuery(GET_CUSTOMER_SELF_CREATE_ACTIVE, {
     variables: {
-      input
+      input,
     },
     fetchPolicy: 'cache-and-network',
   })

@@ -25,5 +25,4 @@ describe('ui/switch、ui/slider 補強', () => {
     fireEvent.mouseEnter(container.firstChild)
     expect(bubble).toHaveClass('opacity-100')
   })
-
 })

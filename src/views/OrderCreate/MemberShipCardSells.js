@@ -2,19 +2,19 @@ import { Field, Input } from 'ui/input'
 import { CheckboxField } from 'ui/checkbox'
 import { Eraser, Copy, Trash2 } from 'lucide-react'
 import { RowIconButton, AddRowButton } from './RowAction'
-import EmployeeAutoComplete from "components/EmployeeAutoComplete";
-import MemberShipCardAutoComplete from "components/MemberShipCardAutoComplete";
-import ThirdPartyAutoComplete from "components/ThirdPartyAutoComplete";
-import idx from "idx";
-import React, { Fragment, useState, useEffect, useContext } from "react";
-import TeachingModeContext from "context/teachingModeContext";
-import { useFetchThirdPartysForCreateOrder } from "hooks/useFetchMerchant";
-import { addDays, addYears, format, startOfDay } from "date-fns";
+import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
+import MemberShipCardAutoComplete from 'components/MemberShipCardAutoComplete'
+import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
+import idx from 'idx'
+import React, { Fragment, useState, useEffect, useContext } from 'react'
+import TeachingModeContext from 'context/teachingModeContext'
+import { useFetchThirdPartysForCreateOrder } from 'hooks/useFetchMerchant'
+import { addDays, addYears, format, startOfDay } from 'date-fns'
 import { MobileDatePicker } from 'ui/date-picker'
 import billContext from 'context/keyInContext'
 
-import MemberShipCardSellsModal from "views/OrderShared/MemberShipCardSellsModal";
-import { useMembershipPicker } from "views/OrderShared/useItemPicker";
+import MemberShipCardSellsModal from 'views/OrderShared/MemberShipCardSellsModal'
+import { useMembershipPicker } from 'views/OrderShared/useItemPicker'
 import { formatNumber } from 'ui/format'
 import { ROW_ICON_ALIGN } from 'views/OrderShared/rowAlign'
 
@@ -45,85 +45,85 @@ const MemberShipCardSells = ({
   productLength,
   thirdPartTicket,
 }) => {
-  const techingModeContext = useContext(TeachingModeContext);
-  const { teachingMode } = techingModeContext;
+  const techingModeContext = useContext(TeachingModeContext)
+  const { teachingMode } = techingModeContext
   const { bill } = React.useContext(billContext)
 
-  const thirdPartyCouponsData = useFetchThirdPartysForCreateOrder();
+  const thirdPartyCouponsData = useFetchThirdPartysForCreateOrder()
 
-  const employeeRef = React.useRef();
-  const productRef = React.useRef();
-  const priceRef = React.useRef();
-  const checkbox = React.useRef();
-  const dateRef = React.useRef();
-  const thirdPartyRef = React.useRef();
-  const remarkRef = React.useRef();
-  const [focus, setFocus] = React.useState("");
+  const employeeRef = React.useRef()
+  const productRef = React.useRef()
+  const priceRef = React.useRef()
+  const checkbox = React.useRef()
+  const dateRef = React.useRef()
+  const thirdPartyRef = React.useRef()
+  const remarkRef = React.useRef()
+  const [focus, setFocus] = React.useState('')
   // 「從清單選擇」彈窗的狀態與清單查詢（OrderShared/useItemPicker，四頁共用）
-  const { productsModalOpen, handleOpenProductsModal, modalProps: pickerModalProps } = useMembershipPicker();
+  const { productsModalOpen, handleOpenProductsModal, modalProps: pickerModalProps } = useMembershipPicker()
   const [dateError, setDateError] = useState('')
 
   React.useEffect(() => {
     if (expanded && focusFirstField) {
-      idx(employeeRef, (_) => _.current.focus());
-      setFocus("employee");
+      idx(employeeRef, _ => _.current.focus())
+      setFocus('employee')
     }
-  }, [expanded, focusFirstField]);
+  }, [expanded, focusFirstField])
 
   const handleFocus = ({ event, field }) => {
-    setFocus(field);
-    event.target.focus();
-    if (field === "price" || field === "count") {
-      event.target.select();
+    setFocus(field)
+    event.target.focus()
+    if (field === 'price' || field === 'count') {
+      event.target.select()
     }
-    changeRowFocus(index);
-  };
+    changeRowFocus(index)
+  }
   const handleKeyDown = ({ event, nextField }) => {
-    if (event.key === "Enter") {
-      setFocus(nextField);
+    if (event.key === 'Enter') {
+      setFocus(nextField)
     }
-  };
+  }
 
   React.useEffect(() => {
     switch (focus) {
-      case "employee":
-        idx(employeeRef, (_) => _.current.focus());
-        break;
-      case "product":
-        idx(productRef, (_) => _.current.focus());
-        break;
-      case "price":
-        idx(priceRef, (_) => _.current.focus());
-        break;
-      case "checkbox":
-        idx(checkbox, (_) => _.current.focus());
-        break;
-      case "date":
-        idx(dateRef, (_) => _.current.focus());
-        break;
-      case "thirdParty":
-        idx(thirdPartyRef, (_) => _.current.focus());
-        break;
-      case "remark":
-        idx(remarkRef, (_) => _.current.focus());
-        break;
+      case 'employee':
+        idx(employeeRef, _ => _.current.focus())
+        break
+      case 'product':
+        idx(productRef, _ => _.current.focus())
+        break
+      case 'price':
+        idx(priceRef, _ => _.current.focus())
+        break
+      case 'checkbox':
+        idx(checkbox, _ => _.current.focus())
+        break
+      case 'date':
+        idx(dateRef, _ => _.current.focus())
+        break
+      case 'thirdParty':
+        idx(thirdPartyRef, _ => _.current.focus())
+        break
+      case 'remark':
+        idx(remarkRef, _ => _.current.focus())
+        break
       default:
-        break;
+        break
     }
-  }, [focus]);
+  }, [focus])
 
-  const checkMessage = (msg) => {
+  const checkMessage = msg => {
     switch (msg) {
-      case "invalidDate":
-        return "時間有誤";
-      case "minDate":
+      case 'invalidDate':
+        return '時間有誤'
+      case 'minDate':
         return `時間不得小於${format(addDays(startOfDay(new Date(bill.date)), 1), 'yyyy/MM/dd')}`
-      case "maxDate":
+      case 'maxDate':
         return `時間不得大於${format(addYears(startOfDay(new Date(bill.date)), 50), 'yyyy/MM/dd')}`
       default:
-        return "";
+        return ''
     }
-  };
+  }
   return (
     <Fragment>
       <div className={styles.merchantSells}>
@@ -136,26 +136,28 @@ const MemberShipCardSells = ({
             className={styles.field}
             value={sellsItem.sellerId}
             ref={employeeRef}
-            onChange={(value) => {
+            onChange={value => {
               onChange({
                 index,
-                key: "sellerId",
-                value: idx(value, (_) => _.userId),
-              });
+                key: 'sellerId',
+                value: idx(value, _ => _.userId),
+              })
             }}
-            autoFocus={focus === "employee"}
-            onFocus={(event) => handleFocus({ event, field: "employee" })}
-            onKeyDown={(event) => {
+            autoFocus={focus === 'employee'}
+            onFocus={event => handleFocus({ event, field: 'employee' })}
+            onKeyDown={event => {
               if (event.key === 'Enter') {
                 setTimeout(() => {
-                  handleKeyDown({ event, nextField: "product" })
+                  handleKeyDown({ event, nextField: 'product' })
                 }, 1)
               }
             }}
           />
         </Field>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇會員卡" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇會員卡" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenProductsModal}>
+            <Copy aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
@@ -164,21 +166,21 @@ const MemberShipCardSells = ({
             className={styles.productField}
             value={sellsItem.membershipUUID}
             ref={productRef}
-            autoFocus={focus === "product"}
-            onFocus={(event) => handleFocus({ event, field: "product" })}
-            onKeyDown={(event) => {
+            autoFocus={focus === 'product'}
+            onFocus={event => handleFocus({ event, field: 'product' })}
+            onKeyDown={event => {
               if (event.key === 'Enter') {
                 if (sellsItem.isLocked !== 'FALSE' && sellsItem.expiryDate === null) {
-                  handleKeyDown({ event, nextField: "checkbox" })
+                  handleKeyDown({ event, nextField: 'checkbox' })
                 } else if (sellsItem.isLocked === 'FALSE') {
-                  handleKeyDown({ event, nextField: "price" })
+                  handleKeyDown({ event, nextField: 'price' })
                 } else {
-                  handleKeyDown({ event, nextField: "date" })
+                  handleKeyDown({ event, nextField: 'date' })
                 }
               }
             }}
-            onChange={(value) => {
-              idx(value, (_) => {
+            onChange={value => {
+              idx(value, _ => {
                 onCardChange({
                   index,
                   value: {
@@ -189,14 +191,14 @@ const MemberShipCardSells = ({
                     isLocked: _.isLocked,
                     effecitveDay: _.effecitveDay,
                   },
-                });
-              });
+                })
+              })
               if (value.isLocked !== 'FALSE' && value.effecitveDay === 0) {
-                handleKeyDown({ event: { key: 'Enter' }, nextField: "checkbox" })
+                handleKeyDown({ event: { key: 'Enter' }, nextField: 'checkbox' })
               } else if (value.isLocked === 'FALSE') {
-                handleKeyDown({ event: { key: 'Enter' }, nextField: "price" })
+                handleKeyDown({ event: { key: 'Enter' }, nextField: 'price' })
               } else {
-                handleKeyDown({ event: { key: 'Enter' }, nextField: "date" })
+                handleKeyDown({ event: { key: 'Enter' }, nextField: 'date' })
               }
             }}
             inputProps={{ placeholder: '會員卡名稱/代號' }}
@@ -209,17 +211,17 @@ const MemberShipCardSells = ({
                 value={sellsItem.price}
                 ref={priceRef}
                 data-testid={`memberShipCardSells-${index}-price`}
-                onChange={(value) => {
-                  setFocus("price");
+                onChange={value => {
+                  setFocus('price')
                   onChange({
                     index,
-                    key: "price",
-                    value: idx(value, (_) => +_.target.value || 0),
-                  });
+                    key: 'price',
+                    value: idx(value, _ => +_.target.value || 0),
+                  })
                 }}
-                autoFocus={focus === "price"}
-                onFocus={(event) => handleFocus({ event, field: "price" })}
-                onKeyDown={(event) => {
+                autoFocus={focus === 'price'}
+                onFocus={event => handleFocus({ event, field: 'price' })}
+                onKeyDown={event => {
                   handleKeyDown({ event, nextField: sellsItem.expiryDate === null ? 'checkbox' : 'date' })
                 }}
                 disabled={!!(sellsItem.isLocked === 'TRUE' || sellsItem.isLocked === 'UNSET')}
@@ -235,30 +237,30 @@ const MemberShipCardSells = ({
                   minDate={addDays(new Date(bill.date), 1)}
                   maxDate={addYears(new Date(bill.date), 50)}
                   disabled={sellsItem.expiryDate === null}
-                  autoFocus={focus === "date"}
-                  onFocus={(event) => handleFocus({ event, field: "date" })}
-                  onError={(error) => setDateError(error)}
+                  autoFocus={focus === 'date'}
+                  onFocus={event => handleFocus({ event, field: 'date' })}
+                  onError={error => setDateError(error)}
                   localeText={{
-                    toolbarTitle: '選擇日期'
+                    toolbarTitle: '選擇日期',
                   }}
                   slotProps={{
                     textField: {
-                      onFocus: event => handleFocus({ event, field: "date" }),
+                      onFocus: event => handleFocus({ event, field: 'date' }),
                       onKeyDown: event => {
                         // Enter 跳到永久會籍：preventDefault 讓日期選擇器不打開月曆
                         if (event.key === 'Enter') event.preventDefault()
-                        handleKeyDown({ event, nextField: "checkbox" })
+                        handleKeyDown({ event, nextField: 'checkbox' })
                       },
-                      helperText: checkMessage(dateError)
+                      helperText: checkMessage(dateError),
                     },
                   }}
-                  onChange={(value) => {
-                    setFocus("date");
+                  onChange={value => {
+                    setFocus('date')
                     onChange({
                       index,
-                      key: "expiryDate",
-                      value: new Date(value).getTime()
-                    });
+                      key: 'expiryDate',
+                      value: new Date(value).getTime(),
+                    })
                   }}
                 />
               </Field>
@@ -267,21 +269,21 @@ const MemberShipCardSells = ({
                 ref={checkbox}
                 checked={sellsItem.expiryDate === null}
                 name="checkbox"
-                onFocus={(event) => handleFocus({ event, field: "checkbox" })}
-                onKeyDown={(event) =>
-                  handleKeyDown({ event, nextField: "thirdParty" })
-                }
-                onChange={(value) => {
+                onFocus={event => handleFocus({ event, field: 'checkbox' })}
+                onKeyDown={event => handleKeyDown({ event, nextField: 'thirdParty' })}
+                onChange={value => {
                   // 有效天數為 0（終身卡）時沒有可帶的到期日：帳單日當天已早於可選的最早日期（帳單日＋1），
                   // 留空（無效日期）待櫃檯選，結帳時提示「會員卡到期日有誤」（同重新開單，Codex review PR #265）
                   onChange({
                     index,
-                    key: "expiryDate",
+                    key: 'expiryDate',
                     value:
                       sellsItem.expiryDate === null
-                        ? sellsItem.effecitveDay > 0 ? addDays(new Date(bill.date), sellsItem.effecitveDay).getTime() : NaN
+                        ? sellsItem.effecitveDay > 0
+                          ? addDays(new Date(bill.date), sellsItem.effecitveDay).getTime()
+                          : NaN
                         : null,
-                  });
+                  })
                 }}
               />
             </div>
@@ -291,35 +293,29 @@ const MemberShipCardSells = ({
                   <ThirdPartyAutoComplete
                     fieldProps={{ placeholder: '第三方卡券' }}
                     className={styles.field}
-                    autoFocus={focus === "thirdParty"}
+                    autoFocus={focus === 'thirdParty'}
                     value={sellsItem.thirdPartyCouponMerchantId}
                     ref={thirdPartyRef}
-                    onKeyDown={(event) =>
-                      handleKeyDown({ event, nextField: "remark" })
-                    }
+                    onKeyDown={event => handleKeyDown({ event, nextField: 'remark' })}
                     name="thirdParty"
-                    onChange={(e) => {
+                    onChange={e => {
                       onCardChange({
                         index,
                         value: {
                           ...sellsItem,
                           thirdPartyCouponMerchantId: e ? e.id : null,
                         },
-                      });
+                      })
                     }}
-                    onFocus={(event) => handleFocus({ event, field: "thirdParty" })}
+                    onFocus={event => handleFocus({ event, field: 'thirdParty' })}
                   />
                 </Field>
               )}
-              {teachingMode && (
-                <p className={`m-0 ${styles.heading2}`}>
-                  勾選將入業績但不收費用**
-                </p>
-              )}
+              {teachingMode && <p className={`m-0 ${styles.heading2}`}>勾選將入業績但不收費用**</p>}
               {!thirdPartyCouponsData.loading &&
                 sellsItem.thirdPartyCouponMerchantId &&
-                idx(thirdPartyCouponsData, (_) =>
-                  _.data.merchant.thirdpartyCoupons.map((data) => {
+                idx(thirdPartyCouponsData, _ =>
+                  _.data.merchant.thirdpartyCoupons.map(data => {
                     if (data.id === sellsItem.thirdPartyCouponMerchantId) {
                       return (
                         <p className={`m-0 ${styles.heading2}`} key={data.id} style={{ marginTop: '4px' }}>
@@ -328,7 +324,7 @@ const MemberShipCardSells = ({
                             ? `扣完後業績:${formatNumber(Math.round((sellsItem.price * (100 - data.fee)) / 100))}`
                             : `扣完後業績:${formatNumber(Math.round(sellsItem.price - data.fee))}`}
                         </p>
-                      );
+                      )
                     }
                     return undefined
                   })
@@ -339,23 +335,23 @@ const MemberShipCardSells = ({
                 value={sellsItem.remark}
                 name="remark"
                 ref={remarkRef}
-                autoFocus={focus === "remark"}
+                autoFocus={focus === 'remark'}
                 InputLabelProps={{
                   shrink: true,
                 }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
+                onKeyDown={event => {
+                  if (event.key === 'Enter') {
                     setTimeout(() => {
-                      changeRowFocus(index + 1);
+                      changeRowFocus(index + 1)
                     }, 1)
                   }
                 }}
-                onChange={(value) => {
+                onChange={value => {
                   onChange({
                     index,
-                    key: "remark",
-                    value: idx(value, (_) => _.target.value),
-                  });
+                    key: 'remark',
+                    value: idx(value, _ => _.target.value),
+                  })
                 }}
               />
             </Field>
@@ -363,10 +359,11 @@ const MemberShipCardSells = ({
         )}
 
         <RowIconButton
-          label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
+          label="清除此列"
+          className={`mr-1.5 ${ROW_ICON_ALIGN}`}
           onClick={() => {
-            onClear({ index });
-            setFocus("employee");
+            onClear({ index })
+            setFocus('employee')
           }}
           data-testid={`merchantSsell-${index}-clear`}
         >
@@ -374,10 +371,11 @@ const MemberShipCardSells = ({
         </RowIconButton>
         {!first && (
           <RowIconButton
-            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
+            label="刪除此列"
+            className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={() => {
-              removeSells({ index });
-              setFocus("employee");
+              removeSells({ index })
+              setFocus('employee')
             }}
             data-testid={`merchantSsell-${index}-delete`}
           >
@@ -388,8 +386,8 @@ const MemberShipCardSells = ({
       {last && (
         <AddRowButton
           onClick={() => {
-            addSells();
-            setFocus("employee");
+            addSells()
+            setFocus('employee')
           }}
           data-testid={`merchantSsell-${index}-add`}
         />
@@ -404,7 +402,7 @@ const MemberShipCardSells = ({
         />
       )}
     </Fragment>
-  );
-};
+  )
+}
 
-export default MemberShipCardSells;
+export default MemberShipCardSells

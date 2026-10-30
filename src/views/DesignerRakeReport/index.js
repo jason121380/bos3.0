@@ -23,13 +23,10 @@ const DesignerRakeReport = () => {
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading) {
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       setIsMemberShipCardActive(isMemberShipCardActive)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
 
   return (
@@ -45,16 +42,13 @@ const DesignerRakeReport = () => {
         }
       />
       {designerRakeReportData.error ? (
-          <QueryFailed onRetry={() => designerRakeReportData.refetch()} />
-        ) : !designerRakeReportData.loading ? (
+        <QueryFailed onRetry={() => designerRakeReportData.refetch()} />
+      ) : !designerRakeReportData.loading ? (
         idx(designerRakeReportData, _ =>
           _.data.userRakeReport.length > 0 ? (
             // userRakeGrid：@media print 以 div.userRakeGrid 排成三欄，className 保留
             <div className="userRakeGrid grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-              <Results
-                designerRakeReport={_.data.userRakeReport}
-                isMemberShipCardActive={isMemberShipCardActive}
-              />
+              <Results designerRakeReport={_.data.userRakeReport} isMemberShipCardActive={isMemberShipCardActive} />
             </div>
           ) : (
             <EmptyState title="無資料" />

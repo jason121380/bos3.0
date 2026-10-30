@@ -21,8 +21,7 @@ const footerVaild = (bill, orderSetting) =>
       anyItem(bill)) ||
     (total(bill) === 0 && anyItem(bill))
   )
-const footerUpdateVaild = (bill, orderSetting) =>
-  !(bill.date && bill.customerId && bill.designerId && !orderSetting.isCloseAccount)
+const footerUpdateVaild = (bill, orderSetting) => !(bill.date && bill.customerId && bill.designerId && !orderSetting.isCloseAccount)
 
 const base = () => ({
   date: 1760000000000,
@@ -109,17 +108,15 @@ describe('帳單詳細 停用原因', () => {
     const bill = { ...base(), date: 0, customerId: undefined, serviceOrders: [{ price: 500 }] }
     expect(footerVaild(bill, { isCloseAccount: false })).toBe(true)
     expect(getMissingForCheckout(bill)).toEqual(['帳單日期', '顧客（或勾選「不留客資」）'])
-    expect(
-      getDisabledReason({ busy: false, invalid: true, isCloseAccount: false, missing: getMissingForCheckout(bill) })
-    ).toBe('尚缺：帳單日期、顧客（或勾選「不留客資」）')
+    expect(getDisabledReason({ busy: false, invalid: true, isCloseAccount: false, missing: getMissingForCheckout(bill) })).toBe(
+      '尚缺：帳單日期、顧客（或勾選「不留客資」）'
+    )
   })
 
   it('總金額為 0 但有消費時可直接結帳（vaild 的 B 條件），不顯示缺項', () => {
     const bill = { ...base(), date: 0, designerId: '', serviceOrders: [{ price: 0 }] }
     expect(footerVaild(bill, { isCloseAccount: false })).toBe(false)
-    expect(
-      getDisabledReason({ busy: false, invalid: false, isCloseAccount: false, missing: getMissingForCheckout(bill) })
-    ).toBe('')
+    expect(getDisabledReason({ busy: false, invalid: false, isCloseAccount: false, missing: getMissingForCheckout(bill) })).toBe('')
   })
 
   // 防呆：Footer 日後若多了一個停用條件、這裡還沒同步，缺項會是空的；此時不顯示只有「尚缺：」三個字的說明

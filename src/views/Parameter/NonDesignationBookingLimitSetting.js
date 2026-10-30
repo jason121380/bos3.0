@@ -5,14 +5,11 @@ import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import produce from 'immer'
 
-
-function NonDesignationBookingLimitSetting({
-  className, inputEnable, aboutBooking, setAboutBooking
-}) {
+function NonDesignationBookingLimitSetting({ className, inputEnable, aboutBooking, setAboutBooking }) {
   const handleInputChange = (event, key) => {
     setAboutBooking(
-      produce( draft => {
-        draft[key] = parseInt(event.target.value === "" ? 0 : Math.abs(event.target.value), 10)
+      produce(draft => {
+        draft[key] = parseInt(event.target.value === '' ? 0 : Math.abs(event.target.value), 10)
       })
     )
   }
@@ -31,15 +28,17 @@ function NonDesignationBookingLimitSetting({
             value={aboutBooking.nonDesignationOrderLimit}
             onChange={event => handleInputChange(event, 'nonDesignationOrderLimit')}
             onFocus={e => e.target.select()}
-            onWheel={() => document.activeElement.blur()}       
+            onWheel={() => document.activeElement.blur()}
           />
           <CheckboxField
             disabled={!inputEnable}
-            label='浮動式預約人數上限'
+            label="浮動式預約人數上限"
             checked={aboutBooking.isDynamicBookingLimitUsing}
             onChange={(e, v) => {
               setAboutBooking(
-                produce(draft => { draft.isDynamicBookingLimitUsing = v })
+                produce(draft => {
+                  draft.isDynamicBookingLimitUsing = v
+                })
               )
             }}
           />
@@ -53,7 +52,7 @@ function NonDesignationBookingLimitSetting({
             value={aboutBooking.designationOrderLimit}
             onChange={event => handleInputChange(event, 'designationOrderLimit')}
             onFocus={e => e.target.select()}
-            onWheel={() => document.activeElement.blur()}              
+            onWheel={() => document.activeElement.blur()}
           />
         </div>
       </CardContent>

@@ -67,7 +67,7 @@ export default function Employees() {
         link.click()
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getEmployeeClockInScheduleExcelData.loading])
 
   // 儲存資料
@@ -100,7 +100,6 @@ export default function Employees() {
     } finally {
       setIsClick(false)
     }
-
   }
 
   const weekDisplay = week => {
@@ -137,7 +136,7 @@ export default function Employees() {
       const data = idx(getIsEmployeeScheduleWorkingHourDisplay, _ => _.data.getIsEmployeeScheduleWorkingHourDisplay)
       setWorkingHourDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsEmployeeScheduleWorkingHourDisplay.loading])
   useEffect(() => {
     const displayDate = []
@@ -147,19 +146,11 @@ export default function Employees() {
     let add = 0
     for (let i = startDate; i <= endDate; i++) {
       displayDate.push(
-        `${format(
-          addDays(new Date(startOfMonth(new Date(date.startDate)).getTime()), add).getTime(),
-          'MM/dd'
-        )}${weekDisplay(
-          format(
-            addDays(new Date(startOfMonth(new Date(date.startDate)).getTime()), add).getTime(),
-            'eeee'
-          )
+        `${format(addDays(new Date(startOfMonth(new Date(date.startDate)).getTime()), add).getTime(), 'MM/dd')}${weekDisplay(
+          format(addDays(new Date(startOfMonth(new Date(date.startDate)).getTime()), add).getTime(), 'eeee')
         )}`
       )
-      rawTime.push(
-        `${addDays(new Date(startOfMonth(new Date(date.startDate)).getTime()), add).getTime()}`
-      )
+      rawTime.push(`${addDays(new Date(startOfMonth(new Date(date.startDate)).getTime()), add).getTime()}`)
       add++
     }
     setRawTime(rawTime)
@@ -181,7 +172,7 @@ export default function Employees() {
       // 查詢失敗時給空陣列，不整頁壞（Jason 2026/10/22 fix all）
       setEmployeeSchedule(idx(employeeClockInSchedule, _ => _.data.getEmployeeClockInSchedule) || [])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [employeeClockInSchedule.loading])
 
   useEffect(() => {
@@ -189,7 +180,7 @@ export default function Employees() {
       const data = idx(getUESUsingSetting, _ => _.data.getUESUsingSetting)
       setUESUsing(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getUESUsingSetting.loading])
 
   return (
@@ -203,11 +194,7 @@ export default function Employees() {
                 {UESUsing && (
                   <div className="flex items-center gap-1 text-body text-text-secondary">
                     <span>編輯過往班別</span>
-                    <Switch
-                      size="small"
-                      checked={editBefore}
-                      onChange={e => setEditBefore(e.target.checked)}
-                    />
+                    <Switch size="small" checked={editBefore} onChange={e => setEditBefore(e.target.checked)} />
                   </div>
                 )}
                 <DateSelector
@@ -215,13 +202,17 @@ export default function Employees() {
                   attributes={['lastmonth', 'thismonth', 'startDate']}
                   dateChange={value => setDate(value)}
                   onlyStart
-                  inputFormat='yyyy/MM'
+                  inputFormat="yyyy/MM"
                   pickerOption={{
-                    views: ['month', 'year']
+                    views: ['month', 'year'],
                   }}
                 />
               </div>
-              <Button variant="primary" onClick={isEditing ? saveData : () => setIsEditing(true)} disabled={isEditing ? (employeeClockInSchedule.loading || isClick) : false}>
+              <Button
+                variant="primary"
+                onClick={isEditing ? saveData : () => setIsEditing(true)}
+                disabled={isEditing ? employeeClockInSchedule.loading || isClick : false}
+              >
                 {isEditing ? '儲存' : '編輯班表'}
               </Button>
             </>
@@ -230,10 +221,7 @@ export default function Employees() {
         <div className="mb-3">
           {!merchantClockInSchedule.loading && (
             <ScheduleTags
-              merchantClockInSchedule={idx(
-                merchantClockInSchedule,
-                _ => _.data.getMerchantClockInSetting
-              )}
+              merchantClockInSchedule={idx(merchantClockInSchedule, _ => _.data.getMerchantClockInSetting)}
               setTagId={setTagId}
               tagId={tagId}
               fontColor={fontColor}
@@ -247,7 +235,7 @@ export default function Employees() {
         </div>
         {employeeClockInSchedule.error ? (
           <QueryFailed onRetry={() => employeeClockInSchedule.refetch()} />
-        ) : ((!employeeClockInSchedule.loading && !merchantClockInSchedule.loading)) ? (
+        ) : !employeeClockInSchedule.loading && !merchantClockInSchedule.loading ? (
           <Results
             displayDate={displayDate}
             rawTime={rawTime}
@@ -264,9 +252,9 @@ export default function Employees() {
             isEditing={isEditing}
             setIsEditing={setIsEditing}
           />
-        ) :
+        ) : (
           <Skeleton className="mt-4 h-96 w-full" />
-        }
+        )}
       </div>
     </Page>
   )

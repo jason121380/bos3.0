@@ -20,7 +20,13 @@ import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import MembershipCardList from 'components/MembershipCardList'
 import lineIcon from 'assets/images/LINE_APP.png'
 
-import { emptyCustomerForm, quickAddCustomerInput, customerFilterOptions, getCustomerOptionLabel, renderCustomerOption } from 'views/OrderShared/customerField'
+import {
+  emptyCustomerForm,
+  quickAddCustomerInput,
+  customerFilterOptions,
+  getCustomerOptionLabel,
+  renderCustomerOption,
+} from 'views/OrderShared/customerField'
 import AddCustomerModal from './AddCustomerModal'
 
 const designate = [
@@ -29,10 +35,8 @@ const designate = [
 ]
 
 export default function Head() {
-  const {
-    bill, handleBillChange, setBill, setFocus, setEmployeeAlready, setCustomerAlready, LBCusDisplay,
-    isLineBinded, setIsLineBinded,
-  } = useContext(billContext)
+  const { bill, handleBillChange, setBill, setFocus, setEmployeeAlready, setCustomerAlready, LBCusDisplay, isLineBinded, setIsLineBinded } =
+    useContext(billContext)
   const [openModal, setOpenModal] = useState(false)
   const customerRef = useRef()
   const designerRef = useRef()
@@ -48,9 +52,7 @@ export default function Head() {
   const customerData = useFetchCustomer({
     id: bill.customerId !== undefined ? bill.customerId : null,
   })
-  const stayInCheckoutWithoutCustomer = JSON.parse(
-    localStorage.getItem('stayInCheckoutWithoutCustomer')
-  )
+  const stayInCheckoutWithoutCustomer = JSON.parse(localStorage.getItem('stayInCheckoutWithoutCustomer'))
 
   const [checkoutWithoutCustomer, setCheckoutWithoutCustomer] = useState(
     stayInCheckoutWithoutCustomer !== null ? stayInCheckoutWithoutCustomer : false
@@ -89,9 +91,7 @@ export default function Head() {
   // 儲存會員卡
   useEffect(() => {
     if (!customerData.loading) {
-      const customerDetail = idx(customerData, _ =>
-        _.data.customer !== null ? _.data.customer : null
-      )
+      const customerDetail = idx(customerData, _ => (_.data.customer !== null ? _.data.customer : null))
       // 顧客查詢失敗時 idx 回 undefined，也當成沒有顧客（原本讀 undefined.name 整頁錯誤；2026/10/28）
       if (customerDetail && customerDetail.name !== '不留客資') {
         setValue({
@@ -113,7 +113,7 @@ export default function Head() {
         setMembershipPurchase(tmp)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerData.loading, customerData.data, setIsLineBinded])
 
   // delay send query customers
@@ -140,7 +140,7 @@ export default function Head() {
         }
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [options, customers.loading, tmpCustomerKeyword, setBill] 變動時執行；keyCode 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [options, customers.loading, tmpCustomerKeyword, setBill] 變動時執行；keyCode 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [options, customers.loading, tmpCustomerKeyword, setBill])
 
   const handleDateChange = date => {
@@ -152,8 +152,7 @@ export default function Head() {
 
   // 依點的項目設定指定／不指定。原本焦點在服務人員欄時一律設成「指定」，第一次點「不指定」不生效（coverage wave 1，2026/10/22 Jason 決定修正）
   const handleToggleButtonChange = (_event, state) => {
-    state !== null &&
-      handleBillChange({ key: 'isDesignate', value: state })
+    state !== null && handleBillChange({ key: 'isDesignate', value: state })
     setFocus('')
   }
   // 不留客資 button
@@ -290,19 +289,19 @@ export default function Head() {
               <Field label="帳單日期" required className="w-full">
                 <DateTimePicker
                   value={bill.date}
-                  format='yyyy/MM/dd HH:mm'
+                  format="yyyy/MM/dd HH:mm"
                   onChange={handleDateChange}
                   className="w-full"
                   ocaleText={{
-                    toolbarTitle: '選擇日期'
+                    toolbarTitle: '選擇日期',
                   }}
                   slotProps={{
                     toolbar: {
-                      toolbarFormat: 'M月d日'
+                      toolbarFormat: 'M月d日',
                     },
                     textField: {
-                      variant: 'standard'
-                    }
+                      variant: 'standard',
+                    },
                   }}
                 />
               </Field>
@@ -420,9 +419,7 @@ export default function Head() {
                         ),
                         endAdornment: (
                           <Fragment>
-                            {customers.loading ? (
-                              <LoaderCircle className="h-5 w-5 animate-spin" strokeWidth={1.75} />
-                            ) : null}
+                            {customers.loading ? <LoaderCircle className="h-5 w-5 animate-spin" strokeWidth={1.75} /> : null}
                             {params.InputProps.endAdornment}
                           </Fragment>
                         ),
@@ -440,7 +437,7 @@ export default function Head() {
               onChange={handleCheckoutWithoutCustomer}
             />
             <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-              {(LBCusDisplay && isLineBinded) && <img style={{ width: 24, height: 24 }} alt='line_icon' src={lineIcon} />}
+              {LBCusDisplay && isLineBinded && <img style={{ width: 24, height: 24 }} alt="line_icon" src={lineIcon} />}
               {membershipPurchase.length > 0 && <MembershipCardList data={membershipPurchase} />}
             </div>
           </div>
@@ -476,13 +473,7 @@ export default function Head() {
                 />
               </Field>
               <Field label="指定方式" className="shrink-0">
-                <ToggleGroup
-                  className="shrink-0"
-                  size="small"
-                  value={bill.isDesignate}
-                  onChange={handleToggleButtonChange}
-                  exclusive
-                >
+                <ToggleGroup className="shrink-0" size="small" value={bill.isDesignate} onChange={handleToggleButtonChange} exclusive>
                   {designate.map((data, idx) => (
                     <ToggleGroupItem
                       key={`${data.label}-${idx}`}

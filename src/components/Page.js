@@ -22,11 +22,7 @@ function Page({ title, children, ...rest }) {
   useEffect(() => {
     if (title !== undefined) document.title = title
   }, [title])
-  return (
-    <div {...rest}>
-      {children}
-    </div>
-  )
+  return <div {...rest}>{children}</div>
 }
 
 Page.propTypes = {

@@ -21,7 +21,10 @@ jest.mock('hooks/useFetchMerchant', () => ({
   default: () => ({ loading: false, data: { merchant: { id: 'merchant-1', openingHours: '10:00:00', closingHours: '20:00:00' } } }),
 }))
 
-const tabNames = () => within(screen.getByRole('tablist')).getAllByRole('tab').map(t => t.textContent)
+const tabNames = () =>
+  within(screen.getByRole('tablist'))
+    .getAllByRole('tab')
+    .map(t => t.textContent)
 
 beforeEach(() => loginAs())
 afterEach(cleanup)
@@ -60,7 +63,9 @@ describe('個人頁：分頁', () => {
 
   it('預約表：店家開啟報到功能時可切換報到模式；以登入者 id 查週曆', async () => {
     const { settle, calls } = renderProfile('reservation', {
-      fixtures: { GET_CHECKIN_SETTING_FOR_CALENDAR: { getMerchantCheckinSettings: { isBookingCheckinEnabled: true, isUnDoneBookingManualNotify: false } } },
+      fixtures: {
+        GET_CHECKIN_SETTING_FOR_CALENDAR: { getMerchantCheckinSettings: { isBookingCheckinEnabled: true, isUnDoneBookingManualNotify: false } },
+      },
     })
     await settle()
     const toggle = await screen.findByRole('switch', { name: '報到模式' })
@@ -92,7 +97,20 @@ describe('Profile/Permission（舊版權限勾選，元件單獨測試）', () =
     const { calls } = renderPage(<Permission />, {
       fixtures: {
         FETCH_THIRDPARTYS: {
-          merchant: { id: 'merchant-1', permissions: [{ id: 'p1', name: '帳單', code: 'O', actions: [{ id: 'a1', name: '開單', code: 'C' }, { id: 'a2', name: '刪單', code: 'D' }] }] },
+          merchant: {
+            id: 'merchant-1',
+            permissions: [
+              {
+                id: 'p1',
+                name: '帳單',
+                code: 'O',
+                actions: [
+                  { id: 'a1', name: '開單', code: 'C' },
+                  { id: 'a2', name: '刪單', code: 'D' },
+                ],
+              },
+            ],
+          },
           me: { id: USER_ID, permissionActions: [{ id: 'a1' }] },
         },
         updateUserPermission: v => ({ updateUserPermission: v.input.status }),

@@ -22,17 +22,13 @@ function RegisterForm({ className, ...rest }) {
 
   return (
     <form {...rest} className="mt-6 flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-      <Field
-        label="電話號碼"
-        htmlFor="register-cellphone"
-        error={errors.cellphone && errors.cellphone.message}
-      >
+      <Field label="電話號碼" htmlFor="register-cellphone" error={errors.cellphone && errors.cellphone.message}>
         <Input
           id="register-cellphone"
           name="cellphone"
           autoComplete="tel"
           invalid={!!errors.cellphone}
-          data-testid='cellphone'
+          data-testid="cellphone"
           ref={e => {
             cellphoneRef.current = e
             register(e, {
@@ -49,13 +45,7 @@ function RegisterForm({ className, ...rest }) {
           }}
         />
       </Field>
-      <Button
-        className="mt-6 w-full"
-        variant="primary"
-        size="lg"
-        type="submit"
-        data-testid="submit"
-      >
+      <Button className="mt-6 w-full" variant="primary" size="lg" type="submit" data-testid="submit">
         註冊
       </Button>
     </form>

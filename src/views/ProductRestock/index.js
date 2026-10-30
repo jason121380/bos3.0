@@ -30,11 +30,11 @@ function ProductRestock() {
   const [selectAllRecords, setSelectAllRecords] = useState([])
   const [clickData, setClickData] = useState({
     id: '',
-    stockInDate: null
+    stockInDate: null,
   })
   const [isUsing, setIsUsing] = useState({
     stockIn: true,
-    stockInUndo: true
+    stockInUndo: true,
   })
   const [showFilter, setShowFilter] = useState(false)
   const [getPurchaseRecordsLazy, getPurchaseRecordsLazyData] = useFetchGetPurchaseRecord({
@@ -50,9 +50,9 @@ function ProductRestock() {
       variables: {
         input: {
           status: 'ALL',
-          vendorUUIds: vendorUUId
-        }
-      }
+          vendorUUIds: vendorUUId,
+        },
+      },
     })
   }
 
@@ -64,7 +64,7 @@ function ProductRestock() {
     setDialogOpen(false)
     setClickData({
       id: '',
-      stockInDate: null
+      stockInDate: null,
     })
   }
 
@@ -82,18 +82,18 @@ function ProductRestock() {
     try {
       await setStockIn({
         purchaseUUId: id,
-        pwd: password
+        pwd: password,
       })
       handleSearch()
       onDialogClose()
       openSnackbar({
         variant: 'success',
-        message: '入庫成功'
+        message: '入庫成功',
       })
     } catch (error) {
       openSnackbar({
         variant: 'error',
-        message: error.message
+        message: error.message,
       })
     } finally {
       setIsClick(false)
@@ -106,18 +106,18 @@ function ProductRestock() {
     try {
       await setStockInUndo({
         purchaseUUId: id,
-        pwd: password
+        pwd: password,
       })
       handleSearch()
       onDialogClose()
       openSnackbar({
         variant: 'success',
-        message: '取消入庫成功'
+        message: '取消入庫成功',
       })
     } catch (error) {
       openSnackbar({
         variant: 'error',
-        message: error.message
+        message: error.message,
       })
     } finally {
       setIsClick(false)
@@ -128,13 +128,13 @@ function ProductRestock() {
     if (stockInDate && isUsing.stockInUndo) {
       setClickData({
         id: uuid,
-        stockInDate: stockInDate
+        stockInDate: stockInDate,
       })
       handleOpenDialog()
     } else if (!stockInDate && isUsing.stockIn) {
       setClickData({
         id: uuid,
-        stockInDate: stockInDate
+        stockInDate: stockInDate,
       })
       handleOpenDialog()
     } else {
@@ -150,26 +150,26 @@ function ProductRestock() {
       setPurchaseRecords(data)
       setSelectAllRecords(arr)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getPurchaseRecordsLazyData.loading])
 
   useEffect(() => {
     handleSearch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   useEffect(() => {
     if (!getMerchantVendor.loading) {
       setVendorOptions(idx(getMerchantVendor, _ => _.data.getMerchantVendorList))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantVendor.loading])
 
   useEffect(() => {
     if (vendorUUId.length === 0) {
       handleSearch()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [vendorUUId] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [vendorUUId] 變動時呼叫，補上會每次 render 重跑
   }, [vendorUUId])
 
   useEffect(() => {
@@ -179,10 +179,10 @@ function ProductRestock() {
       const { purchaseStockIn, purchaseStockInUndo } = merchantPassword
       setIsUsing({
         stockIn: purchaseStockIn.isUsing,
-        stockInUndo: purchaseStockInUndo.isUsing
+        stockInUndo: purchaseStockInUndo.isUsing,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getStockInIsUsing.loading])
 
   return (
@@ -212,9 +212,7 @@ function ProductRestock() {
         <Card className="mb-6 p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
             <div className="flex min-w-0 flex-1 flex-col gap-2">
-              <span className="text-label text-text-secondary">
-                按廠商篩選
-              </span>
+              <span className="text-label text-text-secondary">按廠商篩選</span>
               <Autocomplete
                 fullWidth
                 multiple
@@ -239,11 +237,7 @@ function ProductRestock() {
                 )}
               />
             </div>
-            <Button
-              variant="secondary"
-              className="sm:w-40"
-              onClick={handleSearch}
-            >
+            <Button variant="secondary" className="sm:w-40" onClick={handleSearch}>
               <Search strokeWidth={1.75} />
               搜尋
             </Button>
@@ -251,8 +245,8 @@ function ProductRestock() {
         </Card>
       </div>
       {getPurchaseRecordsLazyData.error ? (
-          <QueryFailed onRetry={handleSearch} />
-        ) : !getPurchaseRecordsLazyData.loading && purchaseRecords !== undefined ? (
+        <QueryFailed onRetry={handleSearch} />
+      ) : !getPurchaseRecordsLazyData.loading && purchaseRecords !== undefined ? (
         <Results
           handleSearch={handleSearch}
           purchaseRecords={purchaseRecords}

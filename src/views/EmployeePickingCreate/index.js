@@ -17,9 +17,7 @@ export default function EmployeePickingCreate({ location }) {
   const stayInCreatePickingInMemory = JSON.parse(localStorage.getItem('stayInCreatePicking'))
   const getEmployeePickingPurpose = useFetchGetEmployeePickingPurpose()
   const history = useHistory()
-  const [stayInCreatePicking, setStayInCreatePicking] = useState(
-    stayInCreatePickingInMemory !== null ? stayInCreatePickingInMemory : false
-  )
+  const [stayInCreatePicking, setStayInCreatePicking] = useState(stayInCreatePickingInMemory !== null ? stayInCreatePickingInMemory : false)
   const [purpose, setPurpose] = useState([])
   const [picking, setPicking] = useState({
     date: new Date().getTime(),
@@ -44,7 +42,7 @@ export default function EmployeePickingCreate({ location }) {
       const data = idx(getEmployeePickingPurpose, _ => _.data.getEmployeePickingPurpose)
       setPurpose(data || [])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getEmployeePickingPurpose.loading])
 
   useEffect(() => {
@@ -56,7 +54,7 @@ export default function EmployeePickingCreate({ location }) {
         })
       )
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 網址參數只在進頁時讀一次，換頁會重新掛載
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 網址參數只在進頁時讀一次，換頁會重新掛載
   }, [history])
   const [isClick, setIsClick] = useState(true)
   const handleOnChange = ({ event, key }) => {
@@ -81,26 +79,28 @@ export default function EmployeePickingCreate({ location }) {
 
     addPicking({
       input: subData,
-    }).then(res => {
-      if (res.data.addPicking) {
-        openSnackbar({ message: '成功新增領料', variant: 'success' })
+    })
+      .then(res => {
+        if (res.data.addPicking) {
+          openSnackbar({ message: '成功新增領料', variant: 'success' })
 
-        if (stayInCreatePicking) {
-          if (location.search.split('=')[1] !== undefined) {
-            window.location.href = `/employee/picking/create?date=${location.search.split('=')[1]}`
+          if (stayInCreatePicking) {
+            if (location.search.split('=')[1] !== undefined) {
+              window.location.href = `/employee/picking/create?date=${location.search.split('=')[1]}`
+            } else {
+              window.location.href = '/employee/picking/create'
+            }
           } else {
-            window.location.href = '/employee/picking/create'
+            history.push('/employee/picking')
           }
         } else {
-          history.push('/employee/picking')
+          openSnackbar({ message: '新增領料失敗', variant: 'error' })
+          setIsClick(false)
         }
-      } else {
-        openSnackbar({ message: '新增領料失敗', variant: 'error' })
+      })
+      .catch(err => {
         setIsClick(false)
-      }
-    }).catch(err => {
-      setIsClick(false)
-    })
+      })
   }
   const handleStayInCreatePicking = () => {
     if (!stayInCreatePicking) {
@@ -116,7 +116,7 @@ export default function EmployeePickingCreate({ location }) {
     <Page title="新增材料自購" className="ui-root">
       <div className="mx-auto min-w-[300px] max-w-[700px]">
         <PageHeader
-          title='新增材料自購'
+          title="新增材料自購"
           actions={
             <label className="flex cursor-pointer items-center gap-2 text-body text-text">
               <Checkbox checked={stayInCreatePicking} onChange={handleStayInCreatePicking} />
@@ -134,12 +134,7 @@ export default function EmployeePickingCreate({ location }) {
           purpose={purpose}
         />
         {!pageLoading && (
-          <Button
-            variant="primary"
-            className="mt-6"
-            disabled={isClick}
-            onClick={handleSubmit}
-          >
+          <Button variant="primary" className="mt-6" disabled={isClick} onClick={handleSubmit}>
             新增
           </Button>
         )}

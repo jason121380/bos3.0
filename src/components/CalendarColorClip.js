@@ -43,10 +43,7 @@ const checkin = [
   { label: '未報到', color: RESERVATION_COLORS.notCheckedIn, display: true },
 ]
 
-export default function ({
-  eventDisplay = false, bookingCusCheck = false, checkinMode = false,
-  bookingHistoryDisplay = false
-}) {
+export default function ({ eventDisplay = false, bookingCusCheck = false, checkinMode = false, bookingHistoryDisplay = false }) {
   const [statusArray, setStatusArray] = useState([
     { label: '不可預約', color: RESERVATION_COLORS.unavailable, display: true },
     { label: '待審核', color: RESERVATION_COLORS.pending, display: true },
@@ -86,15 +83,17 @@ export default function ({
 
   return (
     <div className="flex flex-wrap justify-start [&>*]:m-1">
-      {(checkinMode ? checkin : statusArray).map(({ label, color, display }) => display ? (
-        <span
-          key={label + color}
-          className="inline-flex h-8 items-center rounded-lg px-3 text-[13px] font-bold"
-          style={{ backgroundColor: color, color: readableTextOn(color) }}
-        >
-          {label}
-        </span>
-      ) : null)}
+      {(checkinMode ? checkin : statusArray).map(({ label, color, display }) =>
+        display ? (
+          <span
+            key={label + color}
+            className="inline-flex h-8 items-center rounded-lg px-3 text-[13px] font-bold"
+            style={{ backgroundColor: color, color: readableTextOn(color) }}
+          >
+            {label}
+          </span>
+        ) : null
+      )}
     </div>
   )
 }

@@ -4,7 +4,7 @@ import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
-import { DateTimePicker } from 'ui/date-picker';
+import { DateTimePicker } from 'ui/date-picker'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
 import { useFetchAttendanceRecordsLazy } from 'hooks/useFetchAttendanceRecords'
@@ -61,18 +61,13 @@ export default function Employees() {
   const [typeDisplay, setTypeDisplay] = useState(true)
 
   const [date, setDate] = useState({
-    startDate: urlParams.has('startDate')
-      ? startOfMonth(+urlParams.get('startDate')).getTime()
-      : startOfMonth(new Date()).getTime(),
-    endDate: urlParams.has('startDate')
-      ? endOfMonth(+urlParams.get('startDate')).getTime()
-      : endOfMonth(new Date()).getTime(),
+    startDate: urlParams.has('startDate') ? startOfMonth(+urlParams.get('startDate')).getTime() : startOfMonth(new Date()).getTime(),
+    endDate: urlParams.has('startDate') ? endOfMonth(+urlParams.get('startDate')).getTime() : endOfMonth(new Date()).getTime(),
   })
 
   const [attendanceRecordsLazy, attendanceRecordsLazyData] = useFetchAttendanceRecordsLazy()
   const [attendanceRecordsExcelLazyV2, attendanceRecordsExcelLazyDataV2] = useFetchAttendanceRecordsExcelV2()
   const [attendanceRecordsExcelLazyV2ForHR, attendanceRecordsExcelLazyDataV2ForHR] = useFetchAttendanceRecordsExcelV2ForHR()
-
 
   const [identity, setIdentity] = useState({
     add: false,
@@ -121,7 +116,7 @@ export default function Employees() {
         delete: del,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [profileIdentity.loading, merchantAuthorities.loading])
 
   useEffect(() => {
@@ -129,9 +124,8 @@ export default function Employees() {
       const data = idx(user, _ => _.data.users.users)
       setUserOptioons(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [user.loading])
-
 
   useEffect(() => {
     const displayDate = []
@@ -148,7 +142,7 @@ export default function Employees() {
     }
     setDisplayDate(displayDate)
     handleSearch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [date] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [date] 變動時呼叫，補上會每次 render 重跑
   }, [date])
 
   useEffect(() => {
@@ -158,7 +152,7 @@ export default function Employees() {
       link.href = url
       link.click()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [attendanceRecordsExcelLazyDataV2.loading])
 
   useEffect(() => {
@@ -168,7 +162,7 @@ export default function Employees() {
       link.href = url
       link.click()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [attendanceRecordsExcelLazyDataV2ForHR.loading])
 
   const handleOpen = () => {
@@ -189,15 +183,17 @@ export default function Employees() {
       openSnackbar({ message: '請選取員工', variant: 'warning' })
       setOnClick(false)
     } else {
-      addEmployeeClockInSchedule({ input: reClockInData }).then(res => {
-        if (res.data.addAttendantRecord) {
-          openSnackbar({ message: '新增打卡成功', variant: 'success' })
-          handleSearch()
-          handleClose()
-        }
-      }).catch(error => {
-        setOnClick(false)
-      })
+      addEmployeeClockInSchedule({ input: reClockInData })
+        .then(res => {
+          if (res.data.addAttendantRecord) {
+            openSnackbar({ message: '新增打卡成功', variant: 'success' })
+            handleSearch()
+            handleClose()
+          }
+        })
+        .catch(error => {
+          setOnClick(false)
+        })
     }
   }
 
@@ -209,8 +205,8 @@ export default function Employees() {
           userId: userId,
           dateRange: date,
           distanceFilter: filterArr,
-        }
-      }
+        },
+      },
     }
     if (excelExport) {
       submitData.variables.input.isTypeDisplay = typeDisplay
@@ -229,8 +225,8 @@ export default function Employees() {
           dateRange: date,
           distanceFilter: filterArr,
           isTypeDisplay: typeDisplay,
-        }
-      }
+        },
+      },
     }
     attendanceRecordsExcelLazyV2ForHR(submitData)
   }
@@ -238,7 +234,7 @@ export default function Employees() {
     <Page className="ui-root" title="全店打卡記錄">
       <div>
         <PageHeader
-          title='全店打卡記錄'
+          title="全店打卡記錄"
           actions={
             <>
               <DateSelector
@@ -247,13 +243,13 @@ export default function Employees() {
                 dateChange={({ startDate, endDate }) => {
                   setDate({
                     startDate: startOfMonth(startDate).getTime(),
-                    endDate: endOfMonth(endDate).getTime()
+                    endDate: endOfMonth(endDate).getTime(),
                   })
                 }}
                 onlyStart
-                inputFormat='yyyy/MM'
+                inputFormat="yyyy/MM"
                 pickerOption={{
-                  views: ['month', 'year']
+                  views: ['month', 'year'],
                 }}
                 margin={false}
               />
@@ -267,7 +263,11 @@ export default function Employees() {
                 篩選
               </Button>
               {identity.add && (
-                <Button variant="primary" onClick={handleOpen} disabled={attendanceRecordsLazyData.data === undefined || attendanceRecordsLazyData.loading}>
+                <Button
+                  variant="primary"
+                  onClick={handleOpen}
+                  disabled={attendanceRecordsLazyData.data === undefined || attendanceRecordsLazyData.loading}
+                >
                   {'補打卡'}
                 </Button>
               )}
@@ -290,21 +290,21 @@ export default function Employees() {
                     }
                   }}
                   renderOption={(props, option) => (
-                    <li {...props}>
-                      {`${option.name}${!!option.designerNo ? '-' + option.designerNo : '(無代號)'}`}
-                    </li>
+                    <li {...props}>{`${option.name}${!!option.designerNo ? '-' + option.designerNo : '(無代號)'}`}</li>
                   )}
                   filterOptions={(options, state) => {
                     const keyword = state.inputValue
                     if (keyword === '' || keyword.length === 0) {
                       return options
                     } else {
-                      const newOptions = options.filter(d => d.designerNo !== null && d.designerNo.includes(keyword) || d.name !== null && d.name.includes(keyword))
+                      const newOptions = options.filter(
+                        d => (d.designerNo !== null && d.designerNo.includes(keyword)) || (d.name !== null && d.name.includes(keyword))
+                      )
                       return newOptions
                     }
                   }}
                   getOptionLabel={option => option.name}
-                  renderInput={(params) => <TextField {...params} label="員工姓名/編號" variant='outlined' size="small" />}
+                  renderInput={params => <TextField {...params} label="員工姓名/編號" variant="outlined" size="small" />}
                 />
               </div>
               <div className="w-5/12 min-w-[280px]">
@@ -328,14 +328,7 @@ export default function Employees() {
                       {option.label}
                     </li>
                   )}
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      label="篩選打卡記錄"
-                      placeholder="篩選條件"
-                    />
-                  )}
+                  renderInput={params => <TextField {...params} variant="outlined" label="篩選打卡記錄" placeholder="篩選條件" />}
                 />
               </div>
               <div>
@@ -352,97 +345,107 @@ export default function Employees() {
         </div>
         {attendanceRecordsLazyData.error ? (
           <QueryFailed onRetry={() => handleSearch()} />
-        ) : attendanceRecordsLazyData.data !== undefined && !attendanceRecordsLazyData.loading ? idx(attendanceRecordsLazyData, _ => (
-          <Results
-            identity={identity}
-            handleSearch={handleSearch}
-            attendanceRecords={_.data.attendanceRecords}
-            year={new Date(date.startDate).getFullYear()}
-            displayDate={displayDate}
-            typeDisplay={typeDisplay}
-            setTypeDisplay={setTypeDisplay}
-            handleHRExport={handleHRExport}
-            handleExport={() => handleSearch(true)}
-            exportLoading={attendanceRecordsExcelLazyDataV2.loading}
-            exportHRLoading={attendanceRecordsExcelLazyDataV2ForHR.loading}
-          />
-        )) :
+        ) : attendanceRecordsLazyData.data !== undefined && !attendanceRecordsLazyData.loading ? (
+          idx(attendanceRecordsLazyData, _ => (
+            <Results
+              identity={identity}
+              handleSearch={handleSearch}
+              attendanceRecords={_.data.attendanceRecords}
+              year={new Date(date.startDate).getFullYear()}
+              displayDate={displayDate}
+              typeDisplay={typeDisplay}
+              setTypeDisplay={setTypeDisplay}
+              handleHRExport={handleHRExport}
+              handleExport={() => handleSearch(true)}
+              exportLoading={attendanceRecordsExcelLazyDataV2.loading}
+              exportHRLoading={attendanceRecordsExcelLazyDataV2ForHR.loading}
+            />
+          ))
+        ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示
           <div className="flex flex-col gap-6" aria-busy="true" aria-label="載入中">
             <Skeleton className="h-[480px] w-full rounded-lg" />
           </div>
-        }
+        )}
       </div>
-      <Dialog open={openDateModal} onOpenChange={o => { if (!o) handleClose() }}>
+      <Dialog
+        open={openDateModal}
+        onOpenChange={o => {
+          if (!o) handleClose()
+        }}
+      >
         {/* 保留原預設 600px 寬度。 */}
-        <DialogContent hideClose
+        <DialogContent
+          hideClose
           onOpenAutoFocus={event => {
             // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
             event.preventDefault()
             if (!event.target.contains(document.activeElement)) event.target.focus()
-          }} aria-describedby={undefined} className="!max-w-[600px] overflow-hidden">
-        <DialogHeader><DialogTitle>補打卡</DialogTitle></DialogHeader>
-        <DialogBody style={{ overflow: 'visible', display: 'flex' }} >
-          <div style={{ width: '350px' }}>
-            <ToggleGroup
-              size="small"
-              exclusive
-              value={reClockInData.status}
-              onChange={(event, value) => setReClockInData({ ...reClockInData, status: value })}
-              style={{ marginBottom: '20px' }}
-            >
-              {clockInType.map((data, idx) => (
-                <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                  {data.label}
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
-            <DateTimePicker
-              label="選取時間"
-              className="w-full"
-              maxDateTime={new Date().getTime()}
-              value={reClockInData.date}
-              format="yyyy/MM/dd HH:mm"
-              onChange={value => setReClockInData({ ...reClockInData, date: value === 'Invalid Date' ? 'Invalid Date' : new Date(value).getTime() })}
-            />
-            <Autocomplete
-              style={{ marginTop: '20px' }}
-              options={userOptions}
-              onChange={(event, value) =>
-                value === null ? setReClockInData({ ...reClockInData, userId: '' }) :
-                  setReClockInData({ ...reClockInData, userId: value.id })}
-              renderOption={(props, option) => (
-                <li {...props}>
-                  {`${option.name}${!!option.designerNo ? '-' + option.designerNo : '(無代號)'}`}
-                </li>
-              )}
-              filterOptions={(options, state) => {
-                const keyword = state.inputValue
-                if (keyword === '' || keyword.length === 0) {
-                  return options
-                } else {
-                  const newOptions = options.filter(d => d.designerNo !== null && d.designerNo.includes(keyword) || d.name !== null && d.name.includes(keyword))
-                  return newOptions
+          }}
+          aria-describedby={undefined}
+          className="!max-w-[600px] overflow-hidden"
+        >
+          <DialogHeader>
+            <DialogTitle>補打卡</DialogTitle>
+          </DialogHeader>
+          <DialogBody style={{ overflow: 'visible', display: 'flex' }}>
+            <div style={{ width: '350px' }}>
+              <ToggleGroup
+                size="small"
+                exclusive
+                value={reClockInData.status}
+                onChange={(event, value) => setReClockInData({ ...reClockInData, status: value })}
+                style={{ marginBottom: '20px' }}
+              >
+                {clockInType.map((data, idx) => (
+                  <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                    {data.label}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+              <DateTimePicker
+                label="選取時間"
+                className="w-full"
+                maxDateTime={new Date().getTime()}
+                value={reClockInData.date}
+                format="yyyy/MM/dd HH:mm"
+                onChange={value =>
+                  setReClockInData({ ...reClockInData, date: value === 'Invalid Date' ? 'Invalid Date' : new Date(value).getTime() })
                 }
-              }}
-              getOptionLabel={option => option.name}
-              renderInput={(params) => <TextField {...params} label="員工姓名/編號" variant='outlined' />}
-            />
-          </div>
-        </DialogBody>
-        <DialogActions className="ui-root" style={{ margin: '10px' }}>
-          <Button onClick={handleClose} variant="secondary">
-            取消
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handleSubmit}
-            disabled={onClick}
-          >
-            確認
-          </Button>
-        </DialogActions>
-      </DialogContent></Dialog>
+              />
+              <Autocomplete
+                style={{ marginTop: '20px' }}
+                options={userOptions}
+                onChange={(event, value) =>
+                  value === null ? setReClockInData({ ...reClockInData, userId: '' }) : setReClockInData({ ...reClockInData, userId: value.id })
+                }
+                renderOption={(props, option) => <li {...props}>{`${option.name}${!!option.designerNo ? '-' + option.designerNo : '(無代號)'}`}</li>}
+                filterOptions={(options, state) => {
+                  const keyword = state.inputValue
+                  if (keyword === '' || keyword.length === 0) {
+                    return options
+                  } else {
+                    const newOptions = options.filter(
+                      d => (d.designerNo !== null && d.designerNo.includes(keyword)) || (d.name !== null && d.name.includes(keyword))
+                    )
+                    return newOptions
+                  }
+                }}
+                getOptionLabel={option => option.name}
+                renderInput={params => <TextField {...params} label="員工姓名/編號" variant="outlined" />}
+              />
+            </div>
+          </DialogBody>
+          <DialogActions className="ui-root" style={{ margin: '10px' }}>
+            <Button onClick={handleClose} variant="secondary">
+              取消
+            </Button>
+            <Button variant="primary" onClick={handleSubmit} disabled={onClick}>
+              確認
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
     </Page>
   )
 }

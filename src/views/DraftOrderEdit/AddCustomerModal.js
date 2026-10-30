@@ -20,7 +20,6 @@ import StaffCombobox from 'components/StaffCombobox'
 import { GENDER_OPTIONS, makeFieldChange, makeBirthdayChange } from 'views/OrderShared/customerFormInput'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
-
 function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
   const inputLabel = React.useRef()
   const lastCustomerNo = useFetchGetLastCustomerNo()
@@ -50,8 +49,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
     PreferDesignerId: customer.PreferDesignerId || '',
     // 顧客已有所屬店家就沿用，沒有才用目前店家（原寫法 a || b ? x : y 的優先順序讓已有的值永遠被忽略）
     OfficialBrandMerchantId:
-      customer.OfficialBrandMerchantId ||
-      (localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null),
+      customer.OfficialBrandMerchantId || (localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null),
     email: customer.email || '',
     address: customer.address || '',
     lineId: customer.lineId || '',
@@ -87,34 +85,33 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
   const handleFieldChange = makeFieldChange(setValues)
   const handleBirthdayChange = makeBirthdayChange(birthdayObj, setBirthdayObj)
 
-
-
-
   const handleSubmit = () => {
     const newValues = cloneDeep(values)
     if (values.customerId.length > 0) {
       delete newValues.id
       delete newValues.latestDesigner
-      updateCustomer({ input: { ...newValues, birthday: birthdayObj } }).then(() => {
-        openSnackbar({ variant: 'success', message: '成功更新顧客資訊' })
-        // 更新成功才先清掉再設回同一位顧客：頁首因顧客 id 改變而重新讀取，顯示更新後的資料。
-        // 原本在送出當下就清掉、只在成功時設回，更新失敗時掛單的顧客就被清空
-        setBill(
-          produce(draft => {
-            draft.customerId = null
-            draft.customerCellphone = ''
-          })
-        )
-        setBill(
-          produce(draft => {
-            draft.customerId = values.customerId
-            draft.customerCellphone = ''
-          })
-        )
-        onClose()
-      }).catch(() => {
-        // 失敗提示由 init-apollo 的 errorLink 統一顯示（這裡不重複提示）；顧客與編輯窗保持原樣，可修正後再按
-      })
+      updateCustomer({ input: { ...newValues, birthday: birthdayObj } })
+        .then(() => {
+          openSnackbar({ variant: 'success', message: '成功更新顧客資訊' })
+          // 更新成功才先清掉再設回同一位顧客：頁首因顧客 id 改變而重新讀取，顯示更新後的資料。
+          // 原本在送出當下就清掉、只在成功時設回，更新失敗時掛單的顧客就被清空
+          setBill(
+            produce(draft => {
+              draft.customerId = null
+              draft.customerCellphone = ''
+            })
+          )
+          setBill(
+            produce(draft => {
+              draft.customerId = values.customerId
+              draft.customerCellphone = ''
+            })
+          )
+          onClose()
+        })
+        .catch(() => {
+          // 失敗提示由 init-apollo 的 errorLink 統一顯示（這裡不重複提示）；顧客與編輯窗保持原樣，可修正後再按
+        })
     } else {
       delete newValues.customerId
       if (newValues.name.length === 0 || newValues.cellphone.length === 0) {
@@ -150,8 +147,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
     checkIsCustomerNoUsedLazy({
       variables: {
         input: values.no,
-        customerId: values.customerId === "" ? null : values.customerId,
-      }
+        customerId: values.customerId === '' ? null : values.customerId,
+      },
     })
   }
 
@@ -161,11 +158,11 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
       setIsSetTime(false)
       setNoVerify(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [checkIsCustomerNoUsedLazyData.loading])
 
   React.useEffect(() => {
-    if (values.no !== "") {
+    if (values.no !== '') {
       setIsSetTime(true)
       const timer = setTimeout(() => {
         checkNo()
@@ -176,7 +173,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
     } else {
       setNoVerify(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（checkNo）；只在 [values.no] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（checkNo）；只在 [values.no] 變動時呼叫，補上會每次 render 重跑
   }, [values.no])
 
   React.useEffect(() => {
@@ -184,19 +181,22 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
       const data = idx(lastCustomerNo, _ => _.data.getLastCustomerNo)
       setLastNo(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [lastCustomerNo.loading])
 
   return (
     <Dialog open={open}>
       {/* 保留原表單寬 700px；本批僅替換彈窗外殼。 */}
-      <DialogContent hideClose
+      <DialogContent
+        hideClose
         onOpenAutoFocus={event => {
           // 沿用舊 Modal：已有欄位焦點就保留，否則先聚焦面板，避免選人窗自動叫出手機鍵盤。
           event.preventDefault()
           if (!event.target.contains(document.activeElement)) event.target.focus()
         }}
-        className="sm:max-w-[700px]" aria-describedby={undefined}>
+        className="sm:max-w-[700px]"
+        aria-describedby={undefined}
+      >
         <DialogHeader className="items-center pb-4">
           <div className="flex w-full items-center justify-between gap-4">
             <DialogTitle>{values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}</DialogTitle>
@@ -208,11 +208,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
           <div className="grid grid-cols-1 gap-x-6 gap-y-4 min-[900px]:grid-cols-2">
             <div className="min-w-0">
               {/* 欄位上方標籤，與同彈窗其他欄位及打帳單的新增顧客彈窗一致；檢查圖示改放輸入框右側 */}
-              <Field
-                label="客戶編號"
-                htmlFor="addCustomerModal-no"
-                error={noVerify && !isSetTime ? '客戶編號重複' : ''}
-              >
+              <Field label="客戶編號" htmlFor="addCustomerModal-no" error={noVerify && !isSetTime ? '客戶編號重複' : ''}>
                 <div className="relative">
                   <Input
                     id="addCustomerModal-no"
@@ -227,9 +223,9 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                       {isSetTime ? (
                         <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
                       ) : !noVerify ? (
-                        <CheckRoundedIcon color='success' />
+                        <CheckRoundedIcon color="success" />
                       ) : (
-                        <WarningAmberRoundedIcon color='error' />
+                        <WarningAmberRoundedIcon color="error" />
                       )}
                     </span>
                   )}
@@ -238,22 +234,12 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
             </div>
             <div className="min-w-0">
               <Field label="客戶姓名">
-                <Input
-                  name="name"
-                  onChange={handleFieldChange}
-                  value={values.name}
-                />
+                <Input name="name" onChange={handleFieldChange} value={values.name} />
               </Field>
             </div>
             <div className="min-w-0">
               <Field label="性別" htmlFor="addCustomerModal-gender">
-                <NativeSelect
-                  className="ui-root"
-                  id="addCustomerModal-gender"
-                  value={values.gender}
-                  name="gender"
-                  onChange={handleFieldChange}
-                >
+                <NativeSelect className="ui-root" id="addCustomerModal-gender" value={values.gender} name="gender" onChange={handleFieldChange}>
                   <NativeSelectOption value="UNKNOWN">
                     <em>未知</em>
                   </NativeSelectOption>
@@ -267,65 +253,34 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
             </div>
             <div className="min-w-0">
               <Field label="Email">
-                <Input
-                  name="email"
-                  value={values.email}
-                  onChange={handleFieldChange}
-                />
+                <Input name="email" value={values.email} onChange={handleFieldChange} />
               </Field>
             </div>
             <div className="min-w-0">
               <Field label="lineId">
-                <Input
-                  name="lineId"
-                  value={values.lineId}
-                  onChange={handleFieldChange}
-                />
+                <Input name="lineId" value={values.lineId} onChange={handleFieldChange} />
               </Field>
             </div>
             <div className="min-w-0">
               <Field label="地址">
-                <Input
-                  name="address"
-                  value={values.address}
-                  onChange={handleFieldChange}
-                />
+                <Input name="address" value={values.address} onChange={handleFieldChange} />
               </Field>
             </div>
             <div className="min-w-0">
               <Field label="客戶暱稱">
-                <Input
-                  name="nickName"
-                  value={values.nickName}
-                  onChange={handleFieldChange}
-                />
+                <Input name="nickName" value={values.nickName} onChange={handleFieldChange} />
               </Field>
             </div>
             <div className="min-w-0">
               <div className="flex flex-wrap gap-2.5">
                 <Field label="民國年" htmlFor="addCustomerModal-year" className="w-20">
-                  <Input
-                    id="addCustomerModal-year"
-                    name="year"
-                    value={birthdayObj.year}
-                    onChange={e => handleBirthdayChange(e)}
-                  />
+                  <Input id="addCustomerModal-year" name="year" value={birthdayObj.year} onChange={e => handleBirthdayChange(e)} />
                 </Field>
                 <Field label="月" htmlFor="addCustomerModal-month" className="w-20">
-                  <Input
-                    id="addCustomerModal-month"
-                    name="month"
-                    value={birthdayObj.month}
-                    onChange={e => handleBirthdayChange(e)}
-                  />
+                  <Input id="addCustomerModal-month" name="month" value={birthdayObj.month} onChange={e => handleBirthdayChange(e)} />
                 </Field>
                 <Field label="日" htmlFor="addCustomerModal-day" className="w-20">
-                  <Input
-                    id="addCustomerModal-day"
-                    name="day"
-                    value={birthdayObj.day}
-                    onChange={e => handleBirthdayChange(e)}
-                  />
+                  <Input id="addCustomerModal-day" name="day" value={birthdayObj.day} onChange={e => handleBirthdayChange(e)} />
                 </Field>
               </div>
             </div>
@@ -373,19 +328,11 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                 </div> */}
             <div className="min-w-0">
               <Field label="電話">
-                <Input
-                  onChange={handleFieldChange}
-                  name="cellphone"
-                  value={values.cellphone || customer.cellphone}
-                />
+                <Input onChange={handleFieldChange} name="cellphone" value={values.cellphone || customer.cellphone} />
               </Field>
             </div>
             <div className="min-w-0">
-              <SourceSelect
-                emptyOption
-                value={values.source}
-                onChange={handleFieldChange}
-              />
+              <SourceSelect emptyOption value={values.source} onChange={handleFieldChange} />
             </div>
             <div className="min-w-0">
               <Field label="最近設計師" htmlFor="addCustomerModal-latestDesigner">
@@ -424,23 +371,17 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
             </div>
             <div className="min-w-0">
               <Field label="備註">
-                <Input
-                  onChange={handleFieldChange}
-                  name="remark"
-                  value={values.remark}
-                />
+                <Input onChange={handleFieldChange} name="remark" value={values.remark} />
               </Field>
             </div>
           </div>
         </DialogBody>
         <div className="h-px bg-border" />
         <DialogFooter className="border-t-0">
-          <Button variant="secondary" onClick={onClose}>取消</Button>
-          <Button
-            variant="primary"
-            onClick={handleSubmit}
-            disabled={quickAddCustomer}
-          >
+          <Button variant="secondary" onClick={onClose}>
+            取消
+          </Button>
+          <Button variant="primary" onClick={handleSubmit} disabled={quickAddCustomer}>
             {values.customerId.length > 0 ? '儲存' : '新增'}
           </Button>
         </DialogFooter>

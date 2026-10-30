@@ -42,9 +42,7 @@ function CustomerManagementList() {
     input: setting.userIncrease,
     date: setting.date,
   })
-  const increasePageDecreaseUsers = increasePageDecrease.loading
-    ? null
-    : idx(increasePageDecrease, _ => _.data.users.users) || null
+  const increasePageDecreaseUsers = increasePageDecrease.loading ? null : idx(increasePageDecrease, _ => _.data.users.users) || null
   const handleOnChangePage = ({ key, page }) => {
     setSetting(
       produce(draft => {
@@ -79,9 +77,9 @@ function CustomerManagementList() {
                 attributes={['startDate']}
                 dateChange={({ startDate }) => handleDateChange(startOfMonth(new Date(startDate)).getTime())}
                 onlyStart
-                inputFormat='yyyy/MM'
+                inputFormat="yyyy/MM"
                 pickerOption={{
-                  views: ['month', 'year']
+                  views: ['month', 'year'],
                 }}
               />
             </>
@@ -104,9 +102,7 @@ function CustomerManagementList() {
                 pageSetting={_.data.users}
                 users={_.data.users.users}
                 decreaseUsers={increasePageDecreaseUsers}
-                handleOnChangePage={(_event, page) =>
-                  handleOnChangePage({ page, key: 'userIncrease' })
-                }
+                handleOnChangePage={(_event, page) => handleOnChangePage({ page, key: 'userIncrease' })}
                 handleOnChangeRowsPerPage={event =>
                   handleOnChangeRowsPerPage({
                     value: idx(event, _ => _.target.value),
@@ -124,9 +120,7 @@ function CustomerManagementList() {
                 className="mt-[24px]"
                 users={_.data.users.users}
                 pageSetting={_.data.users}
-                handleOnChangePage={(_event, page) =>
-                  handleOnChangePage({ page, key: 'userDecrease' })
-                }
+                handleOnChangePage={(_event, page) => handleOnChangePage({ page, key: 'userDecrease' })}
                 handleOnChangeRowsPerPage={event =>
                   handleOnChangeRowsPerPage({
                     value: idx(event, _ => _.target.value),

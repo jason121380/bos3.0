@@ -257,9 +257,7 @@ describe('掛單詳細：編輯顧客資料', () => {
     })
     await screen.findByText(/掛單詳細 \(A123\)/)
     const input = await editCustomerAndSave(calls)
-    expect(input).toEqual(
-      expect.objectContaining({ customerId: CUSTOMER.id, name: '陳美美', birthday: { year: '81', month: '1', day: '2' } })
-    )
+    expect(input).toEqual(expect.objectContaining({ customerId: CUSTOMER.id, name: '陳美美', birthday: { year: '81', month: '1', day: '2' } }))
   })
 })
 

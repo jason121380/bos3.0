@@ -70,9 +70,24 @@ const COUPONS = [
 
 const fixtures = ({ passwordOn = true, ...overrides } = {}) => ({
   GET_TICKETS_FOR_LIST: { ticketsForList: COUPONS },
-  ServiceCategories: { serviceCategories: [{ id: 'c1', no: 'C1', name: '護髮' }, { id: 'c2', no: 'C2', name: '染髮' }] },
-  MERCHANT_COMMISSION_WAY: { merchantCommissionWay: [{ id: 'cw-1', name: '系統預設' }, { id: 'cw-2', name: '設計師抽成' }] },
-  MERCHANT_HELPER_ITEMS: { merchantHelperItems: [{ type: '洗髮', name: '洗髮' }, { type: '吹整', name: '吹整' }] },
+  ServiceCategories: {
+    serviceCategories: [
+      { id: 'c1', no: 'C1', name: '護髮' },
+      { id: 'c2', no: 'C2', name: '染髮' },
+    ],
+  },
+  MERCHANT_COMMISSION_WAY: {
+    merchantCommissionWay: [
+      { id: 'cw-1', name: '系統預設' },
+      { id: 'cw-2', name: '設計師抽成' },
+    ],
+  },
+  MERCHANT_HELPER_ITEMS: {
+    merchantHelperItems: [
+      { type: '洗髮', name: '洗髮' },
+      { type: '吹整', name: '吹整' },
+    ],
+  },
   MERCHANT_DEDUCTION_ITEMS: { merchantDeductionItems: [] },
   GET_MERCHANT_PASSWORD: { merchantPassword: { deleteService: { password: '', isUsing: passwordOn } } },
   DEL_COUPONS: { deleteService: true },
@@ -331,13 +346,15 @@ describe('預收卡設定：批次互助與扣項', () => {
     fireEvent.click(checkboxByLabel('互助均分', helperRows()[0]))
     fireEvent.click(checkboxByLabel('互助均分', helperRows()[0]))
     expect(checkboxByLabel('互助均分', helperRows()[2])).not.toBeChecked()
-    ;[controlByLabel('點數', helperRows()[0]), controlByLabel('指定點數', helperRows()[3]), controlByLabel('不指定點數', helperRows()[3])].forEach(field => {
-      // 彈窗（Radix Dialog）的焦點鎖在 jsdom 會把焦點拉回輸入框，這裡不驗證失焦，只確認捲動不改數值
-      const before = field.value
-      field.focus()
-      fireEvent.wheel(field)
-      expect(field.value).toBe(before)
-    })
+    ;[controlByLabel('點數', helperRows()[0]), controlByLabel('指定點數', helperRows()[3]), controlByLabel('不指定點數', helperRows()[3])].forEach(
+      field => {
+        // 彈窗（Radix Dialog）的焦點鎖在 jsdom 會把焦點拉回輸入框，這裡不驗證失焦，只確認捲動不改數值
+        const before = field.value
+        field.focus()
+        fireEvent.wheel(field)
+        expect(field.value).toBe(before)
+      }
+    )
     fireEvent.click(screen.getByText('儲存', { selector: 'button' }))
     expect(callsOf(calls, 'SET_BATCH_SETTING_FOR_HELPER')).toHaveLength(0)
     const warning = await confirmWarning('handleSubmitHelperDeductionSetting')
@@ -347,7 +364,14 @@ describe('預收卡設定：批次互助與扣項', () => {
     expect(sent.ids).toEqual(['t1'])
     expect(sent.helperDeductionSetting).toHaveLength(4)
     expect(sent.helperDeductionSetting[0]).toMatchObject({ type: '洗髮', nameList: ['1', '2'], peopleCount: 2, point: 1.5, isSplitted: true })
-    expect(sent.helperDeductionSetting[1]).toMatchObject({ helperDeductionType: 'onSalary', type: '吹整', nameList: ['1'], peopleCount: 1, designateCash: 80, nonDesignateCash: 60 })
+    expect(sent.helperDeductionSetting[1]).toMatchObject({
+      helperDeductionType: 'onSalary',
+      type: '吹整',
+      nameList: ['1'],
+      peopleCount: 1,
+      designateCash: 80,
+      nonDesignateCash: 60,
+    })
     expect(sent.helperDeductionSetting[2]).toMatchObject({ percent: 0, designatePercent: 4, nonDesignatePercent: 2 })
     expect(sent.helperDeductionSetting[3]).toMatchObject({ designatePoint: 2.5, nonDesignatePoint: 0.5 })
     sent.helperDeductionSetting.forEach(s => {
@@ -396,7 +420,11 @@ describe('預收卡設定：批次互助與扣項', () => {
     fillDeductionRow(OTHER, 0, { type: '扣薪水', way: '依業績%數', special: true, designate: 3, nonDesignate: 2 }, opts)
     fireEvent.click(checkboxByLabel('分指定/不指定', rowsUnderHeading(OTHER)[0]))
     fillDeductionRow(OTHER, 0, { way: '依固定金額', price: 99 }, opts)
-    ;[controlByLabel('固定金額', rowsUnderHeading(OTHER)[0]), controlByLabel('指定金額', rowsUnderHeading(SECTION)[1]), controlByLabel('不指定金額', rowsUnderHeading(SECTION)[1])].forEach(field => {
+    ;[
+      controlByLabel('固定金額', rowsUnderHeading(OTHER)[0]),
+      controlByLabel('指定金額', rowsUnderHeading(SECTION)[1]),
+      controlByLabel('不指定金額', rowsUnderHeading(SECTION)[1]),
+    ].forEach(field => {
       // 彈窗（Radix Dialog）的焦點鎖在 jsdom 會把焦點拉回輸入框，這裡不驗證失焦，只確認捲動不改數值
       const before = field.value
       field.focus()
@@ -409,7 +437,17 @@ describe('預收卡設定：批次互助與扣項', () => {
     expect(callsOf(calls, 'SET_BATCH_SETTING_FOR_DEDUCTION')).toHaveLength(0)
     await confirmWarning('handleSubmitDeductionSetting')
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'success', message: '批次卡券扣項修改完成' }))
-    const base = { isSpecial: false, name: '材料費', type: 'onSales', deductionWay: '', price: 0, designatePrice: 0, nonDesignatePrice: 0, deductionOrder: 1, deductionReference: 0 }
+    const base = {
+      isSpecial: false,
+      name: '材料費',
+      type: 'onSales',
+      deductionWay: '',
+      price: 0,
+      designatePrice: 0,
+      nonDesignatePrice: 0,
+      deductionOrder: 1,
+      deductionReference: 0,
+    }
     expect(callsOf(calls, 'SET_BATCH_SETTING_FOR_DEDUCTION')[0].variables).toEqual({
       input: {
         ids: ['t2'],
@@ -418,7 +456,15 @@ describe('預收卡設定：批次互助與扣項', () => {
             type: '系統預設',
             itemSettings: [
               { ...base, deductionWay: '扣趴數', price: 10 },
-              { ...base, deductionWay: '扣固定金額', isSpecial: true, designatePrice: 50, nonDesignatePrice: 30, deductionOrder: 2, deductionReference: 1 },
+              {
+                ...base,
+                deductionWay: '扣固定金額',
+                isSpecial: true,
+                designatePrice: 50,
+                nonDesignatePrice: 30,
+                deductionOrder: 2,
+                deductionReference: 1,
+              },
             ],
           },
           { type: '設計師抽成', itemSettings: [base] },

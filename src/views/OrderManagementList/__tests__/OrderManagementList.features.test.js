@@ -64,11 +64,26 @@ const order = (overrides = {}) => ({
 const ORDERS = [
   order(),
   order({
-    id: 'o-2', orderNo: 'A002', customerName: '王明', customerCellphone: '0922111222', designerNo: null, isDesignate: false,
-    date: new Date(2026, 9, 20, 9, 0).getTime(), serialNumber: 'S-9', otherPayName: '街口', otherPayWayForDecount: -300,
+    id: 'o-2',
+    orderNo: 'A002',
+    customerName: '王明',
+    customerCellphone: '0922111222',
+    designerNo: null,
+    isDesignate: false,
+    date: new Date(2026, 9, 20, 9, 0).getTime(),
+    serialNumber: 'S-9',
+    otherPayName: '街口',
+    otherPayWayForDecount: -300,
     TPTName: { service: ['集點卡', '團購券'], product: ['商品券'], membership: ['會員券'], overAll: ['全單券'] },
   }),
-  order({ id: 'o-3', orderNo: 'A003', customerName: '歐陽小明', customerCellphone: '0933444555', isCloseAccount: true, date: new Date(2026, 9, 21, 9, 0).getTime() }),
+  order({
+    id: 'o-3',
+    orderNo: 'A003',
+    customerName: '歐陽小明',
+    customerCellphone: '0933444555',
+    isCloseAccount: true,
+    date: new Date(2026, 9, 21, 9, 0).getTime(),
+  }),
   order({ id: 'o-4', orderNo: 'A004', customerName: '李四', status: '建立中', date: new Date(2026, 9, 22, 9, 0).getTime() }),
   order({ id: 'o-5', orderNo: 'A005', customerName: '周五', status: '已作廢', date: new Date(2026, 9, 23, 9, 0).getTime() }),
   order({ id: 'o-6', orderNo: 'A006', date: new Date(2026, 9, 24, 9, 0).getTime() }),
@@ -76,9 +91,20 @@ const ORDERS = [
 ]
 
 const SUMMARY = {
-  service: 1234.567, product: 400, usedTicket: 0, ticketSellIntoPerformance: 0, performanceIncome: 1600, ticketSellNotIntoPerformance: 0,
-  usedTicketForDecount: 0, thirdPartTicketForDecount: 0, otherPayWayForDecount: 0, walletUsedForDecount: 0, businessCash: 1600,
-  walletDeposit: 0, membership: 0, bonusDecountForReport: 0,
+  service: 1234.567,
+  product: 400,
+  usedTicket: 0,
+  ticketSellIntoPerformance: 0,
+  performanceIncome: 1600,
+  ticketSellNotIntoPerformance: 0,
+  usedTicketForDecount: 0,
+  thirdPartTicketForDecount: 0,
+  otherPayWayForDecount: 0,
+  walletUsedForDecount: 0,
+  businessCash: 1600,
+  walletDeposit: 0,
+  membership: 0,
+  bonusDecountForReport: 0,
 }
 
 const PRINT_ORDER = {
@@ -94,11 +120,30 @@ const PRINT_ORDER = {
   customerLeftWallet: 500,
   customer: { name: '陳小姐' },
   designer: { id: 'u-1', name: '王小美', designerNo: '01' },
-  serviceOrders: [{ price: 1000, thirdPartyPayName: null }, { price: 300, thirdPartyPayName: '團購券' }],
-  productOrders: [{ price: 200, count: 2, thirdPartyPayName: null }, { price: 50, count: 1, thirdPartyPayName: '商品券' }],
-  membershipOrders: [{ price: 600, thirdPartyPayName: null }, { price: 900, thirdPartyPayName: '會員券' }],
+  serviceOrders: [
+    { price: 1000, thirdPartyPayName: null },
+    { price: 300, thirdPartyPayName: '團購券' },
+  ],
+  productOrders: [
+    { price: 200, count: 2, thirdPartyPayName: null },
+    { price: 50, count: 1, thirdPartyPayName: '商品券' },
+  ],
+  membershipOrders: [
+    { price: 600, thirdPartyPayName: null },
+    { price: 900, thirdPartyPayName: '會員券' },
+  ],
   staticDetail: [
-    { designerName: '王小美', serviceType: '項目消費', itemName: '剪髮', count: 1, price: 1000, helperList: [{ helperName: '小助', helperType: '助理', helperNo: 'H1' }, { helperName: '阿洗', helperType: '洗髮', helperNo: '' }] },
+    {
+      designerName: '王小美',
+      serviceType: '項目消費',
+      itemName: '剪髮',
+      count: 1,
+      price: 1000,
+      helperList: [
+        { helperName: '小助', helperType: '助理', helperNo: 'H1' },
+        { helperName: '阿洗', helperType: '洗髮', helperNo: '' },
+      ],
+    },
     { designerName: '王小美', serviceType: '店販銷售', itemName: '洗髮精', count: 2, price: 200, helperList: [] },
     { designerName: '王小美', serviceType: '會員卡銷售', itemName: '金卡', count: 1, price: 600, helperList: [] },
     { designerName: '王小美', serviceType: '卡券販賣(不入業績)', itemName: '護髮券', count: 2, price: 150, helperList: [] },
@@ -108,7 +153,9 @@ const PRINT_ORDER = {
 }
 
 const fixtures = (extra = {}) => ({
-  GET_ORDER_LIST_DATE_AUTH: { orderListDateAuth: { lastmonth: true, thismonth: true, dbyesterday: true, yesterday: true, today: true, selector: true } },
+  GET_ORDER_LIST_DATE_AUTH: {
+    orderListDateAuth: { lastmonth: true, thismonth: true, dbyesterday: true, yesterday: true, today: true, selector: true },
+  },
   GET_IS_OPEN_DATE_RANGE_IN_ORDER_MANGEMENT: { getIsOpenDateRangeInOrderMangement: true },
   GET_IS_MEMBERSHIP_CARD_ACTIVE: { getIsMemberShipCardActive: false },
   GET_CUSTOMER_BONUS: { getIsCustomerBonusActive: false },
@@ -122,7 +169,14 @@ const fixtures = (extra = {}) => ({
         orderStaticDetail:
           id === 'o-1'
             ? [
-                { designerName: '王小美', serviceType: '項目消費', itemName: '剪髮', count: 1, price: 1200, helperList: [{ helperName: '小助', helperNo: 'H1', helperType: '助理' }] },
+                {
+                  designerName: '王小美',
+                  serviceType: '項目消費',
+                  itemName: '剪髮',
+                  count: 1,
+                  price: 1200,
+                  helperList: [{ helperName: '小助', helperNo: 'H1', helperType: '助理' }],
+                },
                 { designerName: '王小美', serviceType: '卡券使用', itemName: '十次卡', count: 1, price: 333.339, helperList: [] },
               ]
             : [],
@@ -170,7 +224,9 @@ const rowOf = no => screen.getByText(new RegExp(`^#${no}`)).closest('tr')
 const exportedCsv = () => decodeURIComponent(screen.getByText('報表匯出').closest('a').getAttribute('href'))
 const quickOptions = () => {
   fireEvent.click(screen.getByRole('combobox', { name: '快速選擇日期區間' }))
-  const list = within(screen.getByRole('listbox')).getAllByRole('option').map(o => o.textContent)
+  const list = within(screen.getByRole('listbox'))
+    .getAllByRole('option')
+    .map(o => o.textContent)
   fireEvent.keyDown(screen.getByRole('listbox'), { key: 'Escape' })
   return list
 }
@@ -196,7 +252,9 @@ describe('帳單列表：日期權限', () => {
     const picker = screen.getByRole('button', { name: '選擇日期' })
     fireEvent.click(picker)
     const target = subDays(new Date(), 3)
-    fireEvent.click(within(screen.getByRole('dialog')).getByRole('gridcell', { name: `${target.getFullYear()}年${target.getMonth() + 1}月${target.getDate()}日` }))
+    fireEvent.click(
+      within(screen.getByRole('dialog')).getByRole('gridcell', { name: `${target.getFullYear()}年${target.getMonth() + 1}月${target.getDate()}日` })
+    )
     // 選日後 DateSelector 重繪，月曆隨之關閉（不必按確認）
     await wait(() => expect(lastInput(calls).dateRange.endDate).toBe(endOfDay(target).getTime()))
     expect(startOfDay(lastInput(calls).dateRange.startDate).getTime()).toBe(startOfDay(target).getTime())
@@ -206,7 +264,9 @@ describe('帳單列表：日期權限', () => {
 
   it('沒有自選日期權限、只有今天：只有「今天」快速選項、沒有日期欄', async () => {
     const { settle } = setup({
-      GET_ORDER_LIST_DATE_AUTH: { orderListDateAuth: { lastmonth: true, thismonth: false, dbyesterday: false, yesterday: false, today: true, selector: false } },
+      GET_ORDER_LIST_DATE_AUTH: {
+        orderListDateAuth: { lastmonth: true, thismonth: false, dbyesterday: false, yesterday: false, today: true, selector: false },
+      },
     })
     await settle()
     expect(quickOptions()).toEqual(['上個月', '今天'])
@@ -270,7 +330,14 @@ describe('帳單列表：篩選與查詢', () => {
     const slow = 400
     const { calls, settle } = setup(
       { GET_ORDER_LIST: { getOrderList: { intervalSummary: null, orderList: [order()] } } },
-      { delays: { GET_CUSTOMER_BONUS: slow, GET_MERCHANT_PASSWORD: slow, GET_MERCHANT_ORDER_PRINT_LAYOUT: slow, GET_DESIGNER_NAME_DISPLAY_ON_INVOICE: slow } }
+      {
+        delays: {
+          GET_CUSTOMER_BONUS: slow,
+          GET_MERCHANT_PASSWORD: slow,
+          GET_MERCHANT_ORDER_PRINT_LAYOUT: slow,
+          GET_DESIGNER_NAME_DISPLAY_ON_INVOICE: slow,
+        },
+      }
     )
     await screen.findByText('#A001')
     expect(screen.getAllByText('0').length).toBeGreaterThan(5)
@@ -541,7 +608,9 @@ describe('帳單列表：列印', () => {
   it('收據抬頭：顯示 logo（抓圖轉成 data URL）、QR code（依網址產生）與訊息', async () => {
     const { calls, settle } = setup({
       GET_LOGO_DISPLAY_INVOICE: { getLogoDisplayOnInvoice: { isDisplay: true, imageUrl: 'https://img.example/logo.png' } },
-      GET_QRCODE_DISPLAY_ON_INVOICE: { getQrcodeDisplayOnInvoice: { isDisplay: true, url: 'https://line.me/x', imageUrl: 'https://img.example/qr.png' } },
+      GET_QRCODE_DISPLAY_ON_INVOICE: {
+        getQrcodeDisplayOnInvoice: { isDisplay: true, url: 'https://line.me/x', imageUrl: 'https://img.example/qr.png' },
+      },
       GET_MESSAGE_DISPLAY_ON_INVOICE: { getMessageDisplayOnInvoice: { isDisplay: true, message: '感謝光臨' } },
     })
     await settle()

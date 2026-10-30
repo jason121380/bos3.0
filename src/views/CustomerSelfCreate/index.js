@@ -30,7 +30,7 @@ const CustomerSelfCreate = () => {
     birthday: null,
     address: '',
     merchantName: '',
-    recaptchaToken: true
+    recaptchaToken: true,
   })
   const [isClick, setIsClick] = useState(false)
   const [pageEnable, setPageEnable] = useState(true)
@@ -90,7 +90,7 @@ const CustomerSelfCreate = () => {
       const data = Boolean(idx(customerSelfCreateActive, _ => _.data.getIsCustomerSelfCreateActive))
       setPageEnable(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerSelfCreateActive.loading])
 
   useEffect(() => {
@@ -99,14 +99,16 @@ const CustomerSelfCreate = () => {
       const data = idx(getMerchantName, _ => _.data.getMerchantName) || ''
       handleSetInputValue(data, 'merchantName')
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantName.loading])
 
   return (
     <Fragment>
       {!customerSelfCreateActive.loading && !pageEnable ? (
         <Status />
-      ) : isSuccess ? <Status isSuccess /> : (
+      ) : isSuccess ? (
+        <Status isSuccess />
+      ) : (
         <Page className="ui-root" title={`${data.merchantName}  顧客資料建立`}>
           <General
             data={data}

@@ -16,27 +16,30 @@ import { openSnackbar } from 'elements/snackbars'
 import produce from 'immer'
 import idx from 'idx'
 
-export default function AboutDesignerSalary({ className, 
-  deduction, 
-  merchantCommissionWay, 
+export default function AboutDesignerSalary({
+  className,
+  deduction,
+  merchantCommissionWay,
   merchantPointValueSettingsForSelect,
   setIsSubmitForCommission,
   setIsSubmitForPoint,
   setIsSubmitForType,
   isSubmitForType,
   isSubmitForPoint,
-  isSubmitForCommission
+  isSubmitForCommission,
 }) {
   const [service, setService] = useState({
-    point: [{ 
-      jobTitle: '',
-      pointValue: 0,
-      deductionId: 'unset',
-      commissionWayId: 'unset',
-      merchantPointValueSettingId: 'unset',
-      isDefaultValue: false,
-      usingPeopleCount: 0
-    }],
+    point: [
+      {
+        jobTitle: '',
+        pointValue: 0,
+        deductionId: 'unset',
+        commissionWayId: 'unset',
+        merchantPointValueSettingId: 'unset',
+        isDefaultValue: false,
+        usingPeopleCount: 0,
+      },
+    ],
   })
   const [serviceForType, setServiceForType] = useState({
     helperTypeName: [{ type: '' }],
@@ -63,31 +66,31 @@ export default function AboutDesignerSalary({ className,
               index: index,
               jobTitle: d.jobTitle,
               pointValue: d.pointValue,
-              deductionId: d.DeductionSettingId !== null ? d.DeductionSettingId : "unset",
-              commissionWayId: d.MerchantCommissionWayId !== null ? d.MerchantCommissionWayId : "unset",
-              merchantPointValueSettingId: d.merchantPointValueSettingId !== null ? d.merchantPointValueSettingId : "unset",
+              deductionId: d.DeductionSettingId !== null ? d.DeductionSettingId : 'unset',
+              commissionWayId: d.MerchantCommissionWayId !== null ? d.MerchantCommissionWayId : 'unset',
+              merchantPointValueSettingId: d.merchantPointValueSettingId !== null ? d.merchantPointValueSettingId : 'unset',
               isDefaultValue: d.isDefaultValue,
-              usingPeopleCount: d.usingPeopleCount
+              usingPeopleCount: d.usingPeopleCount,
             }))
-          : [{ 
-              jobTitle: '', 
-              pointValue: 0,
-              deductionId: 'unset',
-              commissionWayId: 'unset',
-              merchantPointValueSettingId: 'unset',
-              isDefaultValue: false,
-              usingPeopleCount: 0
-            }]
+          : [
+              {
+                jobTitle: '',
+                pointValue: 0,
+                deductionId: 'unset',
+                commissionWayId: 'unset',
+                merchantPointValueSettingId: 'unset',
+                isDefaultValue: false,
+                usingPeopleCount: 0,
+              },
+            ]
       )
       const helperTypeName = idx(merchantHelperItems.data, _ =>
-        _.merchantHelperItems.length > 0
-          ? _.merchantHelperItems.map(d => ({ type: d.type }))
-          : [{ type: '' }]
+        _.merchantHelperItems.length > 0 ? _.merchantHelperItems.map(d => ({ type: d.type })) : [{ type: '' }]
       )
-      setService({point})
-      setServiceForType({helperTypeName})
+      setService({ point })
+      setServiceForType({ helperTypeName })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantJobTitlePoint.loading, merchantHelperItems.loading])
   const handleServiceChange = ({ changedData, key }) => {
     setService(
@@ -125,96 +128,100 @@ export default function AboutDesignerSalary({ className,
 
     if (isDefaultValueCount === 0) {
       openSnackbar({
-        message: "請選擇預設的人員類別",
+        message: '請選擇預設的人員類別',
         variant: 'error',
       })
     } else {
       if (inputValue > 0) {
         openSnackbar({
-          message: "請填寫人員設定的名稱",
+          message: '請填寫人員設定的名稱',
           variant: 'error',
         })
       } else {
         if (checkArray.length < service.point.length) {
           openSnackbar({
-            message: "人員類別設定的名稱已被重複",
+            message: '人員類別設定的名稱已被重複',
             variant: 'error',
           })
         } else {
           setJobTitlePoint({
             input: variable,
-          }).then(res => {
-            if(res.data.settingJobTitlePoint){
-              openSnackbar({
-                message: "編輯成功",
-                variant: 'success',
-              })
-              merchantJobTitlePoint.refetch()
-            } else {
-              openSnackbar({
-                message: "編輯失敗",
-                variant: 'warning',
-              })
-            }
-            setIsSubmitForCommission(false)
-            setIsSubmitForPoint(false)
-            setIsSubmitForType(false)
-          }).catch(error => {
-            openSnackbar({
-              message: error.message,
-              variant: 'error',
-            })
-            setIsSubmitForCommission(false)
-            setIsSubmitForPoint(false)
-            setIsSubmitForType(false)
           })
+            .then(res => {
+              if (res.data.settingJobTitlePoint) {
+                openSnackbar({
+                  message: '編輯成功',
+                  variant: 'success',
+                })
+                merchantJobTitlePoint.refetch()
+              } else {
+                openSnackbar({
+                  message: '編輯失敗',
+                  variant: 'warning',
+                })
+              }
+              setIsSubmitForCommission(false)
+              setIsSubmitForPoint(false)
+              setIsSubmitForType(false)
+            })
+            .catch(error => {
+              openSnackbar({
+                message: error.message,
+                variant: 'error',
+              })
+              setIsSubmitForCommission(false)
+              setIsSubmitForPoint(false)
+              setIsSubmitForType(false)
+            })
         }
       }
     }
   }
   const handleSubmitForType = async () => {
-    setHelperCategory({ 
-      input: serviceForType.helperTypeName
-    }).then(res => {
-      if(res.data.setHelperCategory){
-        openSnackbar({
-          message: "編輯成功",
-          variant: 'success',
-        })
-        merchantHelperItems.refetch()
-      } else {
-        openSnackbar({
-          message: "編輯失敗",
-          variant: 'warning',
-        })
-      }
+    setHelperCategory({
+      input: serviceForType.helperTypeName,
+    })
+      .then(res => {
+        if (res.data.setHelperCategory) {
+          openSnackbar({
+            message: '編輯成功',
+            variant: 'success',
+          })
+          merchantHelperItems.refetch()
+        } else {
+          openSnackbar({
+            message: '編輯失敗',
+            variant: 'warning',
+          })
+        }
         setIsSubmitForCommission(false)
         setIsSubmitForPoint(false)
         setIsSubmitForType(false)
-    }).catch(error => {
-      openSnackbar({
-        message: error.message,
-        variant: 'error',
       })
-      setIsSubmitForCommission(false)
-      setIsSubmitForPoint(false)
-      setIsSubmitForType(false)
-    })
+      .catch(error => {
+        openSnackbar({
+          message: error.message,
+          variant: 'error',
+        })
+        setIsSubmitForCommission(false)
+        setIsSubmitForPoint(false)
+        setIsSubmitForType(false)
+      })
   }
   const handleAddSetting = (...rest) => {
     const newService = cloneDeep(service)
     const newServiceForType = cloneDeep(serviceForType)
     switch (rest[0]) {
       case 'point':
-        newService.point.push({ 
+        newService.point.push({
           index: newService.point.length,
-          jobTitle: '', 
+          jobTitle: '',
           pointValue: 0,
           deductionId: 'unset',
           commissionWayId: 'unset',
           merchantPointValueSettingId: 'unset',
           isDefaultValue: false,
-          usingPeopleCount: 0
+          usingPeopleCount: 0,
         })
         handleServiceChange({ changedData: newService.point, key: 'point' })
         break
@@ -286,24 +293,19 @@ export default function AboutDesignerSalary({ className,
     setIsSubmitForPoint(true)
     setIsSubmitForType(false)
     setIsSubmitForCommission(false)
-  }  
+  }
   const handleEditForType = () => {
     setIsSubmitForType(true)
     setIsSubmitForPoint(false)
     setIsSubmitForCommission(false)
-  }  
-return (
+  }
+  return (
     <Fragment>
       <Card>
         <CardHeader
           action={
             isSubmitForPoint ? (
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={handleSubmit}
-                data-testid="parameter"
-              >
+              <Button variant="primary" size="sm" onClick={handleSubmit} data-testid="parameter">
                 儲存
               </Button>
             ) : (
@@ -318,11 +320,12 @@ return (
                 編輯
               </Button>
             )
-          }>
+          }
+        >
           <CardTitle>人員身分類別設定</CardTitle>
         </CardHeader>
         <CardContent>
-          {(!merchantJobTitlePoint.loading && !merchantCommissionWay.loading && !deduction.loading && !merchantPointValueSettingsForSelect.loading) ? (
+          {!merchantJobTitlePoint.loading && !merchantCommissionWay.loading && !deduction.loading && !merchantPointValueSettingsForSelect.loading ? (
             service.point.map((data, index) => (
               <div className="flex items-center mb-[12px] flex-wrap gap-y-[10px]" key={index}>
                 <Field label="人員類別" className="w-44">
@@ -385,37 +388,51 @@ return (
                     ))}
                   </NativeSelect>
                 </Field>
-                {service.point.length > 1 && (
-                  data.usingPeopleCount === 0 ? ( 
+                {service.point.length > 1 &&
+                  (data.usingPeopleCount === 0 ? (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="刪除"
+                      disabled={!isSubmitForPoint}
+                      className={
+                        service.point.filter(d => d.usingPeopleCount === 0).length !== service.point.length
+                          ? 'ml-[10px] w-[112px] max-sm:w-[112px]'
+                          : 'ml-[10px]'
+                      }
+                      onClick={() => handleDeleteSetting('point', index)}
+                    >
+                      <DeleteForeverIcon />
+                    </Button>
+                  ) : (
+                    <div style={{ display: 'grid', justifyItems: 'center', marginLeft: 10 }}>
+                      <span>人數: {data.usingPeopleCount}人</span>
+                      <span>使用中無法刪除</span>
+                    </div>
+                  ))}
+                <RadioField
+                  className="ml-2.5 mr-4"
+                  name="isDefaultValue"
+                  value="true"
+                  checked={data.isDefaultValue.toString() === 'true'}
+                  onChange={event => {
+                    handlePointSetting(event, index)
+                  }}
+                  label="預設"
+                  disabled={!isSubmitForPoint}
+                />
+                {index === service.point.length - 1 && (
                   <Button
                     variant="ghost"
                     size="icon"
-                    aria-label="刪除"
-                    disabled={!isSubmitForPoint} 
-                    className={service.point.filter(d => d.usingPeopleCount === 0 ).length !== service.point.length ? 'ml-[10px] w-[112px] max-sm:w-[112px]' : 'ml-[10px]'} 
-                    onClick={() => handleDeleteSetting('point', index)}
+                    aria-label="新增"
+                    className="p-0 w-[50px] max-sm:w-[50px] flex ml-[12px] cursor-pointer last:mr-0"
+                    disabled={!isSubmitForPoint}
+                    onClick={() => handleAddSetting('point')}
                   >
-                    <DeleteForeverIcon/>
-                  </Button>) : (
-                  <div style={{display: 'grid', justifyItems: 'center', marginLeft:10}}>
-                    <span>人數: {data.usingPeopleCount}人</span>
-                    <span>使用中無法刪除</span>
-                  </div>
-                  )
+                    <AddIcon />
+                  </Button>
                 )}
-                <RadioField className="ml-2.5 mr-4" name="isDefaultValue" value="true" checked={data.isDefaultValue.toString() === 'true'} onChange={event => { handlePointSetting(event, index) }} label="預設" disabled={!isSubmitForPoint} />
-                {index === service.point.length - 1 && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="新增"
-                  className="p-0 w-[50px] max-sm:w-[50px] flex ml-[12px] cursor-pointer last:mr-0"
-                  disabled={!isSubmitForPoint}
-                  onClick={() => handleAddSetting('point')}
-                >
-                  <AddIcon/>
-                </Button>
-              )}
               </div>
             ))
           ) : (
@@ -427,12 +444,7 @@ return (
         <CardHeader
           action={
             isSubmitForType ? (
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={handleSubmitForType}
-                data-testid="parameter"
-              >
+              <Button variant="primary" size="sm" onClick={handleSubmitForType} data-testid="parameter">
                 儲存
               </Button>
             ) : (
@@ -452,42 +464,38 @@ return (
         </CardHeader>
         <CardContent>
           {!merchantHelperItems.loading ? (
-            serviceForType.helperTypeName.map((data, index) => 
-            <div className="flex items-center mb-[12px] flex-wrap gap-y-[10px]" key={index}>
-              <Field label="互助類別" className="w-44">
-                <Input
-                  type="text"
-                  value={data.type}
-                  disabled={!isSubmitForType}
-                  onChange={event => handleHelperTypeName(event, index)}
-                />
-              </Field>
-              {serviceForType.helperTypeName.length > 1 && (
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="刪除"
-                className="p-0 w-[50px] max-sm:w-[50px] flex ml-[12px] cursor-pointer last:mr-0"
-                disabled={!isSubmitForType}
-                onClick={() => handleDeleteSetting('helperTypeName', index)}
-              >
-                <DeleteForeverIcon/>
-              </Button>
-              )}
-              {index === serviceForType.helperTypeName.length - 1 && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="新增"
-                  className="p-0 w-[50px] max-sm:w-[50px] flex ml-[12px] cursor-pointer last:mr-0"
-                  disabled={!isSubmitForType}
-                  onClick={() => handleAddSetting('helperTypeName')}
-                >
-                  <AddIcon/>
-                </Button>
-              )}
-            </div>
-          )) : (
+            serviceForType.helperTypeName.map((data, index) => (
+              <div className="flex items-center mb-[12px] flex-wrap gap-y-[10px]" key={index}>
+                <Field label="互助類別" className="w-44">
+                  <Input type="text" value={data.type} disabled={!isSubmitForType} onChange={event => handleHelperTypeName(event, index)} />
+                </Field>
+                {serviceForType.helperTypeName.length > 1 && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="刪除"
+                    className="p-0 w-[50px] max-sm:w-[50px] flex ml-[12px] cursor-pointer last:mr-0"
+                    disabled={!isSubmitForType}
+                    onClick={() => handleDeleteSetting('helperTypeName', index)}
+                  >
+                    <DeleteForeverIcon />
+                  </Button>
+                )}
+                {index === serviceForType.helperTypeName.length - 1 && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="新增"
+                    className="p-0 w-[50px] max-sm:w-[50px] flex ml-[12px] cursor-pointer last:mr-0"
+                    disabled={!isSubmitForType}
+                    onClick={() => handleAddSetting('helperTypeName')}
+                  >
+                    <AddIcon />
+                  </Button>
+                )}
+              </div>
+            ))
+          ) : (
             <Skeleton className="h-24 w-full" />
           )}
         </CardContent>

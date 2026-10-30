@@ -10,7 +10,6 @@ import idx from 'idx'
 import React from 'react'
 import WalletDepositModal from 'views/OrderShared/WalletDepositModal'
 
-
 export default function PaymentCustomerWallet() {
   const { bill, handleBillChange, order } = React.useContext(billContext)
   const [walletPayByOrder, setWalletPayByOrder] = React.useState(0)
@@ -52,7 +51,7 @@ export default function PaymentCustomerWallet() {
         setWalletPayByOrder(0)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [order.loading, bill.customerId] 變動時執行；handleBillChange、order 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [order.loading, bill.customerId] 變動時執行；handleBillChange、order 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [order.loading, bill.customerId])
 
   React.useEffect(() => {
@@ -71,7 +70,7 @@ export default function PaymentCustomerWallet() {
         allowDepositDeduction: allowDepositDeduction,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [profileIdentity.loading, merchantAuthorities.loading])
 
   const walletPayLimit =
@@ -90,32 +89,29 @@ export default function PaymentCustomerWallet() {
       <div style={{ display: 'flex', alignItems: 'flex-end', flexWrap: 'wrap', gap: 12 }}>
         {usableCustomerWallet > 0 && bill.customerId && (
           <Field label={`扣入金(${usableCustomerWallet}可用)`} className="!mr-[12px] flex w-[150px] justify-start">
-          <TextField
-            fullWidth
-            variant="outlined"
-            value={bill.walletPay}
-            type="number"
-            onFocus={handleFocus}
-            onChange={event => {
-              const walletPay =
-                +event.target.value <= usableCustomerWallet && +event.target.value <= (walletPayLimit - bill.bonusDecount)
-                  ? +event.target.value
-                  : bill.walletPay
-              handleBillChange({
-                key: 'walletPay',
-                value: walletPay,
-              })
-            }}
-            onWheel={() => document.activeElement.blur()}
-          />
+            <TextField
+              fullWidth
+              variant="outlined"
+              value={bill.walletPay}
+              type="number"
+              onFocus={handleFocus}
+              onChange={event => {
+                const walletPay =
+                  +event.target.value <= usableCustomerWallet && +event.target.value <= walletPayLimit - bill.bonusDecount
+                    ? +event.target.value
+                    : bill.walletPay
+                handleBillChange({
+                  key: 'walletPay',
+                  value: walletPay,
+                })
+              }}
+              onWheel={() => document.activeElement.blur()}
+            />
           </Field>
         )}
         {/* 沒有任何入金權限（含角色缺設定、權限查詢失敗）時不顯示，與打帳單一致（Codex review PR #259） */}
         {(identity.allowDepositAddition || identity.allowDepositDeduction) && (
-          <Button
-            variant="primary"
-            onClick={() => setOpenWalletDeposit(true)}
-          >
+          <Button variant="primary" onClick={() => setOpenWalletDeposit(true)}>
             異動入金
           </Button>
         )}

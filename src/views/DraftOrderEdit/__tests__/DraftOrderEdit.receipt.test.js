@@ -8,8 +8,18 @@
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { loginAs } from '../../../__tests__/testkit.test'
 import {
-  setupDraft, pageReady, makeOrder, serviceOrder, customerDetail,
-  CUSTOMER, DESIGNER, HELPER, SERVICE, PRODUCT, TICKET, YEAR_CARD,
+  setupDraft,
+  pageReady,
+  makeOrder,
+  serviceOrder,
+  customerDetail,
+  CUSTOMER,
+  DESIGNER,
+  HELPER,
+  SERVICE,
+  PRODUCT,
+  TICKET,
+  YEAR_CARD,
 } from './draftPageKit.test'
 
 jest.setTimeout(20000)
@@ -64,17 +74,40 @@ const fullOrder = () =>
       }),
     ],
     productOrders: [
-      { id: 'po-1', name: PRODUCT.name, count: 2, price: 1200, thirdPartyPayId: 'tp-2', seller: { id: DESIGNER.userId }, product: { id: PRODUCT.id, isLocked: 'FALSE' } },
+      {
+        id: 'po-1',
+        name: PRODUCT.name,
+        count: 2,
+        price: 1200,
+        thirdPartyPayId: 'tp-2',
+        seller: { id: DESIGNER.userId },
+        product: { id: PRODUCT.id, isLocked: 'FALSE' },
+      },
     ],
     ticketOrders: [
-      { id: 'to-1', price: 6000, count: 1, availableCount: 10, remark: '', service: { id: TICKET.id, isLocked: 'FALSE' }, intoPerformanceWhileBuying: false },
+      {
+        id: 'to-1',
+        price: 6000,
+        count: 1,
+        availableCount: 10,
+        remark: '',
+        service: { id: TICKET.id, isLocked: 'FALSE' },
+        intoPerformanceWhileBuying: false,
+      },
     ],
     membershipOrders: [
-      { purchaseDate: null, validDayCount: null, expiryDate: null, price: 12000, thirdPartyPayId: 'tp-1', remark: '', seller: { id: DESIGNER.userId }, membership: { uuid: YEAR_CARD.uuid, isLocked: 'FALSE', effecitveDay: 365 } },
+      {
+        purchaseDate: null,
+        validDayCount: null,
+        expiryDate: null,
+        price: 12000,
+        thirdPartyPayId: 'tp-1',
+        remark: '',
+        seller: { id: DESIGNER.userId },
+        membership: { uuid: YEAR_CARD.uuid, isLocked: 'FALSE', effecitveDay: 365 },
+      },
     ],
-    useTicketOrders: [
-      { id: 'record-1', name: '剪髮10次卡', price: 600, pricePerCount: 600, service: { id: TICKET.id }, helperList: [] },
-    ],
+    useTicketOrders: [{ id: 'record-1', name: '剪髮10次卡', price: 600, pricePerCount: 600, service: { id: TICKET.id }, helperList: [] }],
   })
 const fullFixtures = (options = {}) => ({
   order: fullOrder(),
@@ -160,7 +193,11 @@ describe('掛單詳細：收據內容', () => {
   })
 
   it('沒選設計師、不留客資：設計師與顧客都印「未選擇」，不印紅利', async () => {
-    const page = setupDraft({ order: makeOrder({ designer: null }), customerBonusActive: true, FETCH_DESIGNER_IN_ORDER_DETAIL: { merchantDesigner: null } })
+    const page = setupDraft({
+      order: makeOrder({ designer: null }),
+      customerBonusActive: true,
+      FETCH_DESIGNER_IN_ORDER_DETAIL: { merchantDesigner: null },
+    })
     await pageReady(page)
     const t = text(await print())
     expect(t).toContain('設計師:未選擇')
@@ -169,7 +206,22 @@ describe('掛單詳細：收據內容', () => {
   })
 
   it('沒有服務的掛單：收據不列服務', async () => {
-    const page = setupDraft({ order: makeOrder({ serviceOrders: [], productOrders: [{ id: 'po-1', name: PRODUCT.name, count: 1, price: 1200, thirdPartyPayId: null, seller: { id: DESIGNER.userId }, product: { id: PRODUCT.id, isLocked: 'FALSE' } }] }) })
+    const page = setupDraft({
+      order: makeOrder({
+        serviceOrders: [],
+        productOrders: [
+          {
+            id: 'po-1',
+            name: PRODUCT.name,
+            count: 1,
+            price: 1200,
+            thirdPartyPayId: null,
+            seller: { id: DESIGNER.userId },
+            product: { id: PRODUCT.id, isLocked: 'FALSE' },
+          },
+        ],
+      }),
+    })
     await pageReady(page)
     await wait(() => expect(document.getElementById('printMain')).toHaveTextContent('洗髮精'))
     const t = text(await print())

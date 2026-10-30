@@ -215,7 +215,15 @@ describe('MemberShipCardSellsModal：選會員卡', () => {
     pageOffset: 0,
     pageLimit: 50,
     data: [
-      { uuid: 'm1', no: 'M01', name: '年卡', sellPrice: 12000, effecitveDay: 365, isLocked: false, membershipCategory: { uuid: 'mc-1', name: 'VIP' } },
+      {
+        uuid: 'm1',
+        no: 'M01',
+        name: '年卡',
+        sellPrice: 12000,
+        effecitveDay: 365,
+        isLocked: false,
+        membershipCategory: { uuid: 'mc-1', name: 'VIP' },
+      },
       { uuid: 'm2', no: 'M02', name: '永久卡', sellPrice: 30000, effecitveDay: 0, isLocked: true, membershipCategory: null },
     ],
   }
@@ -317,15 +325,41 @@ describe('EditServicesModal：帳單詳細／掛單詳細／重新開單選服�
     pageOffset: 0,
     pageLimit: 50,
     data: [
-      { id: 's1', no: 'S01', name: '精緻剪髮', price: 800, isLocked: false, isNoCash: false, bindedThirdPartTicket: null, isBindedThirdPartTicketLocked: false, serviceCategory: { name: '剪髮' } },
-      { id: 's2', no: 'S02', name: '平台券洗髮', price: 500, isLocked: true, isNoCash: true, bindedThirdPartTicket: { id: 'tp-1' }, isBindedThirdPartTicketLocked: true, serviceCategory: { name: '洗髮' } },
+      {
+        id: 's1',
+        no: 'S01',
+        name: '精緻剪髮',
+        price: 800,
+        isLocked: false,
+        isNoCash: false,
+        bindedThirdPartTicket: null,
+        isBindedThirdPartTicketLocked: false,
+        serviceCategory: { name: '剪髮' },
+      },
+      {
+        id: 's2',
+        no: 'S02',
+        name: '平台券洗髮',
+        price: 500,
+        isLocked: true,
+        isNoCash: true,
+        bindedThirdPartTicket: { id: 'tp-1' },
+        isBindedThirdPartTicketLocked: true,
+        serviceCategory: { name: '洗髮' },
+      },
     ],
   }
   const renderServices = (props = {}) => {
     const calls = []
     const link = createAutoMockLink({ service: SERVICE_DETAIL }, { calls })
     const setters = trackedSetters({ pageLimit: 50, pageOffset: 0, categoryIds: [] })
-    const handlers = { onServiceChange: jest.fn(), setHelperFromModal: jest.fn(), setServicesModalOpen: jest.fn(), closeModal: jest.fn(), onPageChange: jest.fn() }
+    const handlers = {
+      onServiceChange: jest.fn(),
+      setHelperFromModal: jest.fn(),
+      setServicesModalOpen: jest.fn(),
+      closeModal: jest.fn(),
+      onPageChange: jest.fn(),
+    }
     render(
       <MockedProvider link={link} addTypename={false}>
         <EditServicesModal
@@ -377,12 +411,23 @@ describe('EditServicesModal：帳單詳細／掛單詳細／重新開單選服�
   it('綁定第三方卡券的服務：帶入卡券 id 與鎖定設定；已有服務時新增在最後，沿用最後一列的其他欄位', async () => {
     const { handlers } = renderServices({
       servicesLength: 2,
-      servicesOnPannel: [{ serviceId: 's9', designerId: 'd1' }, { serviceId: 's8', designerId: 'd2' }],
+      servicesOnPannel: [
+        { serviceId: 's9', designerId: 'd1' },
+        { serviceId: 's8', designerId: 'd2' },
+      ],
     })
     fireEvent.click(within(dialog()).getAllByRole('button', { name: '加入' })[1])
     const { index, value } = handlers.onServiceChange.mock.calls[0][0]
     expect(index).toBe(2)
-    expect(value).toEqual(expect.objectContaining({ designerId: 'd2', serviceId: 's2', thirdPartyCouponMerchantId: 'tp-1', isBindedThirdPartTicketLocked: true, isNoCash: true }))
+    expect(value).toEqual(
+      expect.objectContaining({
+        designerId: 'd2',
+        serviceId: 's2',
+        thirdPartyCouponMerchantId: 'tp-1',
+        isBindedThirdPartTicketLocked: true,
+        isNoCash: true,
+      })
+    )
     await wait(() => expect(handlers.setServicesModalOpen).toHaveBeenCalledWith(false))
   })
 

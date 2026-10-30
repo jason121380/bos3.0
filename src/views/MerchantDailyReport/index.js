@@ -54,7 +54,7 @@ const MerchantDailyReport = () => {
   const mergeResultData = useMemo(() => {
     // 查詢失敗（data 為 undefined）時與載入中一樣回空陣列，不在 render 階段拋錯
     if (merchantDashboardData.loading || !merchantDashboardData.data?.merchantDashboard) {
-      return [];
+      return []
     }
     const data = merchantDashboardData.data.merchantDashboard
     const { otherPayway, thirdPartTicket } = data
@@ -62,8 +62,8 @@ const MerchantDailyReport = () => {
     const setArr = []
     const finalData = []
     const arr = [
-      { key: "otherPayway", name: 'paywayName' },
-      { key: "thirdPartTicket", name: 'ticketName' },
+      { key: 'otherPayway', name: 'paywayName' },
+      { key: 'thirdPartTicket', name: 'ticketName' },
     ]
 
     arr.forEach(({ key, name }) => {
@@ -84,12 +84,12 @@ const MerchantDailyReport = () => {
         name,
         otherPayment: {
           usedPrice: other?.usedPrice ?? 0,
-          usedPriceWithNoCash: other?.usedPriceWithNoCash ?? 0
+          usedPriceWithNoCash: other?.usedPriceWithNoCash ?? 0,
         },
         thirdParty: {
           usedPrice: third?.usedPrice ?? 0,
-          usedPriceWithNoCash: third?.usedPriceWithNoCash ?? 0
-        }
+          usedPriceWithNoCash: third?.usedPriceWithNoCash ?? 0,
+        },
       })
     })
 
@@ -98,20 +98,14 @@ const MerchantDailyReport = () => {
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading) {
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       setIsMemberShipCardActive(isMemberShipCardActive)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
   useEffect(() => {
     if (!merchantDailyReportCurrentDayData.loading && !merchantDailyReportDataV3.loading) {
-      const merchantDailyReportCurrentDay = idx(
-        merchantDailyReportCurrentDayData,
-        _ => _.data.merchantDailyReportV2
-      )
+      const merchantDailyReportCurrentDay = idx(merchantDailyReportCurrentDayData, _ => _.data.merchantDailyReportV2)
       const merchantDailyReportData = idx(merchantDailyReportDataV3, _ => _.data.merchantDailyReportV2)
       setCurentDayData(merchantDailyReportCurrentDay)
 
@@ -121,21 +115,18 @@ const MerchantDailyReport = () => {
       const b = Boolean(merchantDailyReportData) && merchantDailyReportData.currentDay.membership !== 0
       setMembershipDisplay(a || b)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantDailyReportCurrentDayData.loading, merchantDailyReportDataV3.loading])
   useEffect(() => {
     if (!isServiceTicketMergedData.loading) {
-      const isServiceTicketMerged = idx(
-        isServiceTicketMergedData,
-        _ => _.data.getPriceDisplayOnDailyReportDefault.isServiceTicketMerged
-      )
+      const isServiceTicketMerged = idx(isServiceTicketMergedData, _ => _.data.getPriceDisplayOnDailyReportDefault.isServiceTicketMerged)
       setIsServiceTicketMerged(isServiceTicketMerged)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isServiceTicketMergedData.loading])
   return (
     <Page className="ui-root" title="店家日報表">
-      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'none', justifyContent: 'space-between' }}>
         <div className="merchantNamePrint">
           {JSON.parse(localStorage.getItem('userMerchant')).name +
             '   ' +
@@ -143,10 +134,7 @@ const MerchantDailyReport = () => {
             '   ' +
             '店家日報表'}
         </div>
-        <div className="merchantNamePrint">
-          {'列印時間： ' +
-            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-        </div>
+        <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
       </div>
       <PageHeader
         title="店家日報表"
@@ -159,18 +147,13 @@ const MerchantDailyReport = () => {
       />
       <ReportToolbar
         date={
-          <DateSelector
-            date={date}
-            attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
-            onlyStart
-            dateChange={value => setDate(value)}
-          />
+          <DateSelector date={date} attributes={['dbyesterday', 'yesterday', 'today', 'startDate']} onlyStart dateChange={value => setDate(value)} />
         }
       />
 
       {merchantDailyReportDataV3.error ? (
-          <QueryFailed onRetry={() => merchantDailyReportDataV3.refetch()} />
-        ) : !merchantDailyReportDataV3.loading &&
+        <QueryFailed onRetry={() => merchantDailyReportDataV3.refetch()} />
+      ) : !merchantDailyReportDataV3.loading &&
         !isServiceTicketMergedData.loading &&
         !merchantDailyReportCurrentDayData.loading &&
         !merchantDashboardData.loading &&

@@ -5,12 +5,12 @@ import { Button } from 'ui/button'
 import { Card, CardFooter, CardHeader, CardTitle } from 'ui/card'
 
 const optionsArray = [
-  { "hairProperties": '髮質屬性' },
-  { "scalpProperties": '頭皮屬性' },
-  { "permAppliance": '燙髮用具' },
-  { "permPotion": '燙髮藥水' },
-  { "hairColorCategory": '染髮類別' },
-  { "hairColor": '染髮色系' }
+  { 'hairProperties': '髮質屬性' },
+  { 'scalpProperties': '頭皮屬性' },
+  { 'permAppliance': '燙髮用具' },
+  { 'permPotion': '燙髮藥水' },
+  { 'hairColorCategory': '染髮類別' },
+  { 'hairColor': '染髮色系' },
 ]
 
 export default function CustomerTracking({ customerId, className, hairCondition, refetchHairInfo, isLoading, ...rest }) {

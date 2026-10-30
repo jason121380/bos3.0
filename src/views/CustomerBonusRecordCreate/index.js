@@ -17,7 +17,7 @@ function CustomerBonusRecordCreate() {
     designerId: '',
     customerId: id ? id : '',
     bonus: 0,
-    remark: ''
+    remark: '',
   })
   const { AddCustomerBonus } = useFetchAddCustomerBonus()
   const handleSubmitData = () => {
@@ -25,47 +25,49 @@ function CustomerBonusRecordCreate() {
     if (!submitData.date) {
       openSnackbar({
         message: '日期格式有誤',
-        variant: 'warning'
+        variant: 'warning',
       })
       setIsClick(false)
     } else if (!submitData.designerId) {
       openSnackbar({
         message: '請選擇設計師',
-        variant: 'warning'
+        variant: 'warning',
       })
       setIsClick(false)
     } else if (!submitData.customerId) {
       openSnackbar({
         message: '請選擇顧客',
-        variant: 'warning'
+        variant: 'warning',
       })
       setIsClick(false)
     } else if (submitData.bonus === '') {
       openSnackbar({
         message: '請輸入點數',
-        variant: 'warning'
+        variant: 'warning',
       })
       setIsClick(false)
     } else {
       AddCustomerBonus({
-        input: { ...submitData, bonus: parseInt(submitData.bonus, 10) }
-      }).then(res => {
-        if (res.data.addCustomerBonus) {
-          openSnackbar({
-            message: '新增成功',
-            variant: 'success'
-          })
-          history.push('/customer-bonus-record')
-        } else {
-          openSnackbar({
-            message: '新增失敗',
-            variant: 'error'
-          })
-          setIsClick(false)
-        }
-      }).catch(error => {
-        setIsClick(false)
+        input: { ...submitData, bonus: parseInt(submitData.bonus, 10) },
       })
+        .then(res => {
+          if (res.data.addCustomerBonus) {
+            openSnackbar({
+              message: '新增成功',
+              variant: 'success',
+            })
+            history.push('/customer-bonus-record')
+          } else {
+            openSnackbar({
+              message: '新增失敗',
+              variant: 'error',
+            })
+            setIsClick(false)
+          }
+        })
+        .catch(error => {
+          setIsClick(false)
+        })
     }
   }
 
@@ -73,16 +75,9 @@ function CustomerBonusRecordCreate() {
     <Page className="ui-root" title="新增紅利點數">
       <div className="mx-auto max-w-3xl">
         <PageHeader title="新增紅利點數" className="pb-0" />
-        <AboutCustomerBonusRecord
-          submitData={submitData}
-          setSubmitData={setSubmitData}
-        />
+        <AboutCustomerBonusRecord submitData={submitData} setSubmitData={setSubmitData} />
         <div className="mt-6 flex justify-end">
-          <Button
-            disabled={isClick}
-            onClick={handleSubmitData}
-            variant="primary"
-          >
+          <Button disabled={isClick} onClick={handleSubmitData} variant="primary">
             新增
           </Button>
         </div>

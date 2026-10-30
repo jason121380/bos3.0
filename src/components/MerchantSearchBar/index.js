@@ -29,7 +29,7 @@ function MerchantSearchBar({
   getThirdPartyName = false,
   futureDate = false,
   stopGetQueryString = false,
-  uiDateField = false
+  uiDateField = false,
 }) {
   const [setting, setSetting] = React.useState(values)
 
@@ -62,23 +62,11 @@ function MerchantSearchBar({
     date[target] = value
 
     if ((setting.startDate || setting.endDate) && onlyDayTime) {
-      history.push(
-        `${location.pathname}?startDate=${startOfDay(date.endDate).getTime()}&endDate=${endOfDay(
-          date.endDate
-        ).getTime()}`
-      )
+      history.push(`${location.pathname}?startDate=${startOfDay(date.endDate).getTime()}&endDate=${endOfDay(date.endDate).getTime()}`)
     } else if ((setting.startDate || setting.endDate) && onlyMonthYear) {
-      history.push(
-        `${location.pathname}?startDate=${startOfMonth(date.endDate).getTime()}&endDate=${endOfMonth(
-          date.endDate
-        ).getTime()}`
-      )
+      history.push(`${location.pathname}?startDate=${startOfMonth(date.endDate).getTime()}&endDate=${endOfMonth(date.endDate).getTime()}`)
     } else if (setting.startDate || setting.endDate) {
-      history.push(
-        `${location.pathname}?startDate=${startOfDay(date.startDate).getTime()}&endDate=${endOfDay(
-          date.endDate
-        ).getTime()}`
-      )
+      history.push(`${location.pathname}?startDate=${startOfDay(date.startDate).getTime()}&endDate=${endOfDay(date.endDate).getTime()}`)
     }
   }
 
@@ -94,9 +82,7 @@ function MerchantSearchBar({
           draft.endDate = currentDate.endDate
         })
       )
-      history.push(
-        `${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`
-      )
+      history.push(`${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`)
     } else {
       const currentDate = {
         startDate: startOfDay(new Date()).getTime(),
@@ -108,9 +94,7 @@ function MerchantSearchBar({
           draft.endDate = currentDate.endDate
         })
       )
-      history.push(
-        `${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`
-      )
+      history.push(`${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`)
     }
     if (onlyDayTime) {
       const currentDate = {
@@ -123,9 +107,7 @@ function MerchantSearchBar({
           draft.endDate = currentDate.endDate
         })
       )
-      history.push(
-        `${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`
-      )
+      history.push(`${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`)
     }
   }
   const handleJumpToYesterday = () => {
@@ -135,9 +117,7 @@ function MerchantSearchBar({
         endDate: endOfDay(addDays(new Date(), -1)).getTime(),
       }
 
-      history.push(
-        `${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`
-      )
+      history.push(`${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`)
       setSetting(
         produce(draft => {
           draft.startDate = currentDate.startDate
@@ -156,9 +136,7 @@ function MerchantSearchBar({
         })
       )
 
-      history.push(
-        `${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`
-      )
+      history.push(`${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`)
     }
     if (onlyDayTime) {
       const currentDate = {
@@ -166,9 +144,7 @@ function MerchantSearchBar({
         endDate: endOfDay(addDays(new Date(), -1)).getTime(),
       }
 
-      history.push(
-        `${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`
-      )
+      history.push(`${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`)
       setSetting(
         produce(draft => {
           draft.startDate = currentDate.startDate
@@ -182,9 +158,7 @@ function MerchantSearchBar({
       startDate: startOfDay(addDays(new Date(), 1)).getTime(),
       endDate: endOfDay(addDays(new Date(), 1)).getTime(),
     }
-    history.push(
-      `${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`
-    )
+    history.push(`${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`)
     setSetting(
       produce(draft => {
         draft.startDate = currentDate.startDate
@@ -197,9 +171,7 @@ function MerchantSearchBar({
       startDate: startOfDay(addDays(new Date(), 2)).getTime(),
       endDate: endOfDay(addDays(new Date(), 2)).getTime(),
     }
-    history.push(
-      `${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`
-    )
+    history.push(`${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`)
     setSetting(
       produce(draft => {
         draft.startDate = currentDate.startDate
@@ -213,9 +185,7 @@ function MerchantSearchBar({
         startDate: startOfMonth(new Date()).getTime(),
         endDate: endOfDay(addDays(new Date(), -2)).getTime(),
       }
-      history.push(
-        `${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`
-      )
+      history.push(`${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`)
       setSetting(
         produce(draft => {
           draft.startDate = currentDate.startDate
@@ -233,9 +203,7 @@ function MerchantSearchBar({
           draft.endDate = currentDate.endDate
         })
       )
-      history.push(
-        `${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`
-      )
+      history.push(`${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`)
     }
     if (onlyDayTime) {
       const currentDate = {
@@ -248,9 +216,7 @@ function MerchantSearchBar({
           draft.endDate = currentDate.endDate
         })
       )
-      history.push(
-        `${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`
-      )
+      history.push(`${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`)
     }
   }
   const handleJumpToLastMonth = () => {
@@ -287,12 +253,8 @@ function MerchantSearchBar({
     // }
 
     const currentDate = {
-      startDate: startOfMonth(
-        new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
-      ).getTime(),
-      endDate: endOfMonth(
-        new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
-      ).getTime(),
+      startDate: startOfMonth(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)).getTime(),
+      endDate: endOfMonth(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)).getTime(),
     }
     setSetting(
       produce(draft => {
@@ -300,9 +262,7 @@ function MerchantSearchBar({
         draft.endDate = currentDate.endDate
       })
     )
-    history.push(
-      `${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`
-    )
+    history.push(`${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`)
   }
 
   const handleJumpToWholeMonth = () => {
@@ -316,9 +276,7 @@ function MerchantSearchBar({
         draft.endDate = currentDate.endDate
       })
     )
-    history.push(
-      `${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`
-    )
+    history.push(`${location.pathname}?startDate=${currentDate.startDate}&endDate=${currentDate.endDate}`)
   }
 
   const useHandleChangeRef = React.useRef(handleChange)
@@ -338,12 +296,12 @@ function MerchantSearchBar({
         useHandleChangeRef.current({ target: key, value: defaultDate[key] })
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   multiple = multiple.reduce((total, item) => ({ ...total, [item]: true }), {})
   return (
-    <div className='MerchantSearchBar box-border flex flex-wrap items-center gap-[10px]'>
+    <div className="MerchantSearchBar box-border flex flex-wrap items-center gap-[10px]">
       {searchByBirth && <div className="mr-4">生日/偏好設計師搜尋</div>}
       {onSearch && (
         <div>

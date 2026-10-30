@@ -56,11 +56,11 @@ function OrderManagementList() {
     isReserved: false,
     payWay: [],
     thirdPartTicketId: '',
-    source: []
+    source: [],
   })
   const [date, setDate] = useState({
     startDate: startOfDay(new Date()).getTime(),
-    endDate: endOfDay(new Date()).getTime()
+    endDate: endOfDay(new Date()).getTime(),
   })
   const [onlyStart, setOnlyStart] = useState(false)
   const [attrs, setAttrs] = useState([])
@@ -79,7 +79,7 @@ function OrderManagementList() {
     designerId: pageSetting.employeeId,
     otherPayWay: pageSetting.payWay.length === 0 ? '' : pageSetting.payWay,
     thirdPartTicketId: pageSetting.thirdPartTicketId,
-    source: pageSetting.source
+    source: pageSetting.source,
   })
   const orderStaticDetail = useFetchGetOrderStaticDetail(orderIds)
   const getIsOpenDateRangeInOrderMangement = useFetchGetIsOpenDateRangeInOrderManagement()
@@ -89,17 +89,17 @@ function OrderManagementList() {
   const [detailInfo, setDetailInfo] = useState({
     logo: {
       isDisplay: false,
-      imageUrl: null
+      imageUrl: null,
     },
     qrcode: {
       isDisplay: false,
       url: null,
-      imageUrl: null
+      imageUrl: null,
     },
     message: {
       isDisplay: false,
       message: null,
-    }
+    },
   })
   const [serialNumberUsing, setSerialNumberUsing] = useState(false)
 
@@ -108,53 +108,44 @@ function OrderManagementList() {
       const data = idx(getSerialNumberUsing, _ => _.data.getParameterOrderCreateSetting.isOrderSerialNumberUsing)
       setSerialNumberUsing(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getSerialNumberUsing.loading])
   useEffect(() => {
     if (!getIsPrintWindowClosureDelayed.loading) {
       const data = idx(getIsPrintWindowClosureDelayed, _ => _.data.getParameterOrderCreateSetting.isPrintWindowClosureDelayed)
       setClosureDelayed(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsPrintWindowClosureDelayed.loading])
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading && !getOrderList.loading && getOrderList.data) {
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const membership = idx(getOrderList, _ => _.data.getOrderList.intervalSummary.membership)
       setMembershipDisplay(isMemberShipCardActive || membership !== 0)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading, getOrderList.loading])
 
   useEffect(() => {
     if (!customerBonusActive.loading && !getOrderList.loading && getOrderList.data) {
-      const bonusActive = idx(
-        customerBonusActive,
-        _ => _.data.getIsCustomerBonusActive
-      )
+      const bonusActive = idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive)
       const bonus = idx(getOrderList, _ => _.data.getOrderList.intervalSummary.bonusDecountForReport)
       setBonusDisplay(bonusActive || bonus !== 0)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerBonusActive.loading, getOrderList.loading])
 
   useEffect(() => {
     if (!customerDataMarkedData.loading) {
       setIsCustomerDataMarked(isExportCustomerMasked(customerDataMarkedData))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerDataMarkedData.loading, customerDataMarkedData.error])
 
   useEffect(() => {
     if (!getIsOpenDateRangeInOrderMangement.loading && !getOrderListDateAuth.loading) {
-      const isOpenDateRange = idx(
-        getIsOpenDateRangeInOrderMangement,
-        _ => _.data.getIsOpenDateRangeInOrderMangement
-      )
+      const isOpenDateRange = idx(getIsOpenDateRangeInOrderMangement, _ => _.data.getIsOpenDateRangeInOrderMangement)
       // 日期權限查詢失敗時視為沒有日期權限，不整頁錯誤（Jason 2026/10/22）
       const dateAuth = idx(getOrderListDateAuth, _ => _.data.orderListDateAuth) || {}
       const arr = ['lastmonth', 'thismonth', 'dbyesterday', 'yesterday', 'today', 'selector']
@@ -163,10 +154,10 @@ function OrderManagementList() {
         switch (key) {
           case 'lastmonth':
             if (dateAuth[key] && isOpenDateRange) attrs.push(key)
-            break;
+            break
           case 'thismonth':
             if (dateAuth[key] && isOpenDateRange) attrs.push(key)
-            break;
+            break
           case 'selector':
             if (dateAuth[key]) {
               if (isOpenDateRange) {
@@ -176,15 +167,15 @@ function OrderManagementList() {
                 setOnlyStart(true)
               }
             }
-            break;
+            break
           default:
             dateAuth[key] && attrs.push(key)
-            break;
+            break
         }
       })
       setAttrs(attrs)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsOpenDateRangeInOrderMangement.loading, getOrderListDateAuth.loading])
 
   useEffect(() => {
@@ -193,12 +184,12 @@ function OrderManagementList() {
       const ids = data.orderList.map(d => d.id)
       const pageData = data.orderList.slice(
         pageSetting.pageLimit * pageSetting.pageOffset,
-        (pageSetting.pageLimit * pageSetting.pageOffset) + pageSetting.pageLimit
+        pageSetting.pageLimit * pageSetting.pageOffset + pageSetting.pageLimit
       )
       setOrderList(pageData)
       setOrtderIds([...ids])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getOrderList.loading, pageSetting.pageLimit, pageSetting.pageOffset])
 
   useEffect(() => {
@@ -206,36 +197,31 @@ function OrderManagementList() {
       const staticDetail = idx(orderStaticDetail, _ => _.data.getOrderStaticDetail)
       if (staticDetail.length) {
         // 每筆先複製再補上明細（查詢結果唯讀）
-        const orders = idx(getOrderList, _ => _.data.getOrderList.orderList).slice(
-          pageSetting.pageLimit * pageSetting.pageOffset,
-          (pageSetting.pageLimit * pageSetting.pageOffset) + pageSetting.pageLimit
-        ).map(order => ({ ...order }))
+        const orders = idx(getOrderList, _ => _.data.getOrderList.orderList)
+          .slice(pageSetting.pageLimit * pageSetting.pageOffset, pageSetting.pageLimit * pageSetting.pageOffset + pageSetting.pageLimit)
+          .map(order => ({ ...order }))
         orders.forEach(({ id }, index) => {
           const findData = staticDetail.find(({ orderId }) => orderId === id)
           if (findData) {
             orders[index].staticDetail = findData.orderStaticDetail
           }
-        });
+        })
         setOrderList(orders)
       }
     }
     // 含 getOrderList.loading：重新查詢結果沒變時 data 不會換，但上面的 effect 會以不含明細的資料重設列表，這裡要再補一次明細
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [orderStaticDetail.loading, getOrderList.loading, getOrderList.data, pageSetting.pageLimit, pageSetting.pageOffset])
 
   useEffect(() => {
-    if (
-      !getLogoDisplayOnInvoice.loading &&
-      !getQrcodeDisplayOnInvoice.loading &&
-      !getMessageDisplayOnInvoice.loading
-    ) {
+    if (!getLogoDisplayOnInvoice.loading && !getQrcodeDisplayOnInvoice.loading && !getMessageDisplayOnInvoice.loading) {
       const logo = idx(getLogoDisplayOnInvoice, _ => _.data.getLogoDisplayOnInvoice)
       const qrcode = idx(getQrcodeDisplayOnInvoice, _ => _.data.getQrcodeDisplayOnInvoice)
       const message = idx(getMessageDisplayOnInvoice, _ => _.data.getMessageDisplayOnInvoice)
       setDetailInfo({
         logo: logo,
         qrcode: qrcode,
-        message: message
+        message: message,
       })
       // 收據設定查詢失敗時沒有 QR 設定，不產生 QR（2026/10/28）
       if (qrcode) {
@@ -246,7 +232,7 @@ function OrderManagementList() {
       // 沒啟用或沒有 logo 網址時 imageUrl 是 null；不要 fetch(null)（會打到 /null）
       if (logo && logo.imageUrl) {
         const getDataUrl = async () => {
-          let blob = await fetch(logo.imageUrl).then(r => r.blob());
+          let blob = await fetch(logo.imageUrl).then(r => r.blob())
           let dataUrl = await new Promise(resolve => {
             let reader = new FileReader()
             reader.onload = () => resolve(reader.result)
@@ -258,12 +244,8 @@ function OrderManagementList() {
         getDataUrl().catch(() => {})
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-  }, [
-    getLogoDisplayOnInvoice.loading,
-    getQrcodeDisplayOnInvoice.loading,
-    getMessageDisplayOnInvoice.loading
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+  }, [getLogoDisplayOnInvoice.loading, getQrcodeDisplayOnInvoice.loading, getMessageDisplayOnInvoice.loading])
   return (
     <Page className="ui-root" title="帳單列表">
       <PageHeader
@@ -278,14 +260,8 @@ function OrderManagementList() {
         }
       />
       <Toolbar>
-        {(!getIsOpenDateRangeInOrderMangement.loading && !getOrderListDateAuth.loading) && (
-          <DateSelector
-            attributes={attrs}
-            date={date}
-            dateChange={value => setDate(value)}
-            onlyStart={onlyStart}
-            margin={false}
-          />
+        {!getIsOpenDateRangeInOrderMangement.loading && !getOrderListDateAuth.loading && (
+          <DateSelector attributes={attrs} date={date} dateChange={value => setDate(value)} onlyStart={onlyStart} margin={false} />
         )}
         <ToolbarSpacer />
         <Button
@@ -326,7 +302,11 @@ function OrderManagementList() {
       {!getOrderList.loading ? (
         getOrderList.data ? (
           <Fragment>
-            <Overview membershipDisplay={membershipDisplay} orderList={idx(getOrderList, _ => _.data.getOrderList.intervalSummary) || {}} bonusDisplay={bonusDisplay} />
+            <Overview
+              membershipDisplay={membershipDisplay}
+              orderList={idx(getOrderList, _ => _.data.getOrderList.intervalSummary) || {}}
+              bonusDisplay={bonusDisplay}
+            />
             <ResultsV2
               orders={orderList}
               pageSetting={pageSetting}
@@ -342,26 +322,15 @@ function OrderManagementList() {
               imgUrl={imgUrl}
               detailInfo={detailInfo}
               closureDelayed={closureDelayed}
-              disabled={
-                getLogoDisplayOnInvoice.loading ||
-                getQrcodeDisplayOnInvoice.loading ||
-                getMessageDisplayOnInvoice.loading
-              }
-              disableDeleteOrders={
-                !passwordData.loading ? idx(
-                  passwordData,
-                  _ => _.data.merchantPassword.deleteOrder.isUsing
-                ) : false
-              }
+              disabled={getLogoDisplayOnInvoice.loading || getQrcodeDisplayOnInvoice.loading || getMessageDisplayOnInvoice.loading}
+              disableDeleteOrders={!passwordData.loading ? idx(passwordData, _ => _.data.merchantPassword.deleteOrder.isUsing) : false}
               orderDetailPrintLayout={
-                !merchantOrderDetailPrintLayoutData.loading ? idx(merchantOrderDetailPrintLayoutData,
-                  _ => _.data.getMerchantPrintFormatSettings
-                ) : 'A4'
+                !merchantOrderDetailPrintLayoutData.loading
+                  ? idx(merchantOrderDetailPrintLayoutData, _ => _.data.getMerchantPrintFormatSettings)
+                  : 'A4'
               }
               nameDisplayOnInvoice={
-                !getDesignerNameDisplayOnInvoice.loading ? idx(
-                  getDesignerNameDisplayOnInvoice, _ => _.data.getDesignerNameDisplayOnInvoice
-                ) : 'NAME'
+                !getDesignerNameDisplayOnInvoice.loading ? idx(getDesignerNameDisplayOnInvoice, _ => _.data.getDesignerNameDisplayOnInvoice) : 'NAME'
               }
               serialNumberUsing={serialNumberUsing}
             />

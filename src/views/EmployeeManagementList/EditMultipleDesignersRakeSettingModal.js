@@ -25,13 +25,7 @@ const isSegmented = [
   { label: '分段', value: true },
 ]
 
-function EditMultipleDesignersRakeSettingModal({
-  openEditRakeSettingModal,
-  onClose,
-  onChange,
-  profitSharing,
-  handleMultipleRakeSetting,
-}) {
+function EditMultipleDesignersRakeSettingModal({ openEditRakeSettingModal, onClose, onChange, profitSharing, handleMultipleRakeSetting }) {
   const [attributions, setAttributions] = useState([])
   const getAttributionForRake = useFetchGetAttributionForRake()
 
@@ -106,7 +100,6 @@ function EditMultipleDesignersRakeSettingModal({
           }
         } else if (d.attribute === value && !profitSharing.designationUsag) {
           if (newProfitSharing.nonSegmented[index].rakeData.designate.length === 0) {
-
             newProfitSharing.nonSegmented[index] = {
               ...d,
             }
@@ -132,7 +125,7 @@ function EditMultipleDesignersRakeSettingModal({
         setDeductionIndex(0)
       }
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [tabValue] 變動時執行；profitSharing.nonSegmented 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [tabValue] 變動時執行；profitSharing.nonSegmented 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [tabValue])
 
   useEffect(() => {
@@ -140,7 +133,7 @@ function EditMultipleDesignersRakeSettingModal({
       const data = idx(getAttributionForRake, _ => _.data.getAttributionForRake)
       setAttributions(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAttributionForRake.loading])
 
   return (
@@ -148,97 +141,77 @@ function EditMultipleDesignersRakeSettingModal({
       <DialogContent size="lg" hideClose aria-describedby={undefined} className="max-w-[912px]">
         {/* 內層為一般區塊（非 flex）：標題列「關閉」與底部「儲存」沿用原本的 float 排版 */}
         <div className="min-h-0 overflow-y-auto">
-        {!getAttributionForRake.loading ? (
-          <>
-            <div className="justify-between items-center">
-              <DialogHeader className="pb-4">
-                <DialogTitle>編輯設計師抽成</DialogTitle>
-              </DialogHeader>
-              {!profitSharing.isSegmented && (
-                <Tabs
-                  value={tabValue}
-                  onValueChange={value => handleTabsChange(null, value)}
-                  activationMode="manual"
-                >
-                  <TabsList>
-                    {attributions.map(tab => (
-                      <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
-                    ))}
-                  </TabsList>
-                </Tabs>
-              )}
-              <Button
-                variant="secondary"
-                className="my-[16px] mx-[24px] float-right"
-                onClick={onClose}
-              >
-                關閉
-              </Button>
-            </div>
-
-            <CardContent>
-              <div>
-                <div>
-                  <Fragment>
-                    <div>
-                      <h4 className="my-4 text-heading text-text">
-                        抽成模式
-                      </h4>
-                      <ToggleGroup
-                        size="small"
-                        className="ml-[20px]"
-                        value={profitSharing.isSegmented}
-                        onChange={handleToggleButtonChange}
-                        exclusive
-                      >
-                        {isSegmented.map((data, idx) => (
-                          <ToggleGroupItem
-                            key={`${data.label}-${idx}`}
-                            value={data.value}
-                            data-testid={`assign-designer-${data.value}`}
-                          >
-                            {data.label}
-                          </ToggleGroupItem>
-                        ))}
-                      </ToggleGroup>
-                      <FormControlLabel
-                        className="ml-[5px]"
-                        control={<Checkbox color="primary" />}
-                        label="分指定/不指定"
-                        checked={profitSharing.designationUsage}
-                        onClick={handleDesignateChange}
-                      />
-                    </div>
-                    {!profitSharing.designationUsage ? (
-                      !profitSharing.isSegmented ? (
-                        renderNonSegmentedNonDistinguish(tierProps)
-                      ) : (
-                        renderSegmentedNonDistinguish(tierProps)
-                      )
-                    ) : !profitSharing.isSegmented ? (
-                      renderNonSegmentedDesignation(tierProps)
-                    ) : (
-                      renderSegmentedDesignation(tierProps)
-                    )}
-                  </Fragment>
-                </div>
+          {!getAttributionForRake.loading ? (
+            <>
+              <div className="justify-between items-center">
+                <DialogHeader className="pb-4">
+                  <DialogTitle>編輯設計師抽成</DialogTitle>
+                </DialogHeader>
+                {!profitSharing.isSegmented && (
+                  <Tabs value={tabValue} onValueChange={value => handleTabsChange(null, value)} activationMode="manual">
+                    <TabsList>
+                      {attributions.map(tab => (
+                        <TabsTrigger key={tab.value} value={tab.value}>
+                          {tab.label}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
+                  </Tabs>
+                )}
+                <Button variant="secondary" className="my-[16px] mx-[24px] float-right" onClick={onClose}>
+                  關閉
+                </Button>
               </div>
-            </CardContent>
-            <Button
-              variant="primary"
-              className="my-[16px] mx-[24px] float-right"
-              onClick={handleMultipleRakeSetting}
-            >
-              儲存
-            </Button>
-          </>
-        ) : (
-          <div className="flex flex-col gap-4 p-6" aria-busy="true" aria-label="載入中">
-            <DialogTitle className="sr-only">編輯設計師抽成</DialogTitle>
-            <Skeleton className="h-8 w-1/3" />
-            <Skeleton className="h-[320px] w-full rounded-lg" />
-          </div>
-        )}
+
+              <CardContent>
+                <div>
+                  <div>
+                    <Fragment>
+                      <div>
+                        <h4 className="my-4 text-heading text-text">抽成模式</h4>
+                        <ToggleGroup
+                          size="small"
+                          className="ml-[20px]"
+                          value={profitSharing.isSegmented}
+                          onChange={handleToggleButtonChange}
+                          exclusive
+                        >
+                          {isSegmented.map((data, idx) => (
+                            <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} data-testid={`assign-designer-${data.value}`}>
+                              {data.label}
+                            </ToggleGroupItem>
+                          ))}
+                        </ToggleGroup>
+                        <FormControlLabel
+                          className="ml-[5px]"
+                          control={<Checkbox color="primary" />}
+                          label="分指定/不指定"
+                          checked={profitSharing.designationUsage}
+                          onClick={handleDesignateChange}
+                        />
+                      </div>
+                      {!profitSharing.designationUsage
+                        ? !profitSharing.isSegmented
+                          ? renderNonSegmentedNonDistinguish(tierProps)
+                          : renderSegmentedNonDistinguish(tierProps)
+                        : !profitSharing.isSegmented
+                          ? renderNonSegmentedDesignation(tierProps)
+                          : renderSegmentedDesignation(tierProps)}
+                    </Fragment>
+                  </div>
+                </div>
+              </CardContent>
+              <Button variant="primary" className="my-[16px] mx-[24px] float-right" onClick={handleMultipleRakeSetting}>
+                儲存
+              </Button>
+            </>
+          ) : (
+            <div className="flex flex-col gap-4 p-6" aria-busy="true" aria-label="載入中">
+              <DialogTitle className="sr-only">編輯設計師抽成</DialogTitle>
+              <Skeleton className="h-8 w-1/3" />
+              <Skeleton className="h-[320px] w-full rounded-lg" />
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
@@ -252,7 +225,7 @@ EditMultipleDesignersRakeSettingModal.propTypes = {
 
 EditMultipleDesignersRakeSettingModal.defaultProps = {
   open: false,
-  onClose: () => { },
+  onClose: () => {},
 }
 
 export default EditMultipleDesignersRakeSettingModal

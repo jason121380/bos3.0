@@ -16,7 +16,16 @@ jest.mock('elements/snackbars', () => ({
 
 const DESIGNER = { userId: 'designer-1', userName: '王小美', userNickName: 'Amy', userNo: '01' }
 const HELPER = { userId: 'helper-1', userName: '李助理', userNickName: 'Lee', userNo: '02' }
-const SERVICE = { id: 'service-1', no: 'S01', name: '精緻剪髮', price: 800, isLocked: false, isNoCash: false, bindedThirdPartTicket: null, isBindedThirdPartTicketLocked: false }
+const SERVICE = {
+  id: 'service-1',
+  no: 'S01',
+  name: '精緻剪髮',
+  price: 800,
+  isLocked: false,
+  isNoCash: false,
+  bindedThirdPartTicket: null,
+  isBindedThirdPartTicketLocked: false,
+}
 const PRODUCT = { id: 'product-1', no: 'P01', name: '洗髮精', sellPrice: 1200, isLocked: false, isUsing: true, isAvailableForSale: true }
 
 const ORDER = {
@@ -41,11 +50,27 @@ const ORDER = {
       thirdPartyPayName: null,
       thirdPartyPayId: null,
       service: { id: SERVICE.id, name: SERVICE.name, no: SERVICE.no, isLocked: false, isNoCash: false, isBindedThirdPartTicketLocked: false },
-      helperList: [{ id: 'h-1', type: '洗髮-A', isDesignate: true, helperDeductionType: 'FIXED', helper: { id: HELPER.userId, designerNo: '02', lastName: '李', firstName: '助理' } }],
+      helperList: [
+        {
+          id: 'h-1',
+          type: '洗髮-A',
+          isDesignate: true,
+          helperDeductionType: 'FIXED',
+          helper: { id: HELPER.userId, designerNo: '02', lastName: '李', firstName: '助理' },
+        },
+      ],
     },
   ],
   productOrders: [
-    { id: 'po-1', name: PRODUCT.name, count: 2, price: 1200, thirdPartyPayId: null, seller: { id: DESIGNER.userId, lastName: '王', firstName: '小美', designerNo: '01' }, product: { id: PRODUCT.id, no: PRODUCT.no, name: PRODUCT.name, isLocked: false } },
+    {
+      id: 'po-1',
+      name: PRODUCT.name,
+      count: 2,
+      price: 1200,
+      thirdPartyPayId: null,
+      seller: { id: DESIGNER.userId, lastName: '王', firstName: '小美', designerNo: '01' },
+      product: { id: PRODUCT.id, no: PRODUCT.no, name: PRODUCT.name, isLocked: false },
+    },
   ],
   ticketOrders: [],
   membershipOrders: [],

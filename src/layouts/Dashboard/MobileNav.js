@@ -25,7 +25,9 @@ export function useMobileTabs() {
   // 使用者在側欄釘選的常用頁面優先，不足 4 個時以預設常用頁補滿
   const pinned = useSelector(state => state.pinnedTable.table)
   const tabs = pinned.map(p => ({ title: p.title, href: p.href, icon: ICONS[p.href] || Star }))
-  DEFAULT_TABS.forEach(t => { if (!tabs.some(x => x.href === t.href)) tabs.push(t) })
+  DEFAULT_TABS.forEach(t => {
+    if (!tabs.some(x => x.href === t.href)) tabs.push(t)
+  })
   return tabs.slice(0, 4)
 }
 
@@ -42,9 +44,13 @@ export function MobileAppBar({ tabs, showTabBar, onOpenMenu }) {
   const [scrolled, setScrolled] = useState(false)
 
   // 只在 App 內有上一頁時顯示返回，避免從外部連結進來時按返回離開系統
-  useEffect(() => history.listen((_, action) => {
-    setDepth(d => (action === 'PUSH' ? d + 1 : action === 'POP' ? Math.max(0, d - 1) : d))
-  }), [history])
+  useEffect(
+    () =>
+      history.listen((_, action) => {
+        setDepth(d => (action === 'PUSH' ? d + 1 : action === 'POP' ? Math.max(0, d - 1) : d))
+      }),
+    [history]
+  )
 
   // 頁名來自各頁 <Page title>（components/Page 寫入 document.title）
   useEffect(() => {
@@ -80,7 +86,13 @@ export function MobileAppBar({ tabs, showTabBar, onOpenMenu }) {
     >
       <div className="relative flex h-12 items-center px-2">
         {showBack && (
-          <Button variant="ghost" size="icon" aria-label="返回" className="-ml-1 h-10 w-10 text-accent [&_svg]:size-6" onClick={() => history.goBack()}>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="返回"
+            className="-ml-1 h-10 w-10 text-accent [&_svg]:size-6"
+            onClick={() => history.goBack()}
+          >
             <ChevronLeft strokeWidth={2} />
           </Button>
         )}
@@ -102,13 +114,14 @@ export function MobileAppBar({ tabs, showTabBar, onOpenMenu }) {
 
 export function MobileTabBar({ tabs, onOpenMenu, menuOpen }) {
   const { pathname } = useLocation()
-  const item = (active) => cn(
-    // 分頁文字 12px（STYLE §3：不用 12px 以下字級）
-    'flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-md pt-1.5 text-caption no-underline transition-colors',
-    'active:scale-95 active:bg-surface-hover',
-    active ? 'font-medium text-accent' : 'text-text-tertiary',
-    focusRing
-  )
+  const item = active =>
+    cn(
+      // 分頁文字 12px（STYLE §3：不用 12px 以下字級）
+      'flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-md pt-1.5 text-caption no-underline transition-colors',
+      'active:scale-95 active:bg-surface-hover',
+      active ? 'font-medium text-accent' : 'text-text-tertiary',
+      focusRing
+    )
   return (
     <nav
       aria-label="常用頁面"

@@ -16,13 +16,12 @@ function Results({ className, categories, refetchCategories, ...rest }) {
   const [selectedCategories, setSelectedCcategories] = useState([])
   const { deleteProductCategory } = useFetchDeleteProductCategory()
   const handleSelectAll = event => {
-    const newSelectedPayment = event.target.checked
-      ? categories.filter(d => d.isUsing).map(payment => payment.id)
-      : []
+    const newSelectedPayment = event.target.checked ? categories.filter(d => d.isUsing).map(payment => payment.id) : []
     setSelectedCcategories(newSelectedPayment)
   }
   const handleSelectOne = id => {
-    const newSelect = [...selectedCategories], index = newSelect.indexOf(id)
+    const newSelect = [...selectedCategories],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -49,9 +48,7 @@ function Results({ className, categories, refetchCategories, ...rest }) {
         <CardHeader className="pb-4">
           <div className="flex items-baseline gap-3">
             <CardTitle>所有商品類別</CardTitle>
-            <span className="text-label tabular-nums text-text-secondary">
-              共 {categories.length} 筆資料
-            </span>
+            <span className="text-label tabular-nums text-text-secondary">共 {categories.length} 筆資料</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -65,10 +62,7 @@ function Results({ className, categories, refetchCategories, ...rest }) {
                     checked={selectedCategories.length === usingCount && usingCount > 0}
                     indeterminate={selectedCategories.length > 0 && selectedCategories.length < usingCount}
                     onChange={handleSelectAll}
-                    disabled={
-                      categories.length === 0 ||
-                      usingCount === 0
-                    }
+                    disabled={categories.length === 0 || usingCount === 0}
                   />
                 </TableHead>
                 <TableHead>代號</TableHead>
@@ -102,10 +96,7 @@ function Results({ className, categories, refetchCategories, ...rest }) {
                     <TableCell className="tabular-nums">{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
                     <TableCell className="text-right">
                       <Button asChild variant="ghost" size="icon" className="text-text-secondary">
-                        <RouterLink
-                          aria-label="編輯類別"
-                          to={`/product/category/edit/${data.id}`}
-                        >
+                        <RouterLink aria-label="編輯類別" to={`/product/category/edit/${data.id}`}>
                           <Pencil strokeWidth={1.75} />
                         </RouterLink>
                       </Button>

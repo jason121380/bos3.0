@@ -12,7 +12,6 @@ import { PageHeader } from 'ui/page-header'
 
 import AboutCustomer from './AboutCustomer'
 
-
 export default function Customer() {
   const history = useHistory()
   const { addCustomer } = useFetchAddCustomer()
@@ -31,15 +30,13 @@ export default function Customer() {
     cellphone: '',
     birthday: null,
     PreferDesignerId: '',
-    OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-      ? JSON.parse(localStorage.getItem('userMerchant')).id
-      : null,
+    OfficialBrandMerchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
     email: '',
     address: '',
     gender: 'MALE',
     lineId: '',
     source: '',
-    remark: ''
+    remark: '',
   })
   const [disableAfterSubmit, setDisableAfterSubmit] = useState(false)
   const vaild = !customer.cellphone
@@ -91,21 +88,19 @@ export default function Customer() {
     const _customer = cloneDeep(customer)
     const newCustomer = { ..._customer, birthday: birthdayObj }
     addCustomer({
-      input: newCustomer.DesignerId
-        ? newCustomer
-        : delete newCustomer.DesignerId
-          ? newCustomer
-          : newCustomer,
-    }).then(() => {
-      openSnackbar({
-        message: '成功新增客戶',
-        variant: 'success',
-      })
-      history.push('/management/customers')
-      setDisableAfterSubmit(false)
-    }).catch((error) => {
-      setDisableAfterSubmit(false)
+      input: newCustomer.DesignerId ? newCustomer : delete newCustomer.DesignerId ? newCustomer : newCustomer,
     })
+      .then(() => {
+        openSnackbar({
+          message: '成功新增客戶',
+          variant: 'success',
+        })
+        history.push('/management/customers')
+        setDisableAfterSubmit(false)
+      })
+      .catch(error => {
+        setDisableAfterSubmit(false)
+      })
   }
 
   useEffect(() => {
@@ -113,7 +108,7 @@ export default function Customer() {
       const data = idx(lastCustomerNo, _ => _.data.getLastCustomerNo)
       setLastNo(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [lastCustomerNo.loading])
 
   return (
@@ -137,7 +132,12 @@ export default function Customer() {
               尚缺：手機
             </p>
           )}
-          <Button variant="primary" onClick={handleOnClick} disabled={vaild || disableAfterSubmit} aria-describedby={vaild ? 'customer-create-missing' : undefined}>
+          <Button
+            variant="primary"
+            onClick={handleOnClick}
+            disabled={vaild || disableAfterSubmit}
+            aria-describedby={vaild ? 'customer-create-missing' : undefined}
+          >
             新增
           </Button>
         </div>

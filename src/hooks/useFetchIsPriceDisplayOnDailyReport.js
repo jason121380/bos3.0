@@ -17,11 +17,11 @@ export default function useFetchIsPriceDisplayOnDailyReportSetting() {
   })
 }
 export function useFetchIsPriceDisplayOnDailyReportSettingLazy() {
-  const [
-    fetchIsPriceDisplayOnDailyReportSettingLazy,
-    isPriceDisplayOnDailyReportSettingLazyData,
-  ] = useLazyQuery(GET_PRICE_DISPLAY_ON_DAILY_REPORT_DEFAULT, {
-    fetchPolicy: SETTINGS_FETCH_POLICY,
-  })
+  const [fetchIsPriceDisplayOnDailyReportSettingLazy, isPriceDisplayOnDailyReportSettingLazyData] = useLazyQuery(
+    GET_PRICE_DISPLAY_ON_DAILY_REPORT_DEFAULT,
+    {
+      fetchPolicy: SETTINGS_FETCH_POLICY,
+    }
+  )
   return { fetchIsPriceDisplayOnDailyReportSettingLazy, isPriceDisplayOnDailyReportSettingLazyData }
 }

@@ -25,7 +25,16 @@ jest.mock('lib/business-timezone', () => ({
 
 const ROLE = JSON.stringify([{ pageTitle: '櫃檯作業', authority: true, pageAuthority: [{ pageName: '打帳單', authority: true }] }])
 const fixtures = ({ pageAllowed = true, pinned = [], ...overrides } = {}) => ({
-  PROFILE: { me: { id: 'user-1', name: '店長小林', status: 'active', theme: null, avatar: null, merchantIdentity: { authorityName: '高階主管', authorityId: 'auth-1' } } },
+  PROFILE: {
+    me: {
+      id: 'user-1',
+      name: '店長小林',
+      status: 'active',
+      theme: null,
+      avatar: null,
+      merchantIdentity: { authorityName: '高階主管', authorityId: 'auth-1' },
+    },
+  },
   FETCH_PROFILE_IDENDITY: { me: { id: 'user-1', merchantIdentity: { authorityName: '高階主管', authorityId: 'auth-1' } } },
   FETCH_USER: { user: { id: 'user-1', name: '店長小林', pageAuthority: { authorityName: '高階主管', pageAuthority: [] }, theme: null } },
   GET_IS_MEMBERSHIP_CARD_ACTIVE: { getIsMemberShipCardActive: true },
@@ -120,7 +129,12 @@ describe('頁面權限檢查的參數', () => {
   it('個人頁帶 page=PROFILE 與分頁名稱', async () => {
     const { settle, calls } = setup({}, { route: '/profile/salary' })
     await settle()
-    expect(callsOf(calls, 'CHECK_PAGE_AUTHORITY')[0].variables.input).toEqual({ id: 'user-1', url: '/profile/salary', page: 'PROFILE', currentTab: 'salary' })
+    expect(callsOf(calls, 'CHECK_PAGE_AUTHORITY')[0].variables.input).toEqual({
+      id: 'user-1',
+      url: '/profile/salary',
+      page: 'PROFILE',
+      currentTab: 'salary',
+    })
   })
 
   it('個人頁的釘選分頁不檢查權限', async () => {
@@ -132,9 +146,7 @@ describe('頁面權限檢查的參數', () => {
   it('員工資料頁（/management/employee/<id>/<tab>）帶 page=EMPLOYEE 與分頁名稱；員工列表本身不帶', async () => {
     const { settle, calls } = setup({}, { route: '/management/employee/abc123/general' })
     await settle()
-    expect(callsOf(calls, 'CHECK_PAGE_AUTHORITY')[0].variables.input).toEqual(
-      expect.objectContaining({ page: 'EMPLOYEE', currentTab: 'general' })
-    )
+    expect(callsOf(calls, 'CHECK_PAGE_AUTHORITY')[0].variables.input).toEqual(expect.objectContaining({ page: 'EMPLOYEE', currentTab: 'general' }))
     act(() => {
       cleanup()
     })
@@ -256,7 +268,13 @@ describe('手機導覽（MobileNav）', () => {
   it('底部分頁列以釘選頁優先（沒有對應圖示的用星號），不足 4 個以預設頁補滿且不重複', async () => {
     const { settle } = setup({ pinned: ['店家日報表', '帳單列表'] })
     await settle()
-    await wait(() => expect(within(tabBar()).getAllByRole('link').map(a => a.textContent)).toEqual(['店家日報表', '帳單列表', '打帳單', '預約']))
+    await wait(() =>
+      expect(
+        within(tabBar())
+          .getAllByRole('link')
+          .map(a => a.textContent)
+      ).toEqual(['店家日報表', '帳單列表', '打帳單', '預約'])
+    )
   })
 
   it('站內換頁（push）到非分頁的頁面時出現返回鈕；返回後消失；replace 不增加返回深度', async () => {

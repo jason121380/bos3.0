@@ -15,13 +15,12 @@ function Results({ className, merchantVendor, merchantVendorList, ...rest }) {
   const { deleteMerchantVendor } = useFetchSetDeleteMerchantVendor()
 
   const handleSelectAll = event => {
-    const newSelectedPayment = event.target.checked
-      ? merchantVendor.map(payment => payment.uuid)
-      : []
+    const newSelectedPayment = event.target.checked ? merchantVendor.map(payment => payment.uuid) : []
     setSelectedVendor(newSelectedPayment)
   }
   const handleSelectOne = id => {
-    const newSelect = [...selectedVendor], index = newSelect.indexOf(id)
+    const newSelect = [...selectedVendor],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -33,16 +32,18 @@ function Results({ className, merchantVendor, merchantVendorList, ...rest }) {
   const handleDelete = () => {
     deleteMerchantVendor({
       merchantVendorUUIds: selectedVendor,
-    }).then(res => {
-      if (res.data.deleteMerchantVendor) {
-        openSnackbar({ message: '刪除成功', variant: 'success' })
-        merchantVendorList.refetch()
-      } else {
-        openSnackbar({ message: '刪除失敗', variant: 'error' })
-      }
-    }).catch(error => {
-      openSnackbar({ message: error.message, variant: 'error' })
     })
+      .then(res => {
+        if (res.data.deleteMerchantVendor) {
+          openSnackbar({ message: '刪除成功', variant: 'success' })
+          merchantVendorList.refetch()
+        } else {
+          openSnackbar({ message: '刪除失敗', variant: 'error' })
+        }
+      })
+      .catch(error => {
+        openSnackbar({ message: error.message, variant: 'error' })
+      })
   }
   return (
     <div {...rest}>
@@ -50,9 +51,7 @@ function Results({ className, merchantVendor, merchantVendorList, ...rest }) {
         <CardHeader className="pb-4">
           <div className="flex items-baseline gap-3">
             <CardTitle>所有廠商</CardTitle>
-            <span className="text-label tabular-nums text-text-secondary">
-              共 {merchantVendor.length} 筆資料
-            </span>
+            <span className="text-label tabular-nums text-text-secondary">共 {merchantVendor.length} 筆資料</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -62,13 +61,8 @@ function Results({ className, merchantVendor, merchantVendorList, ...rest }) {
                 <TableHead className="w-[50px]">
                   <Checkbox
                     aria-label="全選"
-                    checked={
-                      selectedVendor.length === merchantVendor.length && merchantVendor.length > 0
-                    }
-                    indeterminate={
-                      selectedVendor.length > 0 &&
-                      selectedVendor.length < merchantVendor.length
-                    }
+                    checked={selectedVendor.length === merchantVendor.length && merchantVendor.length > 0}
+                    indeterminate={selectedVendor.length > 0 && selectedVendor.length < merchantVendor.length}
                     onChange={handleSelectAll}
                   />
                 </TableHead>
@@ -81,10 +75,7 @@ function Results({ className, merchantVendor, merchantVendorList, ...rest }) {
             </TableHeader>
             <TableBody>
               {merchantVendor.map(data => (
-                <TableRow
-                  key={data.uuid}
-                  data-state={selectedVendor.indexOf(data.uuid) > -1 ? 'selected' : undefined}
-                >
+                <TableRow key={data.uuid} data-state={selectedVendor.indexOf(data.uuid) > -1 ? 'selected' : undefined}>
                   <TableCell className="w-[50px]">
                     <Checkbox
                       aria-label={`選取 ${data.name}`}
@@ -98,10 +89,7 @@ function Results({ className, merchantVendor, merchantVendorList, ...rest }) {
                   <TableCell>{data.remark}</TableCell>
                   <TableCell className="w-[60px] text-right">
                     <Button asChild variant="ghost" size="icon" className="text-text-secondary">
-                      <RouterLink
-                        aria-label="編輯廠商"
-                        to={`/merchant-vendor/edit/${data.uuid}`}
-                      >
+                      <RouterLink aria-label="編輯廠商" to={`/merchant-vendor/edit/${data.uuid}`}>
                         <Pencil strokeWidth={1.75} />
                       </RouterLink>
                     </Button>

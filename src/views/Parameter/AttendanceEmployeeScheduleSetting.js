@@ -2,9 +2,7 @@ import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 
-function AttendanceEmployeeScheduleSetting({
-  className, UESUsing, setUESUsing, inputEnable
-}) {
+function AttendanceEmployeeScheduleSetting({ className, UESUsing, setUESUsing, inputEnable }) {
   return (
     <Card>
       <CardHeader>

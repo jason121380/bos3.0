@@ -15,17 +15,7 @@ import { Checkbox } from 'ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import { maskCustomerName, maskCellphone } from 'helper/exportCustomerMask'
 
-
-function Results({
-  orders,
-  pageSetting,
-  refetch,
-  checkInDisplay,
-  bookingCusCheck,
-  delOrderPassUsing,
-  isCustomerDataMarked,
-  ...rest
-}) {
+function Results({ orders, pageSetting, refetch, checkInDisplay, bookingCusCheck, delOrderPassUsing, isCustomerDataMarked, ...rest }) {
   const { deleteOrders } = useFetchDeleteOrder()
   const [selectedOrders, setSelectedOrders] = useState([])
   // 勾選狀態查詢用 Set（每列查兩次，避免 indexOf 逐筆掃描）；只換查詢方式，selectedOrders 的結構與 handler 不變
@@ -62,7 +52,7 @@ function Results({
   /**
    * 獲取所有未完成訂單的 ID
    */
-  const allIds = () => (orders.filter(({ isDone }) => !isDone).map(order => order.id))
+  const allIds = () => orders.filter(({ isDone }) => !isDone).map(order => order.id)
 
   /**
    * 處理全選邏輯
@@ -76,7 +66,8 @@ function Results({
    * 處理單選邏輯
    */
   const handleSelectOne = id => {
-    const newSelect = [...selectedOrders], index = newSelect.indexOf(id)
+    const newSelect = [...selectedOrders],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -117,14 +108,12 @@ function Results({
             : `${idx(order, _ => _.customer.name)}(${idx(order, _ => _.customer.cellphone)})`
           : '客資已刪除',
         '指定/不指定': order.isDesignate ? '指定' : '不指定',
-        設計師: order.designer ? order.designer.name ? idx(
-          order,
-          _ => _.designer.name + (_.designer.designerNo ? ' / ' + _.designer.designerNo : '')
-        ) : '無設計師' : '不指定設計師',
-        服務類別:
-          idx(order, _ => _.serviceCategory.name) !== null
-            ? idx(order, _ => _.serviceCategory.name)
-            : '',
+        設計師: order.designer
+          ? order.designer.name
+            ? idx(order, _ => _.designer.name + (_.designer.designerNo ? ' / ' + _.designer.designerNo : ''))
+            : '無設計師'
+          : '不指定設計師',
+        服務類別: idx(order, _ => _.serviceCategory.name) !== null ? idx(order, _ => _.serviceCategory.name) : '',
         來源: order.source || '',
         訂單狀態: order.status,
       }
@@ -132,11 +121,9 @@ function Results({
         data['報到狀態'] = checkinStatus(order.isCheckin)
       }
       excelData.push(data)
-
     })
     setExcelData(excelData)
   }, [orders, checkInDisplay, isCustomerDataMarked])
-
 
   return (
     // 舊版 ManagementTable（hidePagination）改為直接使用 ui/card＋ui/table；標題、筆數、CSV 匯出與欄位相同
@@ -155,9 +142,7 @@ function Results({
         >
           <div className="flex items-baseline gap-3">
             <CardTitle>預約管理列表</CardTitle>
-            <span className="text-label text-text-secondary tabular-nums">
-              共 {pageSetting.totalCount} 筆
-            </span>
+            <span className="text-label text-text-secondary tabular-nums">共 {pageSetting.totalCount} 筆</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -197,9 +182,7 @@ function Results({
                   </TableCell>
                   <TableCell>
                     <Button asChild size="sm" variant="secondary">
-                      <RouterLink
-                        to={`/order/${order.isDone ? order.createdOrderId : order.id}`}
-                      >
+                      <RouterLink to={`/order/${order.isDone ? order.createdOrderId : order.id}`}>
                         {order.isDone ? '查看帳單' : <>&emsp;修改&emsp;</>}
                       </RouterLink>
                     </Button>
@@ -207,34 +190,27 @@ function Results({
                   <TableCell>{order.status}</TableCell>
                   {checkInDisplay && <TableCell>{checkinStatus(order.isCheckin)}</TableCell>}
                   <TableCell className="tabular-nums">
-                    <div>
-                      {format(new Date(order.date), 'HH:mm')}
-                    </div>
-                    <div className="text-caption text-text-secondary">
-                      {format(new Date(order.date), 'yyyy/MM/dd')}
-                    </div>
+                    <div>{format(new Date(order.date), 'HH:mm')}</div>
+                    <div className="text-caption text-text-secondary">{format(new Date(order.date), 'yyyy/MM/dd')}</div>
                   </TableCell>
                   <TableCell>
-                    {
-                      idx(order, _ => _.customer.isAlive) ? (
-                        <>
-                          {idx(order, _ => _.customer.name)}
-                          <div className="text-caption tabular-nums text-text-secondary">
-                            {idx(order, _ => _.customer.cellphone)}
-                          </div>
-                        </>
-                      ) : '客資已刪除'
-                    }
+                    {idx(order, _ => _.customer.isAlive) ? (
+                      <>
+                        {idx(order, _ => _.customer.name)}
+                        <div className="text-caption tabular-nums text-text-secondary">{idx(order, _ => _.customer.cellphone)}</div>
+                      </>
+                    ) : (
+                      '客資已刪除'
+                    )}
                   </TableCell>
                   <TableCell>{order.isDesignate ? '指定' : '不指定'}</TableCell>
                   {bookingCusCheck && <TableCell>{order.isCusCheckRequired && '是'}</TableCell>}
                   <TableCell>
-                    {order.designer ? order.designer.name ? idx(
-                      order,
-                      _ =>
-                        _.designer.name +
-                        (_.designer.designerNo ? ' / ' + _.designer.designerNo : '')
-                    ) : '無設計師' : '不指定設計師'}
+                    {order.designer
+                      ? order.designer.name
+                        ? idx(order, _ => _.designer.name + (_.designer.designerNo ? ' / ' + _.designer.designerNo : ''))
+                        : '無設計師'
+                      : '不指定設計師'}
                   </TableCell>
                   <TableCell className="text-text-secondary">{order.source}</TableCell>
                 </TableRow>
@@ -246,8 +222,8 @@ function Results({
       <TableEditBar selected={selectedOrders} onCancel={delOrderPassUsing ? openPasswordModal : handleCancel} />
       <PasswordDialog
         open={dialogOpen}
-        title='刪除預約'
-        inputLabel='刪除預約密碼'
+        title="刪除預約"
+        inputLabel="刪除預約密碼"
         handleOnCancel={closePasswordModal}
         handleOnConfirm={handleCancel}
         isLoading={isClick}

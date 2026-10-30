@@ -249,9 +249,7 @@ const ROWS = [
       invoked: [
         {
           fn: 0,
-          calls: [
-            { operationName: 'FETCH_ATTENDANCE_RECORDS_EXCELV2_FOR_HR', variables: { input: { probe: 'input' } } },
-          ],
+          calls: [{ operationName: 'FETCH_ATTENDANCE_RECORDS_EXCELV2_FOR_HR', variables: { input: { probe: 'input' } } }],
         },
       ],
       shapeAfter: ['function', { loading: false, called: true, data: ['attendanceRecordsExcelV2ForHR'] }],
@@ -338,9 +336,7 @@ const ROWS = [
     expect: {
       initial: [],
       shape: ['function', { loading: false, called: false }],
-      invoked: [
-        { fn: 0, calls: [{ operationName: 'CHECK_IS_CUSTOMER_EXIST', variables: { input: { probe: 'input' } } }] },
-      ],
+      invoked: [{ fn: 0, calls: [{ operationName: 'CHECK_IS_CUSTOMER_EXIST', variables: { input: { probe: 'input' } } }] }],
       shapeAfter: ['function', { loading: false, called: true, data: ['checkIsCustomerExistForOuterStore'] }],
       policies: { CHECK_IS_CUSTOMER_EXIST: 'cache-and-network' },
     },
@@ -542,7 +538,10 @@ const ROWS = [
     id: 'useFetchCreateOrder',
     hook: useFetchCreateOrder.default,
     args: [],
-    invoke: [{ fn: 'createOrder', args: [{ probe: 'input' }] }, { fn: 'checkOrder', args: [{ probe: 'input' }] }],
+    invoke: [
+      { fn: 'createOrder', args: [{ probe: 'input' }] },
+      { fn: 'checkOrder', args: [{ probe: 'input' }] },
+    ],
     expect: {
       initial: [],
       shape: { createOrder: 'function', checkOrder: 'function' },
@@ -846,9 +845,7 @@ const ROWS = [
     hook: useFetchCustomers.default,
     args: [{ restProbe: 'rest-v' }],
     expect: {
-      initial: [
-        { operationName: 'FETCH_CUSTOMERS', variables: { input: { restProbe: 'rest-v', merchantId: 'merchant-1' } } },
-      ],
+      initial: [{ operationName: 'FETCH_CUSTOMERS', variables: { input: { restProbe: 'rest-v', merchantId: 'merchant-1' } } }],
       shape: { loading: false, called: true, data: ['customers'] },
       policies: { FETCH_CUSTOMERS: 'cache-and-network' },
     },
@@ -1032,9 +1029,7 @@ const ROWS = [
       invoked: [
         {
           fn: 'deleteAttendantRecord',
-          calls: [
-            { operationName: 'deleteAttendantRecord', variables: { clockInScheduleUUId: 'clockInScheduleUUId-v' } },
-          ],
+          calls: [{ operationName: 'deleteAttendantRecord', variables: { clockInScheduleUUId: 'clockInScheduleUUId-v' } }],
           resolved: ['deleteAttendantRecord'],
         },
       ],
@@ -1088,9 +1083,7 @@ const ROWS = [
       invoked: [
         {
           fn: 'deleteCustomers',
-          calls: [
-            { operationName: 'DELETE_CUSTOMERS', variables: { customerIds: ['customerIds-1'], password: 'password-v' } },
-          ],
+          calls: [{ operationName: 'DELETE_CUSTOMERS', variables: { customerIds: ['customerIds-1'], password: 'password-v' } }],
           resolved: ['deleteCustomer'],
         },
       ],
@@ -1435,9 +1428,7 @@ const ROWS = [
     hook: useFetchDesignerDailyReport.default,
     args: [{ date: 'date-v', designerIds: ['designerIds-1'] }],
     expect: {
-      initial: [
-        { operationName: 'FETCH_DESIGNER_DAILY_REPORT', variables: { date: 'date-v', designerIds: ['designerIds-1'] } },
-      ],
+      initial: [{ operationName: 'FETCH_DESIGNER_DAILY_REPORT', variables: { date: 'date-v', designerIds: ['designerIds-1'] } }],
       shape: { loading: false, called: true, data: ['designerDailyReport'] },
       policies: { FETCH_DESIGNER_DAILY_REPORT: 'cache-and-network' },
     },
@@ -1447,9 +1438,7 @@ const ROWS = [
     id: 'useFetchDesignerDailyReport.useFetchDesignerReportLazy',
     hook: useFetchDesignerDailyReport.useFetchDesignerReportLazy,
     args: [],
-    invoke: [
-      { fn: 'fetchDesignerReportLazy', args: [{ variables: { date: 'date-v', designerIds: ['designerIds-1'] } }] },
-    ],
+    invoke: [{ fn: 'fetchDesignerReportLazy', args: [{ variables: { date: 'date-v', designerIds: ['designerIds-1'] } }] }],
     expect: {
       initial: [],
       shape: { fetchDesignerReportLazy: 'function', designerReportLazyData: { loading: false, called: false } },

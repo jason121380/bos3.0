@@ -3,15 +3,22 @@ import { TextField, InputAdornment } from 'ui/text-field'
 import MerchantListAutocompleteForPinnedTable from 'components/MerchantListAutocompleteForPinnedTable'
 import useFetchSetPinnedTable from 'hooks/useFetchSetPinnedTable'
 import { TreeView, TreeItem } from 'ui/tree'
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { ArticleOutlined as ArticleOutlinedIcon, DescriptionOutlined as DescriptionOutlinedIcon, ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import {
+  ArticleOutlined as ArticleOutlinedIcon,
+  DescriptionOutlined as DescriptionOutlinedIcon,
+  ExpandMore as ExpandMoreIcon,
+  ChevronRight as ChevronRightIcon,
+  SearchRounded as SearchRoundedIcon,
+  ClearRounded as ClearRoundedIcon,
+} from 'ui/icons'
 import { useDispatch } from 'react-redux'
 import { pinnedTableActions } from './../../store/pinnedTable'
 import { useState, useEffect } from 'react'
 import pageData from 'helper/pageData'
-import cloneDeep from 'lodash/cloneDeep';
-import { openSnackbar } from 'elements/snackbars';
-import produce from 'immer';
+import cloneDeep from 'lodash/cloneDeep'
+import { openSnackbar } from 'elements/snackbars'
+import produce from 'immer'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
@@ -46,10 +53,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
       const title = data.pageTitle === '預約管理' ? '預約管理-title' : data.pageTitle
       allNodeIds.push(title)
       return (
-        <div
-          key={`${title}-${index}`}
-          style={{ display: 'flex', alignItems: 'flex-start' }}
-        >
+        <div key={`${title}-${index}`} style={{ display: 'flex', alignItems: 'flex-start' }}>
           <Checkbox
             checked={isCheckedOrIndeterminat(data, 'checked?')}
             indeterminate={isCheckedOrIndeterminat(data, 'indeterminate?')}
@@ -61,7 +65,12 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
             groupClassName={ulGroupAllMerchantClass}
             nodeId={title}
             disabled={isClick}
-            label={<span id={title} className={spanClass}><ArticleOutlinedIcon />{data.pageTitle}</span>}
+            label={
+              <span id={title} className={spanClass}>
+                <ArticleOutlinedIcon />
+                {data.pageTitle}
+              </span>
+            }
           >
             {data.pageAuthority.length ? renderItem(data.pageAuthority) : ''}
           </TreeItem>
@@ -79,7 +88,12 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
         selected={!!isSelect(pageName)}
         nodeId={pageName}
         disabled={isClick}
-        label={<span className={spanClass}><DescriptionOutlinedIcon />{pageName}</span>}
+        label={
+          <span className={spanClass}>
+            <DescriptionOutlinedIcon />
+            {pageName}
+          </span>
+        }
       />
     ))
   }
@@ -173,7 +187,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
     setExpandedArr([...newArr])
   }
 
-  const onDragEnd = (event) => {
+  const onDragEnd = event => {
     const { source, destination } = event
     if (!destination) {
       return
@@ -182,14 +196,14 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
     const [remove] = newItems.splice(source.index, 1)
     newItems.splice(destination.index, 0, remove)
     handleSetValue('pages', newItems)
-  };
+  }
 
   const handleSetData = async () => {
     setIsClick(true)
 
     const inputValue = {
       otherAppliedStoreIds: submitValue.stores,
-      pinnedTables: []
+      pinnedTables: [],
     }
     submitValue.pages.forEach(title => {
       const findData = pageData.find(d => title === d.title)
@@ -203,7 +217,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
       if (res.data.setPinnedTable) {
         openSnackbar({
           variant: 'success',
-          message: '設定成功'
+          message: '設定成功',
         })
         const pages = []
         inputValue.pinnedTables.forEach(({ name }) => {
@@ -216,14 +230,13 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
       } else {
         openSnackbar({
           variant: 'warning',
-          message: '設定失敗'
+          message: '設定失敗',
         })
       }
-      
     } catch (error) {
       openSnackbar({
         variant: 'error',
-        message: error.message
+        message: error.message,
       })
     } finally {
       setIsClick(false)
@@ -232,8 +245,8 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
 
   useEffect(() => {
     if (!searchText) {
-      setFiltIds([]);
-      return;
+      setFiltIds([])
+      return
     }
 
     const allPage = []
@@ -241,12 +254,10 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
       allPage.push(...pageAuthority.map(d => d.pageName))
     })
 
-    const filterMerchantsId = allPage.filter(
-      d => d.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setFiltIds(filterMerchantsId);
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [searchText] 變動時執行；pages 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
-  }, [searchText]);
+    const filterMerchantsId = allPage.filter(d => d.toLowerCase().includes(searchText.toLowerCase()))
+    setFiltIds(filterMerchantsId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [searchText] 變動時執行；pages 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+  }, [searchText])
 
   return (
     <>
@@ -273,7 +284,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
                     variant="standard"
                     fullWidth
                     size="small"
-                    onChange={(e) => setSearchText(e.target.value)}
+                    onChange={e => setSearchText(e.target.value)}
                     value={searchText}
                     style={{ width: 150 }}
                     disabled={isClick}
@@ -284,12 +295,25 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
                         </InputAdornment>
                       ),
                       endAdornment: searchText && (
-                        <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="清除搜尋文字" title="清除搜尋文字" onClick={() => setSearchText("")}><ClearRoundedIcon /></Button>
-                      )
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          aria-label="清除搜尋文字"
+                          title="清除搜尋文字"
+                          onClick={() => setSearchText('')}
+                        >
+                          <ClearRoundedIcon />
+                        </Button>
+                      ),
                     }}
                   />
-                  <Button size="sm" variant="secondary" disabled={isClick} onClick={() => handleSetValue('pages', [])}>清除選取</Button>
-                  <Button size="sm" variant="secondary" disabled={isClick} onClick={handleExpanedAll}>展開全部</Button>
+                  <Button size="sm" variant="secondary" disabled={isClick} onClick={() => handleSetValue('pages', [])}>
+                    清除選取
+                  </Button>
+                  <Button size="sm" variant="secondary" disabled={isClick} onClick={handleExpanedAll}>
+                    展開全部
+                  </Button>
                 </div>
               }
             >
@@ -310,18 +334,17 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
                   >
                     {pages.length ? renderGroup(pages) : ''}
                   </TreeView>
-
                 </div>
                 <div className="flex h-full flex-col">
                   <div className="mb-3 text-label text-text-secondary">拖動按鈕調整排序</div>
                   <div className="flex-grow overflow-y-auto overflow-x-hidden pr-3">
                     <DragDropContext onDragEnd={onDragEnd}>
                       <Droppable droppableId="drop-id">
-                        {(provided) => (
+                        {provided => (
                           <div className="flex flex-col gap-2" ref={provided.innerRef} {...provided.droppableProps}>
                             {submitValue.pages.map((name, i) => (
                               <Draggable draggableId={name} index={i} key={name}>
-                                {(provided) => (
+                                {provided => (
                                   <div
                                     className="break-all rounded-md border border-solid border-border bg-background px-4 py-2 text-body font-medium text-text"
                                     {...provided.draggableProps}
@@ -340,22 +363,16 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
                     </DragDropContext>
                   </div>
                 </div>
-
               </div>
             </CardContent>
             <CardFooter>
-              <Button
-                variant="primary"
-                onClick={handleSetData}
-              >
+              <Button variant="primary" onClick={handleSetData}>
                 儲存變更
               </Button>
             </CardFooter>
           </Card>
-
         </>
       )}
-
     </>
   )
 }

@@ -7,10 +7,7 @@
 // GraphQL 全由 testkit 的模擬 link 回應，不連後端、不建立真實帳單。
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { loginAs, callsOf } from '../../../__tests__/testkit.test'
-import {
-  setupQueue, loaded, baseQueue, retry, summaryValue, pickOption, inputOf,
-  ASSISTANT, CUSTOMER, OTHER_CUSTOMER, DATE,
-} from './queueKit.test'
+import { setupQueue, loaded, baseQueue, retry, summaryValue, pickOption, inputOf, ASSISTANT, CUSTOMER, OTHER_CUSTOMER, DATE } from './queueKit.test'
 
 jest.setTimeout(20000)
 
@@ -82,10 +79,9 @@ describe('重新開單：選顧客', () => {
     fireEvent.change(customerInput(), { target: { value: OTHER_CUSTOMER.cellphone } })
     fireEvent.keyDown(customerInput(), { key: 'Enter', keyCode: 13 })
     // 清單查詢延遲 800ms 才以新關鍵字送出
-    await wait(
-      () => expect(callsOf(page.calls, 'FETCH_CUSTOMERS_IN_AUTO_COMPLETE').pop().variables.input.keyword).toBe(OTHER_CUSTOMER.cellphone),
-      { timeout: 3000 }
-    )
+    await wait(() => expect(callsOf(page.calls, 'FETCH_CUSTOMERS_IN_AUTO_COMPLETE').pop().variables.input.keyword).toBe(OTHER_CUSTOMER.cellphone), {
+      timeout: 3000,
+    })
     await wait(() => expect(customerInput()).toHaveValue('林先生/0922333444/C02'))
     const input = await retry(page.calls)
     expect(input.customerId).toBe(OTHER_CUSTOMER.id)

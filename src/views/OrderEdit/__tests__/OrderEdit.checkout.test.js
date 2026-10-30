@@ -14,8 +14,25 @@ import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react
 import { openSnackbar } from 'elements/snackbars'
 import { callsOf, currentLocation } from '../../../__tests__/testkit.test'
 import {
-  setup, pageReady, makeOrder, makeFullOrder, withCustomer, checkoutAndGetInput, summaryValue, button, loginForTest,
-  DESIGNER, ASSISTANT, CUSTOMER, SERVICE, LOCKED_SERVICE, PRODUCT, TICKET, MEMBERSHIP, TICKET_RECORD, CUSTOMER_DETAIL,
+  setup,
+  pageReady,
+  makeOrder,
+  makeFullOrder,
+  withCustomer,
+  checkoutAndGetInput,
+  summaryValue,
+  button,
+  loginForTest,
+  DESIGNER,
+  ASSISTANT,
+  CUSTOMER,
+  SERVICE,
+  LOCKED_SERVICE,
+  PRODUCT,
+  TICKET,
+  MEMBERSHIP,
+  TICKET_RECORD,
+  CUSTOMER_DETAIL,
   pickEmployee,
   statusEl,
 } from './orderEditKit.test'
@@ -39,8 +56,7 @@ const fullOrderFixtures = (overrides = {}) => ({
   ...overrides,
 })
 
-const errorShown = message =>
-  wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message, variant: 'error' })))
+const errorShown = message => wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message, variant: 'error' })))
 
 describe('帳單詳細：完整帳單的金額彙總與重新結帳', () => {
   it('各項消費、付款與合計照原帳單計算', async () => {
@@ -65,9 +81,11 @@ describe('帳單詳細：完整帳單的金額彙總與重新結帳', () => {
   // 現金應收照舊不含這張會員卡（不由店家收款）。
   it('會員卡用第三方卡券：業績合計計入售價全額，現金應收不含這張會員卡', async () => {
     const full = makeFullOrder()
-    const page = setup(fullOrderFixtures({
-      order: makeFullOrder({ membershipOrders: [{ ...full.membershipOrders[0], thirdPartyPayId: 'tp-1' }] }),
-    }))
+    const page = setup(
+      fullOrderFixtures({
+        order: makeFullOrder({ membershipOrders: [{ ...full.membershipOrders[0], thirdPartyPayId: 'tp-1' }] }),
+      })
+    )
     await pageReady(page)
     await wait(() => expect(summaryValue('使用預收卡')).toHaveTextContent('600'))
     expect(summaryValue('會員卡販賣')).toHaveTextContent('3,000')
@@ -113,9 +131,7 @@ describe('帳單詳細：完整帳單的金額彙總與重新結帳', () => {
       expect.objectContaining({ serviceId: TICKET.id, price: 6000, count: 1, availableCount: 10, remark: '週年慶' }),
     ])
     expect(input.useTicketOrders).toEqual([expect.objectContaining({ customerTicketId: TICKET_RECORD.id })])
-    expect(input.membershipOrders).toEqual([
-      expect.objectContaining({ membershipUUID: MEMBERSHIP.uuid, sellerId: DESIGNER.userId, price: 3000 }),
-    ])
+    expect(input.membershipOrders).toEqual([expect.objectContaining({ membershipUUID: MEMBERSHIP.uuid, sellerId: DESIGNER.userId, price: 3000 })])
   })
 })
 
@@ -138,9 +154,7 @@ describe('帳單詳細：送出後回到哪一頁', () => {
     const page = setup({}, { route: '/order/order-1?startDate=1760000000000xyz&endDate=1760086400000' })
     await pageReady(page)
     await checkoutAndGetInput(page.calls)
-    await wait(() =>
-      expect(currentLocation()).toBe('/management/orders?startDate=1760000000000&endDate=1760086400000')
-    )
+    await wait(() => expect(currentLocation()).toBe('/management/orders?startDate=1760000000000&endDate=1760086400000'))
   })
 
   it('有預約的帳單掛單成功回掛單列表', async () => {
@@ -425,8 +439,13 @@ describe('帳單詳細：其他載入與金額情況', () => {
 
   it('清掉店販的商品欄（服務人員還在）：店販消費以 0 計、不會變成 NaN；結帳時提示缺商品', async () => {
     const product = (id, count) => ({
-      id: `po-${id}`, name: PRODUCT.name, count, price: 1200, thirdPartyPayId: null,
-      seller: { id: DESIGNER.userId }, product: { id: PRODUCT.id, no: PRODUCT.no, name: PRODUCT.name, isLocked: 'FALSE' },
+      id: `po-${id}`,
+      name: PRODUCT.name,
+      count,
+      price: 1200,
+      thirdPartyPayId: null,
+      seller: { id: DESIGNER.userId },
+      product: { id: PRODUCT.id, no: PRODUCT.no, name: PRODUCT.name, isLocked: 'FALSE' },
     })
     for (const rows of [[product('a', 1)], [product('a', 1), product('b', 2)]]) {
       const page = setup({ order: makeOrder({ productOrders: rows }) })
@@ -445,8 +464,12 @@ describe('帳單詳細：其他載入與金額情況', () => {
   it('用了兩張預收卡：使用預收卡金額為兩張合計', async () => {
     const second = { ...TICKET_RECORD, id: 'record-2', price: 450 }
     const usage = record => ({
-      id: record.id, name: record.name, price: record.price, pricePerCount: record.price,
-      service: { id: TICKET.id, no: TICKET.no, name: TICKET.name, price: 6000 }, helperList: [],
+      id: record.id,
+      name: record.name,
+      price: record.price,
+      pricePerCount: record.price,
+      service: { id: TICKET.id, no: TICKET.no, name: TICKET.name, price: 6000 },
+      helperList: [],
     })
     const page = setup({
       order: withCustomer({ useTicketOrders: [usage(TICKET_RECORD), usage(second)] }),

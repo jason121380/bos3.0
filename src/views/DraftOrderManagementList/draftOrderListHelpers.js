@@ -5,7 +5,8 @@ import { cn } from 'ui/utils'
 // - sm 以上兩欄都固定：操作欄寬固定 188px（勾選 16＋間距 4＋四顆 32px 圖示鈕與間距＋左右 12px 內距），帳單編號欄接在 left-[188px]
 // - 手機（< 640px）可視寬度約 320px，兩欄合計超過一半，只固定帳單編號欄（操作欄隨內容捲走，捲回最左即可操作）
 // 底色跟著列：一般 surface（卡片底），hover／勾選時 surface-hover；右緣 1px 分隔線
-const STICKY_BASE = 'bg-surface group-hover:bg-surface-hover group-data-[state=selected]:bg-surface-hover print:static print:bg-transparent print:shadow-none'
+const STICKY_BASE =
+  'bg-surface group-hover:bg-surface-hover group-data-[state=selected]:bg-surface-hover print:static print:bg-transparent print:shadow-none'
 const STICKY_ACTION = 'sm:sticky sm:left-0 sm:w-[188px] sm:min-w-[188px]'
 const STICKY_NO = 'sticky left-0 sm:left-[188px] shadow-[1px_0_0_rgb(var(--border))]'
 export const STICKY_ACTION_HEAD = cn('w-[160px]', STICKY_ACTION, 'z-[3] bg-surface print:static print:bg-transparent')
@@ -36,7 +37,7 @@ export const weekDisplay = week => {
 }
 
 // 第三方卡券名稱（原為元件內的同名函式；只讀傳入的 order）
-export const serviceOrders = (order) => {
+export const serviceOrders = order => {
   const arr = []
   let returnString = ''
 
@@ -54,7 +55,7 @@ export const serviceOrders = (order) => {
   })
   return returnString
 }
-export const productOrders = (order) => {
+export const productOrders = order => {
   const arr = []
   let returnString = ''
 
@@ -72,7 +73,7 @@ export const productOrders = (order) => {
   })
   return returnString
 }
-export const membershipOrders = (order) => {
+export const membershipOrders = order => {
   const arr = []
   let returnString = ''
 
@@ -90,7 +91,7 @@ export const membershipOrders = (order) => {
   })
   return returnString
 }
-export const thirdParty = (order) => {
+export const thirdParty = order => {
   const arr = []
   let returnString = ''
 

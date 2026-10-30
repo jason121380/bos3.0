@@ -13,12 +13,7 @@ function AboutEmployee({ className, employee, onChange, service, setEmployee, ..
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <Field label="姓氏" htmlFor="employee-create-lastName">
-          <Input
-            id="employee-create-lastName"
-            name="lastName"
-            value={employee.lastName}
-            onChange={event => onChange({ event, key: 'lastName' })}
-          />
+          <Input id="employee-create-lastName" name="lastName" value={employee.lastName} onChange={event => onChange({ event, key: 'lastName' })} />
         </Field>
         <Field label="名字" htmlFor="employee-create-firstName">
           <Input
@@ -46,7 +41,7 @@ function AboutEmployee({ className, employee, onChange, service, setEmployee, ..
             placeholder="請選擇…"
             label="人員身分類別設定"
           >
-            <NativeSelectOption value='未設定' key={null}>
+            <NativeSelectOption value="未設定" key={null}>
               未設定
             </NativeSelectOption>
             {service.map((data, idx) => (

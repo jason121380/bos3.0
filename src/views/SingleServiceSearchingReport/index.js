@@ -24,7 +24,6 @@ import QueryFailed from 'components/QueryFailed'
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
 
-
 const performanceEnum = [
   { label: '全店', value: 'ALL' },
   { label: '設計師', value: 'BYDESIGNER' },
@@ -35,9 +34,9 @@ const DesignerPerformBasic = () => {
   const [inputData, setInputData] = useState({
     dateRange: {
       startDate: startOfMonth(new Date()).getTime(),
-      endDate: endOfDay(new Date()).getTime()
+      endDate: endOfDay(new Date()).getTime(),
     },
-    serviceIds: []
+    serviceIds: [],
   })
   const [tmpService, setTmpService] = useState([])
   const [getServiceItem, serviceItemData] = useFetchGetSingleServiceItemV2()
@@ -52,9 +51,9 @@ const DesignerPerformBasic = () => {
       variables: {
         input: {
           dateRange: inputData.dateRange,
-          serviceIds: inputData.serviceIds.map(d => d.value)
-        }
-      }
+          serviceIds: inputData.serviceIds.map(d => d.value),
+        },
+      },
     })
   }
 
@@ -73,12 +72,12 @@ const DesignerPerformBasic = () => {
       link.href = url
       link.click()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [singleServiceReportExcelData.loading])
 
   useEffect(() => {
     inputData.serviceIds.length && handleDoSearch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [inputData.dateRange] 變動時執行；handleDoSearch、inputData.serviceIds.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [inputData.dateRange] 變動時執行；handleDoSearch、inputData.serviceIds.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [inputData.dateRange])
 
   useEffect(() => {
@@ -123,29 +122,34 @@ const DesignerPerformBasic = () => {
       })
       setTmpService(tmpServiceData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [services.loading, ticket.loading])
 
   return (
     <Page className="ui-root" title="單一服務項目查詢">
       <div>
         <PageHeader
-          title='單一服務項目查詢'
+          title="單一服務項目查詢"
           actions={
             <>
               <Button
                 variant="secondary"
                 disabled={singleServiceReportExcelData.loading}
-                onClick={() => singleServiceReportExcel({
-                  variables: {
-                    input: {
-                      dateRange: inputData.dateRange,
-                      serviceIds: inputData.serviceIds.map(d => d.value)
+                onClick={() =>
+                  singleServiceReportExcel({
+                    variables: {
+                      input: {
+                        dateRange: inputData.dateRange,
+                        serviceIds: inputData.serviceIds.map(d => d.value),
+                      },
+                      sortBy: sort,
                     },
-                    sortBy: sort
-                  }
-                })}
-              ><Download strokeWidth={1.75} />報表匯出</Button>
+                  })
+                }
+              >
+                <Download strokeWidth={1.75} />
+                報表匯出
+              </Button>
             </>
           }
         />
@@ -192,28 +196,17 @@ const DesignerPerformBasic = () => {
                   fullWidth
                   renderOption={(props, option, { selected }) => (
                     <li {...props}>
-                      <Checkbox
-                        style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                        icon={icon}
-                        checkedIcon={checkedIcon}
-                        checked={selected}
-                      />
+                      <Checkbox style={{ color: 'rgb(var(--text))', marginRight: 8 }} icon={icon} checkedIcon={checkedIcon} checked={selected} />
                       {option.label}
                     </li>
                   )}
-                  renderInput={params => (
-                    <TextField {...params} variant="outlined" label="服務項目" placeholder="服務" />
-                  )}
+                  renderInput={params => <TextField {...params} variant="outlined" label="服務項目" placeholder="服務" />}
                 />
               </div>
             </>
           }
           actions={
-            <Button
-              variant="primary"
-              onClick={handleDoSearch}
-              className="w-[100px] shrink-0"
-            >
+            <Button variant="primary" onClick={handleDoSearch} className="w-[100px] shrink-0">
               搜尋
             </Button>
           }
@@ -221,11 +214,7 @@ const DesignerPerformBasic = () => {
         {serviceItemData.error ? (
           <QueryFailed onRetry={() => serviceItemData.refetch()} />
         ) : !serviceItemData.loading ? (
-          <Results
-            reportData={reportData}
-            inputData={inputData}
-            sort={sort}
-          />
+          <Results reportData={reportData} inputData={inputData} sort={sort} />
         ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示
           <div aria-busy="true" aria-label="載入中">

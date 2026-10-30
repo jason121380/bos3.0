@@ -9,14 +9,9 @@ export const PROD_ORIGIN = 'https://beautyos-api-prod-htlfg34mhq-de.a.run.app'
 export const TEST_ORIGIN = 'https://crt-test-htlfg34mhq-de.a.run.app'
 
 // 只有這些前端網域在「沒設 REACT_APP_API_URL」時可以連正式 API。新的正式網域要加進來，或在建置時設環境變數。
-const PRODUCTION_HOSTS = new Set([
-  'bos.lure.com.tw',
-  'www.bos.lure.com.tw',
-  'app.beautyos.co',
-])
+const PRODUCTION_HOSTS = new Set(['bos.lure.com.tw', 'www.bos.lure.com.tw', 'app.beautyos.co'])
 
-export const IMPLICIT_API_NOTICE =
-  '未設定 REACT_APP_API_URL。此網址不是已核准的正式站，已改連測試環境，不會連正式 API。'
+export const IMPLICIT_API_NOTICE = '未設定 REACT_APP_API_URL。此網址不是已核准的正式站，已改連測試環境，不會連正式 API。'
 
 function currentHref() {
   return typeof window !== 'undefined' ? window.location.href : ''

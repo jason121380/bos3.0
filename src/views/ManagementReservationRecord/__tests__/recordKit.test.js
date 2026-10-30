@@ -92,12 +92,18 @@ export const NDS = base => ({
   calendar: [],
 })
 
-export const calendarResponse = (designers, nds) => ({ input: { dateRange: { startDate } } }) => ({
-  getMerchantDesignerCalendar: {
-    merchantDesignerCalendar: designers.map(d => (typeof d === 'function' ? d(startDate) : d)),
-    nonDesignateCalendar: typeof nds === 'function' ? nds(startDate) : nds,
-  },
-})
+export const calendarResponse =
+  (designers, nds) =>
+  ({
+    input: {
+      dateRange: { startDate },
+    },
+  }) => ({
+    getMerchantDesignerCalendar: {
+      merchantDesignerCalendar: designers.map(d => (typeof d === 'function' ? d(startDate) : d)),
+      nonDesignateCalendar: typeof nds === 'function' ? nds(startDate) : nds,
+    },
+  })
 
 export const settingsFixtures = ({
   nameType = 'NAME',
@@ -165,6 +171,9 @@ if (isMain) {
     const amy = AMY(DAY_START)
     expect(new Date(amy.calendar[0].startTime).getDate()).toBe(10)
     expect(amy.calendar[0].endTime - amy.calendar[0].startTime).toBe(2 * SLOT)
-    expect(calendarResponse([AMY], NDS)({ input: { dateRange: { startDate: DAY_START } } }).getMerchantDesignerCalendar.merchantDesignerCalendar[0].designerId).toBe('d-1')
+    expect(
+      calendarResponse([AMY], NDS)({ input: { dateRange: { startDate: DAY_START } } }).getMerchantDesignerCalendar.merchantDesignerCalendar[0]
+        .designerId
+    ).toBe('d-1')
   })
 }

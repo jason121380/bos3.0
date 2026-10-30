@@ -1,15 +1,15 @@
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { panelSummary } from 'views/OrderCreate/Panel/summary'
-import billContext from "context/keyInContext";
-import cloneDeep from "lodash/cloneDeep";
-import { useEffect, useContext, useState } from "react";
-import idx from "idx";
-import MemberShipCardSells from "./MemberShipCardSells";
+import billContext from 'context/keyInContext'
+import cloneDeep from 'lodash/cloneDeep'
+import { useEffect, useContext, useState } from 'react'
+import idx from 'idx'
+import MemberShipCardSells from './MemberShipCardSells'
 
 const PanelMemberShipCardSells = ({ thirdPartTicket }) => {
-  const { handleBillChange, order } = useContext(billContext);
-  const [sells, setSells] = useState([]);
-  const [expanded, setExpanded] = useState(false);
+  const { handleBillChange, order } = useContext(billContext)
+  const [sells, setSells] = useState([])
+  const [expanded, setExpanded] = useState(false)
   const [focusRow, setFocusRow] = useState(0)
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const PanelMemberShipCardSells = ({ thirdPartTicket }) => {
             thirdPartyCouponMerchantId: d.thirdPartyCouponMerchantId,
             remark: d.remark,
             purchaseDate: d.purchaseDate,
-            expiryDate: d.expiryDate
+            expiryDate: d.expiryDate,
           })
         )
       } else {
@@ -37,21 +37,17 @@ const PanelMemberShipCardSells = ({ thirdPartTicket }) => {
           remark: '',
         })
       }
-      if (
-        newSells.length > 0 &&
-        newSells[0].membershipUUID !== ""
-      ) {
-        setExpanded(true);
+      if (newSells.length > 0 && newSells[0].membershipUUID !== '') {
+        setExpanded(true)
       }
-      setSells(newSells);
+      setSells(newSells)
     }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-  }, [order.loading]);
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+  }, [order.loading])
 
   function handleClear({ index }) {
-    let newSells = cloneDeep(sells);
+    let newSells = cloneDeep(sells)
     if (newSells.length === 1) {
       newSells = [
         {
@@ -61,7 +57,7 @@ const PanelMemberShipCardSells = ({ thirdPartTicket }) => {
           thirdPartyCouponMerchantId: null,
           remark: '',
         },
-      ];
+      ]
     }
     newSells[index] = {
       ...newSells[index],
@@ -70,11 +66,11 @@ const PanelMemberShipCardSells = ({ thirdPartTicket }) => {
       price: 0,
       thirdPartyCouponMerchantId: null,
       remark: '',
-    };
+    }
 
-    setSells(newSells);
+    setSells(newSells)
     handleBillChange({
-      key: "membershipOrders",
+      key: 'membershipOrders',
       value: newSells
         .filter(d => d.membershipUUID && d.sellerId)
         .map(data => ({
@@ -85,7 +81,7 @@ const PanelMemberShipCardSells = ({ thirdPartTicket }) => {
           thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
           remark: data.remark,
         })),
-    });
+    })
   }
 
   function handleAddSells() {
@@ -148,15 +144,18 @@ const PanelMemberShipCardSells = ({ thirdPartTicket }) => {
         sellerId: data.sellerId,
         membershipUUID: data.membershipUUID,
         price: data.price,
-        expiryDate: data.expiryDate === 'Invalid Date' || data.expiryDate === "Early Date" || data.expiryDate === "Late Date" ? 'Invalid Date' : data.expiryDate,
+        expiryDate:
+          data.expiryDate === 'Invalid Date' || data.expiryDate === 'Early Date' || data.expiryDate === 'Late Date'
+            ? 'Invalid Date'
+            : data.expiryDate,
         thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
         remark: data.remark,
       })),
     })
   }
   const handleAccordionClick = () => {
-    setExpanded((val) => !val);
-  };
+    setExpanded(val => !val)
+  }
   const handleChangeFocusRow = index => {
     if (index < sells.length) {
       setFocusRow(index)
@@ -172,10 +171,13 @@ const PanelMemberShipCardSells = ({ thirdPartTicket }) => {
         data-testid="merchantSell"
         onClick={handleAccordionClick}
         // 收合時顯示「已填 N 筆 · 小計」（只讀畫面上的項目列，不參與計算或送出；比照打帳單）
-        summaryMeta={!expanded && panelSummary(
-          sells.filter(d => d.membershipUUID).length,
-          sells.filter(d => d.membershipUUID).reduce((total, d) => total + d.price, 0)
-        )}
+        summaryMeta={
+          !expanded &&
+          panelSummary(
+            sells.filter(d => d.membershipUUID).length,
+            sells.filter(d => d.membershipUUID).reduce((total, d) => total + d.price, 0)
+          )
+        }
         style={{ width: '100%' }}
       >
         <p className="m-0 !text-[16px] font-bold text-text">會員卡銷售</p>
@@ -206,6 +208,6 @@ const PanelMemberShipCardSells = ({ thirdPartTicket }) => {
         </div>
       </AccordionDetails>
     </Accordion>
-  );
-};
-export default PanelMemberShipCardSells;
+  )
+}
+export default PanelMemberShipCardSells

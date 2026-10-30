@@ -89,8 +89,7 @@ const orderSettingFixtures = (overrides = {}) => ({
 
 const CUSTOMER = { id: 'customer-1', name: '陳小姐', cellphone: '0912345678', no: 'C01' }
 
-const setup = (overrides, options) =>
-  renderPage(<OrderCreate />, { fixtures: orderSettingFixtures(overrides), route: '/order/create', ...options })
+const setup = (overrides, options) => renderPage(<OrderCreate />, { fixtures: orderSettingFixtures(overrides), route: '/order/create', ...options })
 
 const checkoutButton = () => screen.getByRole('button', { name: '結帳' })
 
@@ -160,15 +159,11 @@ describe('打帳單：結帳送出', () => {
     expect(input.designerId).toBe(DESIGNER.userId)
     expect(input.withoutCustomerData).toBe(true)
     expect(input.isDesignate).toBe(true)
-    expect(input.serviceOrders).toEqual([
-      expect.objectContaining({ serviceId: SERVICE.id, price: 800 }),
-    ])
+    expect(input.serviceOrders).toEqual([expect.objectContaining({ serviceId: SERVICE.id, price: 800 })])
     expect(input.isPending).toBeUndefined()
     // 送出時帶前端產生的檢查碼，避免重複送出成立兩張帳單
     expect(typeof input.checkCodeFromFE).toBe('string')
-    await wait(() =>
-      expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '帳單新增成功', variant: 'success' }))
-    )
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '帳單新增成功', variant: 'success' })))
   })
 
   const selectCustomerDesignerService = async calls => {

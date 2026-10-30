@@ -24,9 +24,7 @@ const Table = React.forwardRef(({ className, wrapperClassName, dense = false, ..
 ))
 Table.displayName = 'Table'
 
-const TableHeader = React.forwardRef(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn('bg-transparent', className)} {...props} />
-))
+const TableHeader = React.forwardRef(({ className, ...props }, ref) => <thead ref={ref} className={cn('bg-transparent', className)} {...props} />)
 TableHeader.displayName = 'TableHeader'
 
 const TableBody = React.forwardRef(({ className, ...props }, ref) => (
@@ -42,7 +40,10 @@ TableFooter.displayName = 'TableFooter'
 const TableRow = React.forwardRef(({ className, ...props }, ref) => (
   <tr
     ref={ref}
-    className={cn('border-0 border-b border-solid border-border transition-colors hover:bg-surface-hover data-[state=selected]:bg-surface-hover', className)}
+    className={cn(
+      'border-0 border-b border-solid border-border transition-colors hover:bg-surface-hover data-[state=selected]:bg-surface-hover',
+      className
+    )}
     {...props}
   />
 ))
@@ -65,7 +66,11 @@ TableHead.displayName = 'TableHead'
 const TableCell = React.forwardRef(({ className, numeric, ...props }, ref) => (
   <td
     ref={ref}
-    className={cn('h-10 px-3 py-2 align-middle text-text [@media_screen_and_(max-width:639.95px)]:whitespace-nowrap', numeric && 'text-right tabular-nums', className)}
+    className={cn(
+      'h-10 px-3 py-2 align-middle text-text [@media_screen_and_(max-width:639.95px)]:whitespace-nowrap',
+      numeric && 'text-right tabular-nums',
+      className
+    )}
     {...props}
   />
 ))
@@ -109,10 +114,24 @@ const TablePagination = React.forwardRef(function TablePagination(
         {from}–{to} / 共 {count} 筆
       </span>
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="h-10 w-10 sm:h-8 sm:w-8" aria-label="上一頁" disabled={page <= 0} onClick={e => onPageChange(e, page - 1)}>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-10 w-10 sm:h-8 sm:w-8"
+          aria-label="上一頁"
+          disabled={page <= 0}
+          onClick={e => onPageChange(e, page - 1)}
+        >
           <ChevronLeft strokeWidth={1.75} />
         </Button>
-        <Button variant="ghost" size="icon" className="h-10 w-10 sm:h-8 sm:w-8" aria-label="下一頁" disabled={page >= lastPage} onClick={e => onPageChange(e, page + 1)}>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-10 w-10 sm:h-8 sm:w-8"
+          aria-label="下一頁"
+          disabled={page >= lastPage}
+          onClick={e => onPageChange(e, page + 1)}
+        >
           <ChevronRight strokeWidth={1.75} />
         </Button>
       </div>

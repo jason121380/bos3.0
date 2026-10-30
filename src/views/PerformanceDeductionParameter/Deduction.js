@@ -15,10 +15,7 @@ function Deduction({ className, deduction }) {
         <CardHeader
           action={
             <Button asChild variant="secondary" size="sm">
-              <RouterLink
-                to={'/deduction-setting'}
-                data-testid="parameter"
-              >
+              <RouterLink to={'/deduction-setting'} data-testid="parameter">
                 新增
               </RouterLink>
             </Button>
@@ -27,14 +24,7 @@ function Deduction({ className, deduction }) {
           <CardTitle>抽成方式設定</CardTitle>
         </CardHeader>
         <CardContent>
-          {!deduction.loading ? (
-            <DeductionResults
-              deduction={deduction}
-              deductionData={deductionData}
-            />
-            ) : (
-            <Skeleton className="h-24 w-full" />
-          )}
+          {!deduction.loading ? <DeductionResults deduction={deduction} deductionData={deductionData} /> : <Skeleton className="h-24 w-full" />}
         </CardContent>
       </Card>
     </Fragment>

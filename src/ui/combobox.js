@@ -144,10 +144,8 @@ const Autocomplete = React.forwardRef(function Autocomplete(
   const value = valueProp !== undefined ? valueProp : innerValue
   const selectedList = multiple ? (Array.isArray(value) ? value : []) : []
   const isSelected = option =>
-    multiple
-      ? selectedList.some(v => isOptionEqualToValue(option, v))
-      : value !== null && value !== undefined && isOptionEqualToValue(option, value)
-  const singleSelected = !multiple && value !== null && value !== undefined ? options.find(o => isOptionEqualToValue(o, value)) ?? value : null
+    multiple ? selectedList.some(v => isOptionEqualToValue(option, v)) : value !== null && value !== undefined && isOptionEqualToValue(option, value)
+  const singleSelected = !multiple && value !== null && value !== undefined ? (options.find(o => isOptionEqualToValue(o, value)) ?? value) : null
   const selectedLabel = multiple ? '' : labelOf(getOptionLabel, singleSelected)
 
   const [innerInput, setInnerInput] = React.useState(selectedLabel)
@@ -160,7 +158,7 @@ const Autocomplete = React.forwardRef(function Autocomplete(
   // 外部 value 改變（非輸入中）時，單選欄位顯示的文字跟著更新
   React.useEffect(() => {
     if (!multiple && !dirty && inputValueProp === undefined) setInnerInput(selectedLabel)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [selectedLabel] 變動時執行；dirty、inputValueProp、multiple 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [selectedLabel] 變動時執行；dirty、inputValueProp、multiple 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [selectedLabel])
 
   const filtered = filterOptions(options, { inputValue: dirty ? inputText : '', getOptionLabel: o => labelOf(getOptionLabel, o) })
@@ -176,7 +174,12 @@ const Autocomplete = React.forwardRef(function Autocomplete(
   const selectOption = (event, option) => {
     if (multiple) {
       const exists = selectedList.some(v => isOptionEqualToValue(option, v))
-      commit(event, exists ? selectedList.filter(v => !isOptionEqualToValue(option, v)) : [...selectedList, option], exists ? 'removeOption' : 'selectOption', { option })
+      commit(
+        event,
+        exists ? selectedList.filter(v => !isOptionEqualToValue(option, v)) : [...selectedList, option],
+        exists ? 'removeOption' : 'selectOption',
+        { option }
+      )
       setDirty(false)
       setInputText('', event, 'reset')
     } else {
@@ -221,7 +224,14 @@ const Autocomplete = React.forwardRef(function Autocomplete(
           return { ...changes, selectedItem: state.selectedItem, inputValue: state.inputValue }
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
-          return multiple || disableCloseOnSelect ? { ...changes, isOpen: disableCloseOnSelect ? true : changes.isOpen, highlightedIndex: state.highlightedIndex, inputValue: state.inputValue } : changes
+          return multiple || disableCloseOnSelect
+            ? {
+                ...changes,
+                isOpen: disableCloseOnSelect ? true : changes.isOpen,
+                highlightedIndex: state.highlightedIndex,
+                inputValue: state.inputValue,
+              }
+            : changes
         default:
           return changes
       }
@@ -253,7 +263,7 @@ const Autocomplete = React.forwardRef(function Autocomplete(
   }
   React.useEffect(() => () => clearTimeout(blurTimer.current), [])
 
-  const getBlurOption = () => autoSelect && highlightedIndex >= 0 ? filtered[highlightedIndex] : undefined
+  const getBlurOption = () => (autoSelect && highlightedIndex >= 0 ? filtered[highlightedIndex] : undefined)
   const finishBlur = (event, blurOption) => {
     if (inMenuInteraction()) {
       setFocused(false)
@@ -283,8 +293,14 @@ const Autocomplete = React.forwardRef(function Autocomplete(
       return
     }
     cancelPendingBlur()
-    if (event.relatedTarget && event.relatedTarget !== document.body && event.relatedTarget !== document &&
-        document.activeElement === document.body && inputEl.current && inputEl.current.closest('[role="dialog"]')) {
+    if (
+      event.relatedTarget &&
+      event.relatedTarget !== document.body &&
+      event.relatedTarget !== document &&
+      document.activeElement === document.body &&
+      inputEl.current &&
+      inputEl.current.closest('[role="dialog"]')
+    ) {
       // 滑鼠移焦時 activeElement 會短暫是 body；此時同步移除選項／圖層節點，
       // 會讓 Dialog 的 FocusScope MutationObserver 搶先聚焦容器，打斷按鈕聚焦。
       // 等下一個 task 才完成 blur，讓原生焦點先落定；同時阻止 downshift 提早關閉。
@@ -371,7 +387,18 @@ const Autocomplete = React.forwardRef(function Autocomplete(
   const endAdornment = (
     <span className="flex shrink-0 items-center gap-0.5">
       {showClear && (
-        <button type="button" tabIndex={-1} aria-label="清除" title="清除" className={cn(phoneIconHit, 'flex h-6 w-6 items-center justify-center rounded-full text-text-tertiary hover:bg-surface-hover hover:text-text', focusRing)} onMouseDown={clear}>
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-label="清除"
+          title="清除"
+          className={cn(
+            phoneIconHit,
+            'flex h-6 w-6 items-center justify-center rounded-full text-text-tertiary hover:bg-surface-hover hover:text-text',
+            focusRing
+          )}
+          onMouseDown={clear}
+        >
           <X className="h-4 w-4" strokeWidth={1.75} />
         </button>
       )}
@@ -394,7 +421,10 @@ const Autocomplete = React.forwardRef(function Autocomplete(
 
   const chips = multiple
     ? selectedList.map((item, index) => (
-        <span key={`${labelOf(getOptionLabel, item)}-${index}`} className="inline-flex h-6 max-w-full items-center gap-1 rounded-full bg-surface-hover pl-2.5 pr-1 text-label font-normal text-text">
+        <span
+          key={`${labelOf(getOptionLabel, item)}-${index}`}
+          className="inline-flex h-6 max-w-full items-center gap-1 rounded-full bg-surface-hover pl-2.5 pr-1 text-label font-normal text-text"
+        >
           <span className="truncate">{labelOf(getOptionLabel, item)}</span>
           {!readOnly && !disabled && (
             <button
@@ -405,7 +435,12 @@ const Autocomplete = React.forwardRef(function Autocomplete(
               className={cn(phoneIconHit, 'flex h-4 w-4 items-center justify-center rounded-full text-text-tertiary hover:text-text', focusRing)}
               onMouseDown={event => {
                 event.preventDefault()
-                commit(event, selectedList.filter((_, i) => i !== index), 'removeOption', { option: item })
+                commit(
+                  event,
+                  selectedList.filter((_, i) => i !== index),
+                  'removeOption',
+                  { option: item }
+                )
               }}
             >
               <X className="h-3 w-3" strokeWidth={2} />
@@ -429,10 +464,32 @@ const Autocomplete = React.forwardRef(function Autocomplete(
   fieldPropsRef.current = fp
   const InputProps = fp.InputProps || params.InputProps
   // placeholder 放在 InputProps 或 inputProps 時，MUI 都會傳到輸入框（InputBase）；這裡比照，避免掉到外框 div 上而看不到
-  const { ref: _anchorIgnored, className: inputPropsClassName, startAdornment, endAdornment: endNode, placeholder: rootPlaceholder, ...inputRootRest } = InputProps
+  const {
+    ref: _anchorIgnored,
+    className: inputPropsClassName,
+    startAdornment,
+    endAdornment: endNode,
+    placeholder: rootPlaceholder,
+    ...inputRootRest
+  } = InputProps
   const finalInputProps = { ...(fp.inputProps || params.inputProps) }
   // 呼叫端常以 {...params.inputProps, ...額外} 覆寫；確保 downshift 的事件與 ref 不被蓋掉
-  ;['ref', 'onKeyDown', 'onBlur', 'onFocus', 'onClick', 'onChange', 'value', 'id', 'aria-autocomplete', 'aria-controls', 'aria-activedescendant', 'aria-expanded', 'role', 'aria-labelledby'].forEach(key => {
+  ;[
+    'ref',
+    'onKeyDown',
+    'onBlur',
+    'onFocus',
+    'onClick',
+    'onChange',
+    'value',
+    'id',
+    'aria-autocomplete',
+    'aria-controls',
+    'aria-activedescendant',
+    'aria-expanded',
+    'role',
+    'aria-labelledby',
+  ].forEach(key => {
     if (downshiftInputProps[key] !== undefined) finalInputProps[key] = downshiftInputProps[key]
   })
 
@@ -448,10 +505,13 @@ const Autocomplete = React.forwardRef(function Autocomplete(
   const downshiftMenuRef = React.useRef(null)
   downshiftMenuRef.current = menuProps.ref
   const { ref: layerRef, zIndex } = useLayerRef(undefined, showPopup)
-  const setMenuRef = React.useCallback(node => {
-    assignRef(downshiftMenuRef.current, node)
-    layerRef(node)
-  }, [layerRef])
+  const setMenuRef = React.useCallback(
+    node => {
+      assignRef(downshiftMenuRef.current, node)
+      layerRef(node)
+    },
+    [layerRef]
+  )
   const menu = (
     <ul
       {...menuProps}
@@ -535,7 +595,10 @@ const Autocomplete = React.forwardRef(function Autocomplete(
           name={fp.name || name}
           placeholder={fp.placeholder ?? finalInputProps.placeholder ?? rootPlaceholder}
           autoFocus={fp.autoFocus}
-          className={cn('min-w-[60px] flex-1 border-0 bg-transparent p-0 text-body text-text outline-none placeholder:text-text-tertiary', finalInputProps.className)}
+          className={cn(
+            'min-w-[60px] flex-1 border-0 bg-transparent p-0 text-body text-text outline-none placeholder:text-text-tertiary',
+            finalInputProps.className
+          )}
         />
         {endNode}
       </div>

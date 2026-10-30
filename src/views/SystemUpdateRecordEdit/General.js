@@ -4,8 +4,8 @@ import { Field, Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { format } from 'date-fns'
 import { MobileDatePicker } from 'ui/date-picker'
-import MdEditor from 'md-editor-rt';
-import 'md-editor-rt/lib/style.css';
+import MdEditor from 'md-editor-rt'
+import 'md-editor-rt/lib/style.css'
 import { openSnackbar } from 'elements/snackbars'
 import { useHistory } from 'react-router'
 import { useFetchCreateSystemUpdateEdit } from 'hooks/useFetchSystemUpdateRecord'
@@ -51,14 +51,7 @@ const General = ({ editData, setEditData, mdValue, setMdValue }) => {
   }
 
   useEffect(() => {
-    setEnable(
-      !(
-        editData.title === '' ||
-        editData.content === '' ||
-        editData.versionNo === '' ||
-        editData.updateTime === ''
-      )
-    )
+    setEnable(!(editData.title === '' || editData.content === '' || editData.versionNo === '' || editData.updateTime === ''))
   }, [editData])
 
   useEffect(() => {
@@ -66,7 +59,7 @@ const General = ({ editData, setEditData, mdValue, setMdValue }) => {
       ...editData,
       content: mdValue,
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [mdValue, setEditData] 變動時執行；editData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [mdValue, setEditData] 變動時執行；editData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [mdValue, setEditData])
   return (
     <Fragment>
@@ -82,11 +75,12 @@ const General = ({ editData, setEditData, mdValue, setMdValue }) => {
               format="yyyy-MM-dd"
               value={editData.updateTime}
               onChange={date => {
-                date && setEditData({
-                  ...editData,
-                  // 保留原生 type=date 的存值語意：yyyy-MM-dd 字串以 UTC 零點解析，避免換 picker 後差 8 小時
-                  updateTime: new Date(format(date, 'yyyy-MM-dd')).getTime(),
-                })
+                date &&
+                  setEditData({
+                    ...editData,
+                    // 保留原生 type=date 的存值語意：yyyy-MM-dd 字串以 UTC 零點解析，避免換 picker 後差 8 小時
+                    updateTime: new Date(format(date, 'yyyy-MM-dd')).getTime(),
+                  })
               }}
             />
             <Field label="版本" className="w-[300px] max-w-full">
@@ -110,10 +104,10 @@ const General = ({ editData, setEditData, mdValue, setMdValue }) => {
           </Field>
           <MdEditor
             theme={theme}
-            style={{height: '700px'}}
+            style={{ height: '700px' }}
             modelValue={mdValue}
-            language='en-US'
-            onChange={value=>setMdValue(value)}
+            language="en-US"
+            onChange={value => setMdValue(value)}
             toolbars={[
               'bold',
               'underline',
@@ -143,18 +137,13 @@ const General = ({ editData, setEditData, mdValue, setMdValue }) => {
               'preview',
               'htmlPreview',
               'catalog',
-              'github'
+              'github',
             ]}
           />
         </CardContent>
       </Card>
       <div className="mt-6 flex justify-end">
-        <Button
-          variant="primary"
-          data-testid="createSystemUpdate"
-          onClick={onSubmit}
-          disabled={!enable}
-        >
+        <Button variant="primary" data-testid="createSystemUpdate" onClick={onSubmit} disabled={!enable}>
           儲存
         </Button>
       </div>

@@ -98,7 +98,6 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
         } else if (d.attribute === value) {
           // 不分指定（上一個條件已處理分指定；原本此處多判斷一個拼錯、恆為 undefined 的 designationUsag，結果相同）
           if (newProfitSharing.nonSegmented[index].rakeData.designate.length === 0) {
-
             newProfitSharing.nonSegmented[index] = {
               ...d,
             }
@@ -131,80 +130,56 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
         </CardHeader>
         <div className="grid gap-4 px-5 pb-4 pt-4">
           <Field label="抽成設定編號">
-            <Input
-              type="text"
-              value={profitSharing.deductionNo}
-              onChange={event => onChange({ value: event.target.value, key: 'deductionNo' })
-            }
-            />
+            <Input type="text" value={profitSharing.deductionNo} onChange={event => onChange({ value: event.target.value, key: 'deductionNo' })} />
           </Field>
           <Field label="抽成設定名稱">
             <Input
               type="text"
               value={profitSharing.deductionName}
-              onChange={event => onChange({ value: event.target.value, key: 'deductionName' })
-            }
+              onChange={event => onChange({ value: event.target.value, key: 'deductionName' })}
             />
           </Field>
         </div>
         {!profitSharing.isSegmented && (
-          <Tabs
-            value={tabValue}
-            onValueChange={value => handleTabsChange(null, value)}
-            activationMode="manual"
-          >
+          <Tabs value={tabValue} onValueChange={value => handleTabsChange(null, value)} activationMode="manual">
             <TabsList className="px-3">
               {attributions.map(tab => (
-                <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
+                <TabsTrigger key={tab.value} value={tab.value}>
+                  {tab.label}
+                </TabsTrigger>
               ))}
             </TabsList>
           </Tabs>
         )}
         <CardContent>
-        <div className="overflow-x-auto">
-          <div className="min-w-[995px] pb-5">
-            <div className="flex flex-wrap items-center">
-              <h3 className="my-4 text-heading text-text">
-                抽成模式
-              </h3>
-              <ToggleGroup
-                size="small"
-                className="!ml-5"
-                value={profitSharing.isSegmented}
-                onChange={handleToggleButtonChange}
-                exclusive
-              >
-                {isSegmented.map((data, idx) => (
-                  <ToggleGroupItem
-                    key={`${data.label}-${idx}`}
-                    value={data.value}
-                    data-testid={`assign-designer-${data.value}`}
-                  >
-                    {data.label}
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
-              <FormControlLabel
-                className="!ml-1"
-                control={<Checkbox color="primary" />}
-                label="分指定/不指定"
-                checked={profitSharing.designationUsage}
-                onClick={handleDesignateChange}
-              />
+          <div className="overflow-x-auto">
+            <div className="min-w-[995px] pb-5">
+              <div className="flex flex-wrap items-center">
+                <h3 className="my-4 text-heading text-text">抽成模式</h3>
+                <ToggleGroup size="small" className="!ml-5" value={profitSharing.isSegmented} onChange={handleToggleButtonChange} exclusive>
+                  {isSegmented.map((data, idx) => (
+                    <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} data-testid={`assign-designer-${data.value}`}>
+                      {data.label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+                <FormControlLabel
+                  className="!ml-1"
+                  control={<Checkbox color="primary" />}
+                  label="分指定/不指定"
+                  checked={profitSharing.designationUsage}
+                  onClick={handleDesignateChange}
+                />
+              </div>
+              {!profitSharing.designationUsage
+                ? !profitSharing.isSegmented
+                  ? renderNonSegmentedNonDistinguish(tierProps)
+                  : renderSegmentedNonDistinguish(tierProps)
+                : !profitSharing.isSegmented
+                  ? renderNonSegmentedDesignation(tierProps)
+                  : renderSegmentedDesignation(tierProps)}
             </div>
-            {!profitSharing.designationUsage ? (
-              !profitSharing.isSegmented ? (
-                renderNonSegmentedNonDistinguish(tierProps)
-              ) : (
-                renderSegmentedNonDistinguish(tierProps)
-              )
-            ) : !profitSharing.isSegmented ? (
-              renderNonSegmentedDesignation(tierProps)
-            ) : (
-              renderSegmentedDesignation(tierProps)
-            )}
           </div>
-        </div>
         </CardContent>
       </Card>
     </Fragment>

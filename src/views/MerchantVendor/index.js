@@ -20,7 +20,7 @@ function MerchantVendor() {
       // 查詢失敗時 data 為 undefined：當作沒有廠商，不讓整頁拋錯
       setMerchantVendor(data || [])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantVendorList.loading])
 
   return (
@@ -36,18 +36,14 @@ function MerchantVendor() {
         }
       />
       {merchantVendorList.error ? (
-          <QueryFailed onRetry={() => merchantVendorList.refetch()} />
-        ) : !merchantVendorList.loading ? (
-        <Results
-          merchantVendor={merchantVendor}
-          merchantVendorList={merchantVendorList}
-        />
+        <QueryFailed onRetry={() => merchantVendorList.refetch()} />
+      ) : !merchantVendorList.loading ? (
+        <Results merchantVendor={merchantVendor} merchantVendorList={merchantVendorList} />
       ) : (
         <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
           <Skeleton className="h-[320px] w-full rounded-lg" />
         </div>
       )}
-
     </Page>
   )
 }

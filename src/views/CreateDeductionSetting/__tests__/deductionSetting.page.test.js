@@ -56,7 +56,10 @@ const PAGES = [
     extra: {},
     mount: () =>
       renderPage(<CreateDeductionSetting />, {
-        fixtures: { USE_FETCH_GET_ATTRIBUTIONS_FOR_RAKE: { getAttributionForRake: ATTRIBUTIONS }, CREATE_DEDUCTION_SETTING: { createDeductionSetting: true } },
+        fixtures: {
+          USE_FETCH_GET_ATTRIBUTIONS_FOR_RAKE: { getAttributionForRake: ATTRIBUTIONS },
+          CREATE_DEDUCTION_SETTING: { createDeductionSetting: true },
+        },
         route: '/deduction-setting',
       }),
   },
@@ -344,11 +347,7 @@ describe('新增頁：類別值為空字串', () => {
     await openTab('剪髮')
     fireEvent.click(screen.getByRole('button', { name: '確認' }))
     await wait(() => expect(callsOf(utils.calls, 'CREATE_DEDUCTION_SETTING')).toHaveLength(1))
-    expect(callsOf(utils.calls, 'CREATE_DEDUCTION_SETTING')[0].variables.input.nonSegmented.map(d => d.attribute)).toEqual([
-      '預設',
-      '預設',
-      '剪髮',
-    ])
+    expect(callsOf(utils.calls, 'CREATE_DEDUCTION_SETTING')[0].variables.input.nonSegmented.map(d => d.attribute)).toEqual(['預設', '預設', '剪髮'])
   })
 })
 

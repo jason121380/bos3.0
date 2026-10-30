@@ -4,15 +4,14 @@ import { useState, useEffect } from 'react'
 import { Card as UiCard, CardContent as UiCardContent } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Checkbox } from 'ui/checkbox'
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow
-} from 'ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Results({ salaryData }) {
   const [selectedUser, setSelectedUser] = useState([])
 
   const handleSelectOne = id => {
-    const newSelect = cloneDeep(selectedUser), index = newSelect.indexOf(id)
+    const newSelect = cloneDeep(selectedUser),
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -25,11 +24,10 @@ function Results({ salaryData }) {
     setSelectedUser(newSelecteduser)
   }
 
-  const handleCountTotalPrice = () => (
+  const handleCountTotalPrice = () =>
     salaryData.reduce((a, { id, increaseItem, decreaseItem }) => {
       return selectedUser.includes(id) ? a + (increaseItem - decreaseItem) : a + 0
     }, 0)
-  )
 
   useEffect(() => {
     const newSelecteduser = salaryData.map(user => user.id)
@@ -53,9 +51,7 @@ function Results({ salaryData }) {
                       <Checkbox
                         aria-label="全選"
                         checked={selectedUser.length === salaryData.length}
-                        indeterminate={
-                          selectedUser.length > 0 && selectedUser.length < salaryData.length
-                        }
+                        indeterminate={selectedUser.length > 0 && selectedUser.length < salaryData.length}
                         onChange={handleSelectAll}
                       />
                     </TableHead>
@@ -70,23 +66,15 @@ function Results({ salaryData }) {
                     <TableRow
                       key={index}
                       data-state={selectedUser.indexOf(user.id) > -1 ? 'selected' : undefined}
-                      className={
-                        !selectedUser.find(userId => userId === user.id) ? 'salaryTransferNoDsiplay' : ''
-                      }
+                      className={!selectedUser.find(userId => userId === user.id) ? 'salaryTransferNoDsiplay' : ''}
                     >
                       <TableCell className="noprint w-10">
-                        <Checkbox
-                          aria-label="選取"
-                          checked={selectedUser.indexOf(user.id) > -1}
-                          onChange={() => handleSelectOne(user.id)}
-                        />
+                        <Checkbox aria-label="選取" checked={selectedUser.indexOf(user.id) > -1} onChange={() => handleSelectOne(user.id)} />
                       </TableCell>
                       <TableCell>{user.bankBranchName}</TableCell>
                       <TableCell>{user.bankAccount}</TableCell>
                       <TableCell>{user.name}</TableCell>
-                      <TableCell>
-                        {user.increaseItem - user.decreaseItem}
-                      </TableCell>
+                      <TableCell>{user.increaseItem - user.decreaseItem}</TableCell>
                     </TableRow>
                   ))}
                   <TableRow className="font-bold">

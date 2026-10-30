@@ -37,7 +37,7 @@ const GET_EVENT_RULE_GROUP = gql`
 const useFetchGetEventRuleGroup = ({ ruleGroupId }) =>
   useQuery(GET_EVENT_RULE_GROUP, {
     variables: {
-      ruleGroupId
+      ruleGroupId,
     },
     fetchPolicy: 'cache-and-network',
   })

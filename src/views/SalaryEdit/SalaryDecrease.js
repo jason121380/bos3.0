@@ -2,11 +2,10 @@
 import { TextField } from 'ui/text-field'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import cloneDeep from 'lodash/cloneDeep'
-import { Fragment, useRef, useEffect  } from 'react'
+import { Fragment, useRef, useEffect } from 'react'
 import idx from 'idx'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
-
 
 export default function SalaryIncrease({
   decreaseSecondContent,
@@ -119,7 +118,7 @@ export default function SalaryIncrease({
 
   const textFieldRef = useRef()
   useEffect(() => {
-    if(textFieldRef.current && focus.includes('decrease')) {
+    if (textFieldRef.current && focus.includes('decrease')) {
       textFieldRef.current.focus()
     }
   }, [focus, tabIndex])
@@ -143,28 +142,23 @@ export default function SalaryIncrease({
                 .map((data, index) => {
                   if (data.source === 'parameter') {
                     return (
-                      <div
-                        key={`decrease-${index}`}
-                        className="col-span-12 flex items-center sm:col-span-6 md:col-span-4 lg:col-span-3"
-                      >
-                        <span className="mx-1 w-[25px] shrink-0 text-heading tabular-nums text-text-secondary">
-                          {index + 1}
-                        </span>
+                      <div key={`decrease-${index}`} className="col-span-12 flex items-center sm:col-span-6 md:col-span-4 lg:col-span-3">
+                        <span className="mx-1 w-[25px] shrink-0 text-heading tabular-nums text-text-secondary">{index + 1}</span>
                         <TextField
                           variant="outlined"
                           label={data.itemName}
                           value={data.price || 0}
                           name="price"
                           fullWidth
-                          inputRef={(focus === 'decreaseCombined' && index === tabIndex) ? textFieldRef : ''}
-                          onFocus={event => { 
+                          inputRef={focus === 'decreaseCombined' && index === tabIndex ? textFieldRef : ''}
+                          onFocus={event => {
                             event.target.select()
                             setTabIndex(index)
                             setFocus('decreaseCombined')
                           }}
                           onKeyDown={event => {
-                            if(event.key === 'Enter') {
-                              if(index < (decreaseCombined.length - 1)){
+                            if (event.key === 'Enter') {
+                              if (index < decreaseCombined.length - 1) {
                                 setTabIndex(index + 1)
                               } else {
                                 setFocus('decreaseItemName')
@@ -183,13 +177,8 @@ export default function SalaryIncrease({
                         .sort((a, b) => a.sorting - b.sorting)
                         .map((data, index) => {
                           return (
-                            <div
-                              key={`increase-${index}`}
-                              className="col-span-12 flex items-center"
-                            >
-                              <span className="mx-1 w-[25px] shrink-0 text-heading tabular-nums text-text-secondary">
-                                {data.sorting}
-                              </span>
+                            <div key={`increase-${index}`} className="col-span-12 flex items-center">
+                              <span className="mx-1 w-[25px] shrink-0 text-heading tabular-nums text-text-secondary">{data.sorting}</span>
                               <TextField
                                 variant="outlined"
                                 label={data.itemName}
@@ -197,15 +186,15 @@ export default function SalaryIncrease({
                                 value={data.price || 0}
                                 name="price"
                                 fullWidth
-                                inputRef={(focus === 'decreaseCombined' && index === tabIndex) ? textFieldRef : ''}
-                                onFocus={event => { 
+                                inputRef={focus === 'decreaseCombined' && index === tabIndex ? textFieldRef : ''}
+                                onFocus={event => {
                                   event.target.select()
                                   setTabIndex(index)
                                   setFocus('decreaseCombined')
                                 }}
                                 onKeyDown={event => {
-                                  if(event.key === 'Enter') {
-                                    if(index < (decreaseCombined.length - 1)){
+                                  if (event.key === 'Enter') {
+                                    if (index < decreaseCombined.length - 1) {
                                       setTabIndex(index + 1)
                                     } else {
                                       setFocus('decreaseItemName')
@@ -236,14 +225,14 @@ export default function SalaryIncrease({
                     label="薪資扣項科目"
                     name="itemName"
                     value={data.itemName}
-                    inputRef={(focus === 'decreaseItemName' && index === tabIndex) ? textFieldRef : ''}
+                    inputRef={focus === 'decreaseItemName' && index === tabIndex ? textFieldRef : ''}
                     onFocus={event => {
                       event.target.select()
                       setTabIndex(index)
                       setFocus('decreaseItemName')
                     }}
                     onKeyDown={event => {
-                      if(event.key === 'Enter') {
+                      if (event.key === 'Enter') {
                         setFocus('decreasePrice')
                       }
                     }}
@@ -256,14 +245,14 @@ export default function SalaryIncrease({
                     label="扣項金額"
                     name="price"
                     value={data.price}
-                    inputRef={(focus === 'decreasePrice' && index === tabIndex) ? textFieldRef : ''}
+                    inputRef={focus === 'decreasePrice' && index === tabIndex ? textFieldRef : ''}
                     onFocus={event => {
                       event.target.select()
                       setTabIndex(index)
                       setFocus('decreasePrice')
                     }}
                     onKeyDown={event => {
-                      if(event.key === 'Enter' && index < (decreaseSecondContent.decreaseItems.length - 1)) {
+                      if (event.key === 'Enter' && index < decreaseSecondContent.decreaseItems.length - 1) {
                         setTabIndex(index + 1)
                         setFocus('decreaseItemName')
                       }
@@ -276,9 +265,10 @@ export default function SalaryIncrease({
                       <DeleteForeverIcon />
                     </Button>
                   )}
-                  {index === decreaseSecondContent.decreaseItems.length - 1 &&
-                  !isSalaryItemsLock ? (
-                    <Button variant="ghost" size="icon" aria-label="新增一項" onClick={handleAddItem}><AddIcon /></Button>
+                  {index === decreaseSecondContent.decreaseItems.length - 1 && !isSalaryItemsLock ? (
+                    <Button variant="ghost" size="icon" aria-label="新增一項" onClick={handleAddItem}>
+                      <AddIcon />
+                    </Button>
                   ) : (
                     <span className="w-9 shrink-0" />
                   )}
@@ -290,9 +280,7 @@ export default function SalaryIncrease({
       </Card>
       <div className="mt-3">
         <span className="text-heading tabular-nums text-text">
-          {`${designer.name} ${
-            designer.designerNo === '' ? '' : `(` + designer.designerNo + `)`
-          } - 薪資扣項小計:${
+          {`${designer.name} ${designer.designerNo === '' ? '' : `(` + designer.designerNo + `)`} - 薪資扣項小計:${
             decreaseCombined.reduce((accu, curVal) => accu + curVal.price, 0) +
               decreaseSecondContent.decreaseItems.reduce((accu, curVal) => accu + curVal.price, 0) || 0
           }`}

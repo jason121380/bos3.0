@@ -143,7 +143,9 @@ describe('薪資維護：帶入與金額', () => {
     // 已存金額的加項也依店家設定的 sorting 排列（Jason 2026/10/22：SalaryEdit/index.js 改用店家設定 data.sorting，
     // 已存紀錄 GET_USER_SALARY_ITEM 沒有 sorting 欄位）：設定依序回傳「業績抽成(2)、工資(1)」時畫面為「工資、業績抽成」。
     // 會員卡未啟用、獎金為 0 → 不顯示會員卡獎金
-    const incLabels = within(increaseCard()).getAllByText(/^(工資|業績抽成|會員卡獎金)$/).map(n => n.textContent)
+    const incLabels = within(increaseCard())
+      .getAllByText(/^(工資|業績抽成|會員卡獎金)$/)
+      .map(n => n.textContent)
     expect(incLabels).toEqual(['工資', '業績抽成'])
     expect(screen.getByLabelText('工資')).toHaveValue('30000')
     expect(screen.getByLabelText('業績抽成')).toHaveValue('12000')
@@ -192,7 +194,10 @@ describe('薪資維護：帶入與金額', () => {
     await ready()
     expect(screen.getByLabelText('會員卡獎金')).toHaveValue('0')
     await wait(() => expect(screen.getByText('會員卡實業績')).toBeInTheDocument())
-    expect(Array.from(screen.getByText('店販實業績').parentElement.querySelectorAll('.text-heading')).map(n => n.textContent)).toEqual(['9000', '2000'])
+    expect(Array.from(screen.getByText('店販實業績').parentElement.querySelectorAll('.text-heading')).map(n => n.textContent)).toEqual([
+      '9000',
+      '2000',
+    ])
     expect(Array.from(screen.getByText('店販抽成').parentElement.querySelectorAll('.text-heading')).map(n => n.textContent)).toEqual(['900', '200'])
     expect(screen.queryByText('(未自動帶入下方)')).toBeNull()
     expect(screen.queryByText('總打卡天數：22')).toBeNull()

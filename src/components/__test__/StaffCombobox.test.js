@@ -7,7 +7,10 @@ import StaffCombobox from 'components/StaffCombobox'
 
 afterEach(cleanup)
 
-const USERS = [{ id: 'd1', name: '王小美' }, { id: 'd2', name: '李助理' }]
+const USERS = [
+  { id: 'd1', name: '王小美' },
+  { id: 'd2', name: '李助理' },
+]
 
 describe('StaffCombobox', () => {
   it('打字篩選後選取：回傳 { name, value: 員工 id }；帶入目前值顯示姓名', () => {
@@ -86,19 +89,47 @@ describe('StaffCombobox', () => {
 
   it('getLabel 決定清單與欄位文字、打字依它篩選；inputProps 合併到輸入框且不影響選取', () => {
     const onChange = jest.fn()
-    const users = [{ id: 'd1', name: '王小美', nickName: 'Amy' }, { id: 'd2', name: '李大華', nickName: null }]
-    render(<StaffCombobox label="服務設計師" value="d1" users={users} onChange={onChange} getLabel={u => u.nickName || u.name} inputProps={{ 'data-testid': 'designer-name' }} />)
+    const users = [
+      { id: 'd1', name: '王小美', nickName: 'Amy' },
+      { id: 'd2', name: '李大華', nickName: null },
+    ]
+    render(
+      <StaffCombobox
+        label="服務設計師"
+        value="d1"
+        users={users}
+        onChange={onChange}
+        getLabel={u => u.nickName || u.name}
+        inputProps={{ 'data-testid': 'designer-name' }}
+      />
+    )
     const input = screen.getByTestId('designer-name')
     expect(input).toHaveValue('Amy')
     fireEvent.change(input, { target: { value: '' } })
-    expect(within(screen.getByRole('listbox')).getAllByRole('option').map(o => o.textContent)).toEqual(['Amy', '李大華'])
+    expect(
+      within(screen.getByRole('listbox'))
+        .getAllByRole('option')
+        .map(o => o.textContent)
+    ).toEqual(['Amy', '李大華'])
     // 顯示暱稱的設計師也能用本名找到（Codex，PR #321）；也能用暱稱找
     fireEvent.change(input, { target: { value: '王' } })
-    expect(within(screen.getByRole('listbox')).getAllByRole('option').map(o => o.textContent)).toEqual(['Amy'])
+    expect(
+      within(screen.getByRole('listbox'))
+        .getAllByRole('option')
+        .map(o => o.textContent)
+    ).toEqual(['Amy'])
     fireEvent.change(input, { target: { value: 'amy' } })
-    expect(within(screen.getByRole('listbox')).getAllByRole('option').map(o => o.textContent)).toEqual(['Amy'])
+    expect(
+      within(screen.getByRole('listbox'))
+        .getAllByRole('option')
+        .map(o => o.textContent)
+    ).toEqual(['Amy'])
     fireEvent.change(input, { target: { value: '大' } })
-    expect(within(screen.getByRole('listbox')).getAllByRole('option').map(o => o.textContent)).toEqual(['李大華'])
+    expect(
+      within(screen.getByRole('listbox'))
+        .getAllByRole('option')
+        .map(o => o.textContent)
+    ).toEqual(['李大華'])
     act(() => input.focus())
     fireEvent.keyDown(input, { key: 'Enter' })
     expect(onChange.mock.calls.map(c => c[0].target.value)).toEqual(['d2'])

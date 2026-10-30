@@ -20,13 +20,7 @@ import { formatNumber } from 'ui/format'
 import ProductsModalV3 from './ProductsModalV3'
 import { Autocomplete } from 'ui/combobox'
 
-export default function General({
-  className,
-  picking,
-  setPageLoading,
-  purchaseRecords,
-  setPurchaseRecords,
-}) {
+export default function General({ className, picking, setPageLoading, purchaseRecords, setPurchaseRecords }) {
   const [setting, setSetting] = useState({
     keyword: '',
     categoryIds: [],
@@ -93,7 +87,7 @@ export default function General({
     if (!getMerchantVendor.loading) {
       setVendorOptions(idx(getMerchantVendor, _ => _.data.getMerchantVendorList) || [])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantVendor.loading])
 
   useEffect(() => {
@@ -102,7 +96,7 @@ export default function General({
 
       setProductCategories(productCategories)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productCategoriesData.loading])
 
   useEffect(() => {
@@ -111,7 +105,7 @@ export default function General({
       const operator = idx(users, _ => _.data.users.users) || []
       setOperator(operator)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [users.loading, setPageLoading])
 
   useEffect(() => {
@@ -119,7 +113,7 @@ export default function General({
       const data = (idx(products, _ => _.data.products.data) || []).filter(d => d.merchantVendor !== null)
       setProductOptions(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading])
 
   useEffect(() => {
@@ -137,7 +131,6 @@ export default function General({
         break
     }
   }, [focus])
-
 
   const handleOpenProductsModal = () => {
     inputEnabled && setProductsModalOpen(!productsModalOpen)
@@ -169,12 +162,12 @@ export default function General({
           count: 1,
           selected: false,
           id: data.id,
-          remainingCount: data.remainingCount
+          remainingCount: data.remainingCount,
         }
       })
       setProductList(productsAddCount)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading, picking, setting])
 
   const hadnleSelectProduct = (product, index) => {
@@ -220,9 +213,7 @@ export default function General({
   }
 
   useEffect(() => {
-    setProductTotal(
-      purchaseRecords.productList.reduce((accu, curVal) => accu + (Number(curVal.unitPrice) * Number(curVal.count)), 0)
-    )
+    setProductTotal(purchaseRecords.productList.reduce((accu, curVal) => accu + Number(curVal.unitPrice) * Number(curVal.count), 0))
   }, [purchaseRecords, setting])
 
   const handleChangeFocusRow = index => {
@@ -250,8 +241,7 @@ export default function General({
     return filterOptions
   }
 
-  const inputEnabled =
-    !productCategoriesData.loading && !users.loading && !products.loading
+  const inputEnabled = !productCategoriesData.loading && !users.loading && !products.loading
   return (
     <Card className={className}>
       <CardHeader>
@@ -260,17 +250,17 @@ export default function General({
       <CardContent className="flex flex-col gap-6">
         <MobileDatePicker
           closeOnSelect
-          label='進貨日期'
+          label="進貨日期"
           value={purchaseRecords.date}
           onChange={val => setPurchaseRecords({ ...purchaseRecords, date: new Date(val).getTime() })}
           format="yyyy/MM/dd"
           localeText={{
-            toolbarTitle: '進貨日期'
+            toolbarTitle: '進貨日期',
           }}
           slotProps={{
             toolbar: {
-              toolbarFormat: 'M月d日'
-            }
+              toolbarFormat: 'M月d日',
+            },
           }}
           slots={{
             field: inputProps => (
@@ -278,16 +268,18 @@ export default function General({
                 <InputLabel htmlFor="date-picker">進貨日期</InputLabel>
                 <Input
                   id="date-picker"
-                  type='text'
+                  type="text"
                   onClick={inputProps.onClick}
                   endAdornment={
-                    <InputAdornment position="end"><InsertInvitationIcon /></InputAdornment>
+                    <InputAdornment position="end">
+                      <InsertInvitationIcon />
+                    </InputAdornment>
                   }
                   label="進貨日期"
                   value={format(inputProps.value, inputProps.format)}
                 />
               </FormControl>
-            )
+            ),
           }}
         />
         <div className="flex flex-col gap-4">
@@ -306,14 +298,16 @@ export default function General({
               )}
               <div className="min-w-0 flex-[4]">
                 <Autocomplete
-                  onFocus={() => { setFocusRow(index) }}
+                  onFocus={() => {
+                    setFocusRow(index)
+                  }}
                   disabled={!inputEnabled}
                   style={{ width: '100%' }}
                   options={productOptions}
                   value={getProductName(data.productId)}
                   autoHighlight
                   isOptionEqualToValue={(option, value) => option.id === data.productId || null}
-                  getOptionLabel={option => option ? `${option.no} ${option.name}` : ''}
+                  getOptionLabel={option => (option ? `${option.no} ${option.name}` : '')}
                   renderOption={(props, option) => {
                     return (
                       <li {...props} key={option.id}>
@@ -330,7 +324,7 @@ export default function General({
                       variant="outlined"
                       fullWidth
                       name="product"
-                      ref={(index === focusRow && focus === 'product') ? productRef : null}
+                      ref={index === focusRow && focus === 'product' ? productRef : null}
                       onChange={event => setProductKeyword(event.target.value)}
                       inputProps={{
                         ...params.inputProps,
@@ -343,11 +337,13 @@ export default function General({
               <div className="min-w-0 flex-[2]">
                 <TextField
                   focused={index === focusRow && focus === 'price'}
-                  onFocus={() => { setFocusRow(index) }}
+                  onFocus={() => {
+                    setFocusRow(index)
+                  }}
                   InputProps={{ inputProps: { min: 0 } }}
                   disabled={!inputEnabled}
                   label="價格"
-                  ref={(index === focusRow && focus === 'price') ? priceRef : null}
+                  ref={index === focusRow && focus === 'price' ? priceRef : null}
                   variant="outlined"
                   fullWidth
                   name="price"
@@ -366,14 +362,16 @@ export default function General({
               <div className="min-w-0 flex-[2]">
                 <TextField
                   focused={index === focusRow && focus === 'count'}
-                  onFocus={() => { setFocusRow(index) }}
+                  onFocus={() => {
+                    setFocusRow(index)
+                  }}
                   InputProps={{ inputProps: { min: 0 } }}
                   label="數量"
                   variant="outlined"
                   disabled={!inputEnabled}
                   fullWidth
                   name="count"
-                  ref={(index === focusRow && focus === 'count') ? countRef : null}
+                  ref={index === focusRow && focus === 'count' ? countRef : null}
                   onKeyDown={event => {
                     if (event.key === 'Enter') {
                       setFocus('product')
@@ -386,9 +384,7 @@ export default function General({
                   onChange={event => handleProductCountOnChange(event, index)}
                 />
               </div>
-              <div className="w-16 shrink-0 text-center text-body tabular-nums text-text">
-                {data.total !== 0 && data.total}
-              </div>
+              <div className="w-16 shrink-0 text-center text-body tabular-nums text-text">{data.total !== 0 && data.total}</div>
               {index !== 0 ? (
                 <div className="w-9 shrink-0">
                   <Button
@@ -422,16 +418,8 @@ export default function General({
           disabled={!inputEnabled}
           // value={purchaseRecords.operatorId}
           autoHighlight
-          getOptionLabel={option =>
-            option.designerNo === operatorKeyword
-              ? `${option.designerNo} ${option.name}`
-              : option.name
-          }
-          renderOption={(props, option) => (
-            <li {...props}>
-              {`${option.designerNo || ''} ${option.name}`}
-            </li>
-          )}
+          getOptionLabel={option => (option.designerNo === operatorKeyword ? `${option.designerNo} ${option.name}` : option.name)}
+          renderOption={(props, option) => <li {...props}>{`${option.designerNo || ''} ${option.name}`}</li>}
           isOptionEqualToValue={data => data.id === purchaseRecords.operatorId || ''}
           onChange={(_event, value) => handleChangePurchaseRecords('operatorId', value)}
           renderInput={params => (
@@ -454,9 +442,7 @@ export default function General({
           label="備註"
           variant="outlined"
           fullWidth
-          onChange={event =>
-            setPurchaseRecords({ ...purchaseRecords, remark: event.target.value.trim() })
-          }
+          onChange={event => setPurchaseRecords({ ...purchaseRecords, remark: event.target.value.trim() })}
         />
       </CardContent>
       {productsModalOpen && (

@@ -23,7 +23,9 @@ describe('openSnackbar 錯誤文案', () => {
     expect(normalizeSnackbarMessage('GraphQL error: 密碼錯誤')).toBe('密碼錯誤')
     expect(normalizeSnackbarMessage('GraphQL error: 庫存不足\nGraphQL error: 請重新選擇')).toBe('庫存不足\n請重新選擇')
     expect(normalizeSnackbarMessage('刪除訂單失敗: Error: GraphQL error: 訂單不存在')).toBe('刪除訂單失敗: 訂單不存在')
-    expect(normalizeSnackbarMessage('Network error: Response not successful: Received status code 500')).toBe('Response not successful: Received status code 500')
+    expect(normalizeSnackbarMessage('Network error: Response not successful: Received status code 500')).toBe(
+      'Response not successful: Received status code 500'
+    )
     expect(normalizeSnackbarMessage('帳單新增成功')).toBe('帳單新增成功')
     expect(normalizeSnackbarMessage(undefined)).toBeUndefined()
   })
@@ -38,8 +40,12 @@ describe('openSnackbar 錯誤文案', () => {
   // 為什麼重要：頁面 catch 以 error.message 顯示錯誤，會蓋掉 errorLink 先跳的中文提示；伺服器 500、資料格式錯誤原本以英文原文出現，
   // 櫃台看不懂、不知道下一步。錯誤提示一律翻成中文說明；成功等其他提示不受影響（避免把正常訊息當錯誤改寫）
   it('錯誤提示：伺服器錯誤等英文技術訊息改成中文說明，頁面開頭保留；成功提示不改寫', () => {
-    expect(normalizeSnackbarMessage('Network error: Response not successful: Received status code 500', 'error')).toBe('伺服器暫時無法處理，請稍後再試；若持續發生，請截圖並聯絡客服（500）')
-    expect(normalizeSnackbarMessage('刪除訂單失敗: Error: Network error: Response not successful: Received status code 502', 'error')).toBe('刪除訂單失敗：伺服器暫時無法處理，請稍後再試；若持續發生，請截圖並聯絡客服（502）')
+    expect(normalizeSnackbarMessage('Network error: Response not successful: Received status code 500', 'error')).toBe(
+      '伺服器暫時無法處理，請稍後再試；若持續發生，請截圖並聯絡客服（500）'
+    )
+    expect(normalizeSnackbarMessage('刪除訂單失敗: Error: Network error: Response not successful: Received status code 502', 'error')).toBe(
+      '刪除訂單失敗：伺服器暫時無法處理，請稍後再試；若持續發生，請截圖並聯絡客服（502）'
+    )
     expect(normalizeSnackbarMessage('GraphQL error: 密碼錯誤', 'error')).toBe('密碼錯誤')
     expect(normalizeSnackbarMessage('Done', 'success')).toBe('Done')
   })
@@ -157,11 +163,17 @@ it('結帳定值圓環使用 SVG，百分比與無障礙數值一致', () => {
 it('日結完成一半時圓環與中央文字均更新為 50%', async () => {
   mockCloseDailyAccountV3.mockResolvedValueOnce({}).mockImplementationOnce(() => new Promise(() => {}))
   render(<CustomizedSnackbars />)
-  act(() => openSnackbar({
-    message: '確定日結？', variant: 'warning', resign: true, isDailyCheckout: true,
-    selectedOrders: [{ date: 1 }, { date: 2 }], waitCloseOrderResults: [{ date: 1 }, { date: 2 }],
-    checkoutStaff: { id: 'staff-1' },
-  }))
+  act(() =>
+    openSnackbar({
+      message: '確定日結？',
+      variant: 'warning',
+      resign: true,
+      isDailyCheckout: true,
+      selectedOrders: [{ date: 1 }, { date: 2 }],
+      waitCloseOrderResults: [{ date: 1 }, { date: 2 }],
+      checkoutStaff: { id: 'staff-1' },
+    })
+  )
   await act(async () => fireEvent.click(screen.getByRole('button', { name: '確定日結' })))
   expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '50')
   expect(screen.getByText('50%')).toBeInTheDocument()

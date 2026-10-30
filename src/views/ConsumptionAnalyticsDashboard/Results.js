@@ -1,37 +1,33 @@
 import { useEffect, useState } from 'react'
 
-import OrderGender from './Charts/OrderGender';
-import OrderAgeDistribution from './Charts/OrderAgeDistribution';
-import CustomerConsumptionCountRanking from './Charts/CustomerConsumptionCountRanking';
-import CustomerConsumptionPriceRanking from './Charts/CustomerConsumptionPriceRanking';
-import CustomerConsumptionPricePerCountRanking from './Charts/CustomerConsumptionPricePerCountRanking';
-import WeeklyOrderCountRanking from './Charts/WeeklyOrderCountRanking';
-import ProductSalesVolumeRanking from './Charts/ProductSalesVolumeRanking';
-import ProductSalesPriceRanking from './Charts/ProductSalesPriceRanking';
-import PerformanceDetail from './Charts/PerformanceDetail';
-import ReturnedRatio from './Charts/ReturnedRatio';
-import SourceRatio from './Charts/SourceRatio';
-import NewCusStatistics from './Charts/NewCusStatistics';
+import OrderGender from './Charts/OrderGender'
+import OrderAgeDistribution from './Charts/OrderAgeDistribution'
+import CustomerConsumptionCountRanking from './Charts/CustomerConsumptionCountRanking'
+import CustomerConsumptionPriceRanking from './Charts/CustomerConsumptionPriceRanking'
+import CustomerConsumptionPricePerCountRanking from './Charts/CustomerConsumptionPricePerCountRanking'
+import WeeklyOrderCountRanking from './Charts/WeeklyOrderCountRanking'
+import ProductSalesVolumeRanking from './Charts/ProductSalesVolumeRanking'
+import ProductSalesPriceRanking from './Charts/ProductSalesPriceRanking'
+import PerformanceDetail from './Charts/PerformanceDetail'
+import ReturnedRatio from './Charts/ReturnedRatio'
+import SourceRatio from './Charts/SourceRatio'
+import NewCusStatistics from './Charts/NewCusStatistics'
 
-function Results({
-  dashboardData, chartDisplay, dataType, setDataType,
-  sortType, setSortType
-}) {
+function Results({ dashboardData, chartDisplay, dataType, setDataType, sortType, setSortType }) {
   const [width, setWidth] = useState(window.innerWidth)
 
   useEffect(() => {
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize)
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', handleResize)
     }
-  }, []);
+  }, [])
 
   const handleResize = () => {
     setWidth(window.innerWidth)
   }
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 [&_tspan]:text-[14px] [&_.recharts-legend-item-text]:text-[14px]">
-
       <PerformanceDetail // 設計師業績趨勢
         data={dashboardData.performanceTrendV2}
         dataType={dataType}
@@ -56,7 +52,7 @@ function Results({
         data={dashboardData.customerConsumptionCountRanking}
       />
 
-      <CustomerConsumptionPriceRanking // 消費總金額排行 
+      <CustomerConsumptionPriceRanking // 消費總金額排行
         data={dashboardData.customerConsumptionPriceRanking}
       />
 
@@ -91,7 +87,6 @@ function Results({
         data={dashboardData.newCusStatistics}
         width={width}
       />
-
     </div>
   )
 }

@@ -100,7 +100,11 @@ describe('CustomerAutoComplete 顧客', () => {
     expect(inputOnChange).not.toHaveBeenCalled()
     await wait(() => expect(inputOnChange).toHaveBeenCalledWith('0912'), { timeout: DEBOUNCED_QUERY_TIMEOUT })
     await settle()
-    expect(callsOf(calls, 'FETCH_CUSTOMERS_IN_AUTO_COMPLETE').slice(before).map(c => c.variables.input.keyword)).toContain('0912')
+    expect(
+      callsOf(calls, 'FETCH_CUSTOMERS_IN_AUTO_COMPLETE')
+        .slice(before)
+        .map(c => c.variables.input.keyword)
+    ).toContain('0912')
     await wait(() => expect(optionTexts()).toEqual(['王小明 / 0912345678 / A001', '林大同 / 0912000111 / A002']))
     fireEvent.click(screen.getByRole('option', { name: '林大同 / 0912000111 / A002' }))
     expect(picked).toHaveBeenLastCalledWith(expect.objectContaining({ id: 'c3' }))

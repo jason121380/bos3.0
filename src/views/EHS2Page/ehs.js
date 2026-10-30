@@ -160,14 +160,7 @@ function Reservation({ match, location }) {
         />
         <FormControlLabel
           className="w-full mb-4"
-          control={
-            <Checkbox
-              checked={box}
-              onChange={e => setBox(e.target.checked)}
-              name="checkedB"
-              color="primary"
-            />
-          }
+          control={<Checkbox checked={box} onChange={e => setBox(e.target.checked)} name="checkedB" color="primary" />}
           label={
             <label htmlFor="">
               我同意
@@ -175,11 +168,7 @@ function Reservation({ match, location }) {
                 名留集團
               </a>
               暨
-              <a
-                href="https://m.etmall.com.tw/HelpCenter/PrivacyStatement"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href="https://m.etmall.com.tw/HelpCenter/PrivacyStatement" target="_blank" rel="noopener noreferrer">
                 東森購物
               </a>
               會員條款

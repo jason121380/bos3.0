@@ -18,15 +18,21 @@ import CustomerSendEventTicket from '..'
 jest.setTimeout(20000)
 
 const setup = (fixtures = {}) =>
-  renderPage(<><CustomizedSnackbars /><CustomerSendEventTicket /></>, {
-    fixtures: {
-      GET_MERCHANT_NAME: { getMerchantName: '信義店' },
-      CHECK_IS_CUSTOMER_EXIST: { checkIsCustomerExistForOuterStore: { isExist: true, customerName: '陳小姐' } },
-      ...fixtures,
-    },
-    path: '/customer/send-event-ticket/:id',
-    route: '/customer/send-event-ticket/merchant-9',
-  })
+  renderPage(
+    <>
+      <CustomizedSnackbars />
+      <CustomerSendEventTicket />
+    </>,
+    {
+      fixtures: {
+        GET_MERCHANT_NAME: { getMerchantName: '信義店' },
+        CHECK_IS_CUSTOMER_EXIST: { checkIsCustomerExistForOuterStore: { isExist: true, customerName: '陳小姐' } },
+        ...fixtures,
+      },
+      path: '/customer/send-event-ticket/:id',
+      route: '/customer/send-event-ticket/merchant-9',
+    }
+  )
 
 const phone = () => screen.getByLabelText(/^電話/)
 const count = () => screen.getByLabelText(/^張數/)
@@ -203,7 +209,12 @@ describe('抽獎資格登錄', () => {
     setup({ CHECK_IS_CUSTOMER_EXIST: { checkIsCustomerExistForOuterStore: { isExist: false, customerName: null } } })
     await screen.findByText('信義店 抽獎資格登錄')
     let fail
-    mockFetch(() => new Promise((resolve, reject) => { fail = reject }))
+    mockFetch(
+      () =>
+        new Promise((resolve, reject) => {
+          fail = reject
+        })
+    )
     fireEvent.change(phone(), { target: { value: '0912345678' } })
     fireEvent.change(name(), { target: { value: '林先生' } })
     fireEvent.click(submit())
@@ -230,7 +241,12 @@ it('建立中提示遵循全域 3 秒時限；較慢的請求完成後仍顯示�
   setup({ CHECK_IS_CUSTOMER_EXIST: { checkIsCustomerExistForOuterStore: { isExist: false, customerName: null } } })
   await screen.findByText('信義店 抽獎資格登錄')
   let finish
-  mockFetch(() => new Promise(resolve => { finish = resolve }))
+  mockFetch(
+    () =>
+      new Promise(resolve => {
+        finish = resolve
+      })
+  )
   fireEvent.change(phone(), { target: { value: '0912345678' } })
   fireEvent.change(name(), { target: { value: '林先生' } })
   fireEvent.click(submit())

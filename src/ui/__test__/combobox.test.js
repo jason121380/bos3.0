@@ -102,9 +102,7 @@ describe('ui/combobox Autocomplete（與 MUI Autocomplete 相容的介面）', (
         value={[options[0]]}
         getOptionLabel={getOptionLabel}
         onChange={onChange}
-        renderOption={(props, option, { selected }) => (
-          <li {...props}>{`${option.name}${selected ? '（已選）' : ''}`}</li>
-        )}
+        renderOption={(props, option, { selected }) => <li {...props}>{`${option.name}${selected ? '（已選）' : ''}`}</li>}
         renderInput={params => <TextField {...params} placeholder="設計師" />}
       />
     )

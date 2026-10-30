@@ -27,7 +27,7 @@ export default function PanelCouponSells() {
   const [pageSetting, setPageSetting] = React.useState({
     keyword: '',
     categoryIds: [],
-    isLaunched: true
+    isLaunched: true,
   })
 
   const [focusRow, setFocusRow] = React.useState(0)
@@ -48,7 +48,7 @@ export default function PanelCouponSells() {
       setCouponCategories(couponCategories)
     } else {
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [tickets.loading, serviceCategoriesData.loading])
   React.useEffect(() => {
     if (couponSells.length > 0) {
@@ -73,25 +73,25 @@ export default function PanelCouponSells() {
       const newCouponSells =
         order.data.order.ticketOrders.length > 0
           ? order.data.order.ticketOrders.map(ticketOrder => ({
-            id: uuid(),
-            serviceId: ticketOrder.service.id,
-            availableCount: ticketOrder.availableCount,
-            price: ticketOrder.price,
-            count: ticketOrder.count,
-            remark: ticketOrder.remark,
-            isLocked: ticketOrder.service.isLocked,
-            intoPerformanceWhileBuying: ticketOrder.intoPerformanceWhileBuying,
-          }))
-          : [
-            {
               id: uuid(),
-              serviceId: '',
-              availableCount: 0,
-              price: 0,
-              count: 1,
-              remark: '',
-            },
-          ]
+              serviceId: ticketOrder.service.id,
+              availableCount: ticketOrder.availableCount,
+              price: ticketOrder.price,
+              count: ticketOrder.count,
+              remark: ticketOrder.remark,
+              isLocked: ticketOrder.service.isLocked,
+              intoPerformanceWhileBuying: ticketOrder.intoPerformanceWhileBuying,
+            }))
+          : [
+              {
+                id: uuid(),
+                serviceId: '',
+                availableCount: 0,
+                price: 0,
+                count: 1,
+                remark: '',
+              },
+            ]
 
       if (newCouponSells.length > 0 && newCouponSells[0].serviceId !== '') {
         setExpanded(true)
@@ -203,10 +203,13 @@ export default function PanelCouponSells() {
       <AccordionSummary
         data-testid="couponSells"
         onClick={handleAccordionClick}
-        summaryMeta={!expanded && panelSummary(
-          couponSells.filter(d => d.serviceId).length,
-          couponSells.filter(d => d.serviceId).reduce((total, d) => total + d.price * d.count, 0)
-        )}
+        summaryMeta={
+          !expanded &&
+          panelSummary(
+            couponSells.filter(d => d.serviceId).length,
+            couponSells.filter(d => d.serviceId).reduce((total, d) => total + d.price * d.count, 0)
+          )
+        }
       >
         <p className="m-0 !text-[16px] font-bold text-[rgb(var(--text))]">預收卡販賣</p>
       </AccordionSummary>

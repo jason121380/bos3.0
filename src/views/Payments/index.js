@@ -26,12 +26,11 @@ function CustomerManagementList() {
         />
         {payments.error ? (
           <QueryFailed onRetry={() => payments.refetch()} />
-        ) : !payments.loading ?
-          <Results
-            paymentList={idx(payments, _ => _.data.merchantPayWays)}
-          />
-          : <Skeleton className="h-[320px] w-full rounded-lg" aria-label="載入中" />}
-
+        ) : !payments.loading ? (
+          <Results paymentList={idx(payments, _ => _.data.merchantPayWays)} />
+        ) : (
+          <Skeleton className="h-[320px] w-full rounded-lg" aria-label="載入中" />
+        )}
       </div>
     </Page>
   )

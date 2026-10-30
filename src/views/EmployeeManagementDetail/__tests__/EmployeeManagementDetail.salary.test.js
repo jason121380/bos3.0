@@ -66,7 +66,20 @@ describe('薪資條', () => {
     expect(screen.getByText('加7')).toBeInTheDocument()
     expect(screen.getByText('扣7')).toBeInTheDocument()
     expect(lastRowCells()).toEqual({
-      head: ['加項合計', '扣項合計', '實領薪資', '互助獲得(點)', '指定實業績', '不指定實業績', '特抽總業績', '總實業績', '總虛業績', '扣項-扣業績', '手續費-扣業績', '備註'],
+      head: [
+        '加項合計',
+        '扣項合計',
+        '實領薪資',
+        '互助獲得(點)',
+        '指定實業績',
+        '不指定實業績',
+        '特抽總業績',
+        '總實業績',
+        '總虛業績',
+        '扣項-扣業績',
+        '手續費-扣業績',
+        '備註',
+      ],
       values: ['42,734', '4,469', '38,765', '12.3', '80,000', '43,456.8', '1,234.6', '124,691.4', '130,000.3', '300.4', '100', '含年終'],
     })
   })
@@ -91,9 +104,7 @@ describe('薪資條', () => {
     const { calls } = renderDetail('paySlip', { fixtures: slipFixtures() })
     await screen.findByText('加1')
     fireEvent.click(screen.getByRole('button', { name: '本月' }))
-    await wait(() =>
-      expect(callsOf(calls, 'FETCH_USER_SALARY_REPORT').map(c => c.variables.date)).toContain(startOfMonth(new Date()).getTime())
-    )
+    await wait(() => expect(callsOf(calls, 'FETCH_USER_SALARY_REPORT').map(c => c.variables.date)).toContain(startOfMonth(new Date()).getTime()))
   })
 
   it('這位員工沒有薪資資料時顯示無資料；查詢中顯示載入骨架', async () => {
@@ -157,7 +168,9 @@ describe('薪資加扣項', () => {
     const { calls } = renderDetail('salaryItems', { fixtures: salaryFixtures() })
     await screen.findByLabelText('工資')
     expect(callsOf(calls, 'FETCH_DESIGNER_FIXED_SALARY_ITEMS')[0].variables).toEqual({ designerId: EMP_ID })
-    const incLabels = incCard().getAllByText(/^(工資|職務加給|會員卡獎金)$/).map(n => n.textContent)
+    const incLabels = incCard()
+      .getAllByText(/^(工資|職務加給|會員卡獎金)$/)
+      .map(n => n.textContent)
     expect(incLabels).toEqual(['工資', '職務加給'])
     expect(screen.getByLabelText('工資')).toHaveValue(30000)
     expect(screen.getByLabelText('職務加給')).toHaveValue(0)
@@ -224,8 +237,16 @@ describe('薪資加扣項', () => {
   it('店家沒有加扣項設定時，員工的固定金額全部列為自訂項目', async () => {
     renderDetail('salaryItems', { fixtures: salaryFixtures({ increaseSettings: [], decreaseSettings: [] }) })
     await screen.findAllByText('薪資加項小計:31500')
-    expect(incCard().getAllByLabelText('薪資加項科目').map(n => n.value)).toEqual(['工資', '交通津貼'])
-    expect(decCard().getAllByLabelText('薪資扣項科目').map(n => n.value)).toEqual(['勞健保費', '宿舍費'])
+    expect(
+      incCard()
+        .getAllByLabelText('薪資加項科目')
+        .map(n => n.value)
+    ).toEqual(['工資', '交通津貼'])
+    expect(
+      decCard()
+        .getAllByLabelText('薪資扣項科目')
+        .map(n => n.value)
+    ).toEqual(['勞健保費', '宿舍費'])
   })
 
   it('員工沒有固定金額時：店家設定項目皆為 0、自訂項目一列空白', async () => {

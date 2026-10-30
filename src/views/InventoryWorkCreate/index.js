@@ -34,18 +34,23 @@ function InventoryWorkCreate() {
       if (!productsData) return
       loadedRef.current = true
       const data = productsData.map(({ productId, productNo, productName, count, productCategoryId }) => ({
-        productId, productNo, productName, currentCount: count, productCategoryId, inventoryCount: count < 0 ? 0 : count
+        productId,
+        productNo,
+        productName,
+        currentCount: count,
+        productCategoryId,
+        inventoryCount: count < 0 ? 0 : count,
       }))
       // 依目前選的排序（預設「庫存」）顯示，與排序鈕的選取狀態一致
       setInventoryData(sortData(data, sort))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [products.loading] 變動時執行；products、sort 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [products.loading] 變動時執行；products、sort 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [products.loading])
 
   useEffect(() => {
     const resData = sortData(inventoryData, sort)
     setInventoryData(resData)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [sort] 變動時執行；inventoryData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [sort] 變動時執行；inventoryData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [sort])
 
   useEffect(() => {
@@ -59,7 +64,7 @@ function InventoryWorkCreate() {
       })
       setInventoryData(newData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [productInventoryData.loading] 變動時執行；inventoryData、productInventoryData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [productInventoryData.loading] 變動時執行；inventoryData、productInventoryData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [productInventoryData.loading])
 
   const handleCreateIventory = async (isDraft = true) => {
@@ -70,10 +75,11 @@ function InventoryWorkCreate() {
     if (!isDraft) {
       const checkNull = data.some(({ inventoryCount }) => inventoryCount === null)
       if (checkNull) {
-        checkNull && openSnackbar({
-          variant: 'warning',
-          message: '盤點數量不得為空'
-        })
+        checkNull &&
+          openSnackbar({
+            variant: 'warning',
+            message: '盤點數量不得為空',
+          })
         setIsClick(false)
         return
       }
@@ -88,27 +94,27 @@ function InventoryWorkCreate() {
         input: {
           date: new Date().getTime(),
           isDraft,
-          inventoryDetails
-        }
+          inventoryDetails,
+        },
       })
       if (res.data.createInventory) {
         openSnackbar({
           variant: 'success',
-          message: isDraft ? '儲存成功' : '新增成功'
+          message: isDraft ? '儲存成功' : '新增成功',
         })
         history.push('/inventory-work')
       } else {
         setIsClick(false)
         openSnackbar({
           variant: 'warning',
-          message: isDraft ? '儲存失敗' : '新增失敗'
+          message: isDraft ? '儲存失敗' : '新增失敗',
         })
       }
     } catch (error) {
       setIsClick(false)
       openSnackbar({
         variant: 'error',
-        message: error.message
+        message: error.message,
       })
     }
   }
@@ -119,21 +125,18 @@ function InventoryWorkCreate() {
         <PageHeader
           title="新增盤點"
           actions={
-            <Button
-              onClick={() => getProductInventory()}
-              variant="secondary"
-              disabled={productInventoryData.loading}
-            >
+            <Button onClick={() => getProductInventory()} variant="secondary" disabled={productInventoryData.loading}>
               <RefreshCw strokeWidth={1.75} />
               更新即時庫存
             </Button>
           }
         />
-        {(products.loading || productCategories.loading) ?
+        {products.loading || productCategories.loading ? (
           <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
             <Skeleton className="h-[72px] w-full rounded-lg" />
             <Skeleton className="h-[320px] w-full rounded-lg" />
-          </div> :
+          </div>
+        ) : (
           <General
             sort={sort}
             setSort={setSort}
@@ -143,7 +146,7 @@ function InventoryWorkCreate() {
             handleCreateIventory={handleCreateIventory}
             categoriesData={idx(productCategories, _ => _.data.productCategories) || []}
           />
-        }
+        )}
       </div>
     </Page>
   )

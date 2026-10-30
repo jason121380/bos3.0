@@ -107,7 +107,7 @@ export function useFetchGetStockInIsUsing() {
   })
 }
 
-const GET_DELETE_ORDER_USING= gql`
+const GET_DELETE_ORDER_USING = gql`
   query GET_DELETE_ORDER_USING {
     merchantPassword {
       deleteOrder {

@@ -8,7 +8,7 @@ import Page from 'components/Page'
 import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { endOfMonth } from 'date-fns'
 import idx from 'idx'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import useFetchServiceDedcutionDetailMultiple from 'hooks/useFetchGetUserServiceDeductionDetailMultiple'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -57,18 +57,15 @@ const ServiceDeductionDetailReport = () => {
       const data = idx(getAttributionForRake, _ => _.data.getAttributionForRake)
       setAttributions(data || [])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAttributionForRake.loading])
 
   return (
     <Page className="ui-root" title="服務扣項明細表">
       <div>
-        <PageHeader title='服務扣項明細表'>
+        <PageHeader title="服務扣項明細表">
           <Button asChild variant="secondary">
-            <CSVLink
-              data={excelData}
-              filename="服務扣項明細表.csv"
-            >
+            <CSVLink data={excelData} filename="服務扣項明細表.csv">
               <Download strokeWidth={1.75} />
               報表匯出
             </CSVLink>
@@ -106,10 +103,19 @@ const ServiceDeductionDetailReport = () => {
                   setInputData({ ...inputData, serviceId: value ? value.id : [] })
                 }}
               />
-              <NativeSelect onChange={event => hanldeOnChange(event)} displayEmpty={false} placeholder="請選擇…" label="抽成類別" fullWidth={false} className="min-w-[120px] align-top !min-w-[180px]">
+              <NativeSelect
+                onChange={event => hanldeOnChange(event)}
+                displayEmpty={false}
+                placeholder="請選擇…"
+                label="抽成類別"
+                fullWidth={false}
+                className="min-w-[120px] align-top !min-w-[180px]"
+              >
                 <NativeSelectOption value={null}>全部</NativeSelectOption>
                 {attributions.map((data, index) => (
-                  <NativeSelectOption key={index} value={data.value}>{data.label}</NativeSelectOption>
+                  <NativeSelectOption key={index} value={data.value}>
+                    {data.label}
+                  </NativeSelectOption>
                 ))}
               </NativeSelect>
             </div>
@@ -121,10 +127,7 @@ const ServiceDeductionDetailReport = () => {
           idx(serviceDedcutionDetailData, _ =>
             _.data.getUserServiceDeductionDetialMultiple !== null ? (
               _.data.getUserServiceDeductionDetialMultiple.length > 0 ? (
-                <Results
-                  userServiceDeductionDetial={_.data.getUserServiceDeductionDetialMultiple}
-                  setExcelData={setExcelData}
-                />
+                <Results userServiceDeductionDetial={_.data.getUserServiceDeductionDetialMultiple} setExcelData={setExcelData} />
               ) : (
                 <Card className="mt-3">
                   <EmptyState title="無資料" />

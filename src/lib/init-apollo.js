@@ -98,9 +98,7 @@ let apolloClient = null
 export default function initApollo() {
   if (!apolloClient) {
     // settingsCacheLink：設定類查詢改 cache-first 後，mutation 成功就清除設定快取（見 lib/settings-cache）
-    apolloClient = createApolloClient(
-      settingsCacheLink.concat(inflightLink).concat(authLink).concat(errorLink).concat(httpLink)
-    )
+    apolloClient = createApolloClient(settingsCacheLink.concat(inflightLink).concat(authLink).concat(errorLink).concat(httpLink))
     bindSettingsCache(apolloClient.cache)
   }
   return apolloClient

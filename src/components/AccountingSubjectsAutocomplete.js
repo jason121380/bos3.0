@@ -4,14 +4,7 @@ import React, { useState, useEffect, forwardRef } from 'react'
 import useFetchAccountingSubjects from 'hooks/useFetchAccountingSubjects'
 import { Autocomplete } from 'ui/combobox'
 
-function AccountingSubjectsAutocomplete({
-  onChange,
-  onFocus,
-  value,
-  autoFocus,
-  inoutType,
-  ...otherProps
-}, ref) {
+function AccountingSubjectsAutocomplete({ onChange, onFocus, value, autoFocus, inoutType, ...otherProps }, ref) {
   const [revenueSubjects, setRevenueSubjects] = useState([])
   const [expenditureSubjects, setExpenditureSubjects] = useState([])
   const getAccountingSubjects = useFetchAccountingSubjects()
@@ -22,7 +15,7 @@ function AccountingSubjectsAutocomplete({
         value: d.id,
         number: d.number,
         inoutType: d.inoutType,
-        isUsing: d.isUsing
+        isUsing: d.isUsing,
       }))
     ) || []
 
@@ -55,7 +48,7 @@ function AccountingSubjectsAutocomplete({
       setRevenueSubjects(revenueInit)
       setExpenditureSubjects(expenditureInit)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAccountingSubjects.loading])
 
   const seletedValue = idx(value, _value => options.find(d => d.title === _value.title)) || null
@@ -63,17 +56,11 @@ function AccountingSubjectsAutocomplete({
     <Autocomplete
       style={{ width: '-webkit-fill-available' }}
       {...otherProps}
-      options={
-        inoutType === 'REVENUE'
-          ? revenueSubjects !== undefined && revenueSubjects
-          : expenditureSubjects !== undefined && expenditureSubjects
-      }
+      options={inoutType === 'REVENUE' ? revenueSubjects !== undefined && revenueSubjects : expenditureSubjects !== undefined && expenditureSubjects}
       value={seletedValue}
       getOptionLabel={option => `${option.number} ${option.title}`}
       onFocus={onFocus}
-      renderInput={params => (
-        <TextField inputRef={ref} {...params} label="科目" variant="outlined" fullWidth autoFocus={autoFocus} />
-      )}
+      renderInput={params => <TextField inputRef={ref} {...params} label="科目" variant="outlined" fullWidth autoFocus={autoFocus} />}
       onChange={onChange}
     />
   )

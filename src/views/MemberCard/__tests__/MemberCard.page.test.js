@@ -24,9 +24,7 @@ afterEach(cleanup)
 describe('顧客端會員卡', () => {
   it('未登入：提示尚未登入並導到顧客登入，登入後回到本頁（帶店家 id）', async () => {
     const { calls } = setup()
-    await wait(() =>
-      expect(currentLocation()).toBe('/customer/login?merchantid=m-77&redirect=/customer/member/card?merchantid=m-77')
-    )
+    await wait(() => expect(currentLocation()).toBe('/customer/login?merchantid=m-77&redirect=/customer/member/card?merchantid=m-77'))
     expect(openSnackbar).toHaveBeenCalledWith({ message: '尚未登入', variant: 'warning' })
     expect(calls).toHaveLength(0)
   })

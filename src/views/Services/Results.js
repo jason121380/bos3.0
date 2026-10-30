@@ -1,6 +1,6 @@
 import { Copy, Download, Pencil } from 'lucide-react'
 
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteService from 'hooks/useFetchDeleteService'
@@ -8,7 +8,7 @@ import idx from 'idx'
 import format from 'date-fns/format'
 import { useState, useEffect, useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import useFetchMerchantHelperItems from 'hooks/useFetchMerchantHelperItems'
 import useFetchSettingBatchSettingForHelper from 'hooks/useFetchBatchSettingForHelper'
 import useFetchSettingBatchSettingForDeduction from 'hooks/useFetchBatchSettingForDeduction'
@@ -29,9 +29,7 @@ import AssistantSettingEditModal from './AssistantSettingEditModal'
 
 function Results({ className, services, refetchService, onPageChange, onRowsPerPageChange, ...rest }) {
   const pageRef = useRef(null)
-  const merchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
+  const merchantId = localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null
 
   const merchantHelperItemsData = useFetchMerchantHelperItems({ merchantId })
   const { setBatchSettingForHelper } = useFetchSettingBatchSettingForHelper()
@@ -50,13 +48,10 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
 
   useEffect(() => {
     if (!passwordData.loading) {
-      const disableDeleteService = idx(
-        passwordData,
-        _ => _.data.merchantPassword.deleteService.isUsing
-      )
+      const disableDeleteService = idx(passwordData, _ => _.data.merchantPassword.deleteService.isUsing)
       setDisableDeleteService(disableDeleteService)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [passwordData.loading])
 
   const [helperDeductionSetting, setHelperDeductionSetting] = useState([
@@ -84,13 +79,12 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
   // 只有啟用中的服務可勾選；全選框以可選取的筆數判斷
   const selectableCount = services.data.filter(d => d.isUsing).length
   const handleSelectAll = event => {
-    const newSelectedService = event.target.checked
-      ? services.data.filter(d => d.isUsing).map(service => service.id)
-      : []
+    const newSelectedService = event.target.checked ? services.data.filter(d => d.isUsing).map(service => service.id) : []
     setSelectedService(newSelectedService)
   }
   const handleSelectOne = id => {
-    const newSelect = [...selectedService], index = newSelect.indexOf(id)
+    const newSelect = [...selectedService],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -104,11 +98,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
   }
 
   const handleConfirmCancel = () => {
-    deleteService(
-      disableDeleteService
-        ? { itemIds: selectedService, password: deleteOrderPwd }
-        : { itemIds: selectedService }
-    ).then(() => {
+    deleteService(disableDeleteService ? { itemIds: selectedService, password: deleteOrderPwd } : { itemIds: selectedService }).then(() => {
       setOpenDialog(false)
       setDeleteOrderPwd('')
       refetchService()
@@ -184,9 +174,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
   }
 
   const handleSubmitHelperDeductionSetting = () => {
-    const newHelperDeductionSetting = helperDeductionSetting.map(
-      ({ deductionWay, isDesignate, ...keepProteries }) => keepProteries
-    )
+    const newHelperDeductionSetting = helperDeductionSetting.map(({ deductionWay, isDesignate, ...keepProteries }) => keepProteries)
 
     const input = {
       ids: selectedService,
@@ -246,7 +234,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
         )
       )
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantCommissions.loading, openEditDeductionModal])
 
   const handleOpenEditDeductionModal = () => {
@@ -321,7 +309,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
     if (pageRef.current) {
       paginationLabel(pageRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
   }, [services, pageRef.current])
 
   // 不可點的列操作（停用的服務）：連結無 disabled 屬性，比照 MUI ButtonBase 改用 aria-disabled + 取消指標事件
@@ -342,9 +330,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
         >
           <div className="flex items-baseline gap-3">
             <CardTitle>所有營業服務</CardTitle>
-            <span className="text-label tabular-nums text-text-secondary">
-              共 {services.totalCount} 筆
-            </span>
+            <span className="text-label tabular-nums text-text-secondary">共 {services.totalCount} 筆</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -354,19 +340,10 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
                 <TableHead className="w-12">
                   <Checkbox
                     aria-label="全選"
-                    checked={
-                      selectedService.length === selectableCount &&
-                      selectableCount > 0
-                    }
-                    indeterminate={
-                      selectedService.length > 0 &&
-                      selectedService.length < selectableCount
-                    }
+                    checked={selectedService.length === selectableCount && selectableCount > 0}
+                    indeterminate={selectedService.length > 0 && selectedService.length < selectableCount}
                     onChange={handleSelectAll}
-                    disabled={
-                      services.data.length === 0 ||
-                      services.data.filter(d => !d.isUsing).length === services.data.length
-                    }
+                    disabled={services.data.length === 0 || services.data.filter(d => !d.isUsing).length === services.data.length}
                   />
                 </TableHead>
                 <TableHead>操作</TableHead>
@@ -382,10 +359,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
             </TableHeader>
             <TableBody>
               {services.data.map((data, index) => (
-                <TableRow
-                  key={`${data.name}-${index}`}
-                  data-state={selectedService.indexOf(data.id) > -1 || !data.isUsing ? 'selected' : undefined}
-                >
+                <TableRow key={`${data.name}-${index}`} data-state={selectedService.indexOf(data.id) > -1 || !data.isUsing ? 'selected' : undefined}>
                   <TableCell>
                     <Checkbox
                       aria-label={`選取 ${data.name}`}
@@ -396,21 +370,13 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
                   </TableCell>
                   <TableCell>
                     <Button asChild variant="ghost" size="icon" className="text-text-secondary">
-                      <RouterLink
-                        aria-label="編輯服務"
-                        to={`/service/edit/${data.id}`}
-                        {...linkDisabled(!data.isUsing)}
-                      >
+                      <RouterLink aria-label="編輯服務" to={`/service/edit/${data.id}`} {...linkDisabled(!data.isUsing)}>
                         <Pencil strokeWidth={1.75} />
                       </RouterLink>
                     </Button>
                   </TableCell>
                   <TableCell>{data.no}</TableCell>
-                  <TableCell>
-                    {idx(data, _ =>
-                      _.serviceCategory !== null ? _.serviceCategory.name : '無分類'
-                    )}
-                  </TableCell>
+                  <TableCell>{idx(data, _ => (_.serviceCategory !== null ? _.serviceCategory.name : '無分類'))}</TableCell>
                   <TableCell>{data.name}</TableCell>
                   <TableCell numeric>{formatNumber(data.price)}</TableCell>
                   <TableCell className={cn('tabular-nums', data.serviceDeductionCount === 0 && 'font-medium text-danger')}>

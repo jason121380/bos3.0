@@ -8,9 +8,7 @@
 // GraphQL 全由模擬 link 回應，不連後端、不改真實帳單或入金。
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { callsOf } from '../../../__tests__/testkit.test'
-import {
-  setup, pageReady, makeOrder, withCustomer, checkoutAndGetInput, summaryValue, loginForTest, SIMPLE_SERVICE_ORDER,
-} from './orderEditKit.test'
+import { setup, pageReady, makeOrder, withCustomer, checkoutAndGetInput, summaryValue, loginForTest, SIMPLE_SERVICE_ORDER } from './orderEditKit.test'
 
 jest.setTimeout(20000)
 
@@ -171,7 +169,9 @@ describe('帳單詳細：紅利點數', () => {
     const page = setup({
       ...bonusOn,
       order: withCustomer({ bonusDeposit: 8 }),
-      GET_BONUS_REWARD_RULE: { getParameterAboutSettingFunction: { bonusRewardRule: { isUsing: true, rule: { price: 100, bonus: 1, mode: 'ROUNDING' } } } },
+      GET_BONUS_REWARD_RULE: {
+        getParameterAboutSettingFunction: { bonusRewardRule: { isUsing: true, rule: { price: 100, bonus: 1, mode: 'ROUNDING' } } },
+      },
     })
     await pageReady(page)
     expect(bonusField('點數給點')).toBeDisabled()

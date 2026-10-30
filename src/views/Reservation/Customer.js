@@ -4,13 +4,7 @@ import { Button } from 'ui/button'
 import { Card, CardContent } from 'ui/card'
 import { Field, Input } from 'ui/input'
 
-export default function Customer({
-  onDelete,
-  customer,
-  friendsNumber,
-  onCustomerChange,
-  customerKey,
-}) {
+export default function Customer({ onDelete, customer, friendsNumber, onCustomerChange, customerKey }) {
   const [serviceCategoryLabelWidth, setServiceCategoryLabelWidth] = React.useState(0)
   const serviceCategoryRef = React.useRef()
   let FN
@@ -20,11 +14,7 @@ export default function Customer({
     FN = 0
   }
   React.useEffect(() => {
-    setServiceCategoryLabelWidth(
-      serviceCategoryRef.current && serviceCategoryRef.current.offsetWidth
-        ? serviceCategoryRef.current.offsetWidth
-        : 0
-    )
+    setServiceCategoryLabelWidth(serviceCategoryRef.current && serviceCategoryRef.current.offsetWidth ? serviceCategoryRef.current.offsetWidth : 0)
   }, [])
 
   return (

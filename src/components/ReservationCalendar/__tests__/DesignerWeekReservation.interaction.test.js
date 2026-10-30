@@ -20,9 +20,18 @@ let mockCalendarInput
 let mockNameType = 'NAME'
 jest.mock('elements/snackbars', () => ({ openSnackbar: jest.fn() }))
 jest.mock('hooks/useFetchMerchant', () => () => ({ loading: false, data: { merchant: { openingHours: '10:00:00', closingHours: '20:00:00' } } }))
-jest.mock('hooks/useFetchGetDesignerNameForCustomerSide', () => () => ({ loading: !!mockApi.settingsLoading, data: { getDesignerNameForCustomerSide: mockNameType } }))
-jest.mock('hooks/useFetchGetIsBookingRemarkDisplay', () => () => ({ loading: !!mockApi.settingsLoading, data: { getIsBookingRemarkDisplay: mockApi.remarkDisplay } }))
-jest.mock('hooks/useFetchGetIsCusBookingRemarkDisplay', () => () => ({ loading: !!mockApi.settingsLoading, data: { getIsCusBookingRemarkDisplay: mockApi.cusRemarkDisplay } }))
+jest.mock('hooks/useFetchGetDesignerNameForCustomerSide', () => () => ({
+  loading: !!mockApi.settingsLoading,
+  data: { getDesignerNameForCustomerSide: mockNameType },
+}))
+jest.mock('hooks/useFetchGetIsBookingRemarkDisplay', () => () => ({
+  loading: !!mockApi.settingsLoading,
+  data: { getIsBookingRemarkDisplay: mockApi.remarkDisplay },
+}))
+jest.mock('hooks/useFetchGetIsCusBookingRemarkDisplay', () => () => ({
+  loading: !!mockApi.settingsLoading,
+  data: { getIsCusBookingRemarkDisplay: mockApi.cusRemarkDisplay },
+}))
 jest.mock('hooks/useFetchGetMerchantDesignerWeekCalendar', () => ({ input }) => {
   mockCalendarInput = input
   return mockApi.calendar(input)
@@ -37,15 +46,52 @@ jest.mock('hooks/useFetchSetAdminBookingTimes', () => () => ({ setTimes: (...a) 
 
 const reservations = week => [
   {
-    type: 'RESERVATION', ids: ['r1'], startTime: at(week, 1, 11), endTime: at(week, 1, 12), timeCost: 2, bookingStatus: '預約成功', isDesignate: true,
-    nameToDisplay: '王小明', customerId: 'c1', customerCellphone: '0912000111', remark: '剪短', remarkForCustomer: '怕痛', companionCount: 1,
-    isCheckin: true, isDone: false, displayBirthdayIcon: true, notificationDate: at(week, 0, 9), notificationDayCount: 1,
+    type: 'RESERVATION',
+    ids: ['r1'],
+    startTime: at(week, 1, 11),
+    endTime: at(week, 1, 12),
+    timeCost: 2,
+    bookingStatus: '預約成功',
+    isDesignate: true,
+    nameToDisplay: '王小明',
+    customerId: 'c1',
+    customerCellphone: '0912000111',
+    remark: '剪短',
+    remarkForCustomer: '怕痛',
+    companionCount: 1,
+    isCheckin: true,
+    isDone: false,
+    displayBirthdayIcon: true,
+    notificationDate: at(week, 0, 9),
+    notificationDayCount: 1,
   },
   {
-    type: 'RESERVATION', ids: ['r2'], startTime: at(week, 1, 11), endTime: at(week, 1, 13), timeCost: 4, bookingStatus: '待審核', isDesignate: false,
-    nameToDisplay: '陳小美', customerCellphone: '0922', remark: '', remarkForCustomer: '', companionCount: 0, isCheckin: false, isDone: false,
+    type: 'RESERVATION',
+    ids: ['r2'],
+    startTime: at(week, 1, 11),
+    endTime: at(week, 1, 13),
+    timeCost: 4,
+    bookingStatus: '待審核',
+    isDesignate: false,
+    nameToDisplay: '陳小美',
+    customerCellphone: '0922',
+    remark: '',
+    remarkForCustomer: '',
+    companionCount: 0,
+    isCheckin: false,
+    isDone: false,
   },
-  { type: 'RESERVATION', ids: ['r3'], startTime: at(week, 1, 15), endTime: at(week, 1, 16), timeCost: 2, bookingStatus: '預約成功', nameToDisplay: '已結帳客', isDone: true, createdOrderId: 'ord9' },
+  {
+    type: 'RESERVATION',
+    ids: ['r3'],
+    startTime: at(week, 1, 15),
+    endTime: at(week, 1, 16),
+    timeCost: 2,
+    bookingStatus: '預約成功',
+    nameToDisplay: '已結帳客',
+    isDone: true,
+    createdOrderId: 'ord9',
+  },
   { type: 'HOLIDAY', ids: [], startTime: at(week, 1, 17), endTime: at(week, 1, 18), timeCost: 2, nameToDisplay: '休1' },
   { type: 'HOLIDAY', ids: [], startTime: at(week, 2, 12), endTime: at(week, 2, 13, 30), timeCost: 3, nameToDisplay: '公休' },
   { type: 'HOLIDAY', ids: [], startTime: at(week, 3, 12), endTime: at(week, 3, 13), timeCost: 2, nameToDisplay: '休A' },
@@ -57,12 +103,20 @@ const calendarResult = (week, extra = {}) => ({
   data: {
     getMerchantDesignerWeekCalendar: {
       merchantUnappointCalendar: [],
-      merchantDesignerCalendar: [{ designerId: 'd1', designerName: '王大明', designerNickname: '小明', bookingLimit: 1, calendar: reservations(week), ...extra }],
+      merchantDesignerCalendar: [
+        { designerId: 'd1', designerName: '王大明', designerNickname: '小明', bookingLimit: 1, calendar: reservations(week), ...extra },
+      ],
     },
   },
 })
 
-const props = { designerId: 'd1', checkinSettings: { isBookingCheckinEnabled: true }, bookingCusCheck: false, checkinMode: false, bookingHistoryDisplay: true }
+const props = {
+  designerId: 'd1',
+  checkinSettings: { isBookingCheckinEnabled: true },
+  bookingCusCheck: false,
+  checkinMode: false,
+  bookingHistoryDisplay: true,
+}
 const renderTab = (extra = {}, week = WEEK) => {
   window.history.pushState({}, '', `/profile/reservation?startDate=${week}`)
   return renderPage(<Reservation {...props} {...extra} />, { route: '/profile/reservation' })
@@ -322,7 +376,9 @@ describe('點公休色塊（編輯公休）', () => {
     fireEvent.click(holiday('公休'))
     const body = dialogBody()
     expect(within(body).getByText('編輯公休')).toBeInTheDocument()
-    const slots = within(body).getAllByRole('button').filter(b => /^\d\d:\d\d$/.test(b.textContent))
+    const slots = within(body)
+      .getAllByRole('button')
+      .filter(b => /^\d\d:\d\d$/.test(b.textContent))
     expect(slots.map(b => [b.textContent, b.getAttribute('aria-pressed')])).toEqual([
       ['12:00', 'true'],
       ['12:30', 'true'],

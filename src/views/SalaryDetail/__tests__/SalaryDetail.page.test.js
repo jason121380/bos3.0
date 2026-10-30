@@ -15,21 +15,55 @@ jest.setTimeout(20000)
 
 // 欄位順序與畫面欄位相同
 const INCREASE = [
-  'wage', 'mealAllowance', 'additionOfDuties', 'laborhealthInsurance', 'attendanceBonus', 'salesBonus', 'salesCommission',
-  'specialCommission', 'shampooCommission', 'hairCareCommission', 'hotDyeingCommission', 'otherCommission', 'otherAllowance',
-  'reward', 'customerReturn', 'performanceCommission',
+  'wage',
+  'mealAllowance',
+  'additionOfDuties',
+  'laborhealthInsurance',
+  'attendanceBonus',
+  'salesBonus',
+  'salesCommission',
+  'specialCommission',
+  'shampooCommission',
+  'hairCareCommission',
+  'hotDyeingCommission',
+  'otherCommission',
+  'otherAllowance',
+  'reward',
+  'customerReturn',
+  'performanceCommission',
 ]
 const DECREASE = [
-  'tuition', 'educationFee', 'tourismFund', 'savings', 'welfare', 'laborHealthPremium', 'selfPurchasedMaterials', 'employeeLoan',
-  'deductionForSickLeave', 'illegalCharge', 'lateRetreat', 'DeductionOfLiabilityDue', 'giftdeduction', 'managementOfficeEquipment',
-  'mutualDeduction', 'advances', 'dormitoryCosts', 'creditCardFee', 'salaryArrears', 'customerArrears', 'derelictionOfDuty',
+  'tuition',
+  'educationFee',
+  'tourismFund',
+  'savings',
+  'welfare',
+  'laborHealthPremium',
+  'selfPurchasedMaterials',
+  'employeeLoan',
+  'deductionForSickLeave',
+  'illegalCharge',
+  'lateRetreat',
+  'DeductionOfLiabilityDue',
+  'giftdeduction',
+  'managementOfficeEquipment',
+  'mutualDeduction',
+  'advances',
+  'dormitoryCosts',
+  'creditCardFee',
+  'salaryArrears',
+  'customerArrears',
+  'derelictionOfDuty',
 ]
 const sum = list => list.reduce((a, b) => a + b, 0)
 
 // 每個欄位給不同的金額，算錯欄位或漏加一項都會讓合計不同
 const salaryOf = (fields, base, extra = {}) => ({ ...Object.fromEntries(fields.map((f, i) => [f, base * (i + 1)])), ...extra })
 const incUser = (id, name, base) => ({
-  id, name, designerNo: `N${id}`, jobTitle: '設計師',
+  id,
+  name,
+  designerNo: `N${id}`,
+  jobTitle: '設計師',
   salary: salaryOf(INCREASE, base, { designateSales: 10000 * base, notDesignateSales: 5000 * base, points: 3 * base }),
 })
 const decUser = (id, name, base) => ({ id, name, designerNo: `N${id}`, jobTitle: '助理', salary: salaryOf(DECREASE, base) })
@@ -50,8 +84,7 @@ const card = title => screen.getByText(title).closest('.ui-root').parentElement
 const cellsOf = tr => Array.from(tr.querySelectorAll('td')).map(td => td.textContent)
 const rowIn = (title, name) => cellsOf(within(card(title)).getByText(name).closest('tr'))
 // 下拉以選項索引當 value，依顯示文字選取
-const choose = (select, text) =>
-  fireEvent.change(select, { target: { value: Array.from(select.options).find(o => o.textContent === text).value } })
+const choose = (select, text) => fireEvent.change(select, { target: { value: Array.from(select.options).find(o => o.textContent === text).value } })
 const totalIn = title => cellsOf(within(card(title)).getByText('合 計:').closest('tr'))
 
 beforeEach(() => loginAs())
@@ -68,12 +101,16 @@ describe('薪資明細表：加項總覽', () => {
     const itemsTotal = sum(items)
     await wait(() => expect(rowIn('加項總覽', '小美')[3]).not.toBe('—'))
     expect(rowIn('加項總覽', '小美')).toEqual([
-      'N1', '小美', '設計師',
+      'N1',
+      '小美',
+      '設計師',
       // 實發金額＝加項合計 − 同一位員工的扣項合計，不加入指定／不指定業績（營業額）（Jason 2026/10/22「只算加扣項」）
       formatNumber(itemsTotal - decTotalOf(DEC_USERS[0])),
       ...items.map(formatNumber),
       formatNumber(itemsTotal),
-      formatNumber(s.designateSales), formatNumber(s.notDesignateSales), formatNumber(s.points),
+      formatNumber(s.designateSales),
+      formatNumber(s.notDesignateSales),
+      formatNumber(s.points),
     ])
   })
 
@@ -84,12 +121,15 @@ describe('薪資明細表：加項總覽', () => {
     const itemsTotal = sum(INCREASE.map(col))
     await wait(() => expect(totalIn('加項總覽')[2]).not.toBe('—'))
     expect(totalIn('加項總覽')).toEqual([
-      '合 計:', '',
+      '合 計:',
+      '',
       // 實發金額合計＝加項合計 − 扣項合計（全部員工）
       formatNumber(itemsTotal - sum(DEC_USERS.map(decTotalOf))),
       ...INCREASE.map(f => formatNumber(col(f))),
       formatNumber(itemsTotal),
-      formatNumber(col('designateSales')), formatNumber(col('notDesignateSales')), formatNumber(col('points')),
+      formatNumber(col('designateSales')),
+      formatNumber(col('notDesignateSales')),
+      formatNumber(col('points')),
     ])
   })
 
@@ -115,7 +155,9 @@ describe('薪資明細表：加項總覽', () => {
   it('扣項讀不到（查詢失敗）時實發金額顯示「—」，不誤顯示成只有加項', async () => {
     renderPage(<SalaryDetail />, {
       fixtures: {
-        FETCH_USER_SALARY_INCREASE: v => ({ users: { totalCount: 2, pageLimit: v.input.pageLimit, pageOffset: v.input.pageOffset, users: INC_USERS } }),
+        FETCH_USER_SALARY_INCREASE: v => ({
+          users: { totalCount: 2, pageLimit: v.input.pageLimit, pageOffset: v.input.pageOffset, users: INC_USERS },
+        }),
         FETCH_USER_SALARY_DECREASE: new Error('查詢失敗'),
       },
     })
@@ -191,7 +233,11 @@ describe('薪資明細表：扣項總覽', () => {
     await settle()
     choose(within(card('扣項總覽')).getByLabelText('每頁筆數'), '10')
     await wait(() =>
-      expect(callsOf(calls, 'FETCH_USER_SALARY_DECREASE').map(c => c.variables.input)).toContainEqual({ pageLimit: 10, pageOffset: 0, isStaff: false })
+      expect(callsOf(calls, 'FETCH_USER_SALARY_DECREASE').map(c => c.variables.input)).toContainEqual({
+        pageLimit: 10,
+        pageOffset: 0,
+        isStaff: false,
+      })
     )
   })
 })
@@ -217,12 +263,18 @@ describe('薪資明細表：月份', () => {
     })
     await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-    expect(rowIn('加項總覽', '新人').slice(3).every(v => v === '0')).toBe(true)
-    expect(rowIn('扣項總覽', '新人').slice(3).every(v => v === '0')).toBe(true)
+    expect(
+      rowIn('加項總覽', '新人')
+        .slice(3)
+        .every(v => v === '0')
+    ).toBe(true)
+    expect(
+      rowIn('扣項總覽', '新人')
+        .slice(3)
+        .every(v => v === '0')
+    ).toBe(true)
     // 合計列不受影響（實發金額合計＝加項合計 − 扣項合計）
-    expect(totalIn('加項總覽')[2]).toBe(
-      formatNumber(sum(INCREASE.map(f => sum(INC_USERS.map(u => u.salary[f])))) - sum(DEC_USERS.map(decTotalOf)))
-    )
+    expect(totalIn('加項總覽')[2]).toBe(formatNumber(sum(INCREASE.map(f => sum(INC_USERS.map(u => u.salary[f])))) - sum(DEC_USERS.map(decTotalOf))))
   })
 })
 
@@ -235,14 +287,26 @@ describe('薪資明細表：沒有員工', () => {
         <DecreaseResult users={[]} pageSetting={page} handleOnChangePage={() => {}} handleOnChangeRowsPerPage={() => {}} />
       </>
     )
-    expect(totalIn('加項總覽').slice(2).every(v => v === '0')).toBe(true)
-    expect(totalIn('扣項總覽').slice(2).every(v => v === '0')).toBe(true)
+    expect(
+      totalIn('加項總覽')
+        .slice(2)
+        .every(v => v === '0')
+    ).toBe(true)
+    expect(
+      totalIn('扣項總覽')
+        .slice(2)
+        .every(v => v === '0')
+    ).toBe(true)
   })
 
   it('加項總覽沒有給扣項資料時實發金額合計顯示「—」', () => {
     const page = { totalCount: 0, pageLimit: 20, pageOffset: 0 }
     renderPage(<IncreaseResult users={[]} pageSetting={page} handleOnChangePage={() => {}} handleOnChangeRowsPerPage={() => {}} />)
     expect(totalIn('加項總覽')[2]).toBe('—')
-    expect(totalIn('加項總覽').slice(3).every(v => v === '0')).toBe(true)
+    expect(
+      totalIn('加項總覽')
+        .slice(3)
+        .every(v => v === '0')
+    ).toBe(true)
   })
 })

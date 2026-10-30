@@ -23,7 +23,14 @@ describe('BelongAutocomplete 歸屬', () => {
   it('fetchData：自行查詢歸屬，選項為名稱；勾選回傳名稱陣列', async () => {
     const onChange = jest.fn()
     const { settle, calls } = renderPage(<BelongAutocomplete fetchData value={['店內']} onChange={onChange} />, {
-      fixtures: { USE_FETCH_GET_ATTRIBUTIONS: { getAttribution: [{ name: '店內', value: 'IN' }, { name: '外場', value: 'OUT' }] } },
+      fixtures: {
+        USE_FETCH_GET_ATTRIBUTIONS: {
+          getAttribution: [
+            { name: '店內', value: 'IN' },
+            { name: '外場', value: 'OUT' },
+          ],
+        },
+      },
     })
     await settle()
     expect(calls.map(c => c.operationName)).toContain('USE_FETCH_GET_ATTRIBUTIONS')
@@ -69,7 +76,14 @@ describe('BelongAutocomplete 歸屬', () => {
 })
 
 describe('MainEventAutocomplete 活動', () => {
-  const fixtures = { GET_MAIN_EVENTS_FOR_AUTOCOMPLETE: { mainEvents: [{ id: 'e1', nameDefault: '母親節' }, { id: 'e2', nameDefault: '週年慶' }] } }
+  const fixtures = {
+    GET_MAIN_EVENTS_FOR_AUTOCOMPLETE: {
+      mainEvents: [
+        { id: 'e1', nameDefault: '母親節' },
+        { id: 'e2', nameDefault: '週年慶' },
+      ],
+    },
+  }
 
   it('已選 id 對回活動名稱；勾選回傳 id 陣列；清除回傳空陣列', async () => {
     const onChange = jest.fn()
@@ -107,7 +121,14 @@ describe('MainEventAutocomplete 活動', () => {
 })
 
 describe('PaywayAutocomplete 付款方式', () => {
-  const fixtures = { GET_PAY_WAYS: { payWays: [{ value: 'CASH', label: '現金' }, { value: 'CARD', label: '信用卡' }] } }
+  const fixtures = {
+    GET_PAY_WAYS: {
+      payWays: [
+        { value: 'CASH', label: '現金' },
+        { value: 'CARD', label: '信用卡' },
+      ],
+    },
+  }
 
   it('已選 value 對回標籤；勾選回傳 value 陣列；再次點選取消勾選', async () => {
     const onChange = jest.fn()
@@ -176,7 +197,14 @@ describe('TicketsAutocomplete 卡券', () => {
 
   it('純數字編號依數值排序（2 排在 10 前面）', async () => {
     const { settle } = renderPage(<TicketsAutocomplete value={[]} />, {
-      fixtures: { GET_TICKETS_FOR_AUTOCOMPLETE: { ticketsForList: [{ id: 'a', no: '10', name: '十號' }, { id: 'b', no: '2', name: '二號' }] } },
+      fixtures: {
+        GET_TICKETS_FOR_AUTOCOMPLETE: {
+          ticketsForList: [
+            { id: 'a', no: '10', name: '十號' },
+            { id: 'b', no: '2', name: '二號' },
+          ],
+        },
+      },
     })
     await settle()
     openCombo()
@@ -275,9 +303,7 @@ describe('MembershipCardList 會員卡清單', () => {
 describe('WalletDepositToggleButton 儲值／扣除', () => {
   it('只顯示有權限的動作；點選回傳動作；再點已選的不會變成空值', () => {
     const onChange = jest.fn()
-    renderPage(
-      <WalletDepositToggleButton value="ADD" onChange={onChange} identity={{ allowDepositAddition: true, allowDepositDeduction: true }} />
-    )
+    renderPage(<WalletDepositToggleButton value="ADD" onChange={onChange} identity={{ allowDepositAddition: true, allowDepositDeduction: true }} />)
     fireEvent.click(screen.getByRole('button', { name: '扣除' }))
     expect(onChange).toHaveBeenLastCalledWith('MINUS')
     onChange.mockClear()
@@ -287,7 +313,9 @@ describe('WalletDepositToggleButton 儲值／扣除', () => {
     renderPage(<WalletDepositToggleButton value="" onChange={onChange} identity={{ allowDepositAddition: false, allowDepositDeduction: true }} />)
     expect(screen.queryByRole('button', { name: '儲值' })).toBeNull()
     cleanup()
-    renderPage(<WalletDepositToggleButton value="" onChange={onChange} disabled identity={{ allowDepositAddition: true, allowDepositDeduction: false }} />)
+    renderPage(
+      <WalletDepositToggleButton value="" onChange={onChange} disabled identity={{ allowDepositAddition: true, allowDepositDeduction: false }} />
+    )
     expect(screen.queryByRole('button', { name: '扣除' })).toBeNull()
     expect(screen.getByRole('button', { name: '儲值' })).toBeDisabled()
   })

@@ -26,7 +26,9 @@ export default function CouponSells({
     <Fragment>
       <div className="mb-6 flex flex-wrap items-start justify-start gap-y-[12px]">
         {index === 0 ? (
-          <RowIconButton label="從清單選擇預收卡" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenCouponModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇預收卡" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenCouponModal}>
+            <Copy aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
@@ -71,13 +73,7 @@ export default function CouponSells({
                 inputProps={{
                   'data-testid': `couponSells-${index}-count`,
                 }}
-                disabled={
-                  !!(
-                    couponSell.isLocked === 'TRUE' ||
-                    couponSell.isLocked === 'UNSET' ||
-                    !isTicketSellingEditable
-                  )
-                }
+                disabled={!!(couponSell.isLocked === 'TRUE' || couponSell.isLocked === 'UNSET' || !isTicketSellingEditable)}
               />
             </Field>
             <Field label="價格" className="!mr-[12px] flex w-[65px]">
@@ -93,13 +89,7 @@ export default function CouponSells({
                 inputProps={{
                   'data-testid': `couponSells-${index}-price`,
                 }}
-                disabled={
-                  !!(
-                    couponSell.isLocked === 'TRUE' ||
-                    couponSell.isLocked === 'UNSET' ||
-                    !isTicketSellingEditable
-                  )
-                }
+                disabled={!!(couponSell.isLocked === 'TRUE' || couponSell.isLocked === 'UNSET' || !isTicketSellingEditable)}
               />
             </Field>
             <Field label="張數" className="!mr-[12px] flex w-[65px]">
@@ -115,13 +105,7 @@ export default function CouponSells({
                 inputProps={{
                   'data-testid': `couponSells-${index}-count`,
                 }}
-                disabled={
-                  !!(
-                    couponSell.isLocked === 'TRUE' ||
-                    couponSell.isLocked === 'UNSET' ||
-                    !isTicketSellingEditable
-                  )
-                }
+                disabled={!!(couponSell.isLocked === 'TRUE' || couponSell.isLocked === 'UNSET' || !isTicketSellingEditable)}
               />
             </Field>
             <Field label="備註" className="!mr-[12px] flex w-[150px] min-w-[150px]">
@@ -143,7 +127,8 @@ export default function CouponSells({
         )}
         {isTicketSellingEditable && (
           <RowIconButton
-            label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
+            label="清除此列"
+            className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               onClear({ index })
             }}
@@ -154,7 +139,8 @@ export default function CouponSells({
         )}
         {!first && isTicketSellingEditable ? (
           <RowIconButton
-            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
+            label="刪除此列"
+            className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               removeCouponSell({
                 index,

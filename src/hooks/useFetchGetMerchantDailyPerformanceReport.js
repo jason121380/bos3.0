@@ -35,7 +35,7 @@ const FETCH_GET_MERCHANT_DAILY_PERFORMANCE_REPORT = gql`
 export default function useFetchGetMerchantDailyPerformanceReport({ input }) {
   return useQuery(FETCH_GET_MERCHANT_DAILY_PERFORMANCE_REPORT, {
     variables: {
-      input
+      input,
     },
     fetchPolicy: 'cache-and-network',
   })

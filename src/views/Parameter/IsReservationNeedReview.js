@@ -9,34 +9,52 @@ import cloneDeep from 'lodash/cloneDeep'
 import produce from 'immer'
 
 const hours = [
-  '00', '01', '02', '03', '04', '05', '06', '07',
-  '08', '09', '10', '11', '12', '13', '14', '15',
-  '16', '17', '18', '19', '20', '21', '22', '23'
+  '00',
+  '01',
+  '02',
+  '03',
+  '04',
+  '05',
+  '06',
+  '07',
+  '08',
+  '09',
+  '10',
+  '11',
+  '12',
+  '13',
+  '14',
+  '15',
+  '16',
+  '17',
+  '18',
+  '19',
+  '20',
+  '21',
+  '22',
+  '23',
 ]
 
 const settingArr = [
-  {label: '指定預約無需審核', key: 'isBookingAutoAccept'},
-  {label: '啟用不指定預約審核', key: 'isNDBNeedVerify'},
-  {label: '開放客人當日預約', key: 'isCustomerBookedableInSameDay'},
-  {label: '預約結束時間不能超過營業結束時間', key: 'isRTCUsing'},
-  {label: '單日預約紀錄顯示備註', key: 'isBookingRemarkDisplay'},
-  {label: '單日預約紀錄顯示顧客備註', key: 'isCusBookingRemarkDisplay'},
-  {label: '預約紀錄顯示顧客生日提醒', key: 'isBirthdayIconDisplay'},
-  {label: '預約管理顯示已結帳的預約', key: 'isBookingHistoryDisplay'},
-  {label: '上限納入審核中預約', key: 'isNDBInLimitCount'},
+  { label: '指定預約無需審核', key: 'isBookingAutoAccept' },
+  { label: '啟用不指定預約審核', key: 'isNDBNeedVerify' },
+  { label: '開放客人當日預約', key: 'isCustomerBookedableInSameDay' },
+  { label: '預約結束時間不能超過營業結束時間', key: 'isRTCUsing' },
+  { label: '單日預約紀錄顯示備註', key: 'isBookingRemarkDisplay' },
+  { label: '單日預約紀錄顯示顧客備註', key: 'isCusBookingRemarkDisplay' },
+  { label: '預約紀錄顯示顧客生日提醒', key: 'isBirthdayIconDisplay' },
+  { label: '預約管理顯示已結帳的預約', key: 'isBookingHistoryDisplay' },
+  { label: '上限納入審核中預約', key: 'isNDBInLimitCount' },
 ]
 
-function IsReservationNeedReview({
-  className, aboutBooking, setAboutBooking, bookingCusCheck,
-  setBookingCusCheck, inputEnable, 
-}) {
+function IsReservationNeedReview({ className, aboutBooking, setAboutBooking, bookingCusCheck, setBookingCusCheck, inputEnable }) {
   const handleChangeBookingTime = (type, index, value) => {
     const time = cloneDeep(aboutBooking.bookingTimeSetting[type].split(':'))
     const newData = cloneDeep(aboutBooking.bookingTimeSetting)
     time[index] = value
     newData[type] = time.join(':')
     setAboutBooking(
-      produce(draft =>{
+      produce(draft => {
         draft.bookingTimeSetting = newData
       })
     )
@@ -85,7 +103,7 @@ function IsReservationNeedReview({
               label="次數"
               type="number"
               value={aboutBooking.bookingLimitPerCellphoneInSameDay === null ? '' : aboutBooking.bookingLimitPerCellphoneInSameDay}
-              onChange={e => handleSetValue('bookingLimitPerCellphoneInSameDay', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value), 10))}
+              onChange={e => handleSetValue('bookingLimitPerCellphoneInSameDay', parseInt(e.target.value === '' ? 0 : Math.abs(e.target.value), 10))}
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
@@ -107,7 +125,7 @@ function IsReservationNeedReview({
               label="次數"
               type="number"
               value={aboutBooking.cusMaxBookingCount === null ? '' : aboutBooking.cusMaxBookingCount}
-              onChange={e => handleSetValue('cusMaxBookingCount', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value), 10))}
+              onChange={e => handleSetValue('cusMaxBookingCount', parseInt(e.target.value === '' ? 0 : Math.abs(e.target.value), 10))}
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
@@ -122,17 +140,20 @@ function IsReservationNeedReview({
         </div>
         <div className="flex flex-row mb-[24px] mt-[36px] items-start">
           <span>指定預約僅開放未來</span>
-          <div style={{  
-            display: 'flex', flexDirection: 'column',
-             marginTop: -12
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              marginTop: -12,
+            }}
+          >
             <TextField
               disabled={!inputEnable || aboutBooking.disableBookingDayLimit === null}
               variant="outlined"
               label="天數"
               type="number"
               value={aboutBooking.disableBookingDayLimit === null ? '' : aboutBooking.disableBookingDayLimit}
-              onChange={e => handleSetValue('disableBookingDayLimit', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value), 10))}
+              onChange={e => handleSetValue('disableBookingDayLimit', parseInt(e.target.value === '' ? 0 : Math.abs(e.target.value), 10))}
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
@@ -145,17 +166,20 @@ function IsReservationNeedReview({
             />
           </div>
           <span>天到</span>
-          <div style={{  
-            display: 'flex', flexDirection: 'column',
-             marginTop: -12
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              marginTop: -12,
+            }}
+          >
             <TextField
               disabled={!inputEnable || aboutBooking.createBookingDayLimit === null}
               variant="outlined"
               label="天數"
               type="number"
               value={aboutBooking.createBookingDayLimit === null ? '' : aboutBooking.createBookingDayLimit}
-              onChange={e => handleSetValue('createBookingDayLimit', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value), 10))}
+              onChange={e => handleSetValue('createBookingDayLimit', parseInt(e.target.value === '' ? 0 : Math.abs(e.target.value), 10))}
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
@@ -179,7 +203,7 @@ function IsReservationNeedReview({
               label="提出申請幾天內"
               type="number"
               value={aboutBooking.cancelBookingDayLimitByActionDate === null ? '' : aboutBooking.cancelBookingDayLimitByActionDate}
-              onChange={e => handleSetValue('cancelBookingDayLimitByActionDate', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value), 10))}
+              onChange={e => handleSetValue('cancelBookingDayLimitByActionDate', parseInt(e.target.value === '' ? 0 : Math.abs(e.target.value), 10))}
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
@@ -196,7 +220,7 @@ function IsReservationNeedReview({
               label="預約日期幾天前"
               type="number"
               value={aboutBooking.cancelBookingDayLimitByServiceDate === null ? '' : aboutBooking.cancelBookingDayLimitByServiceDate}
-              onChange={e => handleSetValue('cancelBookingDayLimitByServiceDate', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value), 10))}
+              onChange={e => handleSetValue('cancelBookingDayLimitByServiceDate', parseInt(e.target.value === '' ? 0 : Math.abs(e.target.value), 10))}
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
@@ -212,7 +236,7 @@ function IsReservationNeedReview({
         <div className="flex flex-col mb-[24px]">
           <div style={{ marginBottom: '15px' }}>設定店家可預約的時間範圍</div>
           <div style={{ flexWrap: 'wrap', gap: '10px 0' }} className="flex items-center">
-            <Field label='開始'>
+            <Field label="開始">
               <div className="flex items-center gap-2">
                 <NativeSelect
                   fullWidth={false}
@@ -222,7 +246,9 @@ function IsReservationNeedReview({
                   onChange={e => handleChangeBookingTime('openingHours', 0, e.target.value)}
                 >
                   {hours.map(d => (
-                    <NativeSelectOption key={d} value={d}>{d}</NativeSelectOption>
+                    <NativeSelectOption key={d} value={d}>
+                      {d}
+                    </NativeSelectOption>
                   ))}
                 </NativeSelect>
                 <span>:</span>
@@ -234,13 +260,13 @@ function IsReservationNeedReview({
                   disabled={!inputEnable}
                   onChange={e => handleChangeBookingTime('openingHours', 1, e.target.value)}
                 >
-                  <NativeSelectOption value='00'>00</NativeSelectOption>
-                  <NativeSelectOption value='30'>30</NativeSelectOption>
+                  <NativeSelectOption value="00">00</NativeSelectOption>
+                  <NativeSelectOption value="30">30</NativeSelectOption>
                 </NativeSelect>
               </div>
             </Field>
             <span style={{ margin: '0 30px' }}>至</span>
-            <Field label='結束'>
+            <Field label="結束">
               <div className="flex items-center gap-2">
                 <NativeSelect
                   fullWidth={false}
@@ -250,7 +276,9 @@ function IsReservationNeedReview({
                   onChange={e => handleChangeBookingTime('closingHours', 0, e.target.value)}
                 >
                   {hours.map(d => (
-                    <NativeSelectOption key={d} value={d}>{d}</NativeSelectOption>
+                    <NativeSelectOption key={d} value={d}>
+                      {d}
+                    </NativeSelectOption>
                   ))}
                 </NativeSelect>
                 <span>:</span>
@@ -262,8 +290,8 @@ function IsReservationNeedReview({
                   disabled={!inputEnable}
                   onChange={e => handleChangeBookingTime('closingHours', 1, e.target.value)}
                 >
-                  <NativeSelectOption value='00'>00</NativeSelectOption>
-                  <NativeSelectOption value='30'>30</NativeSelectOption>
+                  <NativeSelectOption value="00">00</NativeSelectOption>
+                  <NativeSelectOption value="30">30</NativeSelectOption>
                 </NativeSelect>
               </div>
             </Field>

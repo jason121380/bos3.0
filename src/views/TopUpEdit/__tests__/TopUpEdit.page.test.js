@@ -25,18 +25,27 @@ jest.mock('ui/date-picker', () => ({
 }))
 jest.mock('components/EmployeeAutoComplete', () => ({ value, onChange, fieldProps }) => (
   <div data-testid="designer" data-value={value || ''}>
-    <button type="button" onClick={() => onChange({ userId: 'designer-2' })}>選{fieldProps.label}</button>
+    <button type="button" onClick={() => onChange({ userId: 'designer-2' })}>
+      選{fieldProps.label}
+    </button>
     {fieldProps.error && <span>{fieldProps.helperText}</span>}
   </div>
 ))
 jest.mock('components/CustomerAutoComplete', () => ({ value, onChange, fieldProps }) => (
   <div data-testid="customer" data-value={value || ''}>
-    <button type="button" onClick={() => onChange({ id: 'customer-2' })}>選{fieldProps.label}</button>
+    <button type="button" onClick={() => onChange({ id: 'customer-2' })}>
+      選{fieldProps.label}
+    </button>
     {fieldProps.error && <span>{fieldProps.helperText}</span>}
   </div>
 ))
 
-const PAYMENTS = { merchantPayWays: [{ id: 'pay-1', name: '信用卡' }, { id: 'pay-2', name: 'LINE Pay' }] }
+const PAYMENTS = {
+  merchantPayWays: [
+    { id: 'pay-1', name: '信用卡' },
+    { id: 'pay-2', name: 'LINE Pay' },
+  ],
+}
 const DETAIL = {
   id: 'dep-1',
   date: new Date(2026, 9, 21, 15, 5).getTime(),
@@ -54,18 +63,25 @@ const setup = (fixtures = {}, options = {}) =>
   renderPage(
     <>
       <TopUpEdit match={{ params: { id: 'dep-1' } }} />
-      <Route render={props => { history = props.history; return null }} />
-    </>, {
-    fixtures: {
-      PAYMENTS,
-      walletDepositDetail: { walletDepositDetail: DETAIL },
-      SET_WALLET_DEPOSIT: { updateWalletDeposit: true },
-      DELETE_WALLET_DEPOSIT: { deleteWalletDeposit: true },
-      ...fixtures,
-    },
-    route: '/topup/edit/dep-1',
-    ...options,
-  })
+      <Route
+        render={props => {
+          history = props.history
+          return null
+        }}
+      />
+    </>,
+    {
+      fixtures: {
+        PAYMENTS,
+        walletDepositDetail: { walletDepositDetail: DETAIL },
+        SET_WALLET_DEPOSIT: { updateWalletDeposit: true },
+        DELETE_WALLET_DEPOSIT: { deleteWalletDeposit: true },
+        ...fixtures,
+      },
+      route: '/topup/edit/dep-1',
+      ...options,
+    }
+  )
 
 const choose = (select, text) => {
   const option = Array.from(select.querySelectorAll('option')).find(o => o.textContent === text)
@@ -165,7 +181,10 @@ describe('編輯入金', () => {
     choose(screen.getByLabelText('付款方式'), '現金')
     save()
     await wait(() => expect(callsOf(utils.calls, 'SET_WALLET_DEPOSIT')).toHaveLength(1))
-    expect(callsOf(utils.calls, 'SET_WALLET_DEPOSIT')[0].variables.input).toMatchObject({ payType: '現金', handlingFeeDecountWay: 'WITHOUTHANDLINGFEE' })
+    expect(callsOf(utils.calls, 'SET_WALLET_DEPOSIT')[0].variables.input).toMatchObject({
+      payType: '現金',
+      handlingFeeDecountWay: 'WITHOUTHANDLINGFEE',
+    })
   })
 
   it('原資料缺必填欄位時：顯示錯誤不送出，選取後錯誤消失；沒有日期時不顯示日期欄', async () => {
@@ -246,7 +265,9 @@ describe('編輯入金', () => {
     const utils = setup({ PAYMENTS: new Error('查詢失敗') })
     await utils.settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
-    const options = Array.from(screen.getByLabelText('付款方式').querySelectorAll('option')).map(o => o.textContent).filter(Boolean)
+    const options = Array.from(screen.getByLabelText('付款方式').querySelectorAll('option'))
+      .map(o => o.textContent)
+      .filter(Boolean)
     expect(options).toEqual(['現金'])
   })
 })

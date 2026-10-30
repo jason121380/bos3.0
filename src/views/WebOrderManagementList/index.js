@@ -41,7 +41,7 @@ function WebOrderMangagementList() {
     customerId: '',
     employeeId: '',
     isReserved: true,
-    isCheckin: ''
+    isCheckin: '',
   })
 
   // UI 狀態：切換過濾器、報到功能顯示、未來預約確認邏輯
@@ -54,11 +54,11 @@ function WebOrderMangagementList() {
   const getBookingManagement = useFetchGetBookingManagement({
     dateRange: {
       startDate: pageSetting.startDate,
-      endDate: pageSetting.endDate
+      endDate: pageSetting.endDate,
     },
     pageLimit: pageSetting.pageLimit,
     pageOffset: pageSetting.pageOffset,
-    isCheckin: pageSetting.isCheckin === '' ? null : pageSetting.isCheckin
+    isCheckin: pageSetting.isCheckin === '' ? null : pageSetting.isCheckin,
   })
   const getCheckinSettings = useFetchGetCheckinSettingsForManagementList()
   const getDeleteOrderUsing = useFetchGetDeleteOrderUsing()
@@ -74,7 +74,7 @@ function WebOrderMangagementList() {
       const res = Boolean(idx(getCheckinSettings, _ => _.data.getMerchantCheckinSettings.isBookingCheckinEnabled))
       setCheclInDisplay(res)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getCheckinSettings.loading])
 
   // 同步未來預約確認設置
@@ -83,13 +83,13 @@ function WebOrderMangagementList() {
       const data = idx(getIsBookingCusCheckUsing, _ => _.data.getIsBookingCusCheckUsing)
       setBookingCusCheck(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBookingCusCheckUsing.loading])
 
   return (
     <Page className="ui-root" title="預約管理">
       <PageHeader
-        title='預約管理'
+        title="預約管理"
         actions={
           <>
             <DateSelector
@@ -126,19 +126,23 @@ function WebOrderMangagementList() {
         <Card className="mb-6 flex flex-wrap items-center gap-4 p-4">
           {checkInDisplay && (
             <div>
-              <FormControl variant="outlined" style={{ width: 120 }} >
+              <FormControl variant="outlined" style={{ width: 120 }}>
                 <NativeSelect
-                  onChange={e => setPageSetting(
-                    produce(draft => {
-                      draft.isCheckin = e.target.value
-                    })
-                  )}
+                  onChange={e =>
+                    setPageSetting(
+                      produce(draft => {
+                        draft.isCheckin = e.target.value
+                      })
+                    )
+                  }
                   value={pageSetting.isCheckin}
                   displayEmpty={false}
                   placeholder="請選擇…"
                   label="報到狀態"
                 >
-                  <NativeSelectOption value=''><em>無</em></NativeSelectOption>
+                  <NativeSelectOption value="">
+                    <em>無</em>
+                  </NativeSelectOption>
                   <NativeSelectOption value={true}>報到成功</NativeSelectOption>
                   <NativeSelectOption value={false}>未報到</NativeSelectOption>
                 </NativeSelect>
@@ -148,8 +152,8 @@ function WebOrderMangagementList() {
         </Card>
       )}
       {getBookingManagement.error ? (
-          <QueryFailed onRetry={() => getBookingManagement.refetch()} />
-        ) : !getBookingManagement.loading ?
+        <QueryFailed onRetry={() => getBookingManagement.refetch()} />
+      ) : !getBookingManagement.loading ? (
         idx(
           getBookingManagement,
           _ =>
@@ -164,13 +168,13 @@ function WebOrderMangagementList() {
                 isCustomerDataMarked={isCustomerDataMarked}
               />
             )
-        ) : (
-          // 載入中：與舊版 CircularProgress 相同時機顯示（getBookingManagement.loading）
-          <div aria-busy="true" aria-label="載入中">
-            <Skeleton className="h-[320px] w-full rounded-lg" />
-          </div>
         )
-      }
+      ) : (
+        // 載入中：與舊版 CircularProgress 相同時機顯示（getBookingManagement.loading）
+        <div aria-busy="true" aria-label="載入中">
+          <Skeleton className="h-[320px] w-full rounded-lg" />
+        </div>
+      )}
     </Page>
   )
 }

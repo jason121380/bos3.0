@@ -152,9 +152,7 @@ describe('新增盤點', () => {
     const { settle } = renderCreate({
       GET_PRODUCT_INVENTORY: () => ({
         // 更新時髮蠟已不在清單（例如被刪除）：維持原本的目前庫存
-        productInventoryList: refreshed
-          ? INVENTORY.filter(d => d.productId !== 'p-3').map(d => ({ ...d, count: d.count + 10 }))
-          : INVENTORY,
+        productInventoryList: refreshed ? INVENTORY.filter(d => d.productId !== 'p-3').map(d => ({ ...d, count: d.count + 10 })) : INVENTORY,
       }),
     })
     await settle()

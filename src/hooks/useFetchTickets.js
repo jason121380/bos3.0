@@ -34,7 +34,7 @@ export default function useFetchTickets(setting = {}) {
       keyword: idx(setting, _ => _.keyword || ''),
       categoryIds: idx(setting, _ => _.categoryIds || []),
       isLaunched: setting.isLaunched || undefined,
-      orderId: setting.orderId || undefined
+      orderId: setting.orderId || undefined,
     },
     fetchPolicy: 'cache-and-network',
   })
@@ -132,7 +132,7 @@ export function useFetchTicketsForTransferList(setting = {}) {
       keyword: idx(setting, _ => _.keyword || ''),
       categoryIds: idx(setting, _ => _.categoryIds || []),
       isLaunched: setting.isLaunched || undefined,
-      orderId: setting.orderId || undefined
+      orderId: setting.orderId || undefined,
     },
     fetchPolicy: 'cache-and-network',
   })

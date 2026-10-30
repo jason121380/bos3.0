@@ -174,7 +174,14 @@ const DateField = React.forwardRef(function DateField(
       ref={ref}
       {...rest}
       value={display}
-      placeholder={placeholder !== undefined ? placeholder : buildText(parts, tokens.map(() => ''))}
+      placeholder={
+        placeholder !== undefined
+          ? placeholder
+          : buildText(
+              parts,
+              tokens.map(() => '')
+            )
+      }
       disabled={disabled}
       inputRef={node => {
         localInput.current = node

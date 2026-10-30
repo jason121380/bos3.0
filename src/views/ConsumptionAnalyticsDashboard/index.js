@@ -12,33 +12,30 @@ import Filter from './Filter'
 import Results from './Results'
 import QueryFailed from 'components/QueryFailed'
 
-const monthArr = [
-  '1月', '2月', '3月', '4月', '5月', '6月',
-  '7月', '8月', '9月', '10月', '11月', '12月',
-]
+const monthArr = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
 
 function ConsumptionAnalyticsDashboard() {
   const getIsDisplayTogglePerformanceButton = useFetchGetIsDisplayTogglePerformanceButton()
   const urlParams = new URLSearchParams(window.location.search)
   const [date, setDate] = useState({
     startDate: startOfMonth(new Date()).getTime(),
-    endDate: endOfMonth(new Date()).getTime()
+    endDate: endOfMonth(new Date()).getTime(),
   })
   const [getConsumptionAnalyticsDashboardLazy, getConsumptionAnalyticsDashboardLazyData] = useFetchGetConsumptionAnalyticsDashboard()
   const [dashboardData, setDashboardData] = useState({
-    orderGenderRatio: [],                         // 消費者性別比例 期間內(訂單)來客的性別比例
-    orderAgeDistribution: [],                     // 消費者年齡分佈 期間內(訂單)來客的年齡分佈
-    customerConsumptionCountRanking: [],          // 消費總次數排行 期間內來最多次的客人(訂單)
-    customerConsumptionPriceRanking: [],          // 消費總金額排行 期間內來客(訂單)的消費總額
-    customerConsumptionPricePerCountRanking: [],  // 消費客單價排行 期間內來客(訂單)的消費總額
-    weeklyOrderCountRanking: [],                  // 週間來客數排行 期間內星期一到日，訂單數比較
-    productSalesVolumeRanking: [],                // 商品銷售數量排行 期間內商品銷售數量排行
-    productSalesPriceRanking: [],                 // 商品銷售金額排行 期間內商品銷售金額排行
-    sourceRatio: [],                              // 顧客來源比例
-    returnedRatio: [],                            // 顧客回流率
-    newCusStatistics: [],                         // 新客比例
+    orderGenderRatio: [], // 消費者性別比例 期間內(訂單)來客的性別比例
+    orderAgeDistribution: [], // 消費者年齡分佈 期間內(訂單)來客的年齡分佈
+    customerConsumptionCountRanking: [], // 消費總次數排行 期間內來最多次的客人(訂單)
+    customerConsumptionPriceRanking: [], // 消費總金額排行 期間內來客(訂單)的消費總額
+    customerConsumptionPricePerCountRanking: [], // 消費客單價排行 期間內來客(訂單)的消費總額
+    weeklyOrderCountRanking: [], // 週間來客數排行 期間內星期一到日，訂單數比較
+    productSalesVolumeRanking: [], // 商品銷售數量排行 期間內商品銷售數量排行
+    productSalesPriceRanking: [], // 商品銷售金額排行 期間內商品銷售金額排行
+    sourceRatio: [], // 顧客來源比例
+    returnedRatio: [], // 顧客回流率
+    newCusStatistics: [], // 新客比例
     // performanceTrend: [],                         // 設計師業績趨勢表
-    performanceTrendV2: [],                       // 設計師業績趨勢表v2
+    performanceTrendV2: [], // 設計師業績趨勢表v2
   })
   const [chartDisplay, setChartDisplay] = useState({
     orderGender: false,
@@ -48,28 +45,22 @@ function ConsumptionAnalyticsDashboard() {
   const [inputData, setInputData] = useState({
     date: {
       startDate: urlParams.has('startDate') && urlParams.has('endDate') ? +urlParams.get('startDate') : startOfMonth(new Date()).getTime(),
-      endDate: urlParams.has('startDate') && urlParams.has('endDate') ? +urlParams.get('endDate') : endOfMonth(new Date()).getTime()
+      endDate: urlParams.has('startDate') && urlParams.has('endDate') ? +urlParams.get('endDate') : endOfMonth(new Date()).getTime(),
     },
     designerIds: [],
     reference: 'FAKE',
-    performance: 'SUM'
+    performance: 'SUM',
   })
   const [referDisplay, setReferDisplay] = useState(true)
   const [dataType, setDataType] = useState('designer')
-  const [sortType, setSortType] = useState([
-    'service',
-    'product',
-    'ticketSell',
-    'ticketUse',
-    'membership'
-  ])
+  const [sortType, setSortType] = useState(['service', 'product', 'ticketSell', 'ticketUse', 'membership'])
 
   useEffect(() => {
     if (!getIsDisplayTogglePerformanceButton.loading) {
       const display = idx(getIsDisplayTogglePerformanceButton, _ => _.data.getIsDisplayTogglePerformanceButton)
       setReferDisplay(display)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsDisplayTogglePerformanceButton.loading])
 
   useEffect(() => {
@@ -79,11 +70,11 @@ function ConsumptionAnalyticsDashboard() {
           dateRange: inputData.date,
           designerIds: inputData.designerIds,
           displayReference: inputData.reference,
-          resultDisplayMode: inputData.performance
-        }
-      }
+          resultDisplayMode: inputData.performance,
+        },
+      },
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   useEffect(() => {
@@ -115,14 +106,34 @@ function ConsumptionAnalyticsDashboard() {
         { name: '女', percentage: orderGenderRatio.female.percentage, count: orderGenderRatio.female.count },
         { name: '未知', percentage: orderGenderRatio.unknown.percentage, count: orderGenderRatio.unknown.count },
       ]
-      const orderAgeDistribution = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.orderAgeDistribution)
-      const customerConsumptionCount = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.customerConsumptionRanking.customerConsumptionCountRanking).slice(0, 10)
-      const customerConsumptionPrice = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.customerConsumptionRanking.customerConsumptionPriceRanking).slice(0, 10)
-      const customerConsumptionPricePerCount = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.customerConsumptionRanking.customerConsumptionPricePerCountRanking).slice(0, 10)
+      const orderAgeDistribution = idx(
+        getConsumptionAnalyticsDashboardLazyData,
+        _ => _.data.consumptionAnalyticsDashboard.orderCustomer.orderAgeDistribution
+      )
+      const customerConsumptionCount = idx(
+        getConsumptionAnalyticsDashboardLazyData,
+        _ => _.data.consumptionAnalyticsDashboard.orderCustomer.customerConsumptionRanking.customerConsumptionCountRanking
+      ).slice(0, 10)
+      const customerConsumptionPrice = idx(
+        getConsumptionAnalyticsDashboardLazyData,
+        _ => _.data.consumptionAnalyticsDashboard.orderCustomer.customerConsumptionRanking.customerConsumptionPriceRanking
+      ).slice(0, 10)
+      const customerConsumptionPricePerCount = idx(
+        getConsumptionAnalyticsDashboardLazyData,
+        _ => _.data.consumptionAnalyticsDashboard.orderCustomer.customerConsumptionRanking.customerConsumptionPricePerCountRanking
+      ).slice(0, 10)
       // 每筆先複製，下面會補上 name（查詢結果唯讀）
-      const weeklyOrderCount = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.weeklyOrderCountRanking).slice(0, 10).map(d => ({ ...d }))
-      const productSalesVolume = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.productSalesRanking.productSalesVolumeRanking).slice(0, 10)
-      const productSalesPrice = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.productSalesRanking.productSalesPriceRanking).slice(0, 10)
+      const weeklyOrderCount = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.weeklyOrderCountRanking)
+        .slice(0, 10)
+        .map(d => ({ ...d }))
+      const productSalesVolume = idx(
+        getConsumptionAnalyticsDashboardLazyData,
+        _ => _.data.consumptionAnalyticsDashboard.productSalesRanking.productSalesVolumeRanking
+      ).slice(0, 10)
+      const productSalesPrice = idx(
+        getConsumptionAnalyticsDashboardLazyData,
+        _ => _.data.consumptionAnalyticsDashboard.productSalesRanking.productSalesPriceRanking
+      ).slice(0, 10)
       const sourceRatioData = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.sourceRatio)
       const returnedRatioData = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.returnedRatio)
       const newCusStatistics = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.newCusStatistics)
@@ -131,7 +142,7 @@ function ConsumptionAnalyticsDashboard() {
       const returnedRatioArr = [
         { name: '新客', ...returnedRatioData.new },
         { name: '回流客', ...returnedRatioData.retented },
-        { name: '未回流', ...returnedRatioData.unReturned }
+        { name: '未回流', ...returnedRatioData.unReturned },
       ]
 
       const tidyData = performanceTrendData.map(({ date, performances }) => {
@@ -142,7 +153,7 @@ function ConsumptionAnalyticsDashboard() {
           } else {
             data[userName] = performance
           }
-        });
+        })
         return data
       })
 
@@ -178,12 +189,12 @@ function ConsumptionAnalyticsDashboard() {
         weekly: weeklyArr.length > 0,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getConsumptionAnalyticsDashboardLazyData、tidyDataV2）；只在 [getConsumptionAnalyticsDashboardLazyData.loading, dataType, sortType] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getConsumptionAnalyticsDashboardLazyData、tidyDataV2）；只在 [getConsumptionAnalyticsDashboardLazyData.loading, dataType, sortType] 變動時呼叫，補上會每次 render 重跑
   }, [getConsumptionAnalyticsDashboardLazyData.loading, dataType, sortType])
 
   useEffect(() => {
     handleSearch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [date] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [date] 變動時呼叫，補上會每次 render 重跑
   }, [date])
 
   const handleFetchData = (start, end) => {
@@ -192,13 +203,13 @@ function ConsumptionAnalyticsDashboard() {
         input: {
           dateRange: {
             endDate: end,
-            startDate: start
+            startDate: start,
           },
           designerIds: inputData.designerIds,
           displayReference: inputData.reference,
-          resultDisplayMode: inputData.performance
-        }
-      }
+          resultDisplayMode: inputData.performance,
+        },
+      },
     })
   }
 
@@ -248,13 +259,14 @@ function ConsumptionAnalyticsDashboard() {
         referDisplay={referDisplay}
       />
       {getConsumptionAnalyticsDashboardLazyData.error ? (
-          <QueryFailed onRetry={handleSearch} />
-        ) : getConsumptionAnalyticsDashboardLazyData.loading ?
+        <QueryFailed onRetry={handleSearch} />
+      ) : getConsumptionAnalyticsDashboardLazyData.loading ? (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2" aria-busy="true">
           <Skeleton className="h-[390px] lg:col-span-2" />
           <Skeleton className="h-[390px]" />
           <Skeleton className="h-[390px]" />
-        </div> :
+        </div>
+      ) : (
         <Results
           dashboardData={dashboardData}
           chartDisplay={chartDisplay}
@@ -264,7 +276,7 @@ function ConsumptionAnalyticsDashboard() {
           sortType={sortType}
           setSortType={setSortType}
         />
-      }
+      )}
     </Page>
   )
 }

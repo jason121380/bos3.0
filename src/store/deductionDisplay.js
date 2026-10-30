@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
-const initialDisplayState = { service: false, coupon: false };
+const initialDisplayState = { service: false, coupon: false }
 
 const deductionDisplaySlice = createSlice({
   name: 'deductionDisplay',
@@ -11,8 +11,8 @@ const deductionDisplaySlice = createSlice({
       state.coupon = action.payload.coupon
     },
   },
-});
+})
 
-export const deductionDisplayActions = deductionDisplaySlice.actions;
+export const deductionDisplayActions = deductionDisplaySlice.actions
 
-export default deductionDisplaySlice.reducer;
+export default deductionDisplaySlice.reducer

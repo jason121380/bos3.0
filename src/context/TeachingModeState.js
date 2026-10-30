@@ -6,10 +6,7 @@ import { TEACHING_MODE } from './types'
 
 const TeachingModeState = props => {
   const initialState = {
-    teachingMode:
-      JSON.parse(localStorage.getItem('teachingMode')) === null
-        ? true
-        : JSON.parse(localStorage.getItem('teachingMode')),
+    teachingMode: JSON.parse(localStorage.getItem('teachingMode')) === null ? true : JSON.parse(localStorage.getItem('teachingMode')),
   }
 
   const [state, dispatch] = useReducer(TeachingModeReducer, initialState)

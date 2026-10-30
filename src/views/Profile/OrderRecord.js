@@ -61,15 +61,13 @@ function OrderRecord({
 
   useEffect(() => {
     if (!profileOrders.loading && profileOrders.data !== undefined) {
-      const data = idx(profileOrders, _ => _.data.getOrderList.orderList).slice(
-        rowsPerPage * page, (rowsPerPage * page) + rowsPerPage
-      )
+      const data = idx(profileOrders, _ => _.data.getOrderList.orderList).slice(rowsPerPage * page, rowsPerPage * page + rowsPerPage)
       setOrders(data)
       if (pageRef.current) {
         paginationLabel(pageRef.current)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [profileOrders.loading, page, rowsPerPage, pageRef.current] 變動時執行；paginationLabel、profileOrders 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [profileOrders.loading, page, rowsPerPage, pageRef.current] 變動時執行；paginationLabel、profileOrders 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [profileOrders.loading, page, rowsPerPage, pageRef.current])
 
   useEffect(() => {
@@ -116,16 +114,13 @@ function OrderRecord({
                 <TableRow key={order.id}>
                   <TableCell className="text-right">
                     <Button asChild size="sm" variant="secondary">
-                      <RouterLink to={`/order/${order.id}`}>
-                        詳情
-                      </RouterLink>
+                      <RouterLink to={`/order/${order.id}`}>詳情</RouterLink>
                     </Button>
                   </TableCell>
                   <TableCell>
                     <div className="font-medium tabular-nums">#{order.orderNo}</div>
                     <div className="text-caption tabular-nums text-text-secondary">
-                      {format(new Date(order.date), 'yyyy/MM/dd')}/
-                      {weekDisplay(format(new Date(order.date), 'eeee'))}
+                      {format(new Date(order.date), 'yyyy/MM/dd')}/{weekDisplay(format(new Date(order.date), 'eeee'))}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -140,15 +135,11 @@ function OrderRecord({
                   {raffleDisplay ? <TableCell numeric>{formatNumber(order.raffleCount)}</TableCell> : null}
                   <TableCell numeric>
                     {formatNumber(Math.round(order.service))}
-                    <div className="text-caption text-text-secondary">
-                      {order.TPTName.service.length > 0 && renderTpName(order.TPTName.service)}
-                    </div>
+                    <div className="text-caption text-text-secondary">{order.TPTName.service.length > 0 && renderTpName(order.TPTName.service)}</div>
                   </TableCell>
                   <TableCell numeric>
                     {formatNumber(Math.round(order.product))}
-                    <div className="text-caption text-text-secondary">
-                      {order.TPTName.product.length > 0 && renderTpName(order.TPTName.product)}
-                    </div>
+                    <div className="text-caption text-text-secondary">{order.TPTName.product.length > 0 && renderTpName(order.TPTName.product)}</div>
                   </TableCell>
                   {membershipDisplay && (
                     <TableCell numeric>
@@ -159,21 +150,17 @@ function OrderRecord({
                     </TableCell>
                   )}
                   <TableCell numeric>{formatNumber(Math.round(order.ticketSellIntoPerformance))}</TableCell>
-                  <TableCell numeric>
-                    {formatNumber(order.ticketSellNotIntoPerformance)}
-                  </TableCell>
+                  <TableCell numeric>{formatNumber(order.ticketSellNotIntoPerformance)}</TableCell>
                   <TableCell numeric>{formatNumber(order.walletUsedForDecount)}</TableCell>
                   {bonusDisplay && <TableCell numeric>{formatNumber(order.bonusDecountForReport)}</TableCell>}
                   <TableCell numeric>
                     {formatNumber(order.otherPayWayForDecount)}
                     <div className="text-caption text-text-secondary">{order.otherPayName}</div>
                   </TableCell>
-                  <TableCell numeric>
-                    {formatNumber(Math.round(
-                      order.service + order.product + order.usedTicket + order.membership
-                    ))}
+                  <TableCell numeric>{formatNumber(Math.round(order.service + order.product + order.usedTicket + order.membership))}</TableCell>
+                  <TableCell numeric className="font-medium">
+                    {formatNumber(order.businessCash)}
                   </TableCell>
-                  <TableCell numeric className="font-medium">{formatNumber(order.businessCash)}</TableCell>
                   <TableCell className="text-text-secondary">{order.remark}</TableCell>
                 </TableRow>
               ))}
@@ -183,7 +170,7 @@ function OrderRecord({
         <div className="flex justify-end px-2 pb-2">
           <TablePagination
             ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
+            labelRowsPerPage="每頁顯示數量"
             count={totalCount}
             onPageChange={handleOnChangePage}
             onRowsPerPageChange={handleOnChangeRowsPerPage}

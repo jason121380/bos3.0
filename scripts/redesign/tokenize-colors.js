@@ -95,8 +95,10 @@ function isBlueBar(prop) {
   const props = Object.fromEntries(prop.value.properties.filter(q => q.key).map(q => [q.key.name || q.key.value, q.value]))
   const width = props.width && (props.width.value ?? '')
   const bg = props.backgroundColor
-  const bgIsBlue = bg && ((bg.type === 'StringLiteral' && /#(1A73E8|007AFF|1976d2)/i.test(bg.value)) ||
-    (bg.type === 'MemberExpression' && /palette/.test(src.slice(bg.start, bg.end))))
+  const bgIsBlue =
+    bg &&
+    ((bg.type === 'StringLiteral' && /#(1A73E8|007AFF|1976d2)/i.test(bg.value)) ||
+      (bg.type === 'MemberExpression' && /palette/.test(src.slice(bg.start, bg.end))))
   return (width === '4px' || width === 4) && bgIsBlue
 }
 
@@ -140,7 +142,11 @@ function transform(file) {
       let changed = false
       const next = p.node.value.replace(HEX, m => {
         const r = mapHex(m, key)
-        if (r) { changed = true; colors++; return r }
+        if (r) {
+          changed = true
+          colors++
+          return r
+        }
         return m
       })
       if (changed) {
@@ -175,9 +181,14 @@ const files = args.filter(a => !a.startsWith('--')).flatMap(t => walk(t))
 let total = { files: 0, colors: 0, bars: 0 }
 for (const f of files) {
   const r = transform(f)
-  if (r.error) { console.error('PARSE ERROR', f, r.error); continue }
+  if (r.error) {
+    console.error('PARSE ERROR', f, r.error)
+    continue
+  }
   if (!r.changed) continue
-  total.files++; total.colors += r.colors; total.bars += r.bars
+  total.files++
+  total.colors += r.colors
+  total.bars += r.bars
   if (write) fs.writeFileSync(f, r.out)
   if (process.env.VERBOSE) console.log(`${f}: ${r.colors} colors, ${r.bars} bars`)
 }

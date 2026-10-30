@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
-const initialSocketState = { reservationData: null };
+const initialSocketState = { reservationData: null }
 
 const reservationSlice = createSlice({
   name: 'reservation',
@@ -10,8 +10,8 @@ const reservationSlice = createSlice({
       state.reservationData = action.payload
     },
   },
-});
+})
 
-export const reservationActions = reservationSlice.actions;
+export const reservationActions = reservationSlice.actions
 
-export default reservationSlice.reducer;
+export default reservationSlice.reducer

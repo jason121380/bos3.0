@@ -71,7 +71,7 @@ function CustomerManagementList() {
       setProductList(productList)
       setProductCategories(productCategories)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading, products.data, productCategoriesData.loading, productCategoriesData.data])
 
   return (
@@ -108,9 +108,7 @@ function CustomerManagementList() {
             }
           />
           <div className="flex flex-col gap-2">
-            <span className="text-label text-text-secondary">
-              按商品類別篩選
-            </span>
+            <span className="text-label text-text-secondary">按商品類別篩選</span>
             <div className="flex flex-wrap gap-2">
               {productCategories.map(productCategory => (
                 <Button
@@ -125,12 +123,7 @@ function CustomerManagementList() {
                   {productCategory.name}
                 </Button>
               ))}
-              <Button
-                size="sm"
-                variant="ghost"
-                className="text-danger hover:bg-danger/8"
-                onClick={handleClearCategorie}
-              >
+              <Button size="sm" variant="ghost" className="text-danger hover:bg-danger/8" onClick={handleClearCategorie}>
                 清除篩選
               </Button>
             </div>
@@ -138,20 +131,17 @@ function CustomerManagementList() {
         </Card>
       </div>
       {products.error ? (
-          <QueryFailed onRetry={() => products.refetch()} />
-        ) : productList.length !== 0 ? (
-        <Results
-          products={productList}
-          refetchProducts={products.refetch}
-          onPageChange={handlePageChange}
-        />
-      ) : products.loading && (
-        <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
-          <Skeleton className="h-[72px] w-full rounded-lg" />
-          <Skeleton className="h-[320px] w-full rounded-lg" />
-        </div>
-      )
-      }
+        <QueryFailed onRetry={() => products.refetch()} />
+      ) : productList.length !== 0 ? (
+        <Results products={productList} refetchProducts={products.refetch} onPageChange={handlePageChange} />
+      ) : (
+        products.loading && (
+          <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[72px] w-full rounded-lg" />
+            <Skeleton className="h-[320px] w-full rounded-lg" />
+          </div>
+        )
+      )}
     </Page>
   )
 }

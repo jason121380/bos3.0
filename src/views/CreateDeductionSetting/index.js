@@ -37,19 +37,13 @@ function Deduction() {
       },
     ],
     segmented: [],
-    deductionNo: "",
-    deductionName: ""
+    deductionNo: '',
+    deductionName: '',
   })
   const handleSave = () => {
     // 判斷抽成設定是判斷抽成設定是全段或分段
-    const nonSegmentedData =
-      profitSharing.nonSegmented.length > 0 && profitSharing.isSegmented === false
-        ? profitSharing.nonSegmented
-        : []
-    const segmentedData =
-      profitSharing.segmented.length > 0 && profitSharing.isSegmented === true
-        ? profitSharing.segmented
-        : []
+    const nonSegmentedData = profitSharing.nonSegmented.length > 0 && profitSharing.isSegmented === false ? profitSharing.nonSegmented : []
+    const segmentedData = profitSharing.segmented.length > 0 && profitSharing.isSegmented === true ? profitSharing.segmented : []
     createDeductionSetting({
       deductionNo: profitSharing.deductionNo,
       deductionName: profitSharing.deductionName,
@@ -75,12 +69,12 @@ function Deduction() {
       const data = idx(getAttributionForRake, _ => _.data.getAttributionForRake) || []
       setAttributions(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAttributionForRake.loading])
   return (
     <Page className="ui-root" title="抽成方式設定">
       <PageHeader
-        title='抽成方式設定'
+        title="抽成方式設定"
         actions={
           <Button variant="primary" onClick={handleSave}>
             確認
@@ -88,11 +82,7 @@ function Deduction() {
         }
       />
       {!getAttributionForRake.loading ? (
-        <Results
-          profitSharing={profitSharing}
-          onChange={handleSalesWayChange}
-          attributions={attributions}
-        />
+        <Results profitSharing={profitSharing} onChange={handleSalesWayChange} attributions={attributions} />
       ) : (
         <div className="flex flex-col gap-3">
           <Skeleton className="h-11 w-full" />

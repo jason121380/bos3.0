@@ -45,12 +45,18 @@ function TableEditBar({
     )
   // 與舊版 persistent Drawer 相同：未勾選時元件仍在 DOM（隱藏），勾選後才顯示
   return (
-    <div hidden={!open} className={`ui-root noprint pointer-events-none fixed inset-x-0 bottom-[calc(72px+env(safe-area-inset-bottom))] z-[1200] lg:bottom-6 justify-center px-4 ${open ? 'flex' : 'hidden'}`}>
+    <div
+      hidden={!open}
+      className={`ui-root noprint pointer-events-none fixed inset-x-0 bottom-[calc(72px+env(safe-area-inset-bottom))] z-[1200] lg:bottom-6 justify-center px-4 ${open ? 'flex' : 'hidden'}`}
+    >
       <div
         {...rest}
         role="toolbar"
         aria-label="批次操作"
-        className={cn('pointer-events-auto flex max-w-full flex-wrap items-center gap-1 rounded-lg border border-solid border-border bg-background py-1.5 pl-4 pr-1.5 shadow-float', className)}
+        className={cn(
+          'pointer-events-auto flex max-w-full flex-wrap items-center gap-1 rounded-lg border border-solid border-border bg-background py-1.5 pl-4 pr-1.5 shadow-float',
+          className
+        )}
       >
         <span className="mr-2 text-label tabular-nums text-text">已選 {selected.length} 筆</span>
         <span aria-hidden="true" className="mr-1 h-5 w-px bg-border" />

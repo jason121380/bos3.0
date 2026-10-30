@@ -24,7 +24,7 @@ function HelperPointSettingCreate() {
     retrievePointWay: 'FIXED',
     NONSEGMENTED: [{ threshold: 0, price: 0 }],
     SEGMENTED: [{ threshold: 0, price: 0 }],
-    isAccordingToHelper: false
+    isAccordingToHelper: false,
   })
 
   const handleSubmit = () => {
@@ -38,30 +38,32 @@ function HelperPointSettingCreate() {
       name: submitData.name,
       paidFixed: submitData.paidFixed,
       retrievePointWay: submitData.retrievePointWay,
-      isAccordingToHelper: submitData.isAccordingToHelper
+      isAccordingToHelper: submitData.isAccordingToHelper,
     }
     if (data.retrievePointWay === 'FIXED') {
       data.retrieveFixed = submitData.retrieveFixed
     } else {
       data.retrieveSegmentSetting = submitData[data.retrievePointWay]
     }
-    createMerchantPointValueSetting({ ...data }).then(res => {
-      if (res.data.createMerchantPointValueSetting) {
-        openSnackbar({
-          variant: 'success',
-          message: '新增成功',
-        })
-        history.push('/performanceDeductionParameter')
-      } else {
-        openSnackbar({
-          variant: 'warning',
-          message: '新增失敗',
-        })
+    createMerchantPointValueSetting({ ...data })
+      .then(res => {
+        if (res.data.createMerchantPointValueSetting) {
+          openSnackbar({
+            variant: 'success',
+            message: '新增成功',
+          })
+          history.push('/performanceDeductionParameter')
+        } else {
+          openSnackbar({
+            variant: 'warning',
+            message: '新增失敗',
+          })
+          setIsClick(false)
+        }
+      })
+      .catch(error => {
         setIsClick(false)
-      }
-    }).catch(error => {
-      setIsClick(false)
-    })
+      })
   }
   return (
     <Page className="ui-root" title="新增互助點數設定">
@@ -74,12 +76,7 @@ function HelperPointSettingCreate() {
             </Button>
           }
         />
-        <Results
-          status={submitData.retrievePointWay}
-          submitData={submitData}
-          setSubmitData={setSubmitData}
-          className={styles.about}
-        />
+        <Results status={submitData.retrievePointWay} submitData={submitData} setSubmitData={setSubmitData} className={styles.about} />
       </div>
     </Page>
   )

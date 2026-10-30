@@ -46,7 +46,7 @@ function CustomerManagementDetails({ match, history }) {
   const [pageSetting, setPageSetting] = useState({
     pageLimit: 50,
     pageOffset: 0,
-    totalCount: 0
+    totalCount: 0,
   })
   const [orderIds, setOrtderIds] = useState([])
   const [orderList, setOrderList] = useState([])
@@ -62,7 +62,7 @@ function CustomerManagementDetails({ match, history }) {
     { value: 'topup', label: '入金紀錄' },
     { value: 'customerTracking', label: '顧客追蹤' },
     { value: 'SMS', label: '簡訊發送紀錄' },
-    { value: 'EventTicketsRecord', label: '抽獎券紀錄' }
+    { value: 'EventTicketsRecord', label: '抽獎券紀錄' },
   ])
   // 設定頁樣板（STYLE §12）：圖示只供 SettingsTabsTrigger 呈現，不改分頁 value／條件分頁順序／路由。
   const tabIcons = {
@@ -83,14 +83,14 @@ function CustomerManagementDetails({ match, history }) {
     permPotion: [],
     hairColorCategory: [],
     hairColor: [],
-    hairDyeFormula: ''
+    hairDyeFormula: '',
   }
   const [bookingCusCheck, setBookingCusCheck] = useState(false)
 
   const getCustomerOrders = useFetchGetCustomerOrders({
     customerId: id,
     pageLimit: pageSetting.pageLimit,
-    pageOffset: pageSetting.pageOffset
+    pageOffset: pageSetting.pageOffset,
   })
   const orderStaticDetail = useFetchGetOrderStaticDetail(orderIds)
   const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
@@ -101,10 +101,10 @@ function CustomerManagementDetails({ match, history }) {
 
   useEffect(() => {
     if (!getIsBookingCusCheckUsing.loading) {
-      const data = idx(getIsBookingCusCheckUsing,_=>_.data.getIsBookingCusCheckUsing)
+      const data = idx(getIsBookingCusCheckUsing, _ => _.data.getIsBookingCusCheckUsing)
       setBookingCusCheck(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBookingCusCheckUsing.loading])
 
   useEffect(() => {
@@ -115,12 +115,12 @@ function CustomerManagementDetails({ match, history }) {
       setPageSetting({
         totalCount,
         pageLimit,
-        pageOffset
+        pageOffset,
       })
       setOrderList(orderList)
       setOrtderIds([...ids])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getCustomerOrders.loading])
 
   useEffect(() => {
@@ -134,25 +134,22 @@ function CustomerManagementDetails({ match, history }) {
           if (findData) {
             orders[index].staticDetail = findData.orderStaticDetail
           }
-        });
+        })
         setOrderList(orders)
       }
     }
     // 含 getCustomerOrders.loading：重新查詢結果沒變時 data 不會換，但上面的 effect 會以不含明細的資料重設列表，這裡要再補一次明細
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [orderStaticDetail.loading, getCustomerOrders.loading, getCustomerOrders.data])
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading && !getCustomerOrders.loading) {
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
-      const orders = idx(getCustomerOrders,_ => _.data.getCustomerOrders.orderList) || []
-      const membership = orders.reduce((a, b) => a + b.membership , 0)
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
+      const orders = idx(getCustomerOrders, _ => _.data.getCustomerOrders.orderList) || []
+      const membership = orders.reduce((a, b) => a + b.membership, 0)
       setMembershipDisplay(isMemberShipCardActive || membership !== 0)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading, getCustomerOrders.loading])
 
   useEffect(() => {
@@ -160,13 +157,13 @@ function CustomerManagementDetails({ match, history }) {
       const data = idx(getCustomerEventTicketsForMerchant, _ => _.data.customerEventTicketsForMerchant)
       setEventTickets(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getCustomerEventTicketsForMerchant.loading])
 
   const customerBonusActive = useFetchGetIsCustomerBonusActive()
 
   const customerBonusRecords = useFetchGetCustomerBonusRecord({
-    customerId: id
+    customerId: id,
   })
 
   const getIsCustomerBonusActive = useFetchGetIsCustomerBonusActive()
@@ -180,7 +177,9 @@ function CustomerManagementDetails({ match, history }) {
   }
   useEffect(() => {
     if (!customerBonusRecords.loading && !getIsCustomerBonusActive.loading && membershipDisplay !== null && !loading) {
-      const bonusActive = (idx(customerBonusRecords, _ => _.data.customerBonusRecord) || []).length > 0 || idx(getIsCustomerBonusActive, _ => _.data.getIsCustomerBonusActive)
+      const bonusActive =
+        (idx(customerBonusRecords, _ => _.data.customerBonusRecord) || []).length > 0 ||
+        idx(getIsCustomerBonusActive, _ => _.data.getIsCustomerBonusActive)
       const newTabs = [
         { value: 'general', label: '基本資料' },
         { value: 'invoices', label: '消費記錄' },
@@ -188,7 +187,7 @@ function CustomerManagementDetails({ match, history }) {
         { value: 'topup', label: '入金紀錄' },
         { value: 'customerTracking', label: '顧客追蹤' },
         { value: 'SMS', label: '簡訊發送紀錄' },
-        { value: 'EventTicketsRecord', label: '抽獎券紀錄' }
+        { value: 'EventTicketsRecord', label: '抽獎券紀錄' },
       ]
       if (bonusActive) {
         newTabs.splice(3, 0, { value: 'bonus', label: '紅利點數紀錄' })
@@ -200,16 +199,16 @@ function CustomerManagementDetails({ match, history }) {
       setTabs(newTabs)
       setTabsReady(true)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [customerBonusRecords.loading, getIsCustomerBonusActive.l…] 變動時執行；customer、customerBonusRecords、getIsCustomerBonusActive 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [customerBonusRecords.loading, getIsCustomerBonusActive.l…] 變動時執行；customer、customerBonusRecords、getIsCustomerBonusActive 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [customerBonusRecords.loading, getIsCustomerBonusActive.loading, membershipDisplay, loading])
 
   useEffect(() => {
     if (!customerBonusActive.loading && !getCustomerOrders.loading) {
-      const orders = idx(getCustomerOrders,_ => _.data.getCustomerOrders.orderList)
-      const bonusDecount = (orders || []).reduce((a, b) => a + b.bonusDecountForReport , 0)
+      const orders = idx(getCustomerOrders, _ => _.data.getCustomerOrders.orderList)
+      const bonusDecount = (orders || []).reduce((a, b) => a + b.bonusDecountForReport, 0)
       setBonusDisplay(idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) || bonusDecount !== 0)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerBonusActive.loading, getCustomerOrders.loading])
 
   const currentTabName = idx(tabs, _ => _.find(tab => tab.value === currentTab).label)
@@ -245,10 +244,7 @@ function CustomerManagementDetails({ match, history }) {
       history.push('/management/customers')
     }
   }
-  if (customer.loading && progress < 100)
-    return (
-      <ProgressBar dataLoading={customer.loading} progress={progress} setProgress={setProgress} />
-    )
+  if (customer.loading && progress < 100) return <ProgressBar dataLoading={customer.loading} progress={progress} setProgress={setProgress} />
 
   const value = {
     refetch,
@@ -285,80 +281,79 @@ function CustomerManagementDetails({ match, history }) {
     <Page className="ui-root" title={`${customer.data.customer.name} - ${currentTabName}`}>
       <Provider value={value}>
         <div className="mx-auto w-full max-w-6xl">
-        {/* 查無顧客已在上方提早返回，這裡一定有顧客資料 */}
-        <PageHeader
-          title={customer.data.customer.name}
-          description='顧客詳細資料'
-          breadcrumb={<Breadcrumb items={[parentCrumb, { label: customer.data.customer.name }]} />}
-          back={{ label: `返回${parentCrumb.label}`, onClick: handleBack }}
-        />
-        {/* 分頁值皆為字串、handler 只用到 value；activationMode="manual" 與舊版 MUI Tabs 相同：方向鍵只移動焦點，按 Enter／點擊才切換（切換會 history.push） */}
-        {/* 設定頁樣板（STYLE §12）：桌機左選單＋右內容（左 surface／右 background、無分隔線由共用 settings-nav 承擔），手機頂部橫向捲動分頁；僅改版面殼，分頁內容元件不動 */}
-        <Tabs
-          className="md:flex md:items-stretch"
-          onValueChange={value => handleTabsChange(null, value)}
-          value={currentTab}
-          activationMode="manual"
-        >
-          <SettingsTabsList aria-label="顧客詳細資料分類" className="noprint">
-            {tabs.map(tab => (
-              <SettingsTabsTrigger key={tab.value} value={tab.value} icon={tabIcons[tab.value]}>{tab.label}</SettingsTabsTrigger>
-            ))}
-          </SettingsTabsList>
-          <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">
-            <SettingsSectionHeading title={currentTabName} />
-        <div>
-          {currentTab === 'general' && (
-            <General
-              bookingCusCheck={bookingCusCheck}
-              customer={customer.data.customer}
-              isLoading={customer.loading}
-            />
-          )}
-          {currentTab === 'invoices' && getCustomerOrders.error && (
-            <QueryFailed onRetry={() => getCustomerOrders.refetch()} />
-          )}
-          {currentTab === 'invoices' && !getCustomerOrders.error &&
-            <Invoices
-              orders={orderList}
-              isLoading={getCustomerOrders.loading}
-              membershipDisplay={membershipDisplay}
-              bonusDisplay={bonusDisplay}
-              pageSetting={pageSetting}
-              onPageChange={handlePageChange}
-              onRowsPerPageChange={handleRowsPerPageChange}
-              paginationLabel={paginationLabel}
-            />
-          }
-          {currentTab === 'coupon' && <Coupon customer={{ id }} paginationLabel={paginationLabel} />}
-          {currentTab === 'topup' && <TopUp customer={{ id }} paginationLabel={paginationLabel} />}
-          {currentTab === 'bonus' && <Bonus customer={{ id }} customerBonusRecords={customerBonusRecords} />}
-          {currentTab === 'customerTracking' &&
-            <CustomerTracking
-              customerId={id}
-              refetchHairInfo={() => customerHairInfo.refetch()}
-              isLoading={customerHairInfo.loading}
-              hairCondition={
-                !customerHairInfo.loading ?
-                  // 查詢失敗或沒有髮況資料時以空髮況顯示（原本傳 undefined 整頁錯誤；Jason 2026/10/22 fix all）
-                  idx(customerHairInfo, _ => _.data.getCustomerHairInfo) || hairCondition : hairCondition
-              }
-            />
-          }
-          {currentTab === 'SMS' && (getCustomerSMSRecord.error ? (
-            <QueryFailed onRetry={() => getCustomerSMSRecord.refetch()} />
-          ) : (
-            <SMSRecord records={!getCustomerSMSRecord.loading ? idx(getCustomerSMSRecord, _ => _.data.customerSMSRecord) || [] : []} />
-          ))}
-          {currentTab === 'EventTicketsRecord' && (getCustomerEventTicketsForMerchant.error ? (
-            <QueryFailed onRetry={() => getCustomerEventTicketsForMerchant.refetch()} />
-          ) : (
-            <EventTicketsRecord data={eventTickets} isLoading={getCustomerEventTicketsForMerchant.loading} />
-          ))}
-          {currentTab === 'membership' && <MembershipRecord records={customer.data.customer.membershipPurchaseRecord} />}
-        </div>
-          </div>
-        </Tabs>
+          {/* 查無顧客已在上方提早返回，這裡一定有顧客資料 */}
+          <PageHeader
+            title={customer.data.customer.name}
+            description="顧客詳細資料"
+            breadcrumb={<Breadcrumb items={[parentCrumb, { label: customer.data.customer.name }]} />}
+            back={{ label: `返回${parentCrumb.label}`, onClick: handleBack }}
+          />
+          {/* 分頁值皆為字串、handler 只用到 value；activationMode="manual" 與舊版 MUI Tabs 相同：方向鍵只移動焦點，按 Enter／點擊才切換（切換會 history.push） */}
+          {/* 設定頁樣板（STYLE §12）：桌機左選單＋右內容（左 surface／右 background、無分隔線由共用 settings-nav 承擔），手機頂部橫向捲動分頁；僅改版面殼，分頁內容元件不動 */}
+          <Tabs
+            className="md:flex md:items-stretch"
+            onValueChange={value => handleTabsChange(null, value)}
+            value={currentTab}
+            activationMode="manual"
+          >
+            <SettingsTabsList aria-label="顧客詳細資料分類" className="noprint">
+              {tabs.map(tab => (
+                <SettingsTabsTrigger key={tab.value} value={tab.value} icon={tabIcons[tab.value]}>
+                  {tab.label}
+                </SettingsTabsTrigger>
+              ))}
+            </SettingsTabsList>
+            <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">
+              <SettingsSectionHeading title={currentTabName} />
+              <div>
+                {currentTab === 'general' && (
+                  <General bookingCusCheck={bookingCusCheck} customer={customer.data.customer} isLoading={customer.loading} />
+                )}
+                {currentTab === 'invoices' && getCustomerOrders.error && <QueryFailed onRetry={() => getCustomerOrders.refetch()} />}
+                {currentTab === 'invoices' && !getCustomerOrders.error && (
+                  <Invoices
+                    orders={orderList}
+                    isLoading={getCustomerOrders.loading}
+                    membershipDisplay={membershipDisplay}
+                    bonusDisplay={bonusDisplay}
+                    pageSetting={pageSetting}
+                    onPageChange={handlePageChange}
+                    onRowsPerPageChange={handleRowsPerPageChange}
+                    paginationLabel={paginationLabel}
+                  />
+                )}
+                {currentTab === 'coupon' && <Coupon customer={{ id }} paginationLabel={paginationLabel} />}
+                {currentTab === 'topup' && <TopUp customer={{ id }} paginationLabel={paginationLabel} />}
+                {currentTab === 'bonus' && <Bonus customer={{ id }} customerBonusRecords={customerBonusRecords} />}
+                {currentTab === 'customerTracking' && (
+                  <CustomerTracking
+                    customerId={id}
+                    refetchHairInfo={() => customerHairInfo.refetch()}
+                    isLoading={customerHairInfo.loading}
+                    hairCondition={
+                      !customerHairInfo.loading
+                        ? // 查詢失敗或沒有髮況資料時以空髮況顯示（原本傳 undefined 整頁錯誤；Jason 2026/10/22 fix all）
+                          idx(customerHairInfo, _ => _.data.getCustomerHairInfo) || hairCondition
+                        : hairCondition
+                    }
+                  />
+                )}
+                {currentTab === 'SMS' &&
+                  (getCustomerSMSRecord.error ? (
+                    <QueryFailed onRetry={() => getCustomerSMSRecord.refetch()} />
+                  ) : (
+                    <SMSRecord records={!getCustomerSMSRecord.loading ? idx(getCustomerSMSRecord, _ => _.data.customerSMSRecord) || [] : []} />
+                  ))}
+                {currentTab === 'EventTicketsRecord' &&
+                  (getCustomerEventTicketsForMerchant.error ? (
+                    <QueryFailed onRetry={() => getCustomerEventTicketsForMerchant.refetch()} />
+                  ) : (
+                    <EventTicketsRecord data={eventTickets} isLoading={getCustomerEventTicketsForMerchant.loading} />
+                  ))}
+                {currentTab === 'membership' && <MembershipRecord records={customer.data.customer.membershipPurchaseRecord} />}
+              </div>
+            </div>
+          </Tabs>
         </div>
       </Provider>
     </Page>

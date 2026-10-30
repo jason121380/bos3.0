@@ -1,9 +1,9 @@
-import { configureStore } from '@reduxjs/toolkit';
-import socketReducer from './socket';
-import reservationReducer from './reservation';
-import deductionDisplayReducer from './deductionDisplay';
-import QRcodeClockInReducer from './QRcodeClockIn';
-import pinnedTableReducer from './pinnedTable';
+import { configureStore } from '@reduxjs/toolkit'
+import socketReducer from './socket'
+import reservationReducer from './reservation'
+import deductionDisplayReducer from './deductionDisplay'
+import QRcodeClockInReducer from './QRcodeClockIn'
+import pinnedTableReducer from './pinnedTable'
 
 const store = configureStore({
   reducer: {
@@ -11,8 +11,8 @@ const store = configureStore({
     reservation: reservationReducer,
     deductionDisplay: deductionDisplayReducer,
     QRcodeClockIn: QRcodeClockInReducer,
-    pinnedTable: pinnedTableReducer
+    pinnedTable: pinnedTableReducer,
   },
-});
+})
 
-export default store;
+export default store

@@ -4,9 +4,21 @@
 // 統一後的差異（原個人檔案頁與其他三頁不同）：已完成的預約不佔用可預約人數；非預約色塊高度與其他頁一致（-2px）。
 import idx from 'idx'
 import {
-  getYear, getMonth, getDate, addMinutes, differenceInMinutes, startOfWeek,
-  endOfWeek, addDays, format, isSameDay, getHours, getMinutes, setHours, setMinutes,
-  startOfDay
+  getYear,
+  getMonth,
+  getDate,
+  addMinutes,
+  differenceInMinutes,
+  startOfWeek,
+  endOfWeek,
+  addDays,
+  format,
+  isSameDay,
+  getHours,
+  getMinutes,
+  setHours,
+  setMinutes,
+  startOfDay,
 } from 'date-fns'
 import cloneDeep from 'lodash/cloneDeep'
 import { RESERVATION_COLORS } from 'components/CalendarColorClip'
@@ -32,18 +44,20 @@ export const weekDisplay = week => {
   }
 }
 
-export function tidyWeekCalendar(tidyData, unpointData, startTime, { date, height, isOne, checkinMode, bookingCusCheck, checkinSettings, checkedType }) {
+export function tidyWeekCalendar(
+  tidyData,
+  unpointData,
+  startTime,
+  { date, height, isOne, checkinMode, bookingCusCheck, checkinSettings, checkedType }
+) {
   const start = startOfWeek(date).getTime()
   const week = []
   const allOrder = []
   tidyData.forEach((data, index) => {
     const { calendar, ...rest } = data
     calendar.forEach((order, index) => {
-      const style = {};
-      const {
-        timeCost, bookingStatus, isDesignate, isCusCheckRequired, isCheckin,
-        isDone, createdOrderId, isNoShow
-      } = order
+      const style = {}
+      const { timeCost, bookingStatus, isDesignate, isCusCheckRequired, isCheckin, isDone, createdOrderId, isNoShow } = order
 
       if (checkinSettings.isBookingCheckinEnabled && order.type === 'RESERVATION') {
         if (checkedType !== '') {
@@ -62,32 +76,32 @@ export function tidyWeekCalendar(tidyData, unpointData, startTime, { date, heigh
             style.backgroundColor = RESERVATION_COLORS.unavailable
             style.height = `${timeCost * height - 2}px`
             calendar[index].type = 'HOLIDAY'
-            break;
+            break
           case 'HOLIDAY':
             style.backgroundColor = RESERVATION_COLORS.unavailable
             style.height = `${timeCost * height - 2}px`
-            break;
+            break
           case 'SH':
             style.backgroundColor = RESERVATION_COLORS.unavailable
             style.height = `${timeCost * height - 2}px`
             calendar[index].type = 'HOLIDAY'
-            break;
+            break
           case 'RESERVATION':
             style.height = `${timeCost * height - 2}px`
             switch (bookingStatus) {
               case '預約成功':
                 style.backgroundColor = isDesignate ? RESERVATION_COLORS.designate : RESERVATION_COLORS.nonDesignate
-                break;
+                break
               case '待審核':
                 style.backgroundColor = RESERVATION_COLORS.pending
-                break;
+                break
               case '已完成':
                 style.backgroundColor = RESERVATION_COLORS.completed
-                break;
+                break
               default:
-                break;
+                break
             }
-            break;
+            break
           default:
             // 其他值不處理（與原本沒有 default 時相同）
             break
@@ -125,40 +139,41 @@ export function tidyWeekCalendar(tidyData, unpointData, startTime, { date, heigh
         isCusCheckRequired,
         isDone,
         createdOrderId,
-        isNoShow
-      };
+        isNoShow,
+      }
       if (isOne) {
         allOrder.push({
           key: order.ids.length ? order.ids[0] : `${order.type}-${index}`,
           ...rest,
           ...customData,
-          style
+          style,
         })
       } else if (order.type !== 'RH' && order.type !== 'HOLIDAY' && order.type !== 'SH') {
         allOrder.push({
           key: order.ids.length ? order.ids[0] : `${order.type}-${index}`,
           ...rest,
           ...customData,
-          style
+          style,
         })
       }
-    });
+    })
   })
 
   if (!isOne) {
     unpointData.forEach(d => {
-      !checkinMode && allOrder.push({
-        type: 'HOLIDAY',
-        start: d.date,
-        end: d.date + 1800000,
-        key: d.id,
-        timeCost: 1,
-        nameToDisplay: '全店不可預約',
-        style: {
-          backgroundColor: RESERVATION_COLORS.unavailable,
-          height: `${height - 2}px`
-        }
-      })
+      !checkinMode &&
+        allOrder.push({
+          type: 'HOLIDAY',
+          start: d.date,
+          end: d.date + 1800000,
+          key: d.id,
+          timeCost: 1,
+          nameToDisplay: '全店不可預約',
+          style: {
+            backgroundColor: RESERVATION_COLORS.unavailable,
+            height: `${height - 2}px`,
+          },
+        })
     })
   }
 
@@ -172,7 +187,7 @@ export function tidyWeekCalendar(tidyData, unpointData, startTime, { date, heigh
       date,
       orders: [],
       // 該設計師本週沒有任何行事曆資料（API 回空陣列）時 tidyData[0] 為 undefined，原寫法會在 render 階段拋錯→整頁白屏；改為無資料時可預約人數 0
-      bookingLimit: tidyData[0] ? tidyData[0].bookingLimit : 0
+      bookingLimit: tidyData[0] ? tidyData[0].bookingLimit : 0,
     })
   }
 
@@ -184,7 +199,7 @@ export function tidyWeekCalendar(tidyData, unpointData, startTime, { date, heigh
     const filterBreak = cloneDeep(allOrder.filter(d => isSameDay(d.start, date) && d.type === 'HOLIDAY'))
     const countOrder = {}
     const countHoliday = {}
-    const groups = [];
+    const groups = []
     const orderGroup = []
     const breakGroup = []
     let length = 1
@@ -195,7 +210,7 @@ export function tidyWeekCalendar(tidyData, unpointData, startTime, { date, heigh
         const time = addMinutes(startTime, 30 * i).getTime()
         if (isOrder) {
           if (countOrder[time] === undefined) {
-            countOrder[time] = (isDone ? 0 : 1)
+            countOrder[time] = isDone ? 0 : 1
           } else {
             countOrder[time] = countOrder[time] + (isDone ? 0 : 1)
           }
@@ -212,25 +227,25 @@ export function tidyWeekCalendar(tidyData, unpointData, startTime, { date, heigh
 
     for (let i = 0; i < filterData.length; i++) {
       const parentStyle = {}
-      const time1 = filterData[i];
+      const time1 = filterData[i]
       checkHorR(time1.timeCost, time1.start, time1.type === 'RESERVATION', time1.isDone)
-      if (time1.isProcessed) continue; // 跳過已處理過的時間
+      if (time1.isProcessed) continue // 跳過已處理過的時間
 
-      const currentGroup = [time1];
+      const currentGroup = [time1]
       for (let j = i + 1; j < filterData.length; j++) {
-        const time2 = filterData[j];
+        const time2 = filterData[j]
         if (time2.isProcessed) {
-          continue;
+          continue
         } // 跳過已處理過的時間
 
         if (
           // 判斷時間是否重疊
-          (time2.start >= time1.start && time2.start < time1.end)
-          || (time2.end > time1.start && time2.end <= time1.end)
-          || (time2.start <= time1.start && time2.end >= time1.end)
+          (time2.start >= time1.start && time2.start < time1.end) ||
+          (time2.end > time1.start && time2.end <= time1.end) ||
+          (time2.start <= time1.start && time2.end >= time1.end)
         ) {
-          currentGroup.push(time2);
-          time2.isProcessed = true; // 標記已處理過的時間
+          currentGroup.push(time2)
+          time2.isProcessed = true // 標記已處理過的時間
         }
       }
       const firstTime = currentGroup[0].start
@@ -242,29 +257,29 @@ export function tidyWeekCalendar(tidyData, unpointData, startTime, { date, heigh
           currentGroup[i].style.marginTop = `${Math.abs(distance) * height + 1}px`
         }
       })
-      groups.push({ data: currentGroup, parentStyle });
+      groups.push({ data: currentGroup, parentStyle })
     }
     for (let i = 0; i < filterOrder.length; i++) {
       const parentStyle = {}
-      const time1 = filterOrder[i];
+      const time1 = filterOrder[i]
       // checkHorR(time1.timeCost, time1.start, time1.type === 'RESERVATION', time1.isDone)
-      if (time1.isProcessed) continue; // 跳過已處理過的時間
+      if (time1.isProcessed) continue // 跳過已處理過的時間
 
-      const currentGroup = [time1];
+      const currentGroup = [time1]
       for (let j = i + 1; j < filterOrder.length; j++) {
-        const time2 = filterOrder[j];
+        const time2 = filterOrder[j]
         if (time2.isProcessed) {
-          continue;
+          continue
         } // 跳過已處理過的時間
 
         if (
           // 判斷時間是否重疊
-          (time2.start >= time1.start && time2.start < time1.end)
-          || (time2.end > time1.start && time2.end <= time1.end)
-          || (time2.start <= time1.start && time2.end >= time1.end)
+          (time2.start >= time1.start && time2.start < time1.end) ||
+          (time2.end > time1.start && time2.end <= time1.end) ||
+          (time2.start <= time1.start && time2.end >= time1.end)
         ) {
-          currentGroup.push(time2);
-          time2.isProcessed = true; // 標記已處理過的時間
+          currentGroup.push(time2)
+          time2.isProcessed = true // 標記已處理過的時間
         }
       }
       const firstTime = currentGroup[0].start
@@ -276,32 +291,32 @@ export function tidyWeekCalendar(tidyData, unpointData, startTime, { date, heigh
           currentGroup[i].style.marginTop = `${Math.abs(distance) * height + 1}px`
         }
       })
-      orderGroup.push({ data: currentGroup, parentStyle });
+      orderGroup.push({ data: currentGroup, parentStyle })
       if (currentGroup.length >= length) {
         length = currentGroup.length + 1
       }
     }
     for (let i = 0; i < filterBreak.length; i++) {
       const parentStyle = {}
-      const time1 = filterBreak[i];
+      const time1 = filterBreak[i]
       // 公休已在上面「全部項目」的迴圈計入 countHoliday，這裡不再重算（原本每筆公休計兩次；畫面只看有沒有，Jason 2026/10/22 fix all）
-      if (time1.isProcessed) continue; // 跳過已處理過的時間
+      if (time1.isProcessed) continue // 跳過已處理過的時間
 
-      const currentGroup = [time1];
+      const currentGroup = [time1]
       for (let j = i + 1; j < filterBreak.length; j++) {
-        const time2 = filterBreak[j];
+        const time2 = filterBreak[j]
         if (time2.isProcessed) {
-          continue;
+          continue
         } // 跳過已處理過的時間
 
         if (
           // 判斷時間是否重疊
-          (time2.start >= time1.start && time2.start < time1.end)
-          || (time2.end > time1.start && time2.end <= time1.end)
-          || (time2.start <= time1.start && time2.end >= time1.end)
+          (time2.start >= time1.start && time2.start < time1.end) ||
+          (time2.end > time1.start && time2.end <= time1.end) ||
+          (time2.start <= time1.start && time2.end >= time1.end)
         ) {
-          currentGroup.push(time2);
-          time2.isProcessed = true; // 標記已處理過的時間
+          currentGroup.push(time2)
+          time2.isProcessed = true // 標記已處理過的時間
         }
       }
       const firstTime = currentGroup[0].start
@@ -314,7 +329,7 @@ export function tidyWeekCalendar(tidyData, unpointData, startTime, { date, heigh
         }
       })
       if (!checkinMode) {
-        breakGroup.push({ data: currentGroup, parentStyle });
+        breakGroup.push({ data: currentGroup, parentStyle })
         if (currentGroup.length >= breakLength) {
           breakLength = currentGroup.length + 1
         }
@@ -351,21 +366,17 @@ export function buildWeekCalendar({ DesignerCalendar, merchant, date, ...tidyOpt
             startTime: newStartTime,
             endTime,
             timeCost: newTimeCost,
-            ...rest
+            ...rest,
           })
         }
         merchantDesignerCalendar[index1].calendar[index2].endTime = newStartTime - 1800000
         merchantDesignerCalendar[index1].calendar[index2].timeCost = timeCost - newTimeCost
       }
     })
-  });
-  const [startHour, startMinute] = idx(merchant, _ =>
-    _.data.merchant.openingHours.slice(0, 5).split(':')
-  )
-  const [closeHour, closeMinute] = idx(merchant, _ =>
-    _.data.merchant.closingHours.slice(0, 5).split(':')
-  )
-  const openTime = ({
+  })
+  const [startHour, startMinute] = idx(merchant, _ => _.data.merchant.openingHours.slice(0, 5).split(':'))
+  const [closeHour, closeMinute] = idx(merchant, _ => _.data.merchant.closingHours.slice(0, 5).split(':'))
+  const openTime = {
     open: {
       hour: startHour,
       minute: startMinute,
@@ -373,8 +384,8 @@ export function buildWeekCalendar({ DesignerCalendar, merchant, date, ...tidyOpt
     close: {
       hour: closeHour,
       minute: closeMinute,
-    }
-  })
+    },
+  }
 
   const newDate = startOfWeek(date)
   const [year, month, day] = [getYear(newDate), getMonth(newDate), getDate(newDate)]
@@ -406,7 +417,6 @@ export function buildWeekCalendar({ DesignerCalendar, merchant, date, ...tidyOpt
     }
     arr.push(arr2)
   }
-
 
   const calendarData = tidyWeekCalendar(merchantDesignerCalendar, merchantUnappointCalendar, arr[0][0], { date, ...tidyOptions })
   return { openTime, orderRange: arr, calendarData }

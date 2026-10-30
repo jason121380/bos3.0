@@ -97,6 +97,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - 打字搜尋下拉 Autocomplete 已於 PR #178–#181 改為自製元件；滑桿數值泡泡已於 PR #197 完成自製。
 - 讀查詢結果前先防呆：API 失敗時 `data` 為 undefined，直接 `.filter`／`.map` 會讓整頁拋錯（版面層已加防呆與錯誤邊界，頁面層仍要注意）。
 - `.then(fn, openSnackbar(...))` 的第二參數會在送出當下就執行；成功後才做的事一律寫在第一個 callback 內。GraphQL mutation 的 `.then` 沒接 `.catch` 不必補：`init-apollo` 的 errorLink 已對每個 GraphQL／網路錯誤跳提示，頁面再 catch 會重複提示；只有非 GraphQL 的 Promise（`fetch`、LIFF SDK）要自己接 catch。
+- **程式碼格式一律交給 Prettier**（2026/10/30，`.prettierrc`；gql／css 樣板字串與物件鍵引號不改）：commit 前跑 `npm run format`，CI 的 Lint and build job 會跑 `npm run format:check`，沒通過就擋下。格式化後若 `// eslint-disable-next-line` 被移到別的行，要手動放回目標行上方。
 - `parseInt` 一律帶 radix 10（2026/10/21 已全站補齊 182 處，`lint:build` 的 `radix` 規則未開，靠 review）。
 - 時區：沒有時區的數字格式字串（`2026/10/21 10:00`、`2026-10-21T10:00`）照字面當台灣時間解讀；英文月份等其他格式仍先經裝置時區（日光節約切換時可能差一小時），不要用；只有日期的 ISO 字串（`2026-10-21`）依規格是 UTC 午夜；要表示台灣某一天的開始用 `new Date(年, 月-1, 日)` 或 date-fns，不要自己加減時差。改 `business-timezone.js` 要在有日光節約的時區（`TZ=America/Los_Angeles`、`America/Santiago`）跑測試（MEMORY #169）。
 - Playwright 的 headless Chromium 畫不出捲軸，捲軸類修正只能看 CSS 規則，需在真實瀏覽器確認。驗證時區可用 `browser.newContext({ timezoneId })` 與 `page.clock.install({ time })`。

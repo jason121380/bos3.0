@@ -82,7 +82,15 @@ export function createBusinessDate(OrigDate) {
       value = typeof arg === 'string' ? parse(arg) : arg instanceof OrigDate ? timeOf(arg) : arg
     } else {
       // new Date(年, 月, 日, 時, 分, 秒, 毫秒)：以台灣時間解讀；省略的欄位與原生相同（日＝1，其餘＝0）
-      const parts = [args[0], args[1], args.length > 2 ? args[2] : 1, args.length > 3 ? args[3] : 0, args.length > 4 ? args[4] : 0, args.length > 5 ? args[5] : 0, args.length > 6 ? args[6] : 0]
+      const parts = [
+        args[0],
+        args[1],
+        args.length > 2 ? args[2] : 1,
+        args.length > 3 ? args[3] : 0,
+        args.length > 4 ? args[4] : 0,
+        args.length > 5 ? args[5] : 0,
+        args.length > 6 ? args[6] : 0,
+      ]
       value = OrigDate.UTC(...parts) - OFFSET_MS
     }
     const instance = new OrigDate(value)

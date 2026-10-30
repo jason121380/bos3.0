@@ -42,50 +42,34 @@ export function getBonusWalletPayLimit(bill) {
     }
   })
 
-  const totalOrdersCount =
-    bill.serviceOrders.length +
-    bill.productOrders.length +
-    bill.ticketOrders.length +
-    bill.membershipOrders.length;
+  const totalOrdersCount = bill.serviceOrders.length + bill.productOrders.length + bill.ticketOrders.length + bill.membershipOrders.length
 
-  const thirdPartyOrdersCount =
-    servicesWithThirdPartyCount.length +
-    productsWithThirdPartyCount.length +
-    membershipsWithThirdPartyCount.length;
+  const thirdPartyOrdersCount = servicesWithThirdPartyCount.length + productsWithThirdPartyCount.length + membershipsWithThirdPartyCount.length
 
-  const hasWalletPayLimit = totalOrdersCount - thirdPartyOrdersCount >= 1;
+  const hasWalletPayLimit = totalOrdersCount - thirdPartyOrdersCount >= 1
 
   if (hasWalletPayLimit) {
-    const servicesTotal = servicesWithoutThirdPartyCount.reduce((total, item) => total + item.price, 0);
+    const servicesTotal = servicesWithoutThirdPartyCount.reduce((total, item) => total + item.price, 0)
 
-    const productsTotal = productsWithoutThirdPartyCount.reduce(
-      (total, item) => total + item.price * item.count,
-      0
-    );
+    const productsTotal = productsWithoutThirdPartyCount.reduce((total, item) => total + item.price * item.count, 0)
 
-    const membershipsTotal = membershipsWithoutThirdPartyCount.reduce(
-      (total, item) => total + item.price,
-      0
-    );
+    const membershipsTotal = membershipsWithoutThirdPartyCount.reduce((total, item) => total + item.price, 0)
 
-    const ticketsTotal = bill.ticketOrders.reduce(
-      (total, item) => total + item.price * item.count,
-      0
-    );
+    const ticketsTotal = bill.ticketOrders.reduce((total, item) => total + item.price * item.count, 0)
 
-    const otherPayments = bill.amountByOtherPay + bill.walletPay;
+    const otherPayments = bill.amountByOtherPay + bill.walletPay
 
-    const walletPayLimit = servicesTotal + productsTotal + membershipsTotal + ticketsTotal - otherPayments;
+    const walletPayLimit = servicesTotal + productsTotal + membershipsTotal + ticketsTotal - otherPayments
 
-    return walletPayLimit;
+    return walletPayLimit
   }
-  return 0;
+  return 0
 }
 
 // 「點數給點」是否停用：有自動給點規則時由規則計算、不可手動輸入；限 LINE 綁定才給點時，未綁定的顧客一律停用
 export function isBonusDepositDisabled({ bonusRewardWithLINE, isLineBinded, bonusSetting }) {
   if (bonusRewardWithLINE) {
-    return isLineBinded ? bonusSetting.isUsing : true;
+    return isLineBinded ? bonusSetting.isUsing : true
   }
-  return bonusSetting.isUsing;
+  return bonusSetting.isUsing
 }

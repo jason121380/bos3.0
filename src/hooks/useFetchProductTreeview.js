@@ -14,7 +14,6 @@ export const GET_PRODUCT_CATEGORIES_TREEVIEW = gql`
   }
 `
 
-
 export default function useFetchProductTreeview(
   input = {
     paranoid: true,

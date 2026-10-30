@@ -9,14 +9,39 @@ const path = require('path')
 const assert = require('assert').strict
 const { chromium } = require('playwright')
 const directory = path.resolve(process.argv[2] || '/tmp/dialog-layers-harness')
-const html = '<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="/entry.css"><link rel="stylesheet" href="/tailwind.css"><div id="root"></div><script src="/entry.js"></script>'
-const focusInside = async (page, selector) => { await page.waitForFunction(selector => { const el = document.querySelector(selector); return el && el.contains(document.activeElement) }, selector, { timeout: 4000 }) }
+const html =
+  '<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="/entry.css"><link rel="stylesheet" href="/tailwind.css"><div id="root"></div><script src="/entry.js"></script>'
+const focusInside = async (page, selector) => {
+  await page.waitForFunction(
+    selector => {
+      const el = document.querySelector(selector)
+      return el && el.contains(document.activeElement)
+    },
+    selector,
+    { timeout: 4000 }
+  )
+}
 const exists = async (page, selector) => assert(await page.locator(selector).isVisible(), `${selector} 應保持開啟`)
 const delay = page => page.waitForTimeout(150)
 async function main() {
-  const browser = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1'] })
+  const browser = await chromium.launch({
+    executablePath: '/usr/bin/google-chrome',
+    args: ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1'],
+  })
   let failed = 0
-  for (const kind of ['desktop', 'mobile', 'combobox', 'select', 'popover', 'dropdown', 'nested-password', 'nested-date', 'customer-form', 'reservation', 'click-away']) {
+  for (const kind of [
+    'desktop',
+    'mobile',
+    'combobox',
+    'select',
+    'popover',
+    'dropdown',
+    'nested-password',
+    'nested-date',
+    'customer-form',
+    'reservation',
+    'click-away',
+  ]) {
     const context = await browser.newContext({ viewport: { width: 1000, height: 850 }, hasTouch: false })
     // 以路由直接提供靜態檔，受限環境也不必開監聽埠；所有非本機請求一律中止。
     await context.route('**/*', route => {
@@ -48,10 +73,14 @@ async function main() {
           // 用座標送真實滑鼠事件，不以 force 繞過瀏覽器命中測試。
           const box = await after.boundingBox()
           assert(box, '下一個按鈕必須可見')
-          if (!modal) assert(await after.evaluate(el => {
-            const r = el.getBoundingClientRect()
-            return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2))
-          }), '下一個按鈕不可被浮層覆蓋')
+          if (!modal)
+            assert(
+              await after.evaluate(el => {
+                const r = el.getBoundingClientRect()
+                return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2))
+              }),
+              '下一個按鈕不可被浮層覆蓋'
+            )
           await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2)
           await page.locator(popup).waitFor({ state: 'detached' })
           await exists(page, '#lower')
@@ -121,31 +150,44 @@ async function main() {
         assert.equal(await page.locator('#lower button[aria-label="關閉"]').count(), 0)
         assert(!(await page.evaluate(() => window.__events)).some(e => e[0] === 'lower'), 'Esc／背景不可要求關閉受控表單')
         await page.locator('#close-customer').click()
-      } else if (kind === 'desktop'  || kind === 'mobile') {
-        const open = async () => { if (kind === 'mobile') await page.locator('#date-field').click(); else await page.locator('button[aria-label^="選擇日期"]').click(); await delay(page) }
+      } else if (kind === 'desktop' || kind === 'mobile') {
+        const open = async () => {
+          if (kind === 'mobile') await page.locator('#date-field').click()
+          else await page.locator('button[aria-label^="選擇日期"]').click()
+          await delay(page)
+        }
         await open()
         const cell = page.locator('button[role="gridcell"]').filter({ hasText: /^25$/ }).first()
         await cell.click()
         await exists(page, '#lower')
-        assert((await page.evaluate(() => window.__events)).some(e => e[0] === 'date' && e[1] === 25), '選日期必須回呼 onChange')
+        assert(
+          (await page.evaluate(() => window.__events)).some(e => e[0] === 'date' && e[1] === 25),
+          '選日期必須回呼 onChange'
+        )
         assert(!(await page.evaluate(() => window.__events)).some(e => e[0] === 'lower'), '點選日期不可呼叫 onOpenChange')
         await open()
         await page.locator('button[role="gridcell"]').filter({ hasText: /^24$/ }).first().focus()
         await focusInside(page, '[role="dialog"]:has([role="gridcell"])') // 日期層改正式 ui/dialog 後不再輸出 .MuiDialog-paper；桌機與手機共用同一選擇器
-        await page.keyboard.press('Escape'); await delay(page)
+        await page.keyboard.press('Escape')
+        await delay(page)
         assert.equal(await page.locator('button[role="gridcell"]').count(), 0, '第一次 Esc 僅關閉日期層')
         await exists(page, '#lower')
         await focusInside(page, '#lower')
       } else if (kind === 'combobox') {
-        await page.evaluate(() => { window.__stage = '首次選取' })
+        await page.evaluate(() => {
+          window.__stage = '首次選取'
+        })
         await page.getByRole('combobox').click()
         await page.getByRole('option', { name: '染髮' }).click()
         assert.equal(await page.locator('#value').textContent(), '染髮')
         await exists(page, '#lower')
-        await page.evaluate(() => { window.__stage = '重開選單後Esc' })
+        await page.evaluate(() => {
+          window.__stage = '重開選單後Esc'
+        })
         await page.getByRole('combobox').click()
         await exists(page, '[role="listbox"]')
-        await page.keyboard.press('Escape'); await delay(page)
+        await page.keyboard.press('Escape')
+        await delay(page)
         assert.equal(await page.getByRole('listbox').count(), 0, '第一次 Esc 只關閉 combobox 選單')
         await exists(page, '#lower')
       } else if (kind === 'select') {
@@ -182,7 +224,10 @@ async function main() {
         await password.getByLabel('操作密碼').fill('第二次密碼')
         await password.getByRole('button', { name: '確認', exact: true }).click()
         await password.waitFor({ state: 'detached' })
-        assert((await page.evaluate(() => window.__events)).some(e => e[0] === '密碼確認' && e[1] === '第二次密碼'), '實際 PasswordDialog 必須保留輸入與確認回呼')
+        assert(
+          (await page.evaluate(() => window.__events)).some(e => e[0] === '密碼確認' && e[1] === '第二次密碼'),
+          '實際 PasswordDialog 必須保留輸入與確認回呼'
+        )
         await focusInside(page, '#open-upper')
       } else if (kind === 'nested-date') {
         await page.locator('#open-upper').click()
@@ -207,10 +252,14 @@ async function main() {
         await focusInside(page, '#lower')
       } else {
         await page.locator('#show-toast').click()
-        await page.locator('#open-upper').click(); await delay(page)
+        await page.locator('#open-upper').click()
+        await delay(page)
         await page.locator('#upper-input').fill('上層焦點')
         await focusInside(page, '#upper')
-        const topVisible = await page.locator('#upper-input').evaluate(el => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)) })
+        const topVisible = await page.locator('#upper-input').evaluate(el => {
+          const r = el.getBoundingClientRect()
+          return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2))
+        })
         assert(topVisible, '後開對話框必須在視覺最上層')
         // 對話框會對應用程式根節點加 aria-hidden；CSS 定位仍須通過真實命中與可見性檢查。
         await exists(page, '[role="alert"]')
@@ -220,38 +269,64 @@ async function main() {
         })
         assert(toastVisible, '全站提示必須保持在所有對話框上方')
         if (kind === 'dropdown') {
-          await page.locator('#dropdown-trigger').click(); await delay(page)
+          await page.locator('#dropdown-trigger').click()
+          await delay(page)
           await focusInside(page, '[role="menu"]')
           const menuVisible = await page.locator('#dropdown-item').evaluate(el => {
             const r = el.getBoundingClientRect()
             return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2))
           })
           assert(menuVisible, '後開選單必須在兩層對話框上方')
-          await page.keyboard.press('Escape'); await delay(page)
+          await page.keyboard.press('Escape')
+          await delay(page)
           await page.getByRole('menu').waitFor({ state: 'detached' })
           assert.equal(await page.getByRole('menu').count(), 0, 'Esc 只關閉最上層選單')
           await exists(page, '#upper')
           await focusInside(page, '#upper')
         }
-        await page.keyboard.press('Escape'); await delay(page)
+        await page.keyboard.press('Escape')
+        await delay(page)
         await page.locator('#upper').waitFor({ state: 'detached' })
         assert.equal(await page.locator('#upper').count(), 0, '第一次 Esc 關閉上層')
         await exists(page, '#lower')
         await focusInside(page, '#open-upper')
       }
-      if (kind !== 'customer-form') await page.keyboard.press('Escape'); await delay(page)
+      if (kind !== 'customer-form') await page.keyboard.press('Escape')
+      await delay(page)
       await page.locator('#lower').waitFor({ state: 'detached' })
       assert.equal(await page.locator('#lower').count(), 0, '最後 Esc 關閉下層')
-      await page.waitForFunction(() => !document.body.style.pointerEvents && !document.body.hasAttribute('data-scroll-locked') && document.body.style.overflow !== 'hidden')
+      await page.waitForFunction(
+        () => !document.body.style.pointerEvents && !document.body.hasAttribute('data-scroll-locked') && document.body.style.overflow !== 'hidden'
+      )
       assert.deepEqual(errors, [])
       console.log(`PASS ${kind}`)
     } catch (error) {
       failed++
       console.error(`FAIL ${kind}: ${error.message}`)
-      console.error('狀態', JSON.stringify(await page.evaluate(() => ({ stage: window.__stage, events: window.__events, focusEvents: window.__focus, scopes: window.__scopes, layers: [...document.querySelectorAll('[data-state], [role=dialog]')].map(el => [el.id, el.getAttribute('data-state'), el.style.zIndex]), focus: document.activeElement && document.activeElement.outerHTML.slice(0, 250), bodyPointer: document.body.style.pointerEvents })), null, 2))
-    } finally { await context.close() }
+      console.error(
+        '狀態',
+        JSON.stringify(
+          await page.evaluate(() => ({
+            stage: window.__stage,
+            events: window.__events,
+            focusEvents: window.__focus,
+            scopes: window.__scopes,
+            layers: [...document.querySelectorAll('[data-state], [role=dialog]')].map(el => [el.id, el.getAttribute('data-state'), el.style.zIndex]),
+            focus: document.activeElement && document.activeElement.outerHTML.slice(0, 250),
+            bodyPointer: document.body.style.pointerEvents,
+          })),
+          null,
+          2
+        )
+      )
+    } finally {
+      await context.close()
+    }
   }
   await browser.close()
   if (failed) process.exitCode = 1
 }
-main().catch(error => { console.error(error); process.exitCode = 1 })
+main().catch(error => {
+  console.error(error)
+  process.exitCode = 1
+})

@@ -27,12 +27,8 @@ function Results({ report }) {
         <TableRow className="font-bold">
           <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
           <TableCell />
-          <TableCell numeric>
-            {formatNumber(report.reduce((accu, curVal) => accu + curVal.totalCount, 0))}
-          </TableCell>
-          <TableCell numeric>
-            {formatNumber(report.reduce((accu, curVal) => accu + curVal.totalPrice, 0))}
-          </TableCell>
+          <TableCell numeric>{formatNumber(report.reduce((accu, curVal) => accu + curVal.totalCount, 0))}</TableCell>
+          <TableCell numeric>{formatNumber(report.reduce((accu, curVal) => accu + curVal.totalPrice, 0))}</TableCell>
         </TableRow>
       </TableBody>
     </Table>

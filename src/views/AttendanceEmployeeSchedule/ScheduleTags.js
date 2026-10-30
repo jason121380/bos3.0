@@ -2,8 +2,16 @@
 import { Button } from 'ui/button'
 
 const ScheduleTags = ({
-  setTagId, tagId, fontColor, merchantClockInSchedule,
-  saveData, exportExcel, exportLoading, loading, isClick, workingHourDisplay
+  setTagId,
+  tagId,
+  fontColor,
+  merchantClockInSchedule,
+  saveData,
+  exportExcel,
+  exportLoading,
+  loading,
+  isClick,
+  workingHourDisplay,
 }) => {
   const chooseScheduleTag = (id, name, color) => {
     if (id === tagId.id) {
@@ -23,7 +31,9 @@ const ScheduleTags = ({
   return (
     <div className="ScheduleTags flex items-center">
       <div className="w-full">
-        <div className="mb-2 text-label text-text-secondary" key="考勤班別">考勤班別 :</div>
+        <div className="mb-2 text-label text-text-secondary" key="考勤班別">
+          考勤班別 :
+        </div>
         <div className="flex flex-wrap gap-2.5" key="colorButtonGroup">
           {merchantClockInSchedule && merchantClockInSchedule.length > 0 ? (
             merchantClockInSchedule.map(d => {
@@ -45,7 +55,7 @@ const ScheduleTags = ({
                         height: '20px',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
                       }}
                     >
                       <span
@@ -56,22 +66,19 @@ const ScheduleTags = ({
                           maxWidth: '123px',
                           display: 'inline-block',
                           fontSize: '13px',
-                          fontWeight: 'bold'
+                          fontWeight: 'bold',
                         }}
                       >
                         {d.name}
                       </span>
                     </div>
-                    {workingHourDisplay ?
-                      <div style={{ color: `${fontColor(d.color)}`, fontSize: '11px' }}>{showScheduleTime(d)}</div> : ''}
+                    {workingHourDisplay ? <div style={{ color: `${fontColor(d.color)}`, fontSize: '11px' }}>{showScheduleTime(d)}</div> : ''}
                   </div>
                 </Button>
               )
             })
           ) : (
-            <span className="text-body text-text-secondary">
-              無資料
-            </span>
+            <span className="text-body text-text-secondary">無資料</span>
           )}
         </div>
       </div>

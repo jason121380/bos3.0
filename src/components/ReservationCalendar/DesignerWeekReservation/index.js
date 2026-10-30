@@ -27,18 +27,16 @@ function DesignerWeekReservation({ designerId, checkinSettings, bookingCusCheck,
   const nameType = useFetchGetDesignerNameForCustomerSide()
   const bookingRemarkDisplay = useFetchGetIsBookingRemarkDisplay()
   const cusBookingRemarkDisplay = useFetchGetIsCusBookingRemarkDisplay()
-  const [date, setDate] = useState(
-    urlParams.has('startDate') ? +urlParams.get('startDate') : startOfWeek(new Date()).getTime()
-  )
+  const [date, setDate] = useState(urlParams.has('startDate') ? +urlParams.get('startDate') : startOfWeek(new Date()).getTime())
   const DesignerCalendar = useFetchGetMerchantDesignerWeekCalendar({
     input: {
       dateRange: {
         startDate: startOfWeek(date).getTime(),
-        endDate: endOfWeek(date).getTime()
+        endDate: endOfWeek(date).getTime(),
       },
       designerIds: [designerId],
-      forceDisplay: true
-    }
+      forceDisplay: true,
+    },
   })
   const merchant = useFetchMerchant()
   const [orderRange, setOrderRange] = useState([])
@@ -55,7 +53,7 @@ function DesignerWeekReservation({ designerId, checkinSettings, bookingCusCheck,
     close: {
       hour: '',
       minute: '',
-    }
+    },
   })
   const height = 70
   const ndsRef = useRef([])
@@ -70,34 +68,36 @@ function DesignerWeekReservation({ designerId, checkinSettings, bookingCusCheck,
       const data = idx(nameType, _ => _.data.getDesignerNameForCustomerSide)
       setDesignerName(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [nameType.loading])
-
 
   useEffect(() => {
     if (!merchant.loading && !DesignerCalendar.loading) {
       // 資料整理與單週預約紀錄共用（../weekCalendar）；只看一位設計師、格高 70px
       const { openTime, orderRange, calendarData } = buildWeekCalendar({
-        DesignerCalendar, merchant, date, height,
+        DesignerCalendar,
+        merchant,
+        date,
+        height,
         isOne: true,
-        checkinMode, bookingCusCheck, checkinSettings, checkedType
+        checkinMode,
+        bookingCusCheck,
+        checkinSettings,
+        checkedType,
       })
       setOpenTime(openTime)
       setOrderRange(orderRange)
       setCalendarData(calendarData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ merchant.loading, date, DesignerCalendar.loading, booki…] 變動時執行；DesignerCalendar、checkinSettings、merchant 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
-  }, [
-    merchant.loading, date, DesignerCalendar.loading, bookingCusCheck,
-    checkinMode, checkinSettings.isBookingCheckinEnabled, checkedType
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ merchant.loading, date, DesignerCalendar.loading, booki…] 變動時執行；DesignerCalendar、checkinSettings、merchant 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+  }, [merchant.loading, date, DesignerCalendar.loading, bookingCusCheck, checkinMode, checkinSettings.isBookingCheckinEnabled, checkedType])
 
   useEffect(() => {
     if (!bookingRemarkDisplay.loading) {
       const data = idx(bookingRemarkDisplay, _ => _.data.getIsBookingRemarkDisplay)
       setRemarkDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [bookingRemarkDisplay.loading])
 
   useEffect(() => {
@@ -105,23 +105,23 @@ function DesignerWeekReservation({ designerId, checkinSettings, bookingCusCheck,
       const data = idx(cusBookingRemarkDisplay, _ => _.data.getIsCusBookingRemarkDisplay)
       setCusRemarkDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [cusBookingRemarkDisplay.loading])
 
   return (
     <Fragment>
       {/* 載入遮罩：比照單日預約紀錄改 role=status＋aria-live，下方行事曆卡片同步 aria-busy */}
       <div
-        id='Backdrop'
+        id="Backdrop"
         role="status"
         aria-live="polite"
         className="fixed inset-0 flex items-center justify-center !opacity-100 z-[1300] ![background:rgba(0,0,0,0)]"
-        style={{ visibility: (merchant.loading || DesignerCalendar.loading) ? undefined : 'hidden' }}
+        style={{ visibility: merchant.loading || DesignerCalendar.loading ? undefined : 'hidden' }}
       >
         <LoaderCircle aria-hidden="true" className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
         <span className="sr-only">預約紀錄載入中…</span>
       </div>
-      <Card className={cn('px-5 pb-5', className)} aria-busy={(merchant.loading || DesignerCalendar.loading) || undefined}>
+      <Card className={cn('px-5 pb-5', className)} aria-busy={merchant.loading || DesignerCalendar.loading || undefined}>
         <div className="flex gap-[10px] flex-wrap items-center justify-between">
           <div className="flex gap-[10px] flex-wrap items-center justify-between">
             <DateSelector
@@ -131,23 +131,20 @@ function DesignerWeekReservation({ designerId, checkinSettings, bookingCusCheck,
               margin
             />
             {checkinSettings.isBookingCheckinEnabled && (
-              <Field label='報到狀態'>
-                <NativeSelect
-                  fullWidth={false}
-                  style={{ width: 120 }}
-                  onChange={e => setCheckedType(e.target.value)}
-                  value={checkedType}
-                >
-                  <NativeSelectOption value=''><em>無</em></NativeSelectOption>
+              <Field label="報到狀態">
+                <NativeSelect fullWidth={false} style={{ width: 120 }} onChange={e => setCheckedType(e.target.value)} value={checkedType}>
+                  <NativeSelectOption value="">
+                    <em>無</em>
+                  </NativeSelectOption>
                   <NativeSelectOption value={true}>報到成功</NativeSelectOption>
                   <NativeSelectOption value={false}>未報到</NativeSelectOption>
                 </NativeSelect>
               </Field>
             )}
           </div>
-          <CalendarColorClip bookingCusCheck={bookingCusCheck} checkinMode={checkinMode} bookingHistoryDisplay={bookingHistoryDisplay}/>
+          <CalendarColorClip bookingCusCheck={bookingCusCheck} checkinMode={checkinMode} bookingHistoryDisplay={bookingHistoryDisplay} />
         </div>
-        {!merchant.loading && orderRange.length ?
+        {!merchant.loading && orderRange.length ? (
           <OrderTable
             orderRange={orderRange}
             calendarData={calendarData}
@@ -162,8 +159,10 @@ function DesignerWeekReservation({ designerId, checkinSettings, bookingCusCheck,
             ndsRef={ndsRef}
             checkinSettings={checkinSettings}
             checkinMode={checkinMode}
-          /> : ''
-        }
+          />
+        ) : (
+          ''
+        )}
       </Card>
     </Fragment>
   )

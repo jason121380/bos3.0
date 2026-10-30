@@ -50,7 +50,16 @@ describe('掛單詳細：改內容後選顧客，不會被重設回原掛單', (
   it('不留客資的掛單改價格、取消不留客資、以手機快速新增顧客：儲存送出 950 與這支手機', async () => {
     const page = setupDraft({
       FETCH_CUSTOMERS_IN_AUTO_COMPLETE: { customers: { customers: [] } },
-      FETCH_ADD_CUSTOMER: { addCustomer: { id: 'customer-new', name: '', cellphone: '0911222333', gender: 'MALE', category: '', birthday: { year: '', month: '', day: '' } } },
+      FETCH_ADD_CUSTOMER: {
+        addCustomer: {
+          id: 'customer-new',
+          name: '',
+          cellphone: '0911222333',
+          gender: 'MALE',
+          category: '',
+          birthday: { year: '', month: '', day: '' },
+        },
+      },
       otherCustomers: { 'customer-new': customerDetail({ id: 'customer-new', name: '', no: '', cellphone: '0911222333' }) },
     })
     await pageReady(page)
@@ -81,7 +90,15 @@ describe('掛單詳細：只有預收卡販賣的掛單，帶回原本的付款'
     makeOrder({
       serviceOrders: [],
       ticketOrders: [
-        { id: 'to-1', price: 6000, count: 1, availableCount: 10, remark: '', service: { id: TICKET.id, isLocked: 'FALSE' }, intoPerformanceWhileBuying: false },
+        {
+          id: 'to-1',
+          price: 6000,
+          count: 1,
+          availableCount: 10,
+          remark: '',
+          service: { id: TICKET.id, isLocked: 'FALSE' },
+          intoPerformanceWhileBuying: false,
+        },
       ],
       ...overrides,
     })

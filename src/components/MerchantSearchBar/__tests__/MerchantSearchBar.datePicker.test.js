@@ -31,7 +31,10 @@ const pickIn = (fieldText, cell) => {
 
 const renderBar = (props = {}, options = {}) => {
   const onFilter = jest.fn()
-  const utils = renderPage(<MerchantSearchBar visible={['datePicker']} values={{ startDate: S, endDate: E }} onFilter={onFilter} {...props} />, options)
+  const utils = renderPage(
+    <MerchantSearchBar visible={['datePicker']} values={{ startDate: S, endDate: E }} onFilter={onFilter} {...props} />,
+    options
+  )
   return { ...utils, onFilter }
 }
 
@@ -77,7 +80,11 @@ describe('MerchantSearchBar 快捷鈕', () => {
     expect(lastFilter(onFilter)).toEqual(thisMonth())
     const field = screen.getByRole('button', { name: new RegExp(`^${new Date().getFullYear()}/\\d{2}$`) })
     fireEvent.click(field)
-    fireEvent.click(within(screen.getByRole('dialog')).getAllByRole('gridcell').find(c => c.textContent === '15'))
+    fireEvent.click(
+      within(screen.getByRole('dialog'))
+        .getAllByRole('gridcell')
+        .find(c => c.textContent === '15')
+    )
     expect(lastFilter(onFilter)).toEqual(thisMonth())
     expect(currentLocation()).toBe(url(thisMonth()))
   })

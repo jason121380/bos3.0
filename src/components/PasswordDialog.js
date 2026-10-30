@@ -3,13 +3,13 @@ import { TextField } from 'ui/text-field'
 import { Button } from 'ui/button'
 import PropTypes from 'prop-types'
 
-const PasswordDialog = ({
-  title, inputLabel, open, handleOnCancel, handleOnConfirm, isLoading, inputOnChange, cancelDisabled
-}) => {
+const PasswordDialog = ({ title, inputLabel, open, handleOnCancel, handleOnConfirm, isLoading, inputOnChange, cancelDisabled }) => {
   return (
     <Dialog open={open}>
       <DialogContent size="sm" hideClose aria-describedby={undefined}>
-        <DialogHeader><DialogTitle>{title}</DialogTitle></DialogHeader>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
         <DialogBody style={{ overflow: 'visible' }}>
           <TextField
             // value={editPwd}

@@ -32,13 +32,7 @@ const Status = ({ open = false, isComment }) => {
     }
   }
   return (
-    <>
-      {open && (
-        <div className="ui-root flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center">
-          {handleDisplayMessage()}
-        </div>
-      )}
-    </>
+    <>{open && <div className="ui-root flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center">{handleDisplayMessage()}</div>}</>
   )
 }
 

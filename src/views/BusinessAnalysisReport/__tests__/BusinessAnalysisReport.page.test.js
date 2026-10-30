@@ -36,16 +36,32 @@ const day = (date, extra = {}) => ({
   ...extra,
 })
 const SUMMARY = {
-  cashBalance: 10000, service: 6000, product: 1600, membership: 0, usedTicket: 666.67, ticketSellIntoPerformance: 1000,
-  performanceIncome: 9266, ticketSellNotIntoPerformance: 0, walletDeposit: 2000, usedTicketForDecount: 0, thirdPartTicketForDecount: 0,
-  otherPayWayForDecount: 0, walletUsedForDecount: 0, bonusDecountForReport: 0, businessCash: 8000, cashRevenue: 400,
-  cashExpenditure: 200, expenditure: 600,
+  cashBalance: 10000,
+  service: 6000,
+  product: 1600,
+  membership: 0,
+  usedTicket: 666.67,
+  ticketSellIntoPerformance: 1000,
+  performanceIncome: 9266,
+  ticketSellNotIntoPerformance: 0,
+  walletDeposit: 2000,
+  usedTicketForDecount: 0,
+  thirdPartTicketForDecount: 0,
+  otherPayWayForDecount: 0,
+  walletUsedForDecount: 0,
+  bonusDecountForReport: 0,
+  businessCash: 8000,
+  cashRevenue: 400,
+  cashExpenditure: 200,
+  expenditure: 600,
 }
 const ROWS = [day(new Date(2026, 9, 1).getTime()), day(new Date(2026, 9, 2).getTime(), { membership: 1200, bonusDecountForReport: -40 })]
 
 const fixtures = (extra = {}) => ({
   GET_BUSINESS_ANALYSIS_DATA: { businessAnalysisReport: { data: ROWS, summary: SUMMARY } },
-  GET_PRICE_DISPLAY_ON_DAILY_REPORT_DEFAULT: { getPriceDisplayOnDailyReportDefault: { isPriceDisplayOnDailyReport: true, isServiceTicketMerged: false } },
+  GET_PRICE_DISPLAY_ON_DAILY_REPORT_DEFAULT: {
+    getPriceDisplayOnDailyReportDefault: { isPriceDisplayOnDailyReport: true, isServiceTicketMerged: false },
+  },
   GET_IS_MEMBERSHIP_CARD_ACTIVE: { getIsMemberShipCardActive: false },
   GET_CUSTOMER_BONUS: { getIsCustomerBonusActive: false },
   ...extra,
@@ -57,7 +73,9 @@ afterEach(cleanup)
 
 const headers = () => [...document.querySelectorAll('thead th')].map(th => th.textContent)
 const cells = text =>
-  within(within(document.querySelector('tbody')).getByText(text).closest('tr')).getAllByRole('cell').map(c => c.textContent)
+  within(within(document.querySelector('tbody')).getByText(text).closest('tr'))
+    .getAllByRole('cell')
+    .map(c => c.textContent)
 const exportedCsv = () => decodeURIComponent(screen.getByText('報表匯出').closest('a').getAttribute('href'))
 const lastInput = calls => {
   const list = callsOf(calls, 'GET_BUSINESS_ANALYSIS_DATA')
@@ -102,7 +120,9 @@ describe('營業統計分析表', () => {
 
   it('服務與卡券合併：營業總業績＝服務＋卡券使用＋卡券販賣(入業績)；啟用會員卡與點數時顯示兩欄', async () => {
     const { settle } = setup({
-      GET_PRICE_DISPLAY_ON_DAILY_REPORT_DEFAULT: { getPriceDisplayOnDailyReportDefault: { isPriceDisplayOnDailyReport: true, isServiceTicketMerged: true } },
+      GET_PRICE_DISPLAY_ON_DAILY_REPORT_DEFAULT: {
+        getPriceDisplayOnDailyReportDefault: { isPriceDisplayOnDailyReport: true, isServiceTicketMerged: true },
+      },
       GET_IS_MEMBERSHIP_CARD_ACTIVE: { getIsMemberShipCardActive: true },
       GET_CUSTOMER_BONUS: { getIsCustomerBonusActive: true },
       GET_BUSINESS_ANALYSIS_DATA: { businessAnalysisReport: { data: ROWS, summary: { ...SUMMARY, bonusDecountForReport: null } } },

@@ -38,7 +38,7 @@ function MemberCardCategoryEdit({ match }) {
         isUsing: membershipInfo.isUsing,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [membershipCategory.loading])
 
   // 新增的submit
@@ -78,27 +78,14 @@ function MemberCardCategoryEdit({ match }) {
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 <Field label="代號">
-                  <Input
-                    name="no"
-                    value={submitValue.no}
-                    onChange={event => setSubmitValue({ ...submitValue, no: event.target.value })}
-                  />
+                  <Input name="no" value={submitValue.no} onChange={event => setSubmitValue({ ...submitValue, no: event.target.value })} />
                 </Field>
                 <Field label="名稱">
-                  <Input
-                    name="name"
-                    value={submitValue.name}
-                    onChange={event => setSubmitValue({ ...submitValue, name: event.target.value })}
-                  />
+                  <Input name="name" value={submitValue.name} onChange={event => setSubmitValue({ ...submitValue, name: event.target.value })} />
                 </Field>
               </CardContent>
               <CardFooter>
-                <Button
-                  variant="primary"
-                  type="submit"
-                  data-testid="save"
-                  onClick={() => onSubmit()}
-                >
+                <Button variant="primary" type="submit" data-testid="save" onClick={() => onSubmit()}>
                   儲存
                 </Button>
               </CardFooter>

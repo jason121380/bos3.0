@@ -32,11 +32,9 @@ function AboutMerchantVendor({ className, vendorOption, isLodaing, submitData, s
             options={vendorOption}
             value={submitData.vendorUUId}
             autoHighlight
-            getOptionLabel={option => option ? option.name : ''}
+            getOptionLabel={option => (option ? option.name : '')}
             onChange={(event, value) => handleInputChange('vendorUUId', value)}
-            renderOption={(props, option) => (
-              <li {...props}>{option.name}</li>
-            )}
+            renderOption={(props, option) => <li {...props}>{option.name}</li>}
             renderInput={params => (
               <TextField
                 {...params}
@@ -51,32 +49,16 @@ function AboutMerchantVendor({ className, vendorOption, isLodaing, submitData, s
           />
         </Field>
         <Field label="代號" htmlFor={ids.no} required={!isEdit}>
-          <Input
-            id={ids.no}
-            value={submitData.no}
-            onChange={event => handleInputChange('no', event.target.value)}
-          />
+          <Input id={ids.no} value={submitData.no} onChange={event => handleInputChange('no', event.target.value)} />
         </Field>
         <Field label="名稱" htmlFor={ids.name}>
-          <Input
-            id={ids.name}
-            value={submitData.name}
-            onChange={event => handleInputChange('name', event.target.value)}
-          />
+          <Input id={ids.name} value={submitData.name} onChange={event => handleInputChange('name', event.target.value)} />
         </Field>
         <Field label="暱稱" htmlFor={ids.nickname}>
-          <Input
-            id={ids.nickname}
-            value={submitData.nickname}
-            onChange={event => handleInputChange('nickname', event.target.value)}
-          />
+          <Input id={ids.nickname} value={submitData.nickname} onChange={event => handleInputChange('nickname', event.target.value)} />
         </Field>
         <Field label="備註" htmlFor={ids.remark}>
-          <Input
-            id={ids.remark}
-            value={submitData.remark}
-            onChange={event => handleInputChange('remark', event.target.value)}
-          />
+          <Input id={ids.remark} value={submitData.remark} onChange={event => handleInputChange('remark', event.target.value)} />
         </Field>
       </CardContent>
     </Card>

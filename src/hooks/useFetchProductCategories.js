@@ -188,13 +188,10 @@ const MERCHANT_SALES_ANALYTICS = gql`
 `
 
 export const useFetchMerchantSalesAnalytics = variables => {
-  const [fetchMerchantSalesAnalytics, merchantSalesAnalytics] = useLazyQuery(
-    MERCHANT_SALES_ANALYTICS,
-    {
-      variables,
-      fetchPolicy: 'cache-and-network',
-    }
-  )
+  const [fetchMerchantSalesAnalytics, merchantSalesAnalytics] = useLazyQuery(MERCHANT_SALES_ANALYTICS, {
+    variables,
+    fetchPolicy: 'cache-and-network',
+  })
   return {
     fetchMerchantSalesAnalytics,
     merchantSalesAnalytics,

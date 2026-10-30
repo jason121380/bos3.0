@@ -19,7 +19,7 @@ const GET_MERCHANT_EVENT = gql`
 export default function useFetchGetMainEvent({ eventId }) {
   return useQuery(GET_MERCHANT_EVENT, {
     variables: {
-      eventId
+      eventId,
     },
     fetchPolicy: 'cache-and-network',
   })
@@ -96,7 +96,7 @@ const GET_MERCHANT_EVENT_FOR_RULES = gql`
 export function useFetchGetMainEventForRule({ eventId }) {
   return useQuery(GET_MERCHANT_EVENT_FOR_RULES, {
     variables: {
-      eventId
+      eventId,
     },
     fetchPolicy: 'cache-and-network',
   })

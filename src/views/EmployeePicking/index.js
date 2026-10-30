@@ -38,7 +38,7 @@ function EmployeePicking() {
       end: pageSetting.endDate,
       pickerId: pageSetting.employeeId,
       productCategoryId: categoryValue,
-    }
+    },
   })
 
   const actionsBanned = useFetchGetActionsBannedAfterDailyCheckout()
@@ -76,10 +76,7 @@ function EmployeePicking() {
       <Toolbar>
         <DateSelector
           date={pageSetting}
-          attributes={[
-            'thismonth', 'lastmonth', 'dbyesterday',
-            'yesterday', 'today', 'startDate', 'endDate'
-          ]}
+          attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
           dateChange={value => setPageSetting(value)}
         />
         <ToolbarSpacer />
@@ -128,17 +125,21 @@ function EmployeePicking() {
         </Card>
       )}
       {getPickingRecords.error ? (
-          <QueryFailed onRetry={() => getPickingRecords.refetch()} />
-        ) : idx(
-        getPickingRecords, _ => _.data.pickingRecords &&
-          actionsBanned.data.getActionsBannedAfterDailyCheckout && (
-            <Results
-              pageSetting={pageSetting}
-              pickingRecords={_.data.pickingRecords}
-              refetch={getPickingRecords.refetch}
-              actionsBanned={actionsBanned.data.getActionsBannedAfterDailyCheckout}
-            />
-          )
+        <QueryFailed onRetry={() => getPickingRecords.refetch()} />
+      ) : (
+        idx(
+          getPickingRecords,
+          _ =>
+            _.data.pickingRecords &&
+            actionsBanned.data.getActionsBannedAfterDailyCheckout && (
+              <Results
+                pageSetting={pageSetting}
+                pickingRecords={_.data.pickingRecords}
+                refetch={getPickingRecords.refetch}
+                actionsBanned={actionsBanned.data.getActionsBannedAfterDailyCheckout}
+              />
+            )
+        )
       )}
     </Page>
   )

@@ -29,14 +29,20 @@ const lazyImport = node => {
   let found = null
   traverse(
     t(node),
-    { CallExpression(p) { if (p.node.callee.type === 'Import' && p.node.arguments[0]) found = p.node.arguments[0].value } },
+    {
+      CallExpression(p) {
+        if (p.node.callee.type === 'Import' && p.node.arguments[0]) found = p.node.arguments[0].value
+      },
+    },
     undefined,
     {}
   )
   return found
 }
-function t(node) { return { type: 'File', program: { type: 'Program', sourceType: 'module', body: [{ type: 'ExpressionStatement', expression: node }] } } }
-const keyOf = p => (p.key.name || p.key.value)
+function t(node) {
+  return { type: 'File', program: { type: 'Program', sourceType: 'module', body: [{ type: 'ExpressionStatement', expression: node }] } }
+}
+const keyOf = p => p.key.name || p.key.value
 function importedArray(rel) {
   const file = path.join('src', rel.replace(/^\.\//, '') + (rel.endsWith('.js') ? '' : '.js'))
   const sub = parser.parse(fs.readFileSync(file, 'utf8'), PARSE)
@@ -50,12 +56,26 @@ function walk(arr, layout) {
     if (!el) return
     if (el.type === 'SpreadElement') {
       // ...(cond ? [ {…} ] : [])
-      traverse(t(el.argument), { ArrayExpression(p) { if (p.node.elements.length) { walk(p.node, layout); p.stop() } } }, undefined, {})
+      traverse(
+        t(el.argument),
+        {
+          ArrayExpression(p) {
+            if (p.node.elements.length) {
+              walk(p.node, layout)
+              p.stop()
+            }
+          },
+        },
+        undefined,
+        {}
+      )
       return
     }
     if (el.type !== 'ObjectExpression') return
     const o = {}
-    el.properties.forEach(p => { if (p.key) o[keyOf(p)] = p.value })
+    el.properties.forEach(p => {
+      if (p.key) o[keyOf(p)] = p.value
+    })
     const route = o.path && o.path.value
     let comp = null
     if (o.component) {
@@ -73,13 +93,18 @@ function walk(arr, layout) {
   })
 }
 traverse(ast, {
-  ExportDefaultDeclaration(p) { walk(p.node.declaration, null); p.stop() },
+  ExportDefaultDeclaration(p) {
+    walk(p.node.declaration, null)
+    p.stop()
+  },
 })
 const DEV_ONLY = new Set(['/ui-preview'])
 for (let k = routes.length - 1; k >= 0; k--) if (DEV_ONLY.has(routes[k].path)) routes.splice(k, 1)
 const viewDirOf = comp => {
   if (!comp) return null
-  const m = String(comp).replace(/^(\.\/)?(src\/)?/, '').match(/^views\/([^/]+)/)
+  const m = String(comp)
+    .replace(/^(\.\/)?(src\/)?/, '')
+    .match(/^views\/([^/]+)/)
   return m ? m[1] : null
 }
 
@@ -93,26 +118,39 @@ nav.forEach(line => {
   if (i && menu.length) menu[menu.length - 1].items.push({ title: i[1], href: i[2] })
 })
 const draft = menu.find(m => m.title === '櫃檯作業')
-if (draft && !draft.items.some(i => i.href === '/management/draft-orders')) draft.items.splice(2, 0, { title: '掛單列表（商家啟用掛單時顯示）', href: '/management/draft-orders' })
+if (draft && !draft.items.some(i => i.href === '/management/draft-orders'))
+  draft.items.splice(2, 0, { title: '掛單列表（商家啟用掛單時顯示）', href: '/management/draft-orders' })
 const menuTitle = {}
 menu.forEach(m => m.items.forEach(i => (menuTitle[i.href] = i.title)))
 
 // ---------- 3. 各頁面目錄的改版狀態 ----------
 // 頁面可能是目錄（多數），也可能是單一檔案（如 Error404.js、GettingStarted.js）
 const viewPath = d => (fs.existsSync(`src/views/${d}`) ? `src/views/${d}` : `src/views/${d}.js`)
-const views = fs.readdirSync('src/views').map(d => d.replace(/\.js$/, '')).filter(d => d !== 'index')
+const views = fs
+  .readdirSync('src/views')
+  .map(d => d.replace(/\.js$/, ''))
+  .filter(d => d !== 'index')
 const filesOf = dir => {
   const out = []
-  const w = d => { if (fs.statSync(d).isFile()) return /\.js$/.test(d) && out.push(d); fs.readdirSync(d).forEach(f => { const p = path.join(d, f); fs.statSync(p).isDirectory() ? w(p) : /\.js$/.test(p) && !/__tests?__/.test(p) && out.push(p) }) }
+  const w = d => {
+    if (fs.statSync(d).isFile()) return /\.js$/.test(d) && out.push(d)
+    fs.readdirSync(d).forEach(f => {
+      const p = path.join(d, f)
+      fs.statSync(p).isDirectory() ? w(p) : /\.js$/.test(p) && !/__tests?__/.test(p) && out.push(p)
+    })
+  }
   w(viewPath(dir))
   return out
 }
 const subjectsByDir = {}
-git('log', '--no-merges', '--format=@@%s', '--name-only', `${BASE}..HEAD`, '--', 'src/views').split('@@').slice(1).forEach(block => {
-  const [subject, ...files] = block.split('\n').filter(Boolean)
-  const dirs = new Set(files.map(f => f.split('/')[2].replace(/\.js$/, '')))
-  dirs.forEach(d => (subjectsByDir[d] = (subjectsByDir[d] || []).concat(subject)))
-})
+git('log', '--no-merges', '--format=@@%s', '--name-only', `${BASE}..HEAD`, '--', 'src/views')
+  .split('@@')
+  .slice(1)
+  .forEach(block => {
+    const [subject, ...files] = block.split('\n').filter(Boolean)
+    const dirs = new Set(files.map(f => f.split('/')[2].replace(/\.js$/, '')))
+    dirs.forEach(d => (subjectsByDir[d] = (subjectsByDir[d] || []).concat(subject)))
+  })
 const PRINT = /window\.print|printMain|printThermal|forPrint|printCard|merchantNamePrint/
 const info = {}
 views.forEach(d => {
@@ -135,7 +173,21 @@ views.forEach(d => {
 
 // ---------- 4. 組表 ----------
 const DYNAMIC = /:/
-const SENSITIVE = new Set(['OrderCreate', 'OrderEdit', 'DraftOrderEdit', 'QueueOrderEdit', 'CheckoutDaily', 'SalaryEdit', 'SalaryOverview', 'TopUp', 'TopUpCreate', 'TopUpEdit', 'Parameter', 'AccountingRecordCreate', 'GeneralAccountingRecordCreate'])
+const SENSITIVE = new Set([
+  'OrderCreate',
+  'OrderEdit',
+  'DraftOrderEdit',
+  'QueueOrderEdit',
+  'CheckoutDaily',
+  'SalaryEdit',
+  'SalaryOverview',
+  'TopUp',
+  'TopUpCreate',
+  'TopUpEdit',
+  'Parameter',
+  'AccountingRecordCreate',
+  'GeneralAccountingRecordCreate',
+])
 const NOTE = {
   OrderCreate: '金額重點：折扣、付款、整單結帳',
   OrderEdit: '金額重點：帳單修改後數字',
@@ -151,15 +203,31 @@ const NOTE = {
 }
 // 頁面標題找不到中文時使用
 const TITLE_OVERRIDE = {
-  ClearStorage: '清除快取（顧客端）', CouponEdit: '編輯預收卡', CustomerManagementDetails: '客戶詳細資料',
-  CustomerSelfCreate: '顧客自助建檔', CustomerSendEventTicket: '顧客轉贈活動券', DraftOrderEdit: '掛單詳細',
-  EmployeeManagementDetail: '員工個人設定', Error401: '錯誤頁 401', Error404: '錯誤頁 404', Error500: '錯誤頁 500',
-  GettingStarted: '新手指南', Login: '登入', MemberCard: '顧客端會員卡', OrderEdit: '帳單詳細', ProductEdit: '編輯商品',
-  QueueOrderEdit: '重新開單（排隊單）', Register: '註冊', ServiceEdit: '編輯服務項目',
+  ClearStorage: '清除快取（顧客端）',
+  CouponEdit: '編輯預收卡',
+  CustomerManagementDetails: '客戶詳細資料',
+  CustomerSelfCreate: '顧客自助建檔',
+  CustomerSendEventTicket: '顧客轉贈活動券',
+  DraftOrderEdit: '掛單詳細',
+  EmployeeManagementDetail: '員工個人設定',
+  Error401: '錯誤頁 401',
+  Error404: '錯誤頁 404',
+  Error500: '錯誤頁 500',
+  GettingStarted: '新手指南',
+  Login: '登入',
+  MemberCard: '顧客端會員卡',
+  OrderEdit: '帳單詳細',
+  ProductEdit: '編輯商品',
+  QueueOrderEdit: '重新開單（排隊單）',
+  Register: '註冊',
+  ServiceEdit: '編輯服務項目',
 }
 const CJK = /[一-鿿]/
 const titleOfView = dir => {
-  const pats = [/<Page[^>]*title=(?:"([^"]+)"|'([^']+)'|\{['"]([^'"]+)['"]\})/, /<(?:AdminPageHeader|PageHeader|PageTitle)[^>]*title=(?:"([^"]+)"|'([^']+)'|\{['"]([^'"]+)['"]\})/]
+  const pats = [
+    /<Page[^>]*title=(?:"([^"]+)"|'([^']+)'|\{['"]([^'"]+)['"]\})/,
+    /<(?:AdminPageHeader|PageHeader|PageTitle)[^>]*title=(?:"([^"]+)"|'([^']+)'|\{['"]([^'"]+)['"]\})/,
+  ]
   const files = [...filesOf(dir)].sort((a, b) => (/\/index\.js$/.test(b) ? 1 : 0) - (/\/index\.js$/.test(a) ? 1 : 0))
   for (const pat of pats) {
     for (const p of files) {
@@ -204,7 +272,10 @@ menu.forEach(m => {
 // 後台：子頁面
 const rest = dash.filter(r => !used.has(r.path))
 const groups = {}
-rest.forEach(r => { const g = '/' + r.path.split('/')[1]; (groups[g] = groups[g] || []).push(r) })
+rest.forEach(r => {
+  const g = '/' + r.path.split('/')[1]
+  ;(groups[g] = groups[g] || []).push(r)
+})
 md += '## B. 後台——新增／編輯／明細等子頁面（從列表頁點進去）\n\n'
 md += `${HEAD}\n${rest.map(r => row(r).line).join('\n')}\n\n`
 
@@ -226,10 +297,14 @@ const routedDirs = new Set(routes.map(r => viewDirOf(r.comp)).filter(Boolean))
 const unchanged = views.filter(d => info[d].status === '⚪ 沒改')
 const orphan = views.filter(d => !routedDirs.has(d) && d !== 'UiPreview')
 const count = s => views.filter(d => info[d].status.startsWith(s)).length
-const doneRoutes = routes.filter(r => { const d = viewDirOf(r.comp); return d && info[d] && info[d].status.startsWith('🟢') }).length
+const doneRoutes = routes.filter(r => {
+  const d = viewDirOf(r.comp)
+  return d && info[d] && info[d].status.startsWith('🟢')
+}).length
 let head = `# 改版頁面檢查清單\n\n> 自動產生（\`node scripts/redesign/page-checklist.js\`），產生時間：${new Date().toISOString().slice(0, 16).replace('T', ' ')}　改版前基準：\`${BASE}\`\n>\n`
 head += `> 網址欄的連結指向 \`${URL_BASE}\`（本機執行 \`npm start\` 後可直接點；後端接測試機）。要換成別的網址：\`node scripts/redesign/page-checklist.js --url https://你的測試網址\`。有 \`:id\` 的頁面要從列表頁點進去。\n>\n`
-head += '> 狀態說明：🟢 已改版＝頁面的 MUI 元件已換成新元件；🟡 只換外觀＝只有色碼與圖示統一，版面是舊的；⚪ 沒改。\n> 「殘留 MUI」是這個頁面目錄裡還在用 MUI 的檔案數，不為 0 不代表有問題（日期選擇器、Autocomplete、列印表格等刻意保留）。\n\n'
+head +=
+  '> 狀態說明：🟢 已改版＝頁面的 MUI 元件已換成新元件；🟡 只換外觀＝只有色碼與圖示統一，版面是舊的；⚪ 沒改。\n> 「殘留 MUI」是這個頁面目錄裡還在用 MUI 的檔案數，不為 0 不代表有問題（日期選擇器、Autocomplete、列印表格等刻意保留）。\n\n'
 head += `## 總覽\n\n| 項目 | 數量 |\n|---|---|\n| 頁面目錄總數 | ${views.length} |\n| 🟢 已改版 | ${count('🟢')} |\n| 🟡 只換外觀 | ${count('🟡')} |\n| ⚪ 沒改 | ${count('⚪')} |\n| 有路由的頁面（網址）數 | ${routes.length} |\n| 其中屬於已改版目錄的網址數 | ${doneRoutes} |\n\n`
 head += '建議檢查順序：先看標 **金額重點** 的頁面（打帳單、帳單詳細、日結、薪資、入金），再看 **🖨 有列印** 的頁面（按列印預覽），最後走一遍選單。\n\n'
 
@@ -239,4 +314,13 @@ tail += '\n\n## I. 沒有被任何路由使用的頁面目錄（不會出現在�
 tail += orphan.length ? orphan.map(d => `- \`${d}\`　${info[d].status}`).join('\n') : '（無）'
 tail += '\n'
 fs.writeFileSync('docs/redesign/PAGE_CHECKLIST.md', head + md + tail)
-console.log(JSON.stringify({ views: views.length, routes: routes.length, done: count('🟢'), l1only: count('🟡'), unchanged: unchanged.length, orphan: orphan.length }))
+console.log(
+  JSON.stringify({
+    views: views.length,
+    routes: routes.length,
+    done: count('🟢'),
+    l1only: count('🟡'),
+    unchanged: unchanged.length,
+    orphan: orphan.length,
+  })
+)

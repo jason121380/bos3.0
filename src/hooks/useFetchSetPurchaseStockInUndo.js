@@ -9,7 +9,7 @@ const SET_PURCHASE_STOCK_IN_UNDO = gql`
 export default function useFetchSetPurchaseStockInUndo() {
   const [setStockInUndo] = useMutation(SET_PURCHASE_STOCK_IN_UNDO)
   return {
-    setStockInUndo: ( input ) =>
+    setStockInUndo: input =>
       setStockInUndo({
         variables: {
           input,

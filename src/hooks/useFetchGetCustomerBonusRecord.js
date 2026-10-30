@@ -17,7 +17,7 @@ export const GET_CUSTOMER_BONUS_RECORD = gql`
 export default function useFetchGetCustomerBonusRecord({ customerId }) {
   return useQuery(GET_CUSTOMER_BONUS_RECORD, {
     variables: {
-      customerId
+      customerId,
     },
     fetchPolicy: 'cache-and-network',
   })

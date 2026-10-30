@@ -40,9 +40,9 @@ export default function UsagedResults({
         '設計師': `${idx(data, _ => _.usageOrder.designer.name) || ''} ${idx(data, _ => _.usageOrder.designer.designerNo) || ''}`,
         '卡券代號': `${data.no}`,
         '卡券使用': `${data.service.name}`,
-        '卡券使用金額': `${roundDecimal(data.price)}`
+        '卡券使用金額': `${roundDecimal(data.price)}`,
       })
-    });
+    })
     csvData.push({
       '使用卡券之帳單編號/時間': '',
       '購買卡券之帳單編號/時間': '',
@@ -50,10 +50,10 @@ export default function UsagedResults({
       '設計師': '',
       '卡券代號': '',
       '卡券使用': '合計',
-      '卡券使用金額': totalPrice()
+      '卡券使用金額': totalPrice(),
     })
     setCsvData(csvData)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（roundDecimal、totalPrice）；只在 [results, isCustomerDataMarked] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（roundDecimal、totalPrice）；只在 [results, isCustomerDataMarked] 變動時呼叫，補上會每次 render 重跑
   }, [results, isCustomerDataMarked])
 
   return (
@@ -68,7 +68,7 @@ export default function UsagedResults({
         rowsPerPageOptions={[5, 10, 25, 50, 1000]}
         excelData={csvData}
         excelFilename="卡券使用紀錄.csv"
-        tableHead={(
+        tableHead={
           <>
             <TableHead className="!px-2 !py-1">使用詳情</TableHead>
             <TableHead className="!px-2 !py-1">購買詳情</TableHead>
@@ -78,44 +78,32 @@ export default function UsagedResults({
             <TableHead className="!px-2 !py-1">卡券使用</TableHead>
             <TableHead className="!px-2 !py-1">金額</TableHead>
           </>
-        )}
+        }
       >
         <TableBody>
           {results.map((result, index) => (
             <TableRow key={`${result.id}-${index}`}>
               <TableCell className="!px-2 !py-1">
                 {idx(result, _ => _.usageOrder.no)}
-                <div className="text-caption tabular-nums text-text-secondary">
-                  {idx(result, _ => format(_.usageOrder.date, 'yyyy/MM/dd'))}
-                </div>
+                <div className="text-caption tabular-nums text-text-secondary">{idx(result, _ => format(_.usageOrder.date, 'yyyy/MM/dd'))}</div>
                 <Button asChild size="sm" variant="secondary">
-                  <RouterLink to={`/order/${result.usageOrder.id}`}>
-                    詳情
-                  </RouterLink>
+                  <RouterLink to={`/order/${result.usageOrder.id}`}>詳情</RouterLink>
                 </Button>
               </TableCell>
               <TableCell className="!px-2 !py-1">
                 {idx(result, _ => _.order.no)}
-                <div className="text-caption tabular-nums text-text-secondary">
-                  {idx(result, _ => format(_.order.date, 'yyyy/MM/dd'))}
-                </div>
+                <div className="text-caption tabular-nums text-text-secondary">{idx(result, _ => format(_.order.date, 'yyyy/MM/dd'))}</div>
                 <Button asChild size="sm" variant="secondary">
-                  <RouterLink to={`/order/${result.order.id}`}>
-                    詳情
-                  </RouterLink>
+                  <RouterLink to={`/order/${result.order.id}`}>詳情</RouterLink>
                 </Button>
               </TableCell>
               <TableCell className="!px-2 !py-1">
                 {idx(result, _ => _.order.customer.name)}
-                <div className="text-caption tabular-nums text-text-secondary">
-                  {idx(result, _ => _.order.customer.cellphone)}
-                </div>
+                <div className="text-caption tabular-nums text-text-secondary">{idx(result, _ => _.order.customer.cellphone)}</div>
               </TableCell>
               <TableCell className="!px-2 !py-1">
                 {idx(result, _ => _.usageOrder.designer.name)}
-                <div className="text-caption tabular-nums text-text-secondary">
-                  {idx(result, _ => _.usageOrder.designer.designerNo)}
-                </div>
+                <div className="text-caption tabular-nums text-text-secondary">{idx(result, _ => _.usageOrder.designer.designerNo)}</div>
               </TableCell>
               <TableCell className="!px-2 !py-1">{idx(result, _ => _.no)}</TableCell>
               <TableCell className="!px-2 !py-1">{idx(result, _ => _.service.name)}</TableCell>
@@ -124,11 +112,15 @@ export default function UsagedResults({
           ))}
           <TableRow>
             <TableCell className="!px-2 !py-1" colSpan={5} />
-            <TableCell className="!px-2 !py-1" style={{ fontWeight: 'bold' }}>合計</TableCell>
-            <TableCell className="!px-2 !py-1" style={{ fontWeight: 'bold' }}>{totalPrice()}</TableCell>
+            <TableCell className="!px-2 !py-1" style={{ fontWeight: 'bold' }}>
+              合計
+            </TableCell>
+            <TableCell className="!px-2 !py-1" style={{ fontWeight: 'bold' }}>
+              {totalPrice()}
+            </TableCell>
           </TableRow>
         </TableBody>
       </ManagementTable>
-    </div >
+    </div>
   )
 }

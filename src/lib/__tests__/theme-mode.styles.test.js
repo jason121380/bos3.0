@@ -5,10 +5,14 @@
 // 單元測試平常不載入樣式字串（NODE_ENV=test 時略過），這裡暫時以正式環境的流程執行；樣式字串以虛擬模組代替（與 Vite 的 ?inline 相同，default 為 CSS 字串）。
 
 const mockStyleLoad = { darkFails: false }
-jest.mock('../../initialize-dark.scss?inline', () => {
-  if (mockStyleLoad.darkFails) throw new Error('offline')
-  return { __esModule: true, default: '/* dark legacy styles */' }
-}, { virtual: true })
+jest.mock(
+  '../../initialize-dark.scss?inline',
+  () => {
+    if (mockStyleLoad.darkFails) throw new Error('offline')
+    return { __esModule: true, default: '/* dark legacy styles */' }
+  },
+  { virtual: true }
+)
 jest.mock('../../initialize.scss?inline', () => ({ __esModule: true, default: '/* light legacy styles */' }), { virtual: true })
 
 const originalNodeEnv = process.env.NODE_ENV

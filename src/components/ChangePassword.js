@@ -32,15 +32,9 @@ export default function ChangePassword({ open, handleClose }) {
         formData[name].value = event.target.value
         formData[name].error =
           name === 'password'
-            ? !!(
-              formData.password.value !== formData.secondPassword.value &&
-              !!formData.secondPassword.value
-            )
+            ? !!(formData.password.value !== formData.secondPassword.value && !!formData.secondPassword.value)
             : name === 'secondPassword'
-              ? !!(
-                formData.password.value !== formData.secondPassword.value &&
-                !!formData.password.value
-              )
+              ? !!(formData.password.value !== formData.secondPassword.value && !!formData.password.value)
               : false
         // 兩欄一致時一併清除兩欄的錯誤標示：原本只更新正在打的那欄，先標錯的另一欄會殘留錯誤（送出檢查改看 secondPassword.error 後會被擋下）
         if (formData.password.value === formData.secondPassword.value) {
@@ -93,55 +87,59 @@ export default function ChangePassword({ open, handleClose }) {
             <DialogTitle>重新設定密碼</DialogTitle>
           </DialogHeader>
           <DialogBody>
-          <p className="m-0 mb-3 text-body text-text-secondary">為了您的帳號安全, 您必須變更預設密碼才能繼續使用。</p>
-          <form className="m-auto flex w-full flex-col [&>*]:!mb-[16px]" noValidate>
-            <FormControl variant="outlined">
-              <InputLabel htmlFor="password">密碼</InputLabel>
-              <OutlinedInput
-                variant='outlined'
-                id="password"
-                fullWidth
-                onChange={event => handleOnChange({ name: 'password', event })}
-                type={formData.password.showPassword ? 'text' : 'password'}
-                value={formData.password.value}
-                error={formData.password.error}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <Button
-                      variant="ghost" size="icon"
-                      aria-label="toggle password visibility" title="切換密碼顯示"
-                      onClick={() => handleClickShowPassword('password')}
-                    >
-                      {formData.password.showPassword ? <Visibility /> : <VisibilityOff />}
-                    </Button>
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-            <FormControl variant="outlined">
-              <InputLabel htmlFor="secondPassword">確認密碼</InputLabel>
-              <OutlinedInput
-                id="secondPassword"
-                onChange={event => handleOnChange({ name: 'secondPassword', event })}
-                type={formData.secondPassword.showPassword ? 'text' : 'password'}
-                value={formData.secondPassword.value}
-                error={formData.secondPassword.error}
-                fullWidth
-                endAdornment={
-                  <InputAdornment position="end">
-                    <Button
-                      variant="ghost" size="icon"
-                      aria-label="toggle password visibility" title="切換密碼顯示"
-                      onClick={() => handleClickShowPassword('secondPassword')}
-                      onMouseDown={handleMouseDownPassword}
-                    >
-                      {formData.secondPassword.showPassword ? <Visibility /> : <VisibilityOff />}
-                    </Button>
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-          </form>
+            <p className="m-0 mb-3 text-body text-text-secondary">為了您的帳號安全, 您必須變更預設密碼才能繼續使用。</p>
+            <form className="m-auto flex w-full flex-col [&>*]:!mb-[16px]" noValidate>
+              <FormControl variant="outlined">
+                <InputLabel htmlFor="password">密碼</InputLabel>
+                <OutlinedInput
+                  variant="outlined"
+                  id="password"
+                  fullWidth
+                  onChange={event => handleOnChange({ name: 'password', event })}
+                  type={formData.password.showPassword ? 'text' : 'password'}
+                  value={formData.password.value}
+                  error={formData.password.error}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="toggle password visibility"
+                        title="切換密碼顯示"
+                        onClick={() => handleClickShowPassword('password')}
+                      >
+                        {formData.password.showPassword ? <Visibility /> : <VisibilityOff />}
+                      </Button>
+                    </InputAdornment>
+                  }
+                />
+              </FormControl>
+              <FormControl variant="outlined">
+                <InputLabel htmlFor="secondPassword">確認密碼</InputLabel>
+                <OutlinedInput
+                  id="secondPassword"
+                  onChange={event => handleOnChange({ name: 'secondPassword', event })}
+                  type={formData.secondPassword.showPassword ? 'text' : 'password'}
+                  value={formData.secondPassword.value}
+                  error={formData.secondPassword.error}
+                  fullWidth
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="toggle password visibility"
+                        title="切換密碼顯示"
+                        onClick={() => handleClickShowPassword('secondPassword')}
+                        onMouseDown={handleMouseDownPassword}
+                      >
+                        {formData.secondPassword.showPassword ? <Visibility /> : <VisibilityOff />}
+                      </Button>
+                    </InputAdornment>
+                  }
+                />
+              </FormControl>
+            </form>
           </DialogBody>
           <DialogFooter>
             <Button variant="primary" onClick={handleOnChangePassword}>

@@ -44,15 +44,7 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
   const inputLabel = useRef()
   const { errors, register, setValue, clearErrors, trigger, watch } = useStore()
   const categories = idx(productCategories, _ => _.data.productCategories) || []
-  const watchList = watch([
-    'cost',
-    'sellPrice',
-    'employeePrice',
-    'safeHigh',
-    'safeLow',
-    'isAvailableForSale',
-    'isLocked',
-  ])
+  const watchList = watch(['cost', 'sellPrice', 'employeePrice', 'safeHigh', 'safeLow', 'isAvailableForSale', 'isLocked'])
   const handleSelectAllText = e => {
     e.target.select()
   }
@@ -134,48 +126,39 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
           >
             <NativeSelectOption value="">None</NativeSelectOption>
             {categories.map((data, idx) => (
-              <NativeSelectOption
-                key={`${data.id}-${idx}`}
-                value={data.id}
-                data-testid={`ProductCategoryId-${data.name}`}
-              >
+              <NativeSelectOption key={`${data.id}-${idx}`} value={data.id} data-testid={`ProductCategoryId-${data.name}`}>
                 {data.no} {data.name}
               </NativeSelectOption>
             ))}
           </NativeSelect>
 
-          {errors.ProductCategoryId && (
-            <FormHelperText data-testid="ProductCategoryId-helperText">
-              {errors.ProductCategoryId.message}
-            </FormHelperText>
-          )}
+          {errors.ProductCategoryId && <FormHelperText data-testid="ProductCategoryId-helperText">{errors.ProductCategoryId.message}</FormHelperText>}
         </FormControl>
         <Autocomplete
           options={merchantVendor}
           autoHighlight
           value={vendorUUId}
-          onChange={(e, value) => value === null ? setVendorUUId(null) : setVendorUUId(value.uuid)}
+          onChange={(e, value) => (value === null ? setVendorUUId(null) : setVendorUUId(value.uuid))}
           getOptionLabel={option => {
-              if (typeof option === 'string') {
-                const optionLabel = merchantVendor.find(d => d.uuid === option)
-                if (option !== '' && optionLabel) {
-                 return `${optionLabel.no === '' ? '(無代號)' : `${optionLabel.no}`} ${optionLabel.nickname === "" ? optionLabel.name : optionLabel.nickname}`
-                } else {
-                  return ''
-                }
+            if (typeof option === 'string') {
+              const optionLabel = merchantVendor.find(d => d.uuid === option)
+              if (option !== '' && optionLabel) {
+                return `${optionLabel.no === '' ? '(無代號)' : `${optionLabel.no}`} ${optionLabel.nickname === '' ? optionLabel.name : optionLabel.nickname}`
               } else {
                 return ''
               }
+            } else {
+              return ''
             }
-          }
+          }}
           renderOption={(props, option) => (
             <li {...props} key={option.uuid}>
-              {`${option.no === '' ? '(無代號)' : `${option.no}`} ${option.nickname === "" ? option.name : option.nickname}`}
+              {`${option.no === '' ? '(無代號)' : `${option.no}`} ${option.nickname === '' ? option.name : option.nickname}`}
             </li>
           )}
-          filterOptions={(options, {inputValue}) => {
+          filterOptions={(options, { inputValue }) => {
             const newOptions = options.filter(d => {
-              return (d.no.includes(inputValue) || d.name.includes(inputValue) || d.nickname.includes(inputValue))
+              return d.no.includes(inputValue) || d.name.includes(inputValue) || d.nickname.includes(inputValue)
             })
             return newOptions
           }}
@@ -226,7 +209,7 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
               trigger('sellPrice')
             }}
             helperText={errors.sellPrice && errors.sellPrice.message}
-            onWheel={() => document.activeElement.blur()}              
+            onWheel={() => document.activeElement.blur()}
           />
         )}
         <TextField
@@ -249,7 +232,7 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
             }),
           }}
           helperText={errors.cost && errors.cost.message}
-          onWheel={() => document.activeElement.blur()}              
+          onWheel={() => document.activeElement.blur()}
         />
         <TextField
           type="number"
@@ -271,13 +254,9 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
             }),
           }}
           helperText={errors.employeePrice && errors.employeePrice.message}
-          onWheel={() => document.activeElement.blur()}              
+          onWheel={() => document.activeElement.blur()}
         />
-        <FormControl
-          variant="outlined"
-          fullWidth
-          error={!!errors.stockUnit}
-        >
+        <FormControl variant="outlined" fullWidth error={!!errors.stockUnit}>
           <NativeSelect
             name="stockUnit"
             error={!!errors.stockUnit}
@@ -300,21 +279,13 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
               <em>None</em>
             </NativeSelectOption>
             {stockUnit.map((data, idx) => (
-              <NativeSelectOption
-                key={`${data.label}-${idx}`}
-                value={data.value}
-                data-testid={`stockUnit-${data.label}`}
-              >
+              <NativeSelectOption key={`${data.label}-${idx}`} value={data.value} data-testid={`stockUnit-${data.label}`}>
                 {data.label}
               </NativeSelectOption>
             ))}
           </NativeSelect>
 
-          {errors.stockUnit && (
-            <FormHelperText data-testid="stockUnit-helpertext">
-              {errors.stockUnit.message}
-            </FormHelperText>
-          )}
+          {errors.stockUnit && <FormHelperText data-testid="stockUnit-helpertext">{errors.stockUnit.message}</FormHelperText>}
         </FormControl>
         <NativeSelect
           defaultValue=""

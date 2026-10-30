@@ -13,7 +13,7 @@ const CustomerConsumptionCountRanking = ({ data }) => {
             <CardTitle className="whitespace-nowrap">消費總次數排行</CardTitle>
             <CardDescription className="whitespace-nowrap text-caption">期間內來最多次的客人(帳單)</CardDescription>
           </div>
-          {data.length > 0 ?
+          {data.length > 0 ? (
             <Table dense wrapperClassName="mt-0">
               <TableHeader>
                 <TableRow>
@@ -37,9 +37,10 @@ const CustomerConsumptionCountRanking = ({ data }) => {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table> :
+            </Table>
+          ) : (
             <EmptyState title="無資料" className="h-[350px]" />
-          }
+          )}
         </CardContent>
       </Card>
     </div>

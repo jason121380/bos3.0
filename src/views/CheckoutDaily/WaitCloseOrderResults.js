@@ -9,15 +9,7 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
 import { cn } from 'ui/utils'
 
-function Results({
-  pageSetting,
-  waitCloseOrderResults,
-  refetchDailyMoneyFlowReport,
-  refetch,
-  loading,
-  checkoutStatus,
-  ...rest
-}) {
+function Results({ pageSetting, waitCloseOrderResults, refetchDailyMoneyFlowReport, refetch, loading, checkoutStatus, ...rest }) {
   const checkoutStaff = JSON.parse(localStorage.getItem('user'))
 
   const [results, setResults] = React.useState([])
@@ -42,7 +34,7 @@ function Results({
       }
     }
     // 「有掛單未結不可日結」設定由父層 state 傳入、可能比列表晚一拍更新；設定改變時重算全選上限（B2 #13）
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [loading, checkoutStatus] 變動時執行；waitCloseOrderResults 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [loading, checkoutStatus] 變動時執行；waitCloseOrderResults 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [loading, checkoutStatus])
   const [selectedOrders, setSelectedOrders] = React.useState([])
   const handleSelectAll = event => {
@@ -56,7 +48,8 @@ function Results({
   }
 
   const handleSelectOne = id => {
-    const newSelect = [...selectedOrders], index = newSelect.indexOf(id)
+    const newSelect = [...selectedOrders],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -99,9 +92,7 @@ function Results({
         >
           <div className="flex items-baseline gap-3">
             <CardTitle>尚未日結紀錄</CardTitle>
-            <span className="text-label text-text-secondary tabular-nums">
-              共 {results.length} 筆
-            </span>
+            <span className="text-label text-text-secondary tabular-nums">共 {results.length} 筆</span>
           </div>
         </CardHeader>
         {expanded && (
@@ -109,19 +100,11 @@ function Results({
             <div className="flex items-center gap-2 border-0 border-b border-solid border-border bg-surface px-5 py-2">
               <Checkbox
                 aria-label="全選"
-                checked={
-                  selectedOrders.length > 0
-                    ? selectedOrders.length === canCheckoutOrder
-                    : false
-                }
-                indeterminate={
-                  selectedOrders.length > 0 && selectedOrders.length < canCheckoutOrder
-                }
+                checked={selectedOrders.length > 0 ? selectedOrders.length === canCheckoutOrder : false}
+                indeterminate={selectedOrders.length > 0 && selectedOrders.length < canCheckoutOrder}
                 onChange={handleSelectAll}
               />
-              <span className="text-label text-text-secondary">
-                全選 / 營業日期
-              </span>
+              <span className="text-label text-text-secondary">全選 / 營業日期</span>
             </div>
             <div className="grid grid-cols-1 gap-x-6 px-5 py-2 sm:grid-cols-2">
               {results.map(result => (
@@ -135,9 +118,7 @@ function Results({
                   <span className="flex flex-wrap items-center text-body tabular-nums text-text">
                     {format(new Date(result.date), 'yyyy/MM/dd')}
                     {checkoutStatus && result.pendingOrderCount > 0 && (
-                      <span className="ml-2 text-caption font-medium text-danger">
-                        ({result.pendingOrderCount}筆掛單未結)
-                      </span>
+                      <span className="ml-2 text-caption font-medium text-danger">({result.pendingOrderCount}筆掛單未結)</span>
                     )}
                   </span>
                 </div>
@@ -146,12 +127,8 @@ function Results({
           </div>
         )}
       </Card>
-      <TableCheckoutBar
-        selected={selectedOrders}
-        onMarkPaid={handleMarkPaid}
-        checkoutProcessing={checkoutProcessing}
-      />
-    </div >
+      <TableCheckoutBar selected={selectedOrders} onMarkPaid={handleMarkPaid} checkoutProcessing={checkoutProcessing} />
+    </div>
   )
 }
 

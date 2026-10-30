@@ -55,30 +55,16 @@ function Results({ report, total, countTotalPrice }) {
           <TableCell className="font-bold">合計</TableCell>
           <TableCell colSpan={4} />
           <TableCell numeric>{formatNumber(countTotalPrice(total, 'totalCount'))}</TableCell>
-          <TableCell numeric>
-            {total != null && formatNumber(total.reduce((acc, curVal) => acc + curVal.totalCount, 0))}
-          </TableCell>
-          <TableCell numeric>
-            {total != null && formatNumber(total.reduce((acc, curVal) => acc + curVal.usedCount, 0))}
-          </TableCell>
-          <TableCell numeric>
-            {total != null && formatNumber(total.reduce((acc, curVal) => acc + curVal.remainingCount, 0))}
-          </TableCell>
+          <TableCell numeric>{total != null && formatNumber(total.reduce((acc, curVal) => acc + curVal.totalCount, 0))}</TableCell>
+          <TableCell numeric>{total != null && formatNumber(total.reduce((acc, curVal) => acc + curVal.usedCount, 0))}</TableCell>
+          <TableCell numeric>{total != null && formatNumber(total.reduce((acc, curVal) => acc + curVal.remainingCount, 0))}</TableCell>
           <TableCell numeric>{formatNumber(countTotalPrice(total, 'remainingCount'))}</TableCell>
+          <TableCell numeric>{total != null && formatNumber(Math.round(total.reduce((acc, curVal) => acc + curVal.singleCouponPrice, 0)))}</TableCell>
           <TableCell numeric>
-            {total != null && formatNumber(Math.round(total.reduce((acc, curVal) => acc + curVal.singleCouponPrice, 0)))}
+            {total != null && formatNumber(Math.round(total.reduce((acc, curVal) => acc + curVal.singleCouponPriceDecreaseHandingFee, 0)))}
           </TableCell>
           <TableCell numeric>
-            {total != null &&
-              formatNumber(Math.round(total.reduce((acc, curVal) => acc + curVal.singleCouponPriceDecreaseHandingFee, 0)))}
-          </TableCell>
-          <TableCell numeric>
-            {total != null &&
-              formatNumber(Math.abs(
-                Math.round(
-                  total.reduce((acc, curVal) => acc + curVal.singleCouponHandingFee, 0)
-                )
-              ))}
+            {total != null && formatNumber(Math.abs(Math.round(total.reduce((acc, curVal) => acc + curVal.singleCouponHandingFee, 0))))}
           </TableCell>
         </TableRow>
       </TableBody>

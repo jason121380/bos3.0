@@ -61,8 +61,7 @@ const SHORTCUTS = [
     tickets: [],
   },
 ]
-const setup = (shortcuts = SHORTCUTS) =>
-  renderPage(<Shortcut />, { fixtures: { GET_SHORTCUTS: { shortcuts } }, route: '/shortcut' })
+const setup = (shortcuts = SHORTCUTS) => renderPage(<Shortcut />, { fixtures: { GET_SHORTCUTS: { shortcuts } }, route: '/shortcut' })
 const row = name => within(screen.getByText(name).closest('tr'))
 
 beforeEach(() => {

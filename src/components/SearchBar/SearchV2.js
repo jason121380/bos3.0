@@ -22,7 +22,7 @@ function SearchV2({
   onCustomerSource,
   disableCustomerSource,
   inCustomerFilterExport,
-  handleClearData = () => { },
+  handleClearData = () => {},
   setBelong,
   setCustomerIsCome,
   getQuery = false,
@@ -91,12 +91,12 @@ function SearchV2({
 
   useEffect(() => {
     if (!getQuery) return
-    const queryString = new URLSearchParams(location.search).get("pageSetting")
+    const queryString = new URLSearchParams(location.search).get('pageSetting')
     if (queryString) {
       const parseData = JSON.parse(queryString)
       setKeyword(parseData.keyword)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   return (
@@ -104,7 +104,11 @@ function SearchV2({
     <div {...rest} className={cn('box-border flex w-full flex-wrap items-end gap-2.5', className)}>
       <Field label="關鍵字" htmlFor="customer-search-keyword" className="min-w-[200px] grow basis-[240px]">
         <div className="relative">
-          <SearchIcon aria-hidden="true" strokeWidth={1.75} className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
+          <SearchIcon
+            aria-hidden="true"
+            strokeWidth={1.75}
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary"
+          />
           <Input
             id="customer-search-keyword"
             className="pl-9"
@@ -116,7 +120,7 @@ function SearchV2({
         </div>
       </Field>
       <div className="flex flex-wrap items-end gap-2.5">
-        {inCustomerFilterExport ?
+        {inCustomerFilterExport ? (
           <Fragment>
             <EmployeeAutoComplete
               label={'最近設計師編號/姓名'}
@@ -137,7 +141,7 @@ function SearchV2({
               className="grow !w-[180px] min-w-[150px]"
             />
           </Fragment>
-          :
+        ) : (
           <div>
             <EmployeeAutoComplete
               label={'設計師編號/姓名'}
@@ -149,7 +153,7 @@ function SearchV2({
               className="!min-w-[180px] max-w-[270px]"
             />
           </div>
-        }
+        )}
       </div>
       <div className="flex flex-wrap items-end gap-2.5">
         <TextField
@@ -214,9 +218,9 @@ function SearchV2({
               onIsUnwelcome(event)
             }}
           >
-            <NativeSelectOption value='ALL'>顯示全部</NativeSelectOption>
-            <NativeSelectOption value='UNWELCOME'>顯示黑名單</NativeSelectOption>
-            <NativeSelectOption value='WELCOME'>排除黑名單</NativeSelectOption>
+            <NativeSelectOption value="ALL">顯示全部</NativeSelectOption>
+            <NativeSelectOption value="UNWELCOME">顯示黑名單</NativeSelectOption>
+            <NativeSelectOption value="WELCOME">排除黑名單</NativeSelectOption>
           </NativeSelect>
         </Field>
       )}
@@ -241,24 +245,25 @@ function SearchV2({
             setIsUnwelcome('ALL')
             setBelong && setBelong([])
             setCustomerIsCome && setCustomerIsCome(null)
-            setCustomerNoSort && setCustomerNoSort({
-              keyword: '',
-              preferDesigner: '',
-              latestDesigner: '',
-              birthday: {
-                year: '',
-                month: '',
-                day: '',
-              },
-              source: '',
-              pageLimit: 50,
-              pageOffset: 0,
-              isUnwelcome: 'ALL',
-              consumptionRange: null,
-              baseDateRange: null,
-              customerIsCome: null,
-              category: []
-            })
+            setCustomerNoSort &&
+              setCustomerNoSort({
+                keyword: '',
+                preferDesigner: '',
+                latestDesigner: '',
+                birthday: {
+                  year: '',
+                  month: '',
+                  day: '',
+                },
+                source: '',
+                pageLimit: 50,
+                pageOffset: 0,
+                isUnwelcome: 'ALL',
+                consumptionRange: null,
+                baseDateRange: null,
+                customerIsCome: null,
+                category: [],
+              })
           }}
           variant="secondary"
         >

@@ -12,7 +12,10 @@ const body = code => {
 let bad = 0
 for (const f of process.argv.slice(2)) {
   const before = execFileSync('git', ['show', `HEAD:${f}`], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
-  if (body(before) !== body(fs.readFileSync(f, 'utf8'))) { console.log('CODE CHANGED:', f); bad++ }
+  if (body(before) !== body(fs.readFileSync(f, 'utf8'))) {
+    console.log('CODE CHANGED:', f)
+    bad++
+  }
 }
 console.log(bad ? `${bad} 個檔案有 import 以外的變動` : `全部 ${process.argv.length - 2} 個檔案：只有 import 變動`)
 process.exit(bad ? 1 : 0)

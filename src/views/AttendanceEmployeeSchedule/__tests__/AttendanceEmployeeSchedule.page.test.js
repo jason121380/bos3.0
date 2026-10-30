@@ -287,7 +287,9 @@ describe('報表匯出', () => {
   it('匯出該月班表：取得下載網址後自動下載；沒有網址時不下載', async () => {
     const click = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
     try {
-      const utils = setup({ fixtures: { FETCH_GET_EMPLOYEE_CLOCK_IN_SCHEDULE_EXCEL: { getEmployeeClockInScheduleExcel: 'https://files.example/schedule.xlsx' } } })
+      const utils = setup({
+        fixtures: { FETCH_GET_EMPLOYEE_CLOCK_IN_SCHEDULE_EXCEL: { getEmployeeClockInScheduleExcel: 'https://files.example/schedule.xlsx' } },
+      })
       await ready(utils)
       fireEvent.click(screen.getByRole('button', { name: '報表匯出' }))
       await wait(() => expect(click).toHaveBeenCalledTimes(1))

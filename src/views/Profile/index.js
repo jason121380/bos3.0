@@ -62,7 +62,7 @@ function Settings({ match, history }) {
   const [bookingCusCheck, setBookingCusCheck] = useState(false)
   const [orderPage, setOrderPage] = useState({
     offset: 0,
-    limit: 50
+    limit: 50,
   })
 
   const [resultsSetting, setResultsSetting] = useState({
@@ -86,9 +86,7 @@ function Settings({ match, history }) {
   })
 
   const [rakeReportDate, setRakeReportDate] = useState({
-    startDate: urlParams.has('startDate')
-      ? +urlParams.get('startDate')
-      : startOfDay(new Date()).getTime(),
+    startDate: urlParams.has('startDate') ? +urlParams.get('startDate') : startOfDay(new Date()).getTime(),
     endDate: urlParams.has('endDate') ? +urlParams.get('endDate') : endOfDay(new Date()).getTime(),
   })
 
@@ -105,7 +103,7 @@ function Settings({ match, history }) {
   const [orderLength, setOrderLength] = useState(0)
   const [submitValue, setSubmitValue] = useState({
     pages: [],
-    stores: []
+    stores: [],
   })
 
   const [customerBonusActiveLazy, customerBonusActiveData] = useFetchGetIsCustomerBonusActiveLazy()
@@ -149,11 +147,11 @@ function Settings({ match, history }) {
         const currentMerchantId = storedMerchantId()
         setSubmitValue({
           pages: pages,
-          stores: (data.usingStoreIds || []).filter(id => currentMerchantId !== id)
+          stores: (data.usingStoreIds || []).filter(id => currentMerchantId !== id),
         })
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getUserPinnedTableSettings.loading])
 
   useEffect(() => {
@@ -162,23 +160,23 @@ function Settings({ match, history }) {
       const data = Boolean(idx(getBookinHistoryDisplay, _ => _.data.getParameterAboutBookingSetting.isBookingHistoryDisplay))
       setBookingHistoryDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBookinHistoryDisplay.loading])
 
   useEffect(() => {
     if (!getMerchantCheckinSettings.loading) {
-      const data = idx(getMerchantCheckinSettings,_=>_.data.getMerchantCheckinSettings)
+      const data = idx(getMerchantCheckinSettings, _ => _.data.getMerchantCheckinSettings)
       // 報到設定查詢失敗時保留預設值，不讓整個個人頁拋錯（2026/10/30 自動掃描發現）
       if (data) setCheckinSettings(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantCheckinSettings.loading])
   useEffect(() => {
     if (!getIsBookingCusCheckUsing.loading) {
-      const data = idx(getIsBookingCusCheckUsing,_=>_.data.getIsBookingCusCheckUsing)
+      const data = idx(getIsBookingCusCheckUsing, _ => _.data.getIsBookingCusCheckUsing)
       setBookingCusCheck(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBookingCusCheckUsing.loading])
 
   // 檢查權限 ------------------------------------------------------------------------------------------------------
@@ -189,7 +187,7 @@ function Settings({ match, history }) {
       const tmpArr = roleSectionAuthority(merchantAuth, loginUserAuthId, '個人檔案')
       setItemAuthority(tmpArr)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantAuthData.loading, profile.loading])
   const itemValue = []
   itemAuthority.forEach(data => {
@@ -230,7 +228,7 @@ function Settings({ match, history }) {
         // 其他值不處理（與原本沒有 default 時相同）
         break
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [currentTab] 變動時執行；attendance.length、designerReportData.length、getAttendanceRecord、getDesignerSelfRecord、getHelperSelfRecord、getOrderRecordsData、getPaySlip、getRakeReport、orderLength、rakeReport.length、report.length、userPaySlip.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [currentTab] 變動時執行；attendance.length、designerReportData.length、getAttendanceRecord、getDesignerSelfRecord、getHelperSelfRecord、getOrderRecordsData、getPaySlip、getRakeReport、orderLength、rakeReport.length、report.length、userPaySlip.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [currentTab])
 
   useEffect(() => {
@@ -256,7 +254,7 @@ function Settings({ match, history }) {
       default:
         break
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [dateForHelper, dateForDailyReport, rakeReportDate, getLa…] 變動時執行；currentTab、getAttendanceRecord、getDesignerSelfRecord、getHelperSelfRecord、getOrderRecordsData、getPaySlip、getRakeReport 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [dateForHelper, dateForDailyReport, rakeReportDate, getLa…] 變動時執行；currentTab、getAttendanceRecord、getDesignerSelfRecord、getHelperSelfRecord、getOrderRecordsData、getPaySlip、getRakeReport 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [dateForHelper, dateForDailyReport, rakeReportDate, getLastMonth, resultsSetting])
 
   // 訂單記錄 ------------------------------------------------------------------------------------------------------
@@ -272,11 +270,12 @@ function Settings({ match, history }) {
     memberActiveLazy()
   }
 
-
   useEffect(() => {
     if (
-      !getOrderListLazyData.loading && getOrderListLazyData.data !== undefined &&
-      !memberActiveLazyData.loading && memberActiveLazyData.data !== undefined &&
+      !getOrderListLazyData.loading &&
+      getOrderListLazyData.data !== undefined &&
+      !memberActiveLazyData.loading &&
+      memberActiveLazyData.data !== undefined &&
       // 等紅利設定查詢回來再讀（Jason 2026/10/22；原本紅利設定比帳單晚回時讀 undefined 整頁錯誤）
       !customerBonusActiveData.loading
     ) {
@@ -289,7 +288,7 @@ function Settings({ match, history }) {
       setOrderLength(length)
       setMembershipDisplay(active || performance !== 0)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getOrderListLazyData.loading, memberActiveLazyData.loading, customerBonusActiveData.loading])
 
   // 設計師日報表 ------------------------------------------------------------------------------------------------------
@@ -298,15 +297,9 @@ function Settings({ match, history }) {
   const [isHelperPointPriceDisplay, setIsHelperPointPriceDisplay] = useState(false)
 
   const { fetchDesignerReportLazy, designerReportLazyData } = useFetchDesignerReportLazy()
-  const {
-    fetchIsPriceDisplayOnDailyReportSettingLazy,
-    isPriceDisplayOnDailyReportSettingLazyData,
-  } = useFetchIsPriceDisplayOnDailyReportSettingLazy()
+  const { fetchIsPriceDisplayOnDailyReportSettingLazy, isPriceDisplayOnDailyReportSettingLazyData } = useFetchIsPriceDisplayOnDailyReportSettingLazy()
 
-  const {
-    fetchGetIsZeroValueHiddenOnDailyReportLazy,
-    getIsZeroValueHiddenOnDailyReportLazyData,
-  } = useFetchGetIsZeroValueHiddenOnDailyReportLazy()
+  const { fetchGetIsZeroValueHiddenOnDailyReportLazy, getIsZeroValueHiddenOnDailyReportLazyData } = useFetchGetIsZeroValueHiddenOnDailyReportLazy()
 
   const getDesignerSelfRecord = () => {
     fetchIsPriceDisplayOnDailyReportSettingLazy()
@@ -322,14 +315,11 @@ function Settings({ match, history }) {
     if (!designerReportLazyData.loading && designerReportLazyData.data !== undefined) {
       setDesignerReportData(designerReportLazyData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designerReportLazyData.loading])
 
   useEffect(() => {
-    if (
-      !isPriceDisplayOnDailyReportSettingLazyData.loading &&
-      isPriceDisplayOnDailyReportSettingLazyData.data !== undefined
-    ) {
+    if (!isPriceDisplayOnDailyReportSettingLazyData.loading && isPriceDisplayOnDailyReportSettingLazyData.data !== undefined) {
       const isPriceDisplayOnDailyReport = idx(
         isPriceDisplayOnDailyReportSettingLazyData,
         _ => _.data.getPriceDisplayOnDailyReportDefault.isPriceDisplayOnDailyReport
@@ -341,36 +331,23 @@ function Settings({ match, history }) {
       setPriceDisplayOnReport(isPriceDisplayOnDailyReport)
       setIsHelperPointPriceDisplay(isHelperPointPriceDisplay)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isPriceDisplayOnDailyReportSettingLazyData.loading])
   const [isHiddenZero, setIsHiddenZero] = useState(false)
 
   useEffect(() => {
-    if (
-      !getIsZeroValueHiddenOnDailyReportLazyData.loading &&
-      getIsZeroValueHiddenOnDailyReportLazyData.data !== undefined
-    ) {
-      setIsHiddenZero(
-        idx(
-          getIsZeroValueHiddenOnDailyReportLazyData,
-          _ => _.data.getIsZeroValueHiddenOnDailyReport
-        )
-      )
+    if (!getIsZeroValueHiddenOnDailyReportLazyData.loading && getIsZeroValueHiddenOnDailyReportLazyData.data !== undefined) {
+      setIsHiddenZero(idx(getIsZeroValueHiddenOnDailyReportLazyData, _ => _.data.getIsZeroValueHiddenOnDailyReport))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsZeroValueHiddenOnDailyReportLazyData.loading])
 
   // 互助日報表 ------------------------------------------------------------------------------------------------------
   const [report, setReport] = useState([])
-  const {
-    fetchUserHelperRetrieveLazy,
-    userHelperRetrieveLazyData,
-  } = useFetchUserHelperRetrieveLazy()
+  const { fetchUserHelperRetrieveLazy, userHelperRetrieveLazyData } = useFetchUserHelperRetrieveLazy()
   // 「累計」欄：同一支查詢另查當月 1 日到所選日期（Jason 2026/10/22；原本累計欄只初始化為 0、從未填入）
-  const {
-    fetchUserHelperRetrieveLazy: fetchUserHelperRetrieveMonthLazy,
-    userHelperRetrieveLazyData: userHelperRetrieveMonthLazyData,
-  } = useFetchUserHelperRetrieveLazy()
+  const { fetchUserHelperRetrieveLazy: fetchUserHelperRetrieveMonthLazy, userHelperRetrieveLazyData: userHelperRetrieveMonthLazyData } =
+    useFetchUserHelperRetrieveLazy()
   const [helperPointPriceDisplay, setHelperPointPriceDisplay] = useState(false)
   const getHelperSelfRecord = () => {
     fetchUserHelperRetrieveLazy({
@@ -473,29 +450,23 @@ function Settings({ match, history }) {
       setReport(tillNowReport)
       setDisplayReport(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [userHelperRetrieveLazyData.loading, userHelperRetrieveMonthLazyData.loading])
 
   useEffect(() => {
-    if (
-      !isPriceDisplayOnDailyReportSettingLazyData.loading &&
-      isPriceDisplayOnDailyReportSettingLazyData.data !== undefined
-    ) {
+    if (!isPriceDisplayOnDailyReportSettingLazyData.loading && isPriceDisplayOnDailyReportSettingLazyData.data !== undefined) {
       const helperPointPriceDisplay = idx(
         isPriceDisplayOnDailyReportSettingLazyData,
         _ => _.data.getPriceDisplayOnDailyReportDefault.isHelperPointPriceDisplay
       )
       setHelperPointPriceDisplay(helperPointPriceDisplay)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isPriceDisplayOnDailyReportSettingLazyData.loading])
 
   // 抽成報表----------------------------------------------------------------------------------------
 
-  const {
-    fetchDesignerRakeReportLazy,
-    designerRakeReportLazyData,
-  } = useFetchDesignerRakeReportLazy()
+  const { fetchDesignerRakeReportLazy, designerRakeReportLazyData } = useFetchDesignerRakeReportLazy()
 
   const getRakeReport = () => {
     fetchDesignerRakeReportLazy({
@@ -513,16 +484,14 @@ function Settings({ match, history }) {
     if (!designerRakeReportLazyData.loading && designerRakeReportLazyData.data !== undefined) {
       setRakeReport(designerRakeReportLazyData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designerRakeReportLazyData.loading])
 
   // 薪資條----------------------------------------------------------------------------------------
   const [displayFakePerformanceIn, setDisplayFakePerformanceIn] = useState(false)
   const { fetchUserSalaryReportLazy, userSalaryReportLazyData } = useFetchUserSalaryReportLazy()
-  const {
-    fetchGetIsDisplayFakePerformanceInSalaryReportLazy,
-    getIsDisplayFakePerformanceInSalaryReportLazyData,
-  } = useFetchGetIsDisplayFakePerformanceInSalaryReportLazy()
+  const { fetchGetIsDisplayFakePerformanceInSalaryReportLazy, getIsDisplayFakePerformanceInSalaryReportLazyData } =
+    useFetchGetIsDisplayFakePerformanceInSalaryReportLazy()
   const getPaySlip = () => {
     fetchUserSalaryReportLazy({
       variables: {
@@ -537,22 +506,14 @@ function Settings({ match, history }) {
     if (!userSalaryReportLazyData.loading && userSalaryReportLazyData.data !== undefined) {
       setUserPaySlip(userSalaryReportLazyData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [userSalaryReportLazyData.loading])
 
   useEffect(() => {
-    if (
-      (!getIsDisplayFakePerformanceInSalaryReportLazyData.loading,
-        getIsDisplayFakePerformanceInSalaryReportLazyData.data !== undefined)
-    ) {
-      setDisplayFakePerformanceIn(
-        idx(
-          getIsDisplayFakePerformanceInSalaryReportLazyData,
-          _ => _.data.getIsDisplayFakePerformanceInSalaryReport
-        )
-      )
+    if ((!getIsDisplayFakePerformanceInSalaryReportLazyData.loading, getIsDisplayFakePerformanceInSalaryReportLazyData.data !== undefined)) {
+      setDisplayFakePerformanceIn(idx(getIsDisplayFakePerformanceInSalaryReportLazyData, _ => _.data.getIsDisplayFakePerformanceInSalaryReport))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsDisplayFakePerformanceInSalaryReportLazyData.loading])
 
   // 打卡記錄 ----------------------------------------------------------------------------------------
@@ -575,9 +536,8 @@ function Settings({ match, history }) {
     if (!uerAttendanceLazyData.loading && uerAttendanceLazyData.data !== undefined) {
       setAttendance(uerAttendanceLazyData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [uerAttendanceLazyData.loading])
-
 
   const handlePageChange = ({ name, value, key }) => {
     setResultsSetting(
@@ -621,168 +581,172 @@ function Settings({ match, history }) {
     <Page className="ui-root" title={`${idx(profile, _ => _.data.me.name) || '個人檔案'} - ${findTabName()}`}>
       <div className="w-full">
         <PageHeader
-          title='變更帳戶資訊'
+          title="變更帳戶資訊"
           breadcrumb={<span className="text-caption text-text-tertiary">{'設定'}</span>}
           actions={
             <>
               {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
-                <div className='CheckinMode flex items-center gap-1 text-body text-text'>
-                  <span>報到模式</span><Switch aria-label="報到模式" checked={checkinMode} onChange={(e, v) => setCheckinMode(v)} />
+                <div className="CheckinMode flex items-center gap-1 text-body text-text">
+                  <span>報到模式</span>
+                  <Switch aria-label="報到模式" checked={checkinMode} onChange={(e, v) => setCheckinMode(v)} />
                 </div>
               )}
             </>
           }
         />
-        <Tabs
-          onValueChange={value => handleTabsChange(null, value)}
-          value={currentTab}
-          activationMode="manual"
-          className="md:flex md:items-stretch"
-        >
+        <Tabs onValueChange={value => handleTabsChange(null, value)} value={currentTab} activationMode="manual" className="md:flex md:items-stretch">
           {itemValue.length > 0 ? (
             <SettingsTabsList className="noprint">
               {itemValue.map(tab => (
-                <SettingsTabsTrigger key={tab.value} value={tab.value} icon={tabIcons[tab.value]}>{tab.label}</SettingsTabsTrigger>
+                <SettingsTabsTrigger key={tab.value} value={tab.value} icon={tabIcons[tab.value]}>
+                  {tab.label}
+                </SettingsTabsTrigger>
               ))}
-              <SettingsTabsTrigger value='pinnedTable' icon={tabIcons.pinnedTable}>功能釘選</SettingsTabsTrigger>
+              <SettingsTabsTrigger value="pinnedTable" icon={tabIcons.pinnedTable}>
+                功能釘選
+              </SettingsTabsTrigger>
             </SettingsTabsList>
           ) : null}
           <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">
             <SettingsSectionHeading title={findTabName()} />
             <div>
-          {currentTab === 'general' && <General />}
-          {currentTab === 'orderRecord' && (
-            getOrderListLazyData.error ? <QueryFailed onRetry={getOrderRecordsData} /> :
-            getOrderListLazyData.loading || getOrderListLazyData.data === undefined ?
-              <div className="flex flex-col gap-3">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-64 w-full" />
-              </div> :
-              <OrderRecord
-                paginationLabel={paginationLabel}
-                bonusDisplay={bonusDisplay}
-                profileOrders={getOrderListLazyData}
-                handleOnChangePage={handleOnChangePage}
-                handleOnChangeRowsPerPage={handleOnChangeRowsPerPage}
-                membershipDisplay={membershipDisplay}
-                rowsPerPage={orderPage.limit}
-                page={orderPage.offset}
-                totalCount={orderLength}
-                loading={!getOrderListLazyData.loading && getOrderListLazyData.data !== undefined}
-              />
-          )}
-          {currentTab === 'reservation' && (
-            <DesignerWeekReservation
-              className="mt-6"
-              designerId={employeeId}
-              checkinSettings={checkinSettings}
-              bookingCusCheck={bookingCusCheck} 
-              checkinMode={checkinMode}
-              bookingHistoryDisplay={bookingHistoryDisplay}
-            />
-          )}
-          {currentTab === 'helperSelfRecord' && (
-            userHelperRetrieveLazyData.error ? <QueryFailed onRetry={getHelperSelfRecord} /> :
-            <HelperSelfRecord
-              setDateForHelper={setDateForHelper}
-              dateForHelper={dateForHelper}
-              helperReport={report}
-              titleDate={dateForHelper.endDate}
-              priceDisplayOnReport={helperPointPriceDisplay}
-              isLoading={
-                userHelperRetrieveLazyData.loading || userHelperRetrieveLazyData.data === undefined
-              }
-            />
-          )}
-          {currentTab === 'designerSelfRecord' && (
-            designerReportLazyData.error ? <QueryFailed onRetry={getDesignerSelfRecord} /> :
-            <DesignerSelfRecord
-              setDateForHelper={setDateForDailyReport}
-              dateForHelper={dateForDailyReport}
-              titleDate={dateForDailyReport.endDate}
-              startDateOfMonth={startOfMonth(dateForDailyReport.endDate)}
-              designerDailyReport={idx(designerReportData, _ => _.data.designerDailyReport)}
-              priceDisplayOnReport={priceDisplayOnReport}
-              isHelperPointPriceDisplay={isHelperPointPriceDisplay}
-              isHiddenZero={isHiddenZero}
-              isLoading={
-                designerReportLazyData.loading || designerReportLazyData.data === undefined ||
-                isPriceDisplayOnDailyReportSettingLazyData.loading || isPriceDisplayOnDailyReportSettingLazyData.data === undefined ||
-                getIsZeroValueHiddenOnDailyReportLazyData.loading || getIsZeroValueHiddenOnDailyReportLazyData.data === undefined
-              }
-            />
-          )}
-          {currentTab === 'security' && <Security />}
-          {currentTab === 'permission' && <Permission />}
-          {currentTab === 'paySlip' && (
-            userSalaryReportLazyData.error ? <QueryFailed onRetry={getPaySlip} /> :
-            <PaySlip
-              userPaySlip={idx(userPaySlip, _ =>
-                _.data.userSalaryReport.filter(data => data.userId === employeeId)
+              {currentTab === 'general' && <General />}
+              {currentTab === 'orderRecord' &&
+                (getOrderListLazyData.error ? (
+                  <QueryFailed onRetry={getOrderRecordsData} />
+                ) : getOrderListLazyData.loading || getOrderListLazyData.data === undefined ? (
+                  <div className="flex flex-col gap-3">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-64 w-full" />
+                  </div>
+                ) : (
+                  <OrderRecord
+                    paginationLabel={paginationLabel}
+                    bonusDisplay={bonusDisplay}
+                    profileOrders={getOrderListLazyData}
+                    handleOnChangePage={handleOnChangePage}
+                    handleOnChangeRowsPerPage={handleOnChangeRowsPerPage}
+                    membershipDisplay={membershipDisplay}
+                    rowsPerPage={orderPage.limit}
+                    page={orderPage.offset}
+                    totalCount={orderLength}
+                    loading={!getOrderListLazyData.loading && getOrderListLazyData.data !== undefined}
+                  />
+                ))}
+              {currentTab === 'reservation' && (
+                <DesignerWeekReservation
+                  className="mt-6"
+                  designerId={employeeId}
+                  checkinSettings={checkinSettings}
+                  bookingCusCheck={bookingCusCheck}
+                  checkinMode={checkinMode}
+                  bookingHistoryDisplay={bookingHistoryDisplay}
+                />
               )}
-              setGetLastMonth={setGetLastMonth}
-              getLastMonth={getLastMonth}
-              isDisplayFakePerformance={displayFakePerformanceIn}
-              isLoading={
-                userSalaryReportLazyData.loading || userSalaryReportLazyData.data === undefined
-              }
-              EPWDDisplay={getIsEPWDDisplayLazyData.data && getIsEPWDDisplayLazyData.data.getIsEPWDDisplay}
-            />
-          )}
-          {currentTab === 'AttendanceRecord' && (
-            uerAttendanceLazyData.error ? <QueryFailed onRetry={getAttendanceRecord} /> :
-            uerAttendanceLazyData.loading || uerAttendanceLazyData.data === undefined ?
-              <div className="flex flex-col gap-3">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-64 w-full" />
-              </div> :
-              <AttendanceRecord
-                paginationLabel={paginationLabel}
-                results={idx(attendance, _ => _.data.user.attendanceRecords.records)}
-                onChangePage={(_event, page) =>
-                  handlePageChange({
-                    value: page,
-                    key: 'pageOffset',
-                    name: 'attendanceRecords',
-                  })
-                }
-                onChangeRowsPerPage={event => {
-                  handlePageChange({
-                    value: idx(event, _ => _.target.value),
-                    key: 'pageLimit',
-                    name: 'attendanceRecords',
-                  })
-                }}
-                page={{
-                  limit: idx(attendance, _ => _.data.user.attendanceRecords.pageLimit),
-                  offset: idx(attendance, _ => _.data.user.attendanceRecords.pageOffset),
-                  count: idx(attendance, _ => _.data.user.attendanceRecords.totalCount),
-                }}
-              />
-          )
-          }
-          {currentTab === 'rakeReport' && (
-            designerRakeReportLazyData.error ? <QueryFailed onRetry={getRakeReport} /> :
-            <RakeReport
-              loading={
-                designerRakeReportLazyData.loading || designerRakeReportLazyData.data === undefined
-              }
-              designerRakeReport={idx(designerRakeReportLazyData, _ => _.data.userRakeReport)}
-              setRakeReportDate={setRakeReportDate}
-              rakeReportDate={rakeReportDate}
-            />
-          )}
+              {currentTab === 'helperSelfRecord' &&
+                (userHelperRetrieveLazyData.error ? (
+                  <QueryFailed onRetry={getHelperSelfRecord} />
+                ) : (
+                  <HelperSelfRecord
+                    setDateForHelper={setDateForHelper}
+                    dateForHelper={dateForHelper}
+                    helperReport={report}
+                    titleDate={dateForHelper.endDate}
+                    priceDisplayOnReport={helperPointPriceDisplay}
+                    isLoading={userHelperRetrieveLazyData.loading || userHelperRetrieveLazyData.data === undefined}
+                  />
+                ))}
+              {currentTab === 'designerSelfRecord' &&
+                (designerReportLazyData.error ? (
+                  <QueryFailed onRetry={getDesignerSelfRecord} />
+                ) : (
+                  <DesignerSelfRecord
+                    setDateForHelper={setDateForDailyReport}
+                    dateForHelper={dateForDailyReport}
+                    titleDate={dateForDailyReport.endDate}
+                    startDateOfMonth={startOfMonth(dateForDailyReport.endDate)}
+                    designerDailyReport={idx(designerReportData, _ => _.data.designerDailyReport)}
+                    priceDisplayOnReport={priceDisplayOnReport}
+                    isHelperPointPriceDisplay={isHelperPointPriceDisplay}
+                    isHiddenZero={isHiddenZero}
+                    isLoading={
+                      designerReportLazyData.loading ||
+                      designerReportLazyData.data === undefined ||
+                      isPriceDisplayOnDailyReportSettingLazyData.loading ||
+                      isPriceDisplayOnDailyReportSettingLazyData.data === undefined ||
+                      getIsZeroValueHiddenOnDailyReportLazyData.loading ||
+                      getIsZeroValueHiddenOnDailyReportLazyData.data === undefined
+                    }
+                  />
+                ))}
+              {currentTab === 'security' && <Security />}
+              {currentTab === 'permission' && <Permission />}
+              {currentTab === 'paySlip' &&
+                (userSalaryReportLazyData.error ? (
+                  <QueryFailed onRetry={getPaySlip} />
+                ) : (
+                  <PaySlip
+                    userPaySlip={idx(userPaySlip, _ => _.data.userSalaryReport.filter(data => data.userId === employeeId))}
+                    setGetLastMonth={setGetLastMonth}
+                    getLastMonth={getLastMonth}
+                    isDisplayFakePerformance={displayFakePerformanceIn}
+                    isLoading={userSalaryReportLazyData.loading || userSalaryReportLazyData.data === undefined}
+                    EPWDDisplay={getIsEPWDDisplayLazyData.data && getIsEPWDDisplayLazyData.data.getIsEPWDDisplay}
+                  />
+                ))}
+              {currentTab === 'AttendanceRecord' &&
+                (uerAttendanceLazyData.error ? (
+                  <QueryFailed onRetry={getAttendanceRecord} />
+                ) : uerAttendanceLazyData.loading || uerAttendanceLazyData.data === undefined ? (
+                  <div className="flex flex-col gap-3">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-64 w-full" />
+                  </div>
+                ) : (
+                  <AttendanceRecord
+                    paginationLabel={paginationLabel}
+                    results={idx(attendance, _ => _.data.user.attendanceRecords.records)}
+                    onChangePage={(_event, page) =>
+                      handlePageChange({
+                        value: page,
+                        key: 'pageOffset',
+                        name: 'attendanceRecords',
+                      })
+                    }
+                    onChangeRowsPerPage={event => {
+                      handlePageChange({
+                        value: idx(event, _ => _.target.value),
+                        key: 'pageLimit',
+                        name: 'attendanceRecords',
+                      })
+                    }}
+                    page={{
+                      limit: idx(attendance, _ => _.data.user.attendanceRecords.pageLimit),
+                      offset: idx(attendance, _ => _.data.user.attendanceRecords.pageOffset),
+                      count: idx(attendance, _ => _.data.user.attendanceRecords.totalCount),
+                    }}
+                  />
+                ))}
+              {currentTab === 'rakeReport' &&
+                (designerRakeReportLazyData.error ? (
+                  <QueryFailed onRetry={getRakeReport} />
+                ) : (
+                  <RakeReport
+                    loading={designerRakeReportLazyData.loading || designerRakeReportLazyData.data === undefined}
+                    designerRakeReport={idx(designerRakeReportLazyData, _ => _.data.userRakeReport)}
+                    setRakeReportDate={setRakeReportDate}
+                    rakeReportDate={rakeReportDate}
+                  />
+                ))}
 
-          {currentTab === 'pinnedTable' && (
-            <PinnedTable
-              submitValue={submitValue}
-              setSubmitValue={setSubmitValue}
-              isLoading={getUserPinnedTableSettings.loading || getPinnedTableDefStructures.loading}
-              pages={
-                getPinnedTableDefStructures.loading ? [] : JSON.parse(getPinnedTableDefStructures.data.getPinnedTableDefStructures)
-              }
-            />
-          )}
+              {currentTab === 'pinnedTable' && (
+                <PinnedTable
+                  submitValue={submitValue}
+                  setSubmitValue={setSubmitValue}
+                  isLoading={getUserPinnedTableSettings.loading || getPinnedTableDefStructures.loading}
+                  pages={getPinnedTableDefStructures.loading ? [] : JSON.parse(getPinnedTableDefStructures.data.getPinnedTableDefStructures)}
+                />
+              )}
             </div>
           </div>
         </Tabs>

@@ -16,20 +16,12 @@ function Overview({ overview, membershipDisplay }) {
         {`${overview.product || 0}${membershipDisplay ? '/' + overview.membership : ''}`}
       </Stat>
       <Stat label="卡券使用 (入業績)">{formatNumber(Math.round(overview.usedTicket) || 0)}</Stat>
-      <Stat label="卡券販賣 (入業績)">
-        {formatNumber(Math.round(overview.ticketSellIntoPerformance) || 0)}
-      </Stat>
+      <Stat label="卡券販賣 (入業績)">{formatNumber(Math.round(overview.ticketSellIntoPerformance) || 0)}</Stat>
       <Stat label="業績收入">{formatNumber(Math.round(overview.performanceIncome) || 0)}</Stat>
-      <Stat label="卡券販賣 (不入業績)">
-        {formatNumber(Math.round(overview.ticketSellNotIntoPerformance) || 0)}
-      </Stat>
+      <Stat label="卡券販賣 (不入業績)">{formatNumber(Math.round(overview.ticketSellNotIntoPerformance) || 0)}</Stat>
       <Stat label="卡券使用(-)">{formatNumber(Math.round(overview.usedTicketForDecount) || 0)}</Stat>
-      <Stat label="第三方卡券(-)">
-        {formatNumber(Math.round(overview.thirdPartTicketForDecount) || 0)}
-      </Stat>
-      <Stat label="其他付款方式(-)">
-        {formatNumber(Math.round(overview.otherPayWayForDecount) || 0)}
-      </Stat>
+      <Stat label="第三方卡券(-)">{formatNumber(Math.round(overview.thirdPartTicketForDecount) || 0)}</Stat>
+      <Stat label="其他付款方式(-)">{formatNumber(Math.round(overview.otherPayWayForDecount) || 0)}</Stat>
       <Stat label="入金使用(-)">{formatNumber(overview.walletUsedForDecount || 0)}</Stat>
       <Stat label="入金儲值">{formatNumber(overview.walletDeposit || 0)}</Stat>
       <Stat label="營業現金應收">{formatNumber(Math.round(overview.businessCash) || 0)}</Stat>

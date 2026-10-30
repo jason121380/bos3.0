@@ -28,8 +28,8 @@ function ProfitSharing({ match }) {
     isSegmented: false,
     nonSegmented: [],
     segmented: [],
-    deductionNo: "",
-    deductionName: ""
+    deductionNo: '',
+    deductionName: '',
   })
   useEffect(() => {
     if (!getAttributionForRake.loading) {
@@ -37,23 +37,20 @@ function ProfitSharing({ match }) {
       const data = idx(getAttributionForRake, _ => _.data.getAttributionForRake) || []
       setAttributions(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAttributionForRake.loading])
   useEffect(() => {
     if (!getDeductionSetting.loading && idx(getDeductionSetting, _ => _.data.getDeductionSetting)) {
       setProfitSharing(
         produce(draft => {
-          draft.deductionNo = idx(getDeductionSetting, _ =>
-            _.data.getDeductionSetting.no)
-          draft.deductionName = idx(getDeductionSetting, _ =>
-            _.data.getDeductionSetting.name)
+          draft.deductionNo = idx(getDeductionSetting, _ => _.data.getDeductionSetting.no)
+          draft.deductionName = idx(getDeductionSetting, _ => _.data.getDeductionSetting.name)
           // 判斷設計師抽成指定不指定
           draft.designationUsage = idx(
             getDeductionSetting,
             _ =>
               !!(
-                (_.data.getDeductionSetting.nonSegmented.length > 0 &&
-                  _.data.getDeductionSetting.nonSegmented[0].rakeData.designate.length > 0) ||
+                (_.data.getDeductionSetting.nonSegmented.length > 0 && _.data.getDeductionSetting.nonSegmented[0].rakeData.designate.length > 0) ||
                 (_.data.getDeductionSetting.segmented.length > 0 && _.data.getDeductionSetting.segmented[0].designate.length > 0)
               )
           )
@@ -63,10 +60,8 @@ function ProfitSharing({ match }) {
             _ =>
               !!(
                 (_.data.getDeductionSetting.segmented.length > 0 && _.data.getDeductionSetting.segmented[0].designate.length > 0) ||
-                (_.data.getDeductionSetting.segmented.length > 0 &&
-                  _.data.getDeductionSetting.segmented[0].nonDesignate.length > 0) ||
-                (_.data.getDeductionSetting.segmented.length > 0 && _.data.getDeductionSetting.segmented[0].nonDistinguish.length) >
-                0
+                (_.data.getDeductionSetting.segmented.length > 0 && _.data.getDeductionSetting.segmented[0].nonDesignate.length > 0) ||
+                (_.data.getDeductionSetting.segmented.length > 0 && _.data.getDeductionSetting.segmented[0].nonDistinguish.length) > 0
               )
           )
           // 判斷設計師是否有設全段抽成資料
@@ -74,20 +69,20 @@ function ProfitSharing({ match }) {
             _.data.getDeductionSetting.nonSegmented.length > 0
               ? _.data.getDeductionSetting.nonSegmented
               : [
-                {
-                  attribute: '預設',
-                  rakeData: {
-                    nonDistinguish: [
-                      {
-                        threshold: 0,
-                        rake: 0,
-                      },
-                    ],
-                    designate: [],
-                    nonDesignate: [],
+                  {
+                    attribute: '預設',
+                    rakeData: {
+                      nonDistinguish: [
+                        {
+                          threshold: 0,
+                          rake: 0,
+                        },
+                      ],
+                      designate: [],
+                      nonDesignate: [],
+                    },
                   },
-                },
-              ]
+                ]
           )
           // 判斷設計師是否有設分段抽成資料
           draft.segmented = idx(getDeductionSetting, _ => _.data.getDeductionSetting.segmented)
@@ -95,24 +90,18 @@ function ProfitSharing({ match }) {
       )
       setSettingLoaded(true)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getDeductionSetting.loading])
   const handleSave = () => {
     // 判斷抽成設定是判斷抽成設定是全段或分段
-    const nonSegmentedData =
-      profitSharing.nonSegmented.length > 0 && profitSharing.isSegmented === false
-        ? profitSharing.nonSegmented
-        : []
-    const segmentedData =
-      profitSharing.segmented.length > 0 && profitSharing.isSegmented === true
-        ? profitSharing.segmented
-        : []
+    const nonSegmentedData = profitSharing.nonSegmented.length > 0 && profitSharing.isSegmented === false ? profitSharing.nonSegmented : []
+    const segmentedData = profitSharing.segmented.length > 0 && profitSharing.isSegmented === true ? profitSharing.segmented : []
     updateDeductionSetting({
       id: profitSharing.id,
       deductionNo: profitSharing.deductionNo,
       deductionName: profitSharing.deductionName,
       nonSegmented: nonSegmentedData,
-      segmented: segmentedData
+      segmented: segmentedData,
     }).then(() => {
       openSnackbar({ message: '更新成功', variant: 'success' })
       window.location.href = '/performanceDeductionParameter'
@@ -148,12 +137,13 @@ function ProfitSharing({ match }) {
           }
         />
         {!getAttributionForRake.loading && settingLoaded ? (
-          <Results
-            profitSharing={profitSharing}
-            onChange={handleSalesWayChange}
-            attributions={attributions}
-          />
-        ) : <div className="flex flex-col gap-4"><Skeleton className="h-14 w-full" /><Skeleton className="h-64 w-full" /></div>}
+          <Results profitSharing={profitSharing} onChange={handleSalesWayChange} attributions={attributions} />
+        ) : (
+          <div className="flex flex-col gap-4">
+            <Skeleton className="h-14 w-full" />
+            <Skeleton className="h-64 w-full" />
+          </div>
+        )}
       </div>
     </Page>
   )

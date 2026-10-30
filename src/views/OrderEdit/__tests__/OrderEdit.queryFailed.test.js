@@ -10,8 +10,7 @@ jest.setTimeout(20000)
 beforeEach(() => loginAs())
 afterEach(cleanup)
 
-const render = fixtures =>
-  renderPage(<OrderEdit match={{ params: { id: 'order-1' } }} />, { fixtures, route: '/order/order-1' })
+const render = fixtures => renderPage(<OrderEdit match={{ params: { id: 'order-1' } }} />, { fixtures, route: '/order/order-1' })
 
 it('帳單查詢失敗：顯示「無法載入帳單」與重新查詢，不是整頁錯誤', async () => {
   const utils = render({ FETCH_ORDER: new Error('模擬 API 失敗') })

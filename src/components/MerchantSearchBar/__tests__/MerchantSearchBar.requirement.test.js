@@ -252,7 +252,14 @@ describe('MerchantSearchBar 篩選欄位', () => {
   it('科目元件單獨使用：名稱空白的科目顯示空白（不顯示 undefined），選取回傳原始事件與選項', async () => {
     const onChange = jest.fn()
     const { settle } = renderPage(<Subject onChange={onChange} value="" />, {
-      fixtures: { GET_ACCOUNTING_SUBJECTS: { accountingSubjects: [{ id: 'x', name: '', isUsing: true }, { id: 'y', name: '雜支', isUsing: true }] } },
+      fixtures: {
+        GET_ACCOUNTING_SUBJECTS: {
+          accountingSubjects: [
+            { id: 'x', name: '', isUsing: true },
+            { id: 'y', name: '雜支', isUsing: true },
+          ],
+        },
+      },
     })
     await settle()
     fireEvent.click(field('選擇科目'))

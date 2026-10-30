@@ -5,14 +5,16 @@
 // 正式入口不需要安裝 MUI。歷史比對主題 mui-theme.js 已刪除，不要再引用。
 const path = require('path')
 const repo = path.resolve(__dirname, '../../..')
-require(process.env.ESBUILD || 'esbuild').build({
-  entryPoints: [process.argv[2]],
-  bundle: true,
-  entryNames: 'entry',
-  outdir: process.argv[3],
-  nodePaths: [path.join(repo, 'src'), path.join(repo, 'node_modules')],
-  loader: { '.js': 'jsx', '.svg': 'dataurl', '.png': 'dataurl' },
-  jsx: 'automatic',
-  define: { 'process.env.NODE_ENV': '"production"', global: 'window' },
-  logLevel: 'error',
-}).then(() => console.log('built'))
+require(process.env.ESBUILD || 'esbuild')
+  .build({
+    entryPoints: [process.argv[2]],
+    bundle: true,
+    entryNames: 'entry',
+    outdir: process.argv[3],
+    nodePaths: [path.join(repo, 'src'), path.join(repo, 'node_modules')],
+    loader: { '.js': 'jsx', '.svg': 'dataurl', '.png': 'dataurl' },
+    jsx: 'automatic',
+    define: { 'process.env.NODE_ENV': '"production"', global: 'window' },
+    logLevel: 'error',
+  })
+  .then(() => console.log('built'))

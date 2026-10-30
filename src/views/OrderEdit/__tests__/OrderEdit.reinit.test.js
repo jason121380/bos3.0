@@ -7,8 +7,18 @@
 import { act, cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { callsOf } from '../../../__tests__/testkit.test'
 import {
-  setup, pageReady, makeOrder, checkoutAndGetInput, summaryValue, loginForTest,
-  OTHER_CUSTOMER, DESIGNER, PRODUCT, TICKET, MEMBERSHIP, BILL_DATE,
+  setup,
+  pageReady,
+  makeOrder,
+  checkoutAndGetInput,
+  summaryValue,
+  loginForTest,
+  OTHER_CUSTOMER,
+  DESIGNER,
+  PRODUCT,
+  TICKET,
+  MEMBERSHIP,
+  BILL_DATE,
 } from './orderEditKit.test'
 
 jest.setTimeout(30000)
@@ -65,8 +75,7 @@ const order = () =>
     ],
   })
 
-const membershipRemark = () =>
-  screen.getAllByPlaceholderText('會員卡名稱/代號')[0].closest('.mb-6').querySelector('input[name="remark"]')
+const membershipRemark = () => screen.getAllByPlaceholderText('會員卡名稱/代號')[0].closest('.mb-6').querySelector('input[name="remark"]')
 
 const pickOtherCustomer = async () => {
   fireEvent.click(screen.getByLabelText('不留客資'))

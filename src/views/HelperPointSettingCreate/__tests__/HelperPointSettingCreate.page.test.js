@@ -84,9 +84,7 @@ describe('新增互助點數設定', () => {
     type(document.getElementById('helperPointThreshold-0'), '50')
     fireEvent.click(confirm())
     await wait(() => expect(callsOf(calls, 'CREATE_MERCHANT_POINT_VALUE_SETTING')).toHaveLength(1))
-    expect(sent(calls)).toEqual(
-      expect.objectContaining({ retrievePointWay: 'NONSEGMENTED', retrieveSegmentSetting: [{ threshold: 50, price: 0 }] })
-    )
+    expect(sent(calls)).toEqual(expect.objectContaining({ retrievePointWay: 'NONSEGMENTED', retrieveSegmentSetting: [{ threshold: 50, price: 0 }] }))
   })
 
   // 名稱原本沒有必填檢查，空白也會送出。Jason 2026/10/22「照建議」：名稱去掉前後空白後為空時提示且不送出，按鈕維持可按。

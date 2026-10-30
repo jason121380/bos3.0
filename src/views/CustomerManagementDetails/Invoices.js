@@ -36,13 +36,14 @@ function Invoices({
     if (pageRef.current) {
       paginationLabel(pageRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（paginationLabel）；只在 [pageRef.current, orders] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（paginationLabel）；只在 [pageRef.current, orders] 變動時呼叫，補上會每次 render 重跑
   }, [pageRef.current, orders])
 
   const [orderExtendArr, setOrderExtendArr] = useState([])
 
   const handleOrderExtend = id => {
-    const newSelect = [...orderExtendArr], index = newSelect.indexOf(id)
+    const newSelect = [...orderExtendArr],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -84,8 +85,7 @@ function Invoices({
       ) : (
         <div {...rest} className={clsx('[&_td]:!whitespace-nowrap', className)}>
           <p className="mb-2 text-label tabular-nums text-text-secondary" data-testid="result-counter">
-            共 {pageSetting.totalCount} 筆, {pageSetting.pageOffset + 1} /{' '}
-            {Math.ceil(pageSetting.totalCount / pageSetting.pageLimit)}
+            共 {pageSetting.totalCount} 筆, {pageSetting.pageOffset + 1} / {Math.ceil(pageSetting.totalCount / pageSetting.pageLimit)}
           </p>
           <Card>
             <CardHeader className="pb-4">
@@ -138,27 +138,21 @@ function Invoices({
                           </TableCell>
                           <TableCell>
                             <Button asChild size="sm" variant="secondary">
-                              <RouterLink
-                                to={`/order/${order.id}`}
-                                data-testid={`order-${index}`}
-                              >
+                              <RouterLink to={`/order/${order.id}`} data-testid={`order-${index}`}>
                                 詳情
                               </RouterLink>
                             </Button>
                           </TableCell>
                           <TableCell>
                             <div className="font-medium tabular-nums">{order.orderNo}</div>
-                            <div className="text-caption tabular-nums text-text-secondary">
-                              {format(new Date(order.date), 'yyyy/MM/dd')}
-                            </div>
+                            <div className="text-caption tabular-nums text-text-secondary">{format(new Date(order.date), 'yyyy/MM/dd')}</div>
                           </TableCell>
                           <TableCell>
                             {order.customerName}
                             <div className="text-caption tabular-nums text-text-secondary">{order.customerCellphone}</div>
                           </TableCell>
                           <TableCell>
-                            {order.designerName} /{' '}
-                            {order.designerNo ? `/${order.designerNo}` : ''}
+                            {order.designerName} / {order.designerNo ? `/${order.designerNo}` : ''}
                           </TableCell>
                           <TableCell>{order.isDesignate ? 'Y' : 'N'}</TableCell>
                           {raffleDisplay ? <TableCell numeric>{formatNumber(order.raffleCount)}</TableCell> : null}
@@ -191,7 +185,9 @@ function Invoices({
                             {formatNumber(order.otherPayWayForDecount)}
                             <div className="text-caption text-text-secondary">{order.otherPayName}</div>
                           </TableCell>
-                          <TableCell numeric className="font-medium">{formatNumber(order.businessCash)}</TableCell>
+                          <TableCell numeric className="font-medium">
+                            {formatNumber(order.businessCash)}
+                          </TableCell>
                           <TableCell>{order.remark}</TableCell>
                         </TableRow>
                         <TableRow className="hover:bg-transparent">
@@ -205,26 +201,23 @@ function Invoices({
                                   <div className="w-1/12">數量</div>
                                   <div className="w-3/12">互助人</div>
                                 </div>
-                                {order.staticDetail && order.staticDetail.map((data, index) => (
-                                  <div key={index} className="flex justify-between gap-3 py-1 text-body text-text">
-                                    <div className="w-2/12">
-                                      {data.designerName}
+                                {order.staticDetail &&
+                                  order.staticDetail.map((data, index) => (
+                                    <div key={index} className="flex justify-between gap-3 py-1 text-body text-text">
+                                      <div className="w-2/12">{data.designerName}</div>
+                                      <div className="w-5/12">{`${data.itemName}(${data.serviceType})`}</div>
+                                      <div className="w-1/12 tabular-nums">
+                                        {data.serviceType === '卡券使用' ? truncateDecimal(data.price) : data.price}
+                                      </div>
+                                      <div className="w-1/12 tabular-nums">{data.count}</div>
+                                      <div className="w-3/12">
+                                        {data.helperList.length > 0 &&
+                                          data.helperList.map((helper, index) => (
+                                            <div key={index}>{`${helper.helperType}[${helper.helperName}]`}</div>
+                                          ))}
+                                      </div>
                                     </div>
-                                    <div className="w-5/12">
-                                      {`${data.itemName}(${data.serviceType})`}
-                                    </div>
-                                    <div className="w-1/12 tabular-nums">{data.serviceType === '卡券使用' ? truncateDecimal(data.price) : data.price}</div>
-                                    <div className="w-1/12 tabular-nums">{data.count}</div>
-                                    <div className="w-3/12">
-                                      {data.helperList.length > 0 &&
-                                        data.helperList.map((helper, index) => (
-                                          <div key={index}>
-                                            {`${helper.helperType}[${helper.helperName}]`}
-                                          </div>
-                                        ))}
-                                    </div>
-                                  </div>
-                                ))}
+                                  ))}
                               </div>
                             )}
                           </TableCell>
@@ -237,11 +230,11 @@ function Invoices({
                 </TableBody>
               </Table>
             </div>
-                <div className="flex justify-end px-3 pb-2">
+            <div className="flex justify-end px-3 pb-2">
               <TablePagination
                 ref={pageRef}
-                labelRowsPerPage='每頁顯示數量'
-                    count={pageSetting.totalCount}
+                labelRowsPerPage="每頁顯示數量"
+                count={pageSetting.totalCount}
                 onPageChange={(e, newPage) => {
                   setOrderExtendArr([])
                   onPageChange(e, newPage)

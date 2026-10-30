@@ -18,18 +18,14 @@ const styles = {
   checkbox: `w-[100px] flex mr-[12px] last:mr-0 ${ROW_INLINE_ALIGN}`,
 }
 
-export default function CouponUse({
-  index,
-  couponUsages,
-  couponUsage,
-  onChange,
-}) {
+export default function CouponUse({ index, couponUsages, couponUsage, onChange }) {
   const { bill, orderId } = React.useContext(billContext)
   // 金額、助理欄位與選卡券／改助理的處理（OrderShared/useCouponUseRow，與帳單詳細／掛單詳細共用）
-  const {
-    price, ticketOrderHelpers, handleCustomerTicketChange, handleAssistantChange, displayFloat,
-  } = useCouponUseRow({ index, couponUsage, onChange })
-
+  const { price, ticketOrderHelpers, handleCustomerTicketChange, handleAssistantChange, displayFloat } = useCouponUseRow({
+    index,
+    couponUsage,
+    onChange,
+  })
 
   return (
     <Fragment>
@@ -52,10 +48,7 @@ export default function CouponUse({
         {couponUsage.customerTicketId && (
           <React.Fragment>
             <Field label="金額" className={styles.priceField}>
-              <Input
-                disabled
-                value={displayFloat(price)}
-              />
+              <Input disabled value={displayFloat(price)} />
             </Field>
             {ticketOrderHelpers.map((data, helperIndex) => (
               <React.Fragment key={`${data.id}-ticketOrder-${helperIndex}-${data.helperId}`}>
@@ -75,12 +68,7 @@ export default function CouponUse({
                     className={styles.field}
                   />
                 </Field>
-                <CheckboxField
-                  label="指定"
-                  checked={data.isDesignate}
-                  className={styles.checkbox}
-                  disabled
-                />
+                <CheckboxField label="指定" checked={data.isDesignate} className={styles.checkbox} disabled />
               </React.Fragment>
             ))}
           </React.Fragment>

@@ -73,9 +73,7 @@ describe('查詢條件的店家 id 取自 userMerchant', () => {
   it('打帳單的顧客搜尋：有指定顧客時才帶 customerId，其餘條件照傳', async () => {
     const { calls } = renderHook(() => useFetchCustomersInAutoComplete({ keyword: '0912', customerId: 'c1', pageLimit: 10 }))
     await wait(() => expect(calls.length).toBe(1))
-    expect(calls[0].variables.input).toEqual(
-      expect.objectContaining({ merchantId: MERCHANT_ID, keyword: '0912', customerId: 'c1', pageLimit: 10 })
-    )
+    expect(calls[0].variables.input).toEqual(expect.objectContaining({ merchantId: MERCHANT_ID, keyword: '0912', customerId: 'c1', pageLimit: 10 }))
     cleanup()
 
     const second = renderHook(() => useFetchCustomersInAutoComplete({ keyword: '' }))

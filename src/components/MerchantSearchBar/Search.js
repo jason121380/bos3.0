@@ -13,18 +13,9 @@ function Search({ onSearch, className, ...rest }) {
     <div {...rest}>
       <div className="rounded-md bg-background">
         <SearchIcon />
-        <Input
-          disableUnderline
-          placeholder="搜尋關鍵字"
-          value={keyword}
-          onChange={handleOnChange}
-        />
+        <Input disableUnderline placeholder="搜尋關鍵字" value={keyword} onChange={handleOnChange} />
       </div>
-      <Button
-        onClick={() => onSearch(keyword)}
-        size="lg"
-        variant="primary"
-      >
+      <Button onClick={() => onSearch(keyword)} size="lg" variant="primary">
         搜尋
       </Button>
     </div>

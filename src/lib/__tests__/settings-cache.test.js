@@ -44,7 +44,13 @@ function setup({ staggerSaves = false, saveResult = 'ok' } = {}) {
   const cache = new InMemoryCache({ addTypename: false })
   const client = new ApolloClient({ link: settingsCacheLink.concat(terminal), cache })
   bindSettingsCache(cache, { expire: false })
-  return { client, calls, setValue: v => { value = v } }
+  return {
+    client,
+    calls,
+    setValue: v => {
+      value = v
+    },
+  }
 }
 
 const flush = () => new Promise(resolve => setTimeout(resolve, 0))
@@ -233,8 +239,7 @@ test('設定查詢的根欄位不能和帶參數的查詢共用，也不能是�
             def.variableDefinitions
               .filter(variable => print(variable.type).replace(/!$/, '') === 'ID' && variable.variable.name.value !== 'merchantId')
               .forEach(variable => singleRecordSettings.push(`${name} $${variable.variable.name.value}`))
-          }
-          else otherQueries.push({ name, roots, withArguments: hasArguments(def) })
+          } else otherQueries.push({ name, roots, withArguments: hasArguments(def) })
         })
     }
   })

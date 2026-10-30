@@ -2,7 +2,7 @@ import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import billContext from 'context/keyInContext'
 import cloneDeep from 'lodash/cloneDeep'
 import React from 'react'
-import { addDays } from "date-fns";
+import { addDays } from 'date-fns'
 import MemberShipCardSells from 'views/OrderCreate/MemberShipCardSells'
 import { panelSummary } from './summary'
 
@@ -13,9 +13,7 @@ const styles = {
 }
 
 const PanelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, reset }) => {
-  const {
-    handleBillChange, memberCardSells, setMemberCardSells, bill,
-  } = React.useContext(billContext)
+  const { handleBillChange, memberCardSells, setMemberCardSells, bill } = React.useContext(billContext)
   const [focusRow, setFocusRow] = React.useState(0)
 
   React.useEffect(() => {
@@ -37,7 +35,7 @@ const PanelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, res
   }, [setMemberCardSells])
 
   React.useEffect(() => {
-    if(reset === 'reset'){
+    if (reset === 'reset') {
       setMemberCardSells([
         {
           sellerId: '',
@@ -127,15 +125,15 @@ const PanelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, res
     handleBillChange({
       key: 'membershipOrders',
       value: newSells
-      .filter(d => d.membershipUUID !== '' && d.sellerId !== '')
-      .map(data => ({
-        sellerId: data.sellerId,
-        membershipUUID: data.membershipUUID,
-        price: data.price,
-        expiryDate: data.expiryDate,
-        thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
-        remark: data.remark,
-      })),
+        .filter(d => d.membershipUUID !== '' && d.sellerId !== '')
+        .map(data => ({
+          sellerId: data.sellerId,
+          membershipUUID: data.membershipUUID,
+          price: data.price,
+          expiryDate: data.expiryDate,
+          thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
+          remark: data.remark,
+        })),
     })
     setFocusRow(newSells.length - 1)
   }
@@ -167,10 +165,13 @@ const PanelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, res
     <Accordion key="panelMemberShipCardSells" expanded={expanded}>
       <AccordionSummary
         onClick={onPanelClick}
-        summaryMeta={!expanded && panelSummary(
-          bill.membershipOrders.length,
-          bill.membershipOrders.reduce((total, d) => total + d.price, 0)
-        )}
+        summaryMeta={
+          !expanded &&
+          panelSummary(
+            bill.membershipOrders.length,
+            bill.membershipOrders.reduce((total, d) => total + d.price, 0)
+          )
+        }
         data-testid="memberShipCardSells"
         style={{ width: '100%' }}
       >

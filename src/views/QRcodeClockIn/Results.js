@@ -13,7 +13,6 @@ const clockInOptions = [
 ]
 
 function Results({ clockInType, setClockInType, isLoading, url, countDownTime }) {
-
   return (
     <div className="mx-auto w-full max-w-3xl">
       <Card className="flex flex-col items-center px-6 py-8">
@@ -22,29 +21,16 @@ function Results({ clockInType, setClockInType, isLoading, url, countDownTime })
             <Timer className="h-4 w-4" strokeWidth={1.75} />
             有效時間
           </span>
-          <span className="text-display tabular-nums text-accent">
-            {format(countDownTime, 'mm:ss')}
-          </span>
+          <span className="text-display tabular-nums text-accent">{format(countDownTime, 'mm:ss')}</span>
         </div>
         {isLoading ? (
           <Skeleton className="mb-6 h-[250px] w-[250px]" aria-label="載入中" />
         ) : (
           <img src={url} alt="" className="mb-6 h-[250px] w-[250px]" />
         )}
-        <ToggleGroup
-          size="small"
-          exclusive
-          disabled={isLoading}
-          value={clockInType}
-          onChange={(event, value) => value && setClockInType(value)}
-        >
+        <ToggleGroup size="small" exclusive disabled={isLoading} value={clockInType} onChange={(event, value) => value && setClockInType(value)}>
           {clockInOptions.map((data, idx) => (
-            <ToggleGroupItem
-              className="px-5"
-              key={`${data.label}-${idx}`}
-              value={data.value}
-              name={data.label}
-            >
+            <ToggleGroupItem className="px-5" key={`${data.label}-${idx}`} value={data.value} name={data.label}>
               {data.label}
             </ToggleGroupItem>
           ))}

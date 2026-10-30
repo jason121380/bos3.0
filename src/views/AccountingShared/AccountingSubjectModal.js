@@ -2,14 +2,7 @@ import { Button } from 'ui/button'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
-function AccountingSubjectModal({
-  openAccountingSubjectModal,
-  accountingSubject,
-  closeModal,
-  inoutType,
-  setAccountingSubjects,
-  setInoutType,
-}) {
+function AccountingSubjectModal({ openAccountingSubjectModal, accountingSubject, closeModal, inoutType, setAccountingSubjects, setInoutType }) {
   const handleSelectAccountingSubject = subject => {
     setAccountingSubjects(subject)
     setInoutType(inoutType)
@@ -38,11 +31,7 @@ function AccountingSubjectModal({
               {accountingSubject.map((subject, index) => (
                 <TableRow key={index}>
                   <TableCell>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => handleSelectAccountingSubject(subject)}
-                    >
+                    <Button size="sm" variant="secondary" onClick={() => handleSelectAccountingSubject(subject)}>
                       選擇
                     </Button>
                   </TableCell>

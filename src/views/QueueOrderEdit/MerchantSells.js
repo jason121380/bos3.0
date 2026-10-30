@@ -79,7 +79,9 @@ export default function MerchantSells({
           />
         </Field>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇商品" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇商品" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenProductsModal}>
+            <Copy aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
@@ -159,9 +161,7 @@ export default function MerchantSells({
                   />
                 </Field>
               )}
-              {teachingMode && (
-                <p className="m-0 text-[0.8125rem] font-bold">勾選將入業績但不收費用**</p>
-              )}
+              {teachingMode && <p className="m-0 text-[0.8125rem] font-bold">勾選將入業績但不收費用**</p>}
               {sells.thirdPartyCouponMerchantId &&
                 thirdPartyCoupons.map(data => {
                   if (data.id === sells.thirdPartyCouponMerchantId) {
@@ -184,7 +184,8 @@ export default function MerchantSells({
         )}
 
         <RowIconButton
-          label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
+          label="清除此列"
+          className={`mr-1.5 ${ROW_ICON_ALIGN}`}
           onClick={function () {
             onClear({ index })
           }}
@@ -194,7 +195,8 @@ export default function MerchantSells({
         </RowIconButton>
         {!first ? (
           <RowIconButton
-            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
+            label="刪除此列"
+            className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               removeSells({ index })
             }}
@@ -217,13 +219,7 @@ export default function MerchantSells({
         ''
       )}
       {productsModalOpen && (
-        <ProductsModal
-          {...pickerModalProps}
-          onProductChange={onProductChange}
-          sells={sellsItem}
-          productLength={productLength}
-          sellsItem={sells}
-        />
+        <ProductsModal {...pickerModalProps} onProductChange={onProductChange} sells={sellsItem} productLength={productLength} sellsItem={sells} />
       )}
     </Fragment>
   )

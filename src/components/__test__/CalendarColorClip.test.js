@@ -17,7 +17,14 @@ const contrast = (a, b) => {
   const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x)
   return (hi + 0.05) / (lo + 0.05)
 }
-const toHex = rgb => '#' + rgb.match(/\d+/g).slice(0, 3).map(n => Number(n).toString(16).padStart(2, '0')).join('').toUpperCase()
+const toHex = rgb =>
+  '#' +
+  rgb
+    .match(/\d+/g)
+    .slice(0, 3)
+    .map(n => Number(n).toString(16).padStart(2, '0'))
+    .join('')
+    .toUpperCase()
 
 describe('預約狀態色', () => {
   // Jason 2026/10/21：預約色塊文字一律白色，所以每個狀態色都要深到白字仍達 4.5:1

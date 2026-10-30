@@ -154,7 +154,11 @@ describe('服務扣項方式命名', () => {
   it('沒有扣項方式時顯示一列空白；只有一列時沒有刪除鈕', async () => {
     await setup({ MERCHANT_COMMISSION_WAY: { merchantCommissionWay: [] } })
     const card = cardOf('服務扣項方式命名')
-    expect(within(card).getAllByRole('textbox').map(i => i.value)).toEqual([''])
+    expect(
+      within(card)
+        .getAllByRole('textbox')
+        .map(i => i.value)
+    ).toEqual([''])
     expect(within(card).queryByRole('button', { name: '刪除' })).toBeNull()
   })
 
@@ -163,7 +167,9 @@ describe('服務扣項方式命名', () => {
     const utils = await setup({
       MERCHANT_COMMISSION_WAY: () => {
         commissionCalls += 1
-        return { merchantCommissionWay: commissionCalls === 1 ? COMMISSION : [...COMMISSION, { id: 'cw-3', name: '轉帳', basisForDeduction: 'BYORIGIN' }] }
+        return {
+          merchantCommissionWay: commissionCalls === 1 ? COMMISSION : [...COMMISSION, { id: 'cw-3', name: '轉帳', basisForDeduction: 'BYORIGIN' }],
+        }
       },
     })
     const card = cardOf('服務扣項方式命名')
@@ -215,7 +221,14 @@ describe('人員身分類別設定', () => {
     expect(sentVars(utils.calls, 'setting_JobTitle_Point')).toEqual({
       input: [
         { jobTitle: '設計師', pointValue: 10, deductionId: 'd-1', commissionWayId: null, merchantPointValueSettingId: 'p-3', isDefaultValue: false },
-        { jobTitle: '資深助理', pointValue: 5, deductionId: 'd-2', commissionWayId: 'cw-2', merchantPointValueSettingId: 'p-1', isDefaultValue: true },
+        {
+          jobTitle: '資深助理',
+          pointValue: 5,
+          deductionId: 'd-2',
+          commissionWayId: 'cw-2',
+          merchantPointValueSettingId: 'p-1',
+          isDefaultValue: true,
+        },
       ],
     })
     await wait(() => expect(callsOf(utils.calls, 'MERCHANT_JOBTITLE_POINT')).toHaveLength(2))
@@ -229,7 +242,11 @@ describe('人員身分類別設定', () => {
     await openTab('人員身分類別')
     const card = cardOf('人員身分類別設定')
     // 都沒有人使用：每列都有刪除鈕（不需為「使用中」文字預留寬度）
-    expect(within(card).getAllByRole('button', { name: '刪除' }).map(b => b.className.includes('w-[112px]'))).toEqual([false, false])
+    expect(
+      within(card)
+        .getAllByRole('button', { name: '刪除' })
+        .map(b => b.className.includes('w-[112px]'))
+    ).toEqual([false, false])
     fireEvent.click(editButton(card))
     const save = () => fireEvent.click(within(card).getByRole('button', { name: '儲存' }))
     save()
@@ -270,9 +287,17 @@ describe('人員身分類別設定', () => {
     })
     await openTab('人員身分類別')
     const card = cardOf('人員身分類別設定')
-    expect(within(card).getAllByRole('textbox').map(i => i.value)).toEqual([''])
+    expect(
+      within(card)
+        .getAllByRole('textbox')
+        .map(i => i.value)
+    ).toEqual([''])
     expect(within(card).queryByRole('button', { name: '刪除' })).toBeNull()
-    expect(within(cardOf('互助類別名稱設定')).getAllByRole('textbox').map(i => i.value)).toEqual([''])
+    expect(
+      within(cardOf('互助類別名稱設定'))
+        .getAllByRole('textbox')
+        .map(i => i.value)
+    ).toEqual([''])
   })
 })
 

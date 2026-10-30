@@ -3,10 +3,8 @@ import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Customer({ customer }) {
-  const genderCustomerCount =
-    customer.femaleCustomerCount + customer.maleCustomerCount + customer.unKnowCustomerCount
-  const designateAndNotDesignateCustomerCount =
-    customer.designateCustomerCount + customer.notDesignateCustomerCount
+  const genderCustomerCount = customer.femaleCustomerCount + customer.maleCustomerCount + customer.unKnowCustomerCount
+  const designateAndNotDesignateCustomerCount = customer.designateCustomerCount + customer.notDesignateCustomerCount
   return (
     <Card>
       <CardHeader className="pb-4">
@@ -27,8 +25,12 @@ function Customer({ customer }) {
           </TableHeader>
           <TableBody>
             <TableRow>
-              <TableCell numeric rowSpan={2}>{formatNumber(designateAndNotDesignateCustomerCount)}</TableCell>
-              <TableCell numeric rowSpan={2}>{formatNumber(customer.customerAvgAmount)}</TableCell>
+              <TableCell numeric rowSpan={2}>
+                {formatNumber(designateAndNotDesignateCustomerCount)}
+              </TableCell>
+              <TableCell numeric rowSpan={2}>
+                {formatNumber(customer.customerAvgAmount)}
+              </TableCell>
               <TableCell numeric>{formatNumber(customer.designateCustomerCount)}</TableCell>
               <TableCell numeric>{formatNumber(customer.notDesignateCustomerCount)}</TableCell>
               <TableCell numeric>{formatNumber(customer.maleCustomerCount)}</TableCell>
@@ -39,40 +41,30 @@ function Customer({ customer }) {
               <TableCell numeric className="text-text-secondary">
                 {(isNaN(customer.designateCustomerCount / designateAndNotDesignateCustomerCount)
                   ? 0
-                  : (customer.designateCustomerCount / designateAndNotDesignateCustomerCount) *
-                  100
+                  : (customer.designateCustomerCount / designateAndNotDesignateCustomerCount) * 100
                 ).toFixed(2)}
                 %
               </TableCell>
               <TableCell numeric className="text-text-secondary">
-                {(isNaN(
-                  customer.notDesignateCustomerCount / designateAndNotDesignateCustomerCount
-                )
+                {(isNaN(customer.notDesignateCustomerCount / designateAndNotDesignateCustomerCount)
                   ? 0
-                  : (customer.notDesignateCustomerCount / designateAndNotDesignateCustomerCount) *
-                  100
+                  : (customer.notDesignateCustomerCount / designateAndNotDesignateCustomerCount) * 100
                 ).toFixed(2)}
                 %
               </TableCell>
               <TableCell numeric className="text-text-secondary">
-                {(isNaN(customer.maleCustomerCount / genderCustomerCount)
-                  ? 0
-                  : (customer.maleCustomerCount / genderCustomerCount) * 100
-                ).toFixed(2)}
+                {(isNaN(customer.maleCustomerCount / genderCustomerCount) ? 0 : (customer.maleCustomerCount / genderCustomerCount) * 100).toFixed(2)}%
+              </TableCell>
+              <TableCell numeric className="text-text-secondary">
+                {(isNaN(customer.femaleCustomerCount / genderCustomerCount) ? 0 : (customer.femaleCustomerCount / genderCustomerCount) * 100).toFixed(
+                  2
+                )}
                 %
               </TableCell>
               <TableCell numeric className="text-text-secondary">
-                {(isNaN(customer.femaleCustomerCount / genderCustomerCount)
-                  ? 0
-                  : (customer.femaleCustomerCount / genderCustomerCount) * 100
-                ).toFixed(2)}
-                %
-              </TableCell>
-              <TableCell numeric className="text-text-secondary">
-                {(isNaN(customer.unKnowCustomerCount / genderCustomerCount)
-                  ? 0
-                  : (customer.unKnowCustomerCount / genderCustomerCount) * 100
-                ).toFixed(2)}
+                {(isNaN(customer.unKnowCustomerCount / genderCustomerCount) ? 0 : (customer.unKnowCustomerCount / genderCustomerCount) * 100).toFixed(
+                  2
+                )}
                 %
               </TableCell>
             </TableRow>

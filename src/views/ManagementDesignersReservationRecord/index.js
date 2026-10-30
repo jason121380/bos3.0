@@ -22,7 +22,7 @@ import useFetchGetIsBookingCusCheckUsing from 'hooks/useFetchGetIsBookingCusChec
 import BookingRecordListAutoComplete from 'components/BookingRecordListAutoComplete'
 import { useFetchGetBookinHistoryDisplay } from 'hooks/useFetchGetParameterAboutBookingSetting'
 import { useFetchGetCancelBookingUsing } from 'hooks/useFetchMerchantPassword'
-import produce from 'immer';
+import produce from 'immer'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { cn } from 'ui/utils'
@@ -49,10 +49,10 @@ function Calendar() {
     input: {
       dateRange: {
         startDate: startOfWeek(date).getTime(),
-        endDate: endOfWeek(date).getTime()
+        endDate: endOfWeek(date).getTime(),
       },
-      designerIds: designerId.length === 1 && designerId[0] === '' ? [] : designerId
-    }
+      designerIds: designerId.length === 1 && designerId[0] === '' ? [] : designerId,
+    },
   })
   const merchant = useFetchMerchant()
   const [orderRange, setOrderRange] = useState([])
@@ -72,7 +72,7 @@ function Calendar() {
     close: {
       hour: '',
       minute: '',
-    }
+    },
   })
   const [bookingCusCheck, setBookingCusCheck] = useState(false)
   const [checkinMode, setCheckinMode] = useState(false)
@@ -80,22 +80,22 @@ function Calendar() {
   const [calendarSize, setCalendarSize] = useState({
     width: 150,
     height: 40,
-    breakWidth: 45
+    breakWidth: 45,
   })
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [showFilter, setShowFilter] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [showFilter, setShowFilter] = useState(false)
   const [bookingHistoryDisplay, setBookingHistoryDisplay] = useState(false)
-  const open = Boolean(anchorEl);
-  const filterOpen = showFilter;
+  const open = Boolean(anchorEl)
+  const filterOpen = showFilter
   const ndsRef = useRef([])
 
-  const handleClick = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
+  const handleClick = event => {
+    setAnchorEl(anchorEl ? null : event.currentTarget)
+  }
 
   const handleFilterClick = () => {
-    setShowFilter(!showFilter);
-  };
+    setShowFilter(!showFilter)
+  }
 
   const handleRefetch = () => {
     DesignerCalendar.refetch()
@@ -107,28 +107,38 @@ function Calendar() {
       const data = idx(nameType, _ => _.data.getDesignerNameForCustomerSide)
       setDesignerName(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [nameType.loading])
-
 
   useEffect(() => {
     // 任一查詢失敗（data 為 undefined）時不整理資料，畫面改顯示 QueryFailed（2026/10/28）
     if (!merchant.loading && !DesignerCalendar.loading && idx(merchant, _ => _.data.merchant) && DesignerCalendar.data) {
       // 資料整理與個人檔案、員工資料的預約表共用（components/ReservationCalendar/weekCalendar）
       const { openTime, orderRange, calendarData } = buildWeekCalendar({
-        DesignerCalendar, merchant, date,
+        DesignerCalendar,
+        merchant,
+        date,
         height: calendarSize.height,
         isOne: designerId.length === 1 && designerId[0] !== '',
-        checkinMode, bookingCusCheck, checkinSettings, checkedType
+        checkinMode,
+        bookingCusCheck,
+        checkinSettings,
+        checkedType,
       })
       setOpenTime(openTime)
       setOrderRange(orderRange)
       setCalendarData(calendarData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ merchant.loading, date, DesignerCalendar.loading, booki…] 變動時執行；DesignerCalendar、checkinSettings、designerId、merchant 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ merchant.loading, date, DesignerCalendar.loading, booki…] 變動時執行；DesignerCalendar、checkinSettings、designerId、merchant 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [
-    merchant.loading, date, DesignerCalendar.loading, bookingCusCheck, calendarSize,
-    checkinMode, checkinSettings.isBookingCheckinEnabled, checkedType
+    merchant.loading,
+    date,
+    DesignerCalendar.loading,
+    bookingCusCheck,
+    calendarSize,
+    checkinMode,
+    checkinSettings.isBookingCheckinEnabled,
+    checkedType,
   ])
 
   useEffect(() => {
@@ -136,7 +146,7 @@ function Calendar() {
       const data = idx(bookingRemarkDisplay, _ => _.data.getIsBookingRemarkDisplay)
       setRemarkDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [bookingRemarkDisplay.loading])
 
   useEffect(() => {
@@ -144,7 +154,7 @@ function Calendar() {
       const data = idx(cusBookingRemarkDisplay, _ => _.data.getIsCusBookingRemarkDisplay)
       setCusRemarkDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [cusBookingRemarkDisplay.loading])
 
   useEffect(() => {
@@ -156,7 +166,7 @@ function Calendar() {
       }
       setCheckinSettings(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantCheckinSettings.loading])
 
   useEffect(() => {
@@ -164,7 +174,7 @@ function Calendar() {
       const data = idx(getIsBookingCusCheckUsing, _ => _.data.getIsBookingCusCheckUsing)
       setBookingCusCheck(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBookingCusCheckUsing.loading])
 
   useEffect(() => {
@@ -172,7 +182,7 @@ function Calendar() {
       const data = idx(getBookinHistoryDisplay, _ => _.data.getParameterAboutBookingSetting.isBookingHistoryDisplay) || false
       setBookingHistoryDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBookinHistoryDisplay.loading])
 
   return (
@@ -180,11 +190,11 @@ function Calendar() {
     <Page title="單週預約紀錄">
       {/* 載入遮罩：比照單日預約紀錄改 role=status＋aria-live，下方行事曆容器同步 aria-busy */}
       <div
-        id='Backdrop'
+        id="Backdrop"
         role="status"
         aria-live="polite"
         className="fixed inset-0 flex items-center justify-center !opacity-100 z-[1300] ![background:rgba(0,0,0,0)]"
-        style={{ visibility: (merchant.loading || DesignerCalendar.loading) ? undefined : 'hidden' }}
+        style={{ visibility: merchant.loading || DesignerCalendar.loading ? undefined : 'hidden' }}
       >
         <LoaderCircle aria-hidden="true" className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
         <span className="sr-only">預約紀錄載入中…</span>
@@ -220,7 +230,7 @@ function Calendar() {
             <BookingRecordListAutoComplete
               label="搜尋姓名或編號..."
               fullWidth
-              value={(designerId[0] !== '' && designerId.length === 1) ? designerId[0] : ''}
+              value={designerId[0] !== '' && designerId.length === 1 ? designerId[0] : ''}
               onChange={value => {
                 if (value.id === '') {
                   setDesignerId([''])
@@ -232,8 +242,8 @@ function Calendar() {
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
                   backgroundColor: 'rgb(var(--surface))',
-                  height: '40px'
-                }
+                  height: '40px',
+                },
               }}
             />
           </div>
@@ -260,11 +270,7 @@ function Calendar() {
           {checkinSettings.isBookingCheckinEnabled && checkinMode && (
             <div className="flex min-w-[160px] flex-col gap-2">
               <span className="text-label text-text-secondary">報到狀態</span>
-              <NativeSelect
-                aria-label="報到狀態"
-                onChange={e => setCheckedType(e.target.value)}
-                value={checkedType}
-              >
+              <NativeSelect aria-label="報到狀態" onChange={e => setCheckedType(e.target.value)} value={checkedType}>
                 <NativeSelectOption value="">全部顯示</NativeSelectOption>
                 <NativeSelectOption value={true}>報到成功</NativeSelectOption>
                 <NativeSelectOption value={false}>未報到</NativeSelectOption>
@@ -273,22 +279,11 @@ function Calendar() {
           )}
         </Card>
       )}
-      <div aria-busy={(merchant.loading || DesignerCalendar.loading) || undefined}>
+      <div aria-busy={merchant.loading || DesignerCalendar.loading || undefined}>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2.5">
-          <CalendarColorClip
-            bookingCusCheck={bookingCusCheck}
-            checkinMode={checkinMode}
-            bookingHistoryDisplay={bookingHistoryDisplay}
-          />
+          <CalendarColorClip bookingCusCheck={bookingCusCheck} checkinMode={checkinMode} bookingHistoryDisplay={bookingHistoryDisplay} />
           <span className="ui-root">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-accent"
-              aria-label="調整格子高度"
-              aria-expanded={open}
-              onClick={handleClick}
-            >
+            <Button variant="ghost" size="icon" className="text-accent" aria-label="調整格子高度" aria-expanded={open} onClick={handleClick}>
               <SlidersHorizontal strokeWidth={1.75} />
             </Button>
           </span>
@@ -321,14 +316,14 @@ function Calendar() {
             </PopoverContent>
           </Popover>
         </div>
-        {(DesignerCalendar.error || merchant.error) ? (
+        {DesignerCalendar.error || merchant.error ? (
           <QueryFailed
             onRetry={() => {
               if (DesignerCalendar.error) DesignerCalendar.refetch()
               if (merchant.error) merchant.refetch()
             }}
           />
-        ) : !merchant.loading && orderRange.length ?
+        ) : !merchant.loading && orderRange.length ? (
           <OrderTable
             orderRange={orderRange}
             calendarData={calendarData}
@@ -348,8 +343,10 @@ function Calendar() {
             checkinSettings={checkinSettings}
             checkinMode={checkinMode}
             cancelPasswordUsing={isPasswordRequired(cancelBookingUsing, 'cancelReservation')}
-          /> : ''
-        }
+          />
+        ) : (
+          ''
+        )}
       </div>
     </Page>
   )

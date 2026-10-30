@@ -9,8 +9,18 @@
 import { act, cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { loginAs } from '../../../__tests__/testkit.test'
 import {
-  setupDraft, pageReady, pick, clearField, saveDraft, summaryValue, makeOrder, serviceOrder, panelHeader, customerDetail,
-  CUSTOMER, SERVICE,
+  setupDraft,
+  pageReady,
+  pick,
+  clearField,
+  saveDraft,
+  summaryValue,
+  makeOrder,
+  serviceOrder,
+  panelHeader,
+  customerDetail,
+  CUSTOMER,
+  SERVICE,
 } from './draftPageKit.test'
 
 jest.setTimeout(20000)
@@ -26,7 +36,12 @@ beforeEach(() => {
 afterEach(cleanup)
 
 const CUSTOMER2 = { id: 'customer-2', no: 'C02', name: '林先生', cellphone: '0922000111' }
-const PAY_WAYS = { merchantPayWays: [{ id: 'pay-1', type: 'CARD', name: '信用卡', fee: 0 }, { id: 'pay-2', type: 'OTHER', name: '轉帳', fee: 0 }] }
+const PAY_WAYS = {
+  merchantPayWays: [
+    { id: 'pay-1', type: 'CARD', name: '信用卡', fee: 0 },
+    { id: 'pay-2', type: 'OTHER', name: '轉帳', fee: 0 },
+  ],
+}
 const labelInput = label => screen.getByText(label, { selector: 'label' }).parentElement.querySelector('input')
 const paymentInput = () => screen.getByPlaceholderText('選擇付款方式')
 
@@ -36,13 +51,16 @@ const setup = async (options = {}, delays) => {
   return page
 }
 const withCustomer = (orderOverrides = {}, options = {}, delays) =>
-  setup({
-    order: makeOrder({ customer: CUSTOMER, ...orderOverrides }),
-    customer: customerDetail(),
-    otherCustomers: { [CUSTOMER2.id]: customerDetail(CUSTOMER2) },
-    FETCH_CUSTOMERS_IN_AUTO_COMPLETE: { customers: { customers: [CUSTOMER, CUSTOMER2] } },
-    ...options,
-  }, delays)
+  setup(
+    {
+      order: makeOrder({ customer: CUSTOMER, ...orderOverrides }),
+      customer: customerDetail(),
+      otherCustomers: { [CUSTOMER2.id]: customerDetail(CUSTOMER2) },
+      FETCH_CUSTOMERS_IN_AUTO_COMPLETE: { customers: { customers: [CUSTOMER, CUSTOMER2] } },
+      ...options,
+    },
+    delays
+  )
 
 describe('掛單詳細：其他付款方式', () => {
   it('選付款方式後填金額：現金應收扣掉該金額；超過應付不接受；取消付款方式後金額歸零', async () => {
@@ -90,11 +108,48 @@ describe('掛單詳細：其他付款方式', () => {
       order: makeOrder({
         payType: ['轉帳'],
         productOrders: [
-          { id: 'po-1', name: '洗髮精', count: 1, price: 1200, thirdPartyPayId: null, seller: { id: 'designer-1' }, product: { id: 'product-1', isLocked: 'FALSE' } },
-          { id: 'po-2', name: '護髮油', count: 1, price: 500, thirdPartyPayId: 'tp-1', seller: { id: 'designer-1' }, product: { id: 'product-2', isLocked: 'FALSE' } },
+          {
+            id: 'po-1',
+            name: '洗髮精',
+            count: 1,
+            price: 1200,
+            thirdPartyPayId: null,
+            seller: { id: 'designer-1' },
+            product: { id: 'product-1', isLocked: 'FALSE' },
+          },
+          {
+            id: 'po-2',
+            name: '護髮油',
+            count: 1,
+            price: 500,
+            thirdPartyPayId: 'tp-1',
+            seller: { id: 'designer-1' },
+            product: { id: 'product-2', isLocked: 'FALSE' },
+          },
         ],
-        ticketOrders: [{ id: 'to-1', price: 1000, count: 1, availableCount: 10, remark: '', service: { id: 'ticket-1', isLocked: 'FALSE' }, intoPerformanceWhileBuying: false }],
-        membershipOrders: [{ purchaseDate: null, validDayCount: null, expiryDate: null, price: 2000, thirdPartyPayId: null, remark: '', seller: { id: 'designer-1' }, membership: { uuid: 'card-2', isLocked: 'TRUE', effecitveDay: 0 } }],
+        ticketOrders: [
+          {
+            id: 'to-1',
+            price: 1000,
+            count: 1,
+            availableCount: 10,
+            remark: '',
+            service: { id: 'ticket-1', isLocked: 'FALSE' },
+            intoPerformanceWhileBuying: false,
+          },
+        ],
+        membershipOrders: [
+          {
+            purchaseDate: null,
+            validDayCount: null,
+            expiryDate: null,
+            price: 2000,
+            thirdPartyPayId: null,
+            remark: '',
+            seller: { id: 'designer-1' },
+            membership: { uuid: 'card-2', isLocked: 'TRUE', effecitveDay: 0 },
+          },
+        ],
       }),
     })
     // 服務 800＋店販 1200＋預收卡 1000＋會員卡 2000＝5000
@@ -159,11 +214,15 @@ describe('掛單詳細：扣入金', () => {
 describe('掛單詳細：紅利點數', () => {
   const bonusField = label => labelInput(label)
   const withBonus = (orderOverrides = {}, options = {}, delays) =>
-    withCustomer(orderOverrides, {
-      customerBonusActive: true,
-      GET_CUSTOMER_BONUS_RECORD: { customerBonusRecord: [{ bonus: 50 }, { bonus: 30 }] },
-      ...options,
-    }, delays)
+    withCustomer(
+      orderOverrides,
+      {
+        customerBonusActive: true,
+        GET_CUSTOMER_BONUS_RECORD: { customerBonusRecord: [{ bonus: 50 }, { bonus: 30 }] },
+        ...options,
+      },
+      delays
+    )
   // 給點設定與帳單誰先回來都要自動給點：SETTINGS_FIRST 讓帳單晚一點回來，SETTINGS_LATE 讓給點設定晚一點回來
   const SETTINGS_FIRST = { FETCH_ORDER: 300 }
   const SETTINGS_LATE = { GET_BONUS_REWARD_RULE: 300 }

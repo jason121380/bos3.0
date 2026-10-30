@@ -3,13 +3,13 @@ import { Field, Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 
-function AboutMerchantBankSettings({ 
-  className, 
-  merchantBankSettings, 
-  onChange, 
-  inputEnable, 
-  setDisplayNonBankAccountInBankTransferReport, 
-  displayNonBankAccountInBankTransferReport 
+function AboutMerchantBankSettings({
+  className,
+  merchantBankSettings,
+  onChange,
+  inputEnable,
+  setDisplayNonBankAccountInBankTransferReport,
+  displayNonBankAccountInBankTransferReport,
 }) {
   return (
     <Card>
@@ -22,9 +22,7 @@ function AboutMerchantBankSettings({
             disabled={!inputEnable}
             label="薪資轉帳明細顯示未設定銀行帳號的員工"
             checked={displayNonBankAccountInBankTransferReport}
-            onChange={() =>
-              setDisplayNonBankAccountInBankTransferReport(!displayNonBankAccountInBankTransferReport)
-            }
+            onChange={() => setDisplayNonBankAccountInBankTransferReport(!displayNonBankAccountInBankTransferReport)}
           />
         </div>
         <Field className="max-w-xs mb-[24px]" label="匯款人姓名" htmlFor="merchantBank-remitterName">

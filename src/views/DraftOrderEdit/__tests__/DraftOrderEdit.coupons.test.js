@@ -7,8 +7,19 @@
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { loginAs } from '../../../__tests__/testkit.test'
 import {
-  setupDraft, pageReady, pick, saveDraft, summaryValue, makeOrder, panel, panelHeader, customerDetail,
-  CUSTOMER, HELPER, TICKET, TICKET_LOCKED,
+  setupDraft,
+  pageReady,
+  pick,
+  saveDraft,
+  summaryValue,
+  makeOrder,
+  panel,
+  panelHeader,
+  customerDetail,
+  CUSTOMER,
+  HELPER,
+  TICKET,
+  TICKET_LOCKED,
 } from './draftPageKit.test'
 
 jest.setTimeout(20000)
@@ -57,7 +68,14 @@ describe('掛單詳細：預收卡販賣帶回與修改', () => {
     expect(summaryValue('預收卡販賣')).toHaveTextContent('6,000')
     const input = await saveDraft(page.calls)
     expect(input.ticketOrders).toEqual([
-      expect.objectContaining({ serviceId: TICKET.id, availableCount: 10, price: 6000, count: 1, remark: '週年慶', intoPerformanceWhileBuying: true }),
+      expect.objectContaining({
+        serviceId: TICKET.id,
+        availableCount: 10,
+        price: 6000,
+        count: 1,
+        remark: '週年慶',
+        intoPerformanceWhileBuying: true,
+      }),
     ])
   })
 

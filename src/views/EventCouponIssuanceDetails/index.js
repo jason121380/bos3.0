@@ -9,7 +9,7 @@ import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefau
 import isExportCustomerMasked, { maskCustomerName, maskCellphone } from 'helper/exportCustomerMask'
 import produce from 'immer'
 import format from 'date-fns/format'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
@@ -19,7 +19,6 @@ import { ListFilter } from 'lucide-react'
 import { PageHeader } from 'ui/page-header'
 import QueryFailed from 'components/QueryFailed'
 
-
 function EventCouponIssuanceDetails() {
   const [getVoucherIssuanceRecord, voucherIssuanceRecordData] = useFetchGetVoucherIssuanceRecordLazy()
   // 匯出客資一律經 exportCustomerMask：只有遮罩設定查詢成功且為 false 才匯出完整姓名與手機（Jason 2026/10/22 授權修正）
@@ -28,7 +27,7 @@ function EventCouponIssuanceDetails() {
   const [pageSetting, setPageSetting] = useState({
     pageLimit: 50,
     pageOffset: 0,
-    totalCount: 0
+    totalCount: 0,
   })
   const [inputData, setInputData] = useState({
     startDate: startOfDay(new Date()).getTime(),
@@ -57,7 +56,7 @@ function EventCouponIssuanceDetails() {
     )
   }
 
-  const handleRowsPerPageChange = (event) => {
+  const handleRowsPerPageChange = event => {
     setPageSetting(
       produce(draft => {
         draft.pageLimit = idx(event, _ => _.target.value)
@@ -72,17 +71,15 @@ function EventCouponIssuanceDetails() {
         input: {
           pageLimit: pageSetting.pageLimit,
           pageOffset: pageSetting.pageOffset,
-          ...inputData
-        }
-      }
+          ...inputData,
+        },
+      },
     })
   }
 
   useEffect(() => {
     if (!voucherIssuanceRecordData.loading && voucherIssuanceRecordData.data) {
-      const {
-        data, pageLimit, pageOffset, totalCount
-      } = idx(voucherIssuanceRecordData, _ => _.data.voucherIssuanceRecord)
+      const { data, pageLimit, pageOffset, totalCount } = idx(voucherIssuanceRecordData, _ => _.data.voucherIssuanceRecord)
       setPageSetting(
         produce(draft => {
           draft.pageLimit = pageLimit
@@ -92,16 +89,13 @@ function EventCouponIssuanceDetails() {
       )
       setRecordData(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [voucherIssuanceRecordData.loading])
 
   useEffect(() => {
     handleSearch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [ pageSetting.pageLimit, pageSetting.pageOffset, inputData.startDate, inputData.endDate ] 變動時呼叫，補上會每次 render 重跑
-  }, [
-    pageSetting.pageLimit, pageSetting.pageOffset,
-    inputData.startDate, inputData.endDate
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [ pageSetting.pageLimit, pageSetting.pageOffset, inputData.startDate, inputData.endDate ] 變動時呼叫，補上會每次 render 重跑
+  }, [pageSetting.pageLimit, pageSetting.pageOffset, inputData.startDate, inputData.endDate])
 
   return (
     <Fragment>
@@ -157,13 +151,13 @@ function EventCouponIssuanceDetails() {
                   }}
                 />
                 <div className="flex gap-3">
-                  <Button
-                    variant='primary'
-                    disabled={voucherIssuanceRecordData.loading}
-                    onClick={handleSearch}
-                  >搜尋</Button>
-                  <Button asChild variant='secondary'>
-                    <CSVLink data={CSVData} filename="活動發券明細.csv">報表匯出</CSVLink>
+                  <Button variant="primary" disabled={voucherIssuanceRecordData.loading} onClick={handleSearch}>
+                    搜尋
+                  </Button>
+                  <Button asChild variant="secondary">
+                    <CSVLink data={CSVData} filename="活動發券明細.csv">
+                      報表匯出
+                    </CSVLink>
                   </Button>
                 </div>
               </div>
@@ -172,16 +166,21 @@ function EventCouponIssuanceDetails() {
 
           {voucherIssuanceRecordData.error ? (
             <QueryFailed onRetry={() => voucherIssuanceRecordData.refetch()} />
-          ) : voucherIssuanceRecordData.loading ?
-            <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
-            :
+          ) : voucherIssuanceRecordData.loading ? (
+            <div className="flex flex-col gap-3">
+              <Skeleton className="h-14 w-full" />
+              <Skeleton className="h-11 w-full" />
+              <Skeleton className="h-11 w-full" />
+              <Skeleton className="h-11 w-full" />
+            </div>
+          ) : (
             <Results
               recordData={recordData}
               pageSetting={pageSetting}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
             />
-          }
+          )}
         </div>
       </Page>
     </Fragment>

@@ -76,7 +76,10 @@ describe('新增第三方卡券', () => {
     fireEvent.click(submit())
     await wait(() => expect(callsOf(calls, 'CREATE_THIRD_PARTY_COUPON')).toHaveLength(1))
     expect(callsOf(calls, 'CREATE_THIRD_PARTY_COUPON')[0].variables.input).toEqual({
-      name: '百貨禮券', type: 'AMOUNT', handlingFee: 30, isNoCash: false,
+      name: '百貨禮券',
+      type: 'AMOUNT',
+      handlingFee: 30,
+      isNoCash: false,
     })
     cleanup()
     const pct = setup()

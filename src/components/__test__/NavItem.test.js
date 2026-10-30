@@ -100,9 +100,7 @@ describe('主側欄桌機 hover 細項', () => {
             depth={0}
             title="資料設定"
             open={false}
-            renderItems={() => items.map(item => (
-              <NavItem key={item.href} depth={1} href={item.href} title={item.title} />
-            ))}
+            renderItems={() => items.map(item => <NavItem key={item.href} depth={1} href={item.href} title={item.title} />)}
           />
         </SidebarRailContext.Provider>
       </Router>

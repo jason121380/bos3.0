@@ -19,7 +19,7 @@ function ShortcutCreate() {
   const services = useFetchServicesForTransferList()
   const products = useFetchProductsInTransferList()
   const tickets = useFetchTicketsForTransferList({ isLaunched: true })
-  const memberCards = useFetchGetMembershipsForTransferList({ isAvailableForSale: true, })
+  const memberCards = useFetchGetMembershipsForTransferList({ isAvailableForSale: true })
   const { createShort } = useCreateShortcut()
   const [isClick, setIsClick] = useState(false)
   const [servicesData, setServicesData] = useState([])
@@ -36,31 +36,27 @@ function ShortcutCreate() {
     serviceIds: [],
     productIds: [],
     ticketIds: [],
-    membershipIds: []
+    membershipIds: [],
   })
 
   const isLoading = useMemo(() => {
-    return (
-      services.loading || products.loading || tickets.loading || memberCards.loading
-    )
-  }, [
-    services.loading, products.loading, tickets.loading, memberCards.loading
-  ])
+    return services.loading || products.loading || tickets.loading || memberCards.loading
+  }, [services.loading, products.loading, tickets.loading, memberCards.loading])
 
   const keyWordsOnChange = (value, type) => {
     switch (type) {
       case 'SERVICE':
         setServicesKeyword(value)
-        break;
+        break
       case 'PRODUCT':
         setProductKeyword(value)
-        break;
+        break
       case 'TICKET':
         setTicketKeyword(value)
-        break;
+        break
       case 'MEMBERCARD':
         setMemberCardsKeyword(value)
-        break;
+        break
       default:
         // 其他值不處理（與原本沒有 default 時相同）
         break
@@ -83,7 +79,7 @@ function ShortcutCreate() {
         d.display = true
         return d
       } else {
-        d.display = d.no && d.no.includes(keyword) || d.name && d.name.includes(keyword)
+        d.display = (d.no && d.no.includes(keyword)) || (d.name && d.name.includes(keyword))
         return d
       }
     })
@@ -94,17 +90,17 @@ function ShortcutCreate() {
     try {
       if (!submitData.name) throw new Error('名稱不得為空')
       await createShort({
-        input: submitData
+        input: submitData,
       })
       openSnackbar({
         variant: 'success',
-        message: '新增成功'
+        message: '新增成功',
       })
       history.push('/shortcut')
     } catch (error) {
       openSnackbar({
         variant: 'error',
-        message: error.message
+        message: error.message,
       })
       setIsClick(false)
     }
@@ -117,7 +113,7 @@ function ShortcutCreate() {
       const filtData = doFilter(data, servicesKeyword)
       setServicesData(filtData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [services.loading, servicesKeyword])
 
   useEffect(() => {
@@ -126,7 +122,7 @@ function ShortcutCreate() {
       const filtData = doFilter(data, productKeyword)
       setProductData(filtData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading, productKeyword])
 
   useEffect(() => {
@@ -135,21 +131,19 @@ function ShortcutCreate() {
       const filtData = doFilter(data, ticketKeyword)
       setTicketData(filtData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [tickets.loading, ticketKeyword])
 
   useEffect(() => {
     if (!memberCards.loading) {
-      const data = (idx(memberCards, _ => _.data.memberships.data) || []).map(({ uuid, ...rest }) => (
-        {
-          ...rest,
-          id: uuid
-        }
-      ))
+      const data = (idx(memberCards, _ => _.data.memberships.data) || []).map(({ uuid, ...rest }) => ({
+        ...rest,
+        id: uuid,
+      }))
       const filtData = doFilter(data, memberCardsKeyword)
       setMemberCardsData(filtData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [memberCards.loading, memberCardsKeyword])
 
   return (

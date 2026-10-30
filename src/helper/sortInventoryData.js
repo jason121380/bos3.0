@@ -1,5 +1,5 @@
-import cloneDeep from "lodash/cloneDeep"
-import compareNo from "utils/compareNo"
+import cloneDeep from 'lodash/cloneDeep'
+import compareNo from 'utils/compareNo'
 
 const sortData = (inventoryData, type) => {
   let data = cloneDeep(inventoryData)
@@ -12,7 +12,7 @@ const sortData = (inventoryData, type) => {
     const b = []
     data.forEach(d => {
       const { inventoryCount, currentCount } = d
-      if ((inventoryCount - currentCount) === 0) {
+      if (inventoryCount - currentCount === 0) {
         a.push(d)
       } else {
         b.push(d)

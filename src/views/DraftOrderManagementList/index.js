@@ -53,7 +53,7 @@ function DraftOrderManagementList() {
     thirdPartTicketName: '',
     thirdPartTicketId: '',
     isPending: true,
-    source: null
+    source: null,
   })
   const [progress, setProgress] = React.useState(0)
   // 匯出客資遮罩：設定確定是「不遮罩」(false) 才匯出完整姓名電話；載入中或查詢失敗一律遮罩（個資寧可多遮，Codex review PR #254）
@@ -86,17 +86,17 @@ function DraftOrderManagementList() {
   const [detailInfo, setDetailInfo] = React.useState({
     logo: {
       isDisplay: false,
-      imageUrl: null
+      imageUrl: null,
     },
     qrcode: {
       isDisplay: false,
       url: null,
-      imageUrl: null
+      imageUrl: null,
     },
     message: {
       isDisplay: false,
       message: null,
-    }
+    },
   })
 
   React.useEffect(() => {
@@ -104,14 +104,11 @@ function DraftOrderManagementList() {
       const data = idx(getIsPrintWindowClosureDelayed, _ => _.data.getParameterOrderCreateSetting.isPrintWindowClosureDelayed)
       setClosureDelayed(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsPrintWindowClosureDelayed.loading])
   React.useEffect(() => {
     if (!isMemberShipCardActiveData.loading && !orders.loading) {
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       // 查詢失敗時以空列表計算，不整頁錯誤（Jason 2026/10/22）
       const allOrers = idx(orders, _ => _.data.pendingOrders.orders) || []
       const memberRecord = allOrers.map(d => d.membershipOrders).flat()
@@ -119,40 +116,33 @@ function DraftOrderManagementList() {
       // membership 是布林：未啟用會員卡且沒有會員卡金額時不顯示會員卡欄（原本比較 membership !== 0 永遠為 true，Jason 2026/10/22）
       setMembershipDisplay(Boolean(isMemberShipCardActive || membership))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading, orders.loading])
   React.useEffect(() => {
     if (!customerBonusActive.loading && !orders.loading) {
-      const bonusActive = idx(
-        customerBonusActive,
-        _ => _.data.getIsCustomerBonusActive
-      )
+      const bonusActive = idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive)
       const allOrers = idx(orders, _ => _.data.pendingOrders.orders) || []
       const bonus = allOrers.some(({ bonusDecount }) => bonusDecount !== 0)
       setBonusDisplay(bonusActive || bonus)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerBonusActive.loading, orders.loading])
   React.useEffect(() => {
     if (!customerDataMarkedData.loading) {
       setIsCustomerDataMarked(isExportCustomerMasked(customerDataMarkedData))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerDataMarkedData.loading, customerDataMarkedData.error])
 
   React.useEffect(() => {
-    if (
-      !getLogoDisplayOnInvoice.loading &&
-      !getQrcodeDisplayOnInvoice.loading &&
-      !getMessageDisplayOnInvoice.loading
-    ) {
+    if (!getLogoDisplayOnInvoice.loading && !getQrcodeDisplayOnInvoice.loading && !getMessageDisplayOnInvoice.loading) {
       const logo = idx(getLogoDisplayOnInvoice, _ => _.data.getLogoDisplayOnInvoice)
       const qrcode = idx(getQrcodeDisplayOnInvoice, _ => _.data.getQrcodeDisplayOnInvoice)
       const message = idx(getMessageDisplayOnInvoice, _ => _.data.getMessageDisplayOnInvoice)
       setDetailInfo({
         logo: logo,
         qrcode: qrcode,
-        message: message
+        message: message,
       })
       // 收據設定查詢失敗時沒有 QR 設定，不產生 QR（2026/10/28）
       if (qrcode) {
@@ -163,7 +153,7 @@ function DraftOrderManagementList() {
       // 沒啟用或沒有 logo 網址時 imageUrl 是 null；不要 fetch(null)（會打到 /null）
       if (logo && logo.imageUrl) {
         const getDataUrl = async () => {
-          let blob = await fetch(logo.imageUrl).then(r => r.blob());
+          let blob = await fetch(logo.imageUrl).then(r => r.blob())
           let dataUrl = await new Promise(resolve => {
             let reader = new FileReader()
             reader.onload = () => resolve(reader.result)
@@ -175,12 +165,8 @@ function DraftOrderManagementList() {
         getDataUrl().catch(() => {})
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-  }, [
-    getLogoDisplayOnInvoice.loading,
-    getQrcodeDisplayOnInvoice.loading,
-    getMessageDisplayOnInvoice.loading
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+  }, [getLogoDisplayOnInvoice.loading, getQrcodeDisplayOnInvoice.loading, getMessageDisplayOnInvoice.loading])
 
   useCheckDisablePendingOrder()
 
@@ -244,29 +230,23 @@ function DraftOrderManagementList() {
           imgUrl={imgUrl}
           detailInfo={detailInfo}
           closureDelayed={closureDelayed}
-          disabled={
-            getLogoDisplayOnInvoice.loading ||
-            getQrcodeDisplayOnInvoice.loading ||
-            getMessageDisplayOnInvoice.loading
-          }
+          disabled={getLogoDisplayOnInvoice.loading || getQrcodeDisplayOnInvoice.loading || getMessageDisplayOnInvoice.loading}
           passwordEnabled={
-            !passwordData.loading ? ({
-              delete: idx(passwordData, _ => _.data.merchantPassword.deleteOrder.isUsing),
-              checkout: idx(passwordData, _ => _.data.merchantPassword.reCheckoutOrder.isUsing),
-            }) : ({
-              delete: false,
-              checkout: false
-            })
+            !passwordData.loading
+              ? {
+                  delete: idx(passwordData, _ => _.data.merchantPassword.deleteOrder.isUsing),
+                  checkout: idx(passwordData, _ => _.data.merchantPassword.reCheckoutOrder.isUsing),
+                }
+              : {
+                  delete: false,
+                  checkout: false,
+                }
           }
           orderDetailPrintLayout={
-            !merchantOrderDetailPrintLayoutData.loading ? idx(merchantOrderDetailPrintLayoutData,
-              _ => _.data.getMerchantPrintFormatSettings
-            ) : 'A4'
+            !merchantOrderDetailPrintLayoutData.loading ? idx(merchantOrderDetailPrintLayoutData, _ => _.data.getMerchantPrintFormatSettings) : 'A4'
           }
           nameDisplayOnInvoice={
-            !getDesignerNameDisplayOnInvoice.loading ? idx(
-              getDesignerNameDisplayOnInvoice, _ => _.data.getDesignerNameDisplayOnInvoice
-            ) : 'NAME'
+            !getDesignerNameDisplayOnInvoice.loading ? idx(getDesignerNameDisplayOnInvoice, _ => _.data.getDesignerNameDisplayOnInvoice) : 'NAME'
           }
         />
       ) : (

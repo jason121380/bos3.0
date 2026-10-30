@@ -33,10 +33,7 @@ function AboutOrderSource({ className, reference, setReference, inputEnable }) {
         <div className="flex flex-wrap gap-4">
           {reference.map((label, index) => (
             <div className="flex items-center" key={index}>
-              <span
-                className="inline-block shrink-0 text-heading tabular-nums text-text"
-                style={{ margin: '0 5px', width: '25px' }}
-              >
+              <span className="inline-block shrink-0 text-heading tabular-nums text-text" style={{ margin: '0 5px', width: '25px' }}>
                 {index + 1}
               </span>
               <Input
@@ -48,18 +45,10 @@ function AboutOrderSource({ className, reference, setReference, inputEnable }) {
               />
               <div style={{ display: 'flex' }}>
                 {reference.length >= 1 && (
-                  <DeleteForeverIcon
-                    disabled={!inputEnable}
-                    onClick={() => handleDeleteOption(index)}
-                    style={{ cursor: 'pointer' }}
-                  />
+                  <DeleteForeverIcon disabled={!inputEnable} onClick={() => handleDeleteOption(index)} style={{ cursor: 'pointer' }} />
                 )}
                 {index === reference.length - 1 && (
-                  <AddIcon
-                    disabled={!inputEnable}
-                    onClick={() => handleAddOption(index)}
-                    style={{ cursor: 'pointer' }}
-                  />
+                  <AddIcon disabled={!inputEnable} onClick={() => handleAddOption(index)} style={{ cursor: 'pointer' }} />
                 )}
               </div>
             </div>

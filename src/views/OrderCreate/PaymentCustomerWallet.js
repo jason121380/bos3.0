@@ -8,15 +8,7 @@ import { useLazyFetchCustomerWallet } from 'hooks/useFetchCustomerWallet'
 import { useFetchProfileIdentity } from 'hooks/useFetchProfile'
 import useFetchGetMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'
 import idx from 'idx'
-import React, {
-  forwardRef,
-  useContext,
-  useEffect,
-  useMemo,
-  Fragment,
-  useRef,
-  useState,
-} from 'react'
+import React, { forwardRef, useContext, useEffect, useMemo, Fragment, useRef, useState } from 'react'
 
 import WalletDepositModal from 'views/OrderShared/WalletDepositModal'
 
@@ -32,10 +24,7 @@ function PaymentCustomerWallet(props, ref) {
     allowDepositDeduction: false,
   })
 
-  const {
-    bill, handleBillChange, setWalletPayBalanceForDetail,
-    setCustomerWallet, walletFuncDisplay
-  } = useContext(billContext)
+  const { bill, handleBillChange, setWalletPayBalanceForDetail, setCustomerWallet, walletFuncDisplay } = useContext(billContext)
 
   const [walletPayCheckBox, setWalletPayCheckBox] = useState(false)
   const [openWalletDeposit, setOpenWalletDeposit] = useState(false)
@@ -53,7 +42,7 @@ function PaymentCustomerWallet(props, ref) {
     if (bill.walletPay === 0) return
     setWalletPayBalance(usableCustomerWallet - bill.walletPay)
     setWalletPayBalanceForDetail(usableCustomerWallet - bill.walletPay)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [bill.walletPay, setWalletPayBalanceForDetail] 變動時執行；usableCustomerWallet 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [bill.walletPay, setWalletPayBalanceForDetail] 變動時執行；usableCustomerWallet 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [bill.walletPay, setWalletPayBalanceForDetail])
 
   // 本元件只在帳單有顧客時掛上（Payment.js），customerId 一定有值
@@ -71,7 +60,7 @@ function PaymentCustomerWallet(props, ref) {
       // 找不到登入者角色、角色缺「客戶管理」區塊或缺該項目時，視為沒有入金權限（原本直接拋錯，選顧客就整頁錯誤）
       const identitySettings = Array.isArray(authorities) ? authorities.find(d => d.id === identityId) : undefined
       const CustomerManagementIdentity = identitySettings
-        ? JSON.parse(identitySettings.authoritySettings).find(d => d.pageTitle === '客戶管理')?.pageAuthority ?? []
+        ? (JSON.parse(identitySettings.authoritySettings).find(d => d.pageTitle === '客戶管理')?.pageAuthority ?? [])
         : []
       const allowDepositAddition = CustomerManagementIdentity.find(d => d.pageName === '入金(儲值)')?.authority ?? false
       const allowDepositDeduction = CustomerManagementIdentity.find(d => d.pageName === '入金(扣除)')?.authority ?? false
@@ -81,7 +70,7 @@ function PaymentCustomerWallet(props, ref) {
         allowDepositDeduction: allowDepositDeduction,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [profileIdentity.loading, merchantAuthorities.loading])
 
   const initWalletPay = () => {
@@ -92,7 +81,7 @@ function PaymentCustomerWallet(props, ref) {
   }
   useEffect(() => {
     initWalletPay()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（initWalletPay）；只在 [customerId] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（initWalletPay）；只在 [customerId] 變動時呼叫，補上會每次 render 重跑
   }, [customerId])
 
   const servicesWithThirdPartyCount = []
@@ -141,20 +130,13 @@ function PaymentCustomerWallet(props, ref) {
       bill.ticketOrders.length +
       bill.membershipOrders.length -
       (servicesWithThirdPartyCount.length + productsWithThirdPartyCount.length + membershipsWithThirdPartyCount.length) >=
-      1
-      ? servicesWithoutThirdPartyCount
-        .map(d => d.price)
-        .reduce((total, item) => (total = total + item), 0) +
-      productsWithoutThirdPartyCount.reduce(
-        (total, item) => (total = total + item.price * item.count),
-        0
-      ) +
-      membershipsWithoutThirdPartyCount.reduce(
-        (total, item) => (total = total + item.price),
-        0
-      ) +
-      bill.ticketOrders.reduce((total, item) => (total = total + item.price * item.count), 0) -
-      bill.amountByOtherPay - bill.bonusDecount
+    1
+      ? servicesWithoutThirdPartyCount.map(d => d.price).reduce((total, item) => (total = total + item), 0) +
+        productsWithoutThirdPartyCount.reduce((total, item) => (total = total + item.price * item.count), 0) +
+        membershipsWithoutThirdPartyCount.reduce((total, item) => (total = total + item.price), 0) +
+        bill.ticketOrders.reduce((total, item) => (total = total + item.price * item.count), 0) -
+        bill.amountByOtherPay -
+        bill.bonusDecount
       : 0
   const usableCustomerWallet = idx(response, _ => _.data.customerWallet)
   useEffect(() => {
@@ -187,7 +169,7 @@ function PaymentCustomerWallet(props, ref) {
         value: 0,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [walletPayCheckBox] 變動時執行；handleBillChange、usableCustomerWallet、walletPayLimit 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [walletPayCheckBox] 變動時執行；handleBillChange、usableCustomerWallet、walletPayLimit 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [walletPayCheckBox])
   // 勾「整筆扣入金」之後如果項目變少，上限會下降，但上面的 effect 只在勾選當下寫入。
   // 扣入金留在舊金額會讓現金應收變負數。只往下夾到新上限，不把手動改小的金額拉回去。
@@ -212,7 +194,9 @@ function PaymentCustomerWallet(props, ref) {
           <div style={{ display: 'flex', gap: 8, alignItems: 'center', paddingBottom: 36, flexWrap: 'wrap' }}>
             {walletFuncDisplay ? (
               <>
-                <p>入金剩餘：<strong className="text-danger">{formatNumber(usableCustomerWallet)} 元</strong></p>
+                <p>
+                  入金剩餘：<strong className="text-danger">{formatNumber(usableCustomerWallet)} 元</strong>
+                </p>
                 <RemoveRoundedIcon />
                 <div style={{ position: 'relative' }} className={styles.walletDiv}>
                   <Input
@@ -223,10 +207,7 @@ function PaymentCustomerWallet(props, ref) {
                     name="walletPay"
                     onChange={event => {
                       const walletPay =
-                        +event.target.value <= usableCustomerWallet &&
-                          +event.target.value <= walletPayLimit
-                          ? +event.target.value
-                          : bill.walletPay
+                        +event.target.value <= usableCustomerWallet && +event.target.value <= walletPayLimit ? +event.target.value : bill.walletPay
                       handleBillChange({
                         key: 'walletPay',
                         value: walletPay,
@@ -234,35 +215,27 @@ function PaymentCustomerWallet(props, ref) {
                     }}
                   />
                   <div style={{ marginTop: 20, position: 'absolute', left: 0, bottom: -40 }}>
-                    <CheckboxField
-                      label="整筆扣入金"
-                      className="whitespace-nowrap"
-                      onChange={handleCheckWalletPay}
-                    />
+                    <CheckboxField label="整筆扣入金" className="whitespace-nowrap" onChange={handleCheckWalletPay} />
                   </div>
                 </div>
                 <DragHandleRoundedIcon />
                 <strong className="text-danger">{formatNumber(usableCustomerWallet - bill.walletPay)} 元</strong>
-                {(identity.allowDepositAddition || identity.allowDepositDeduction) &&
-                  <Button
-                    variant="primary"
-                    onClick={handleOpenWalletDepositModal}
-                  >
+                {(identity.allowDepositAddition || identity.allowDepositDeduction) && (
+                  <Button variant="primary" onClick={handleOpenWalletDepositModal}>
                     異動入金
                   </Button>
-                }
+                )}
               </>
             ) : (
               <>
-                <p>入金剩餘：<strong className="text-danger">{formatNumber(usableCustomerWallet)} 元</strong></p>
-                {(identity.allowDepositAddition || identity.allowDepositDeduction) &&
-                  <Button
-                    variant="primary"
-                    onClick={handleOpenWalletDepositModal}
-                  >
+                <p>
+                  入金剩餘：<strong className="text-danger">{formatNumber(usableCustomerWallet)} 元</strong>
+                </p>
+                {(identity.allowDepositAddition || identity.allowDepositDeduction) && (
+                  <Button variant="primary" onClick={handleOpenWalletDepositModal}>
                     異動入金
                   </Button>
-                }
+                )}
               </>
             )}
           </div>

@@ -7,11 +7,12 @@ const styles = {
 }
 
 export default function PanelRemark({ expanded }) {
-
   return (
     <Card>
       <CardContent>
-        <p className={`m-0 ${styles.heading}`} style={{ marginBottom: '12px', fontWeight: 'bold' }}>備註及來源</p>
+        <p className={`m-0 ${styles.heading}`} style={{ marginBottom: '12px', fontWeight: 'bold' }}>
+          備註及來源
+        </p>
         <div className={styles.fieldOutter}>
           <Remark expanded={expanded} />
         </div>

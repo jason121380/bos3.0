@@ -2,7 +2,15 @@ import React, { Fragment } from 'react'
 import { Button } from 'ui/button'
 import { Avatar } from 'ui/avatar'
 import { CheckboxField } from 'ui/checkbox'
-import { Cancel as CancelIcon, Check as CheckIcon, Edit as EditIcon, ShoppingCart as ShoppingCartIcon, AssignmentTurnedIn as AssignmentTurnedInIcon, Message as MessageIcon, EventBusy as EventBusyIcon } from 'ui/icons'
+import {
+  Cancel as CancelIcon,
+  Check as CheckIcon,
+  Edit as EditIcon,
+  ShoppingCart as ShoppingCartIcon,
+  AssignmentTurnedIn as AssignmentTurnedInIcon,
+  Message as MessageIcon,
+  EventBusy as EventBusyIcon,
+} from 'ui/icons'
 import { format } from 'date-fns'
 import { Link as RouterLink } from 'react-router-dom'
 import { actionRow, styles } from './choseEventConstants'
@@ -30,11 +38,9 @@ export function EditOrderSection({
     <Fragment>
       <div className={`MuiTypography-body1 ${styles.breakWord}`}>
         <div>
-          <p>{`姓名: `}
-            <RouterLink
-              className="text-text underline"
-              to={`/management/customers/${editOrder.customer.id}/invoices`}
-              target="_blank" >
+          <p>
+            {`姓名: `}
+            <RouterLink className="text-text underline" to={`/management/customers/${editOrder.customer.id}/invoices`} target="_blank">
               {editOrder.customer.name}
             </RouterLink>
           </p>
@@ -47,31 +53,33 @@ export function EditOrderSection({
         <div>{`同行人數: ${editOrder.companionCount}`}</div>
         <div>{`備註: ${editOrder.remark}`}</div>
         <div>{`顧客備註: ${editOrder.remarkForCustomer}`}</div>
-        {(checkinSettings.isBookingCheckinEnabled && editOrder.isCheckin !== null) && (
+        {checkinSettings.isBookingCheckinEnabled && editOrder.isCheckin !== null && (
           <div>{`報到狀態: ${editOrder.isCheckin ? '報到成功' : '未報到'}`}</div>
         )}
         {editOrder.notificationDate && (
-          <div style={{ fontWeight: 'bold' }}>{
-            `提醒日期: ${format(new Date(editOrder.notificationDate), 'yyyy/MM/dd')} (${editOrder.notificationDayCount}天前)`
-          }</div>
+          <div
+            style={{ fontWeight: 'bold' }}
+          >{`提醒日期: ${format(new Date(editOrder.notificationDate), 'yyyy/MM/dd')} (${editOrder.notificationDayCount}天前)`}</div>
         )}
         {editOrder.isNoShow && <div>出席狀況: 未出席</div>}
       </div>
       <div className="flex flex-col py-2">
         {editOrder.status !== '已完成' && editOrder.status !== '設計師已取消' && (
           <React.Fragment>
-            <button type="button" className={actionRow} disabled={btnDisabled} onClick={() => { setModalType('editOrderDetail') }}>
+            <button
+              type="button"
+              className={actionRow}
+              disabled={btnDisabled}
+              onClick={() => {
+                setModalType('editOrderDetail')
+              }}
+            >
               <Avatar className="bg-accent/8 text-accent">
                 <EditIcon />
               </Avatar>
               <span className="min-w-0 flex-1">編輯</span>
             </button>
-            <RouterLink
-              className="block text-text no-underline"
-              disabled={btnDisabled}
-              to={`/order/${editOrder.id}?status=checkout`}
-              target="_blank"
-            >
+            <RouterLink className="block text-text no-underline" disabled={btnDisabled} to={`/order/${editOrder.id}?status=checkout`} target="_blank">
               {editOrder.status === '預約成功' && (
                 <div className={actionRow} aria-disabled={btnDisabled}>
                   <Avatar className="bg-accent/8 text-accent">
@@ -94,16 +102,26 @@ export function EditOrderSection({
         )}
 
         {editOrder.status !== '設計師已取消' && (
-          <button type="button" className={actionRow} disabled={btnDisabled} onClick={() => cancelPasswordUsing ? openPassworDialog('cancel') : handleAcceptBooking(false)}>
+          <button
+            type="button"
+            className={actionRow}
+            disabled={btnDisabled}
+            onClick={() => (cancelPasswordUsing ? openPassworDialog('cancel') : handleAcceptBooking(false))}
+          >
             <Avatar className="bg-accent/8 text-accent">
               <CancelIcon />
             </Avatar>
             <span className="min-w-0 flex-1">取消預約</span>
           </button>
         )}
-        {(checkinSettings.isBookingCheckinEnabled && editOrder.isCheckin !== null) && (
+        {checkinSettings.isBookingCheckinEnabled && editOrder.isCheckin !== null && (
           <>
-            <button type="button" className={actionRow} disabled={btnDisabled} onClick={() => editOrder.isCheckin ? handleCancelCheckIn() : handleCheckIn()}>
+            <button
+              type="button"
+              className={actionRow}
+              disabled={btnDisabled}
+              onClick={() => (editOrder.isCheckin ? handleCancelCheckIn() : handleCheckIn())}
+            >
               <Avatar className="bg-accent/8 text-accent">
                 <AssignmentTurnedInIcon />
               </Avatar>

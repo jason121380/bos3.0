@@ -1,6 +1,21 @@
 import { Link as RouterLink } from 'react-router-dom'
 import { storedMerchantName } from 'lib/stored-merchant'
-import { Bell, BellRing, CircleAlert, CircleCheck, EllipsisVertical, LoaderCircle, Moon, PanelLeftClose, PanelLeftOpen, Pencil, RotateCcw, Store, Sun, Trash2 } from 'lucide-react'
+import {
+  Bell,
+  BellRing,
+  CircleAlert,
+  CircleCheck,
+  EllipsisVertical,
+  LoaderCircle,
+  Moon,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Pencil,
+  RotateCcw,
+  Store,
+  Sun,
+  Trash2,
+} from 'lucide-react'
 import { Button } from 'ui/button'
 import { Popover, PopoverAnchor, PopoverContent } from 'ui/popover'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from 'ui/dropdown-menu'
@@ -60,10 +75,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
   const merchantAuthData = useFetchMerchantAuthorities()
   // 未登入（無 user）時 NavBar 會導向登入頁；這裡不可讀 null.id，否則整個版面在導頁前就拋錯
   const storedUser = JSON.parse(localStorage.getItem('user') || 'null')
-  const getTheme = idx(
-    useFetchUser({ id: storedUser && storedUser.id }),
-    _ => _.data.user.theme
-  )
+  const getTheme = idx(useFetchUser({ id: storedUser && storedUser.id }), _ => _.data.user.theme)
   const { setThemeChangeData } = useFetchSettingTheme()
   const [loginUserAuth, setLoginUserAuth] = useState(false)
   // 開關圖示先依記住的主題顯示（後端使用者資料回來後再同步），避免深色使用者看到錯的圖示
@@ -138,14 +150,14 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
       creating = setTimeout(() => {
         usingOrderQueue.refetch()
         clearTimeout(creating)
-      }, 10000);
+      }, 10000)
     } else {
       clearTimeout(creating)
     }
     return () => {
       clearTimeout(creating)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [isNotification] 變動時執行；usingOrderQueue 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [isNotification] 變動時執行；usingOrderQueue 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [isNotification])
 
   useEffect(() => {
@@ -204,7 +216,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
       const coupon = filtData.find(d => d.pageName === '預收卡項目扣項設定')?.authority ?? false
       dispatch(deductionDisplayActions.setDisplay({ service, coupon }))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantAuthData.loading, profileIdentity.loading, dispatch])
 
   useEffect(() => {
@@ -242,7 +254,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
         history.push('/profile/general')
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantAuthData.loading, profileIdentity.loading, history])
 
   // getTheme
@@ -266,7 +278,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
       handlesetOrderDetail(tmpData)
       setOrderDetail(tmpData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [usingOrderQueue.loading])
 
   // click away
@@ -279,11 +291,11 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
       }
     }
 
-    document.addEventListener("mousedown", checkIfClickedOutside)
+    document.addEventListener('mousedown', checkIfClickedOutside)
 
     return () => {
       // Cleanup the event listener
-      document.removeEventListener("mousedown", checkIfClickedOutside)
+      document.removeEventListener('mousedown', checkIfClickedOutside)
     }
   }, [openButton])
 
@@ -343,7 +355,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
           setAnchorElForMoreBtn(null)
           setOpenButton(false)
         })
-        .catch((error) => {
+        .catch(error => {
           openSnackbar({
             message: `刪除訂單失敗：${error}`,
             variant: 'error',
@@ -362,7 +374,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
           setOpenButton(false)
           setTargetID(null)
         })
-        .catch((error) => {
+        .catch(error => {
           openSnackbar({
             message: `重結失敗：${error}`,
             variant: 'error',
@@ -401,7 +413,10 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
     <Fragment>
       <div className="flex h-10 items-center gap-1 lg:group-data-[rail=true]/sidebar:h-auto lg:group-data-[rail=true]/sidebar:flex-col">
         {/* 版號在側欄最底部（NavBar），不疊在 Logo 下方。圖示欄不顯示字標、搜尋與通知，只留收合鈕 */}
-        <RouterLink to={loginUserAuth ? '/' : '/profile/general'} className={cn('flex min-w-0 items-center gap-2 rounded-md px-1 lg:group-data-[rail=true]/sidebar:hidden', focusRing)}>
+        <RouterLink
+          to={loginUserAuth ? '/' : '/profile/general'}
+          className={cn('flex min-w-0 items-center gap-2 rounded-md px-1 lg:group-data-[rail=true]/sidebar:hidden', focusRing)}
+        >
           <img alt="BeautyOS" className="h-6 w-auto invert dark:invert-0" src={bosLogo} />
         </RouterLink>
         <div className="flex-1 lg:group-data-[rail=true]/sidebar:hidden" />
@@ -431,7 +446,10 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
                 orderDetail.map((order, index) => (
                   <div
                     key={`fail-order-${index}`}
-                    className={cn('flex items-start gap-3 px-4 py-3', index !== orderDetail.length - 1 && 'border-0 border-b border-solid border-border')}
+                    className={cn(
+                      'flex items-start gap-3 px-4 py-3',
+                      index !== orderDetail.length - 1 && 'border-0 border-b border-solid border-border'
+                    )}
                   >
                     {order.status === 'creating' ? (
                       <LoaderCircle className="mt-0.5 h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
@@ -442,7 +460,11 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
                     )}
                     <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                       <p className="text-body font-medium text-text">
-                        {order.status !== 'creating' ? order.status === 'fail' ? '#' + order.orderNo + ' 訂單建立失敗' : '#' + order.orderNo + ' 訂單建立成功' : '#' + order.orderNo + ' 訂單建立中'}
+                        {order.status !== 'creating'
+                          ? order.status === 'fail'
+                            ? '#' + order.orderNo + ' 訂單建立失敗'
+                            : '#' + order.orderNo + ' 訂單建立成功'
+                          : '#' + order.orderNo + ' 訂單建立中'}
                       </p>
                       <p className="text-caption tabular-nums text-text-secondary">訂單日期：{format(order.orderDate, 'yyyy/MM/dd')}</p>
                       <p className="text-caption tabular-nums text-text-secondary">建立時間：{format(order.createTime, 'yyyy/MM/dd  HH:mm:ss')}</p>
@@ -483,7 +505,13 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
             </div>
           </PopoverContent>
         </Popover>
-        <Button variant="ghost" size="icon" className="hidden lg:inline-flex lg:group-data-[rail=true]/sidebar:order-first" aria-label={desktopOpen ? '收合側欄' : '展開側欄'} onClick={onOpenNavBarMobile}>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="hidden lg:inline-flex lg:group-data-[rail=true]/sidebar:order-first"
+          aria-label={desktopOpen ? '收合側欄' : '展開側欄'}
+          onClick={onOpenNavBarMobile}
+        >
           {desktopOpen ? <PanelLeftClose strokeWidth={1.75} /> : <PanelLeftOpen strokeWidth={1.75} />}
         </Button>
       </div>
@@ -526,6 +554,5 @@ TopBar.propTypes = {
   onOpenNavBarMobile: PropTypes.func,
   desktopOpen: PropTypes.bool,
 }
-
 
 export default TopBar

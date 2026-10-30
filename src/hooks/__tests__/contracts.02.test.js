@@ -419,9 +419,7 @@ const ROWS = [
     expect: {
       initial: [],
       shape: ['function', { loading: false, called: false }],
-      invoked: [
-        { fn: 0, calls: [{ operationName: 'GET_CUSTOMER_BONUS_RECORD', variables: { customerId: 'customerId-v' } }] },
-      ],
+      invoked: [{ fn: 0, calls: [{ operationName: 'GET_CUSTOMER_BONUS_RECORD', variables: { customerId: 'customerId-v' } }] }],
       shapeAfter: ['function', { loading: false, called: true, data: ['customerBonusRecord'] }],
       policies: { GET_CUSTOMER_BONUS_RECORD: 'cache-and-network' },
     },
@@ -434,9 +432,7 @@ const ROWS = [
     expect: {
       initial: [],
       shape: ['function', { loading: false, called: false }],
-      invoked: [
-        { fn: 0, calls: [{ operationName: 'GET_CUSTOMER_CHECK_TICKET', variables: { input: { probe: 'input' } } }] },
-      ],
+      invoked: [{ fn: 0, calls: [{ operationName: 'GET_CUSTOMER_CHECK_TICKET', variables: { input: { probe: 'input' } } }] }],
       shapeAfter: ['function', { loading: false, called: true, data: ['customerCheckTicket'] }],
       policies: { GET_CUSTOMER_CHECK_TICKET: 'cache-and-network' },
     },
@@ -470,9 +466,7 @@ const ROWS = [
       invoked: [
         {
           fn: 0,
-          calls: [
-            { operationName: 'GET_CUSTOMER_CONSUMPYION_LEADERBOARD_EXECEL', variables: { input: { probe: 'input' } } },
-          ],
+          calls: [{ operationName: 'GET_CUSTOMER_CONSUMPYION_LEADERBOARD_EXECEL', variables: { input: { probe: 'input' } } }],
         },
       ],
       shapeAfter: ['function', { loading: false, called: true, data: ['customerConsumptionLeaderboardExcel'] }],
@@ -722,9 +716,7 @@ const ROWS = [
       invoked: [
         {
           fn: 0,
-          calls: [
-            { operationName: 'FETCH_GET_EMPLOYEE_CLOCK_IN_SCHEDULE_EXCEL', variables: { input: { probe: 'input' } } },
-          ],
+          calls: [{ operationName: 'FETCH_GET_EMPLOYEE_CLOCK_IN_SCHEDULE_EXCEL', variables: { input: { probe: 'input' } } }],
         },
       ],
       shapeAfter: ['function', { loading: false, called: true, data: ['getEmployeeClockInScheduleExcel'] }],
@@ -802,9 +794,7 @@ const ROWS = [
     hook: useFetchGetHelperPerformance.useFetchGetHelperPerformance,
     args: [{ input: { probe: 'input' }, jobTitle: 'jobTitle-v' }],
     expect: {
-      initial: [
-        { operationName: 'GET_HELPER_PERFORMANCE', variables: { input: { probe: 'input' }, jobTitle: 'jobTitle-v' } },
-      ],
+      initial: [{ operationName: 'GET_HELPER_PERFORMANCE', variables: { input: { probe: 'input' }, jobTitle: 'jobTitle-v' } }],
       shape: { loading: false, called: true, data: ['helperPerformanceReport'] },
       policies: { GET_HELPER_PERFORMANCE: 'cache-and-network' },
     },

@@ -15,8 +15,26 @@ jest.mock('elements/snackbars', () => ({
 }))
 
 const RESIGNED = [
-  { id: 'u1', lastName: '王', firstName: '小美', cellphone: '0911000111', designerNo: 'A01', nickName: 'Amy', avatar: null, deletedAt: new Date(2026, 8, 30, 23, 30).getTime() },
-  { id: 'u2', lastName: '林', firstName: '大明', cellphone: '0922000222', designerNo: 'A02', nickName: '', avatar: null, deletedAt: new Date(2026, 9, 1, 0, 10).getTime() },
+  {
+    id: 'u1',
+    lastName: '王',
+    firstName: '小美',
+    cellphone: '0911000111',
+    designerNo: 'A01',
+    nickName: 'Amy',
+    avatar: null,
+    deletedAt: new Date(2026, 8, 30, 23, 30).getTime(),
+  },
+  {
+    id: 'u2',
+    lastName: '林',
+    firstName: '大明',
+    cellphone: '0922000222',
+    designerNo: 'A02',
+    nickName: '',
+    avatar: null,
+    deletedAt: new Date(2026, 9, 1, 0, 10).getTime(),
+  },
 ]
 
 const setup = (fixtures = {}) =>

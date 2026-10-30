@@ -71,16 +71,18 @@ function fieldBefore(src, prop) {
 function learn(shapes, err) {
   const msg = err.message
   let m = msg.match(new RegExp(`\\.?([A-Za-z_$][\\w$]*)\\.(${ARRAY_METHODS}) is not a function`))
-  if (m && isField(m[1])) return shapes.lists.push(m[1]), `list ${m[1]}`
+  if (m && isField(m[1])) return (shapes.lists.push(m[1]), `list ${m[1]}`)
   m = msg.match(new RegExp(`Cannot read properties of null \\(reading '(${ARRAY_METHODS})'\\)`))
   if (m) {
     const f = fieldBefore(sourceLine(err.stack), m[1])
-    if (f && isField(f)) return shapes.scalarLists.push(f), shapes.lists.push(f), `list(null) ${f}`
+    if (f && isField(f)) return (shapes.scalarLists.push(f), shapes.lists.push(f), `list(null) ${f}`)
   }
   if (/Invalid time value/.test(msg)) {
     const src = sourceLine(err.stack)
-    const names = src ? [...src.text.matchAll(/\.([A-Za-z_$][\w$]*(?:At|Date|date|Time|time|Day|birthday|Birthday))\b/g)].map(x => x[1]).filter(isField) : []
-    if (names.length) return names.forEach(n => shapes.timestamps.push(n)), `time ${names.join(',')}`
+    const names = src
+      ? [...src.text.matchAll(/\.([A-Za-z_$][\w$]*(?:At|Date|date|Time|time|Day|birthday|Birthday))\b/g)].map(x => x[1]).filter(isField)
+      : []
+    if (names.length) return (names.forEach(n => shapes.timestamps.push(n)), `time ${names.join(',')}`)
   }
   return null
 }
@@ -88,13 +90,17 @@ function learn(shapes, err) {
 ;(async () => {
   if (!fs.existsSync(SHAPES_FILE)) saveShapes({ lists: [], scalarLists: [], timestamps: [] })
   const browser = await chromium.launch({
-    args: ['--host-resolver-rules=MAP *.run.app ~NOTFOUND, MAP *beautyos* ~NOTFOUND, MAP *crt-test* ~NOTFOUND, MAP *mlgroup* ~NOTFOUND, MAP *lure.com.tw ~NOTFOUND'],
+    args: [
+      '--host-resolver-rules=MAP *.run.app ~NOTFOUND, MAP *beautyos* ~NOTFOUND, MAP *crt-test* ~NOTFOUND, MAP *mlgroup* ~NOTFOUND, MAP *lure.com.tw ~NOTFOUND',
+    ],
   })
   let routes = process.argv.slice(2).length ? process.argv.slice(2) : dashboardRoutes()
   const unresolved = {}
   for (let round = 1; round <= 12 && routes.length; round++) {
     // 每輪重新載入 fake-graphql，套用上一輪學到的形狀
-    Object.keys(require.cache).filter(k => k.includes(`${path.sep}e2e${path.sep}fake-`)).forEach(k => delete require.cache[k])
+    Object.keys(require.cache)
+      .filter(k => k.includes(`${path.sep}e2e${path.sep}fake-`))
+      .forEach(k => delete require.cache[k])
     const { respondGraphql } = require('./fake-graphql')
     const shapes = loadShapes()
     const next = []
@@ -118,7 +124,11 @@ function learn(shapes, err) {
       await page.route('**/*', async r => {
         const url = r.request().url()
         if (/\/graphql/.test(url) && r.request().method() === 'POST') {
-          return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(respondGraphql(JSON.parse(r.request().postData() || '{}'))) })
+          return r.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(respondGraphql(JSON.parse(r.request().postData() || '{}'))),
+          })
         }
         if (url.startsWith(BASE)) return r.continue()
         return r.abort()

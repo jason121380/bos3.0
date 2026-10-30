@@ -9,7 +9,7 @@ const SET_PURCHASE_STOCK_IN = gql`
 export default function useFetchSetPurchaseStockIn() {
   const [setStockIn] = useMutation(SET_PURCHASE_STOCK_IN)
   return {
-    setStockIn: ( input ) =>
+    setStockIn: input =>
       setStockIn({
         variables: {
           input,

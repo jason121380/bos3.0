@@ -25,19 +25,16 @@ function ThirdPartyCoupons() {
         }
       />
       {thirdPartyCoupons.error ? (
-          <QueryFailed onRetry={() => thirdPartyCoupons.refetch()} />
-        ) : !thirdPartyCoupons.loading ?
-        <Results
-          thirdPartyCouponList={idx(thirdPartyCoupons, _ => _.data.getThirdPartTicket)}
-          thirdPartyCouponsRefetch={thirdPartyCoupons.refetch}
-        />
-        : (
-          <div className="flex flex-col gap-2">
-            <Skeleton className="h-11 w-full" />
-            <Skeleton className="h-11 w-full" />
-            <Skeleton className="h-11 w-full" />
-          </div>
-        )}
+        <QueryFailed onRetry={() => thirdPartyCoupons.refetch()} />
+      ) : !thirdPartyCoupons.loading ? (
+        <Results thirdPartyCouponList={idx(thirdPartyCoupons, _ => _.data.getThirdPartTicket)} thirdPartyCouponsRefetch={thirdPartyCoupons.refetch} />
+      ) : (
+        <div className="flex flex-col gap-2">
+          <Skeleton className="h-11 w-full" />
+          <Skeleton className="h-11 w-full" />
+          <Skeleton className="h-11 w-full" />
+        </div>
+      )}
     </Page>
   )
 }

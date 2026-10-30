@@ -68,19 +68,10 @@ function Permission({ designerId, className = '', ...rest }) {
             {permissions.map(permission => {
               return (
                 <div key={permission.id} className="flex flex-col">
-                  <h4 className="mb-1 text-heading text-text">
-                    {permission.name}
-                  </h4>
+                  <h4 className="mb-1 text-heading text-text">{permission.name}</h4>
                   {permission.actions.map(action => {
                     const isChecked = !!userPermisions.find(d => d === action.id)
-                    return (
-                      <CheckBoxCus
-                        key={`${action.id}_${isChecked}`}
-                        designerId={designerId}
-                        action={action}
-                        defaultChecked={isChecked}
-                      />
-                    )
+                    return <CheckBoxCus key={`${action.id}_${isChecked}`} designerId={designerId} action={action} defaultChecked={isChecked} />
                   })}
                 </div>
               )

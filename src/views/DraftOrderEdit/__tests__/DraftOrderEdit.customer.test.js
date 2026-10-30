@@ -7,10 +7,7 @@
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
 import { loginAs, callsOf, typeLikeBrowser } from '../../../__tests__/testkit.test'
-import {
-  setupDraft, pageReady, pick, clearField, saveDraft, makeOrder, customerDetail,
-  CUSTOMER, DESIGNER, HELPER,
-} from './draftPageKit.test'
+import { setupDraft, pageReady, pick, clearField, saveDraft, makeOrder, customerDetail, CUSTOMER, DESIGNER, HELPER } from './draftPageKit.test'
 
 jest.setTimeout(20000)
 
@@ -63,7 +60,10 @@ describe('掛單詳細：顧客', () => {
   it('有顧客的掛單：顯示顧客、LINE 綁定與會員卡清單；儲存送出原顧客', async () => {
     const page = await ready(
       withCustomer(
-        customerDetail({ isLineBinded: true, membershipPurchaseRecord: [{ membershipName: '年卡', expiryDay: null, purchaseDate: null, remark: '', validityDay: 365 }] }),
+        customerDetail({
+          isLineBinded: true,
+          membershipPurchaseRecord: [{ membershipName: '年卡', expiryDay: null, purchaseDate: null, remark: '', validityDay: 365 }],
+        }),
         { LBCusDisplay: true }
       )
     )
@@ -110,7 +110,13 @@ describe('掛單詳細：顧客', () => {
   })
 
   it('輸入文字直接按 Enter：以輸入文字當手機送出', async () => {
-    const page = await ready(setupDraft({ order: makeOrder({ customer: CUSTOMER }), customer: customerDetail(), FETCH_CUSTOMERS_IN_AUTO_COMPLETE: { customers: { customers: [] } } }))
+    const page = await ready(
+      setupDraft({
+        order: makeOrder({ customer: CUSTOMER }),
+        customer: customerDetail(),
+        FETCH_CUSTOMERS_IN_AUTO_COMPLETE: { customers: { customers: [] } },
+      })
+    )
     await wait(() => expect(customerInput()).toHaveValue('陳小姐/0912345678/C01'))
     fireEvent.change(customerInput(), { target: { value: '0955666777' } })
     fireEvent.keyDown(customerInput(), { key: 'Enter', keyCode: 13 })
@@ -241,7 +247,13 @@ describe('掛單詳細：服務人員、指定方式與帳單日期', () => {
   })
 
   it('桌機版逐段輸入日期：日期打到一半（不完整）時不改帳單日期', async () => {
-    window.matchMedia = () => ({ matches: true, addEventListener: () => {}, removeEventListener: () => {}, addListener: () => {}, removeListener: () => {} })
+    window.matchMedia = () => ({
+      matches: true,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+    })
     const page = await ready(setupDraft())
     const dateInput = screen.getByText('帳單日期').parentElement.querySelector('input')
     expect(dateInput).toHaveValue('2026/10/21 10:30')
@@ -297,7 +309,13 @@ describe('掛單詳細：新增顧客', () => {
     fireEvent.click(add)
     await wait(() => expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')).toHaveLength(1))
     expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')[0].variables.input).toEqual(
-      expect.objectContaining({ name: '張小姐', cellphone: '0966777888', gender: 'FEMALE', PreferDesignerId: DESIGNER.userId, birthday: { year: '85', month: '3', day: '4' } })
+      expect.objectContaining({
+        name: '張小姐',
+        cellphone: '0966777888',
+        gender: 'FEMALE',
+        PreferDesignerId: DESIGNER.userId,
+        birthday: { year: '85', month: '3', day: '4' },
+      })
     )
     expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')[0].variables.input.customerId).toBeUndefined()
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'success', message: '成功新增客戶' })))
@@ -332,7 +350,16 @@ describe('掛單詳細：新增顧客', () => {
     const page = await ready(
       setupDraft({
         FETCH_CUSTOMERS_IN_AUTO_COMPLETE: { customers: { customers: [] } },
-        FETCH_ADD_CUSTOMER: { addCustomer: { id: 'customer-new', name: '', cellphone: '0911222333', gender: 'MALE', category: '', birthday: { year: '', month: '', day: '' } } },
+        FETCH_ADD_CUSTOMER: {
+          addCustomer: {
+            id: 'customer-new',
+            name: '',
+            cellphone: '0911222333',
+            gender: 'MALE',
+            category: '',
+            birthday: { year: '', month: '', day: '' },
+          },
+        },
       })
     )
     fireEvent.click(screen.getByLabelText('不留客資'))

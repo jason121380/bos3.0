@@ -50,7 +50,12 @@ const RECORDS = [
 const fixtures = (overrides = {}) => ({
   FETCH_PICKING_RECORD: { pickingRecords: { PickingRecord: RECORDS, totalCount: 2, pageLimit: 1000, pageOffset: 0 } },
   GET_ACTIONS_BANNED_AFTER_DAILY_CHECKOUT: { getActionsBannedAfterDailyCheckout: [] },
-  PRODUCT_CATEGORIES: { productCategories: [{ id: 'cat-1', no: 'C1', name: '洗髮' }, { id: 'cat-2', no: '', name: '雜項' }] },
+  PRODUCT_CATEGORIES: {
+    productCategories: [
+      { id: 'cat-1', no: 'C1', name: '洗髮' },
+      { id: 'cat-2', no: '', name: '雜項' },
+    ],
+  },
   GET_USERS_ORDERABLE_LIST: { getUserOrderableList: [{ userId: 'user-a', userName: '王小美', userNickName: '', userNo: 'A01' }] },
   deletePicking: { deletePicking: true },
   ...overrides,
@@ -88,7 +93,11 @@ describe('材料自購登錄列表', () => {
     expect(within(first).getByRole('link', { name: '編輯' })).toHaveAttribute('href', '/employee/picking/edit/pk-1')
     expect(within(rowOf('毛巾')).getByText('李助理').textContent).toBe('李助理')
     const total = screen.getByText('合計').closest('tr')
-    expect(Array.from(total.querySelectorAll('td')).map(td => td.textContent).slice(5, 7)).toEqual(['5', '1,350'])
+    expect(
+      Array.from(total.querySelectorAll('td'))
+        .map(td => td.textContent)
+        .slice(5, 7)
+    ).toEqual(['5', '1,350'])
     const csv = exportedCsv()
     expect(csv).toContain('"2026/10/21","P01 / 洗髮精","600","2","1200","王小美/A01","自用","試用"')
     expect(csv).toContain('"2026/10/21","毛巾","50","3","150","李助理","店用",""')

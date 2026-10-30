@@ -41,7 +41,7 @@ const MerchantBusinessIntervalReport = () => {
   const mergeResultData = useMemo(() => {
     // 查詢失敗（data 為 undefined）時與載入中一樣回空陣列，不在 render 階段拋錯
     if (merchantDashboardData.loading || !merchantDashboardData.data?.merchantDashboard) {
-      return [];
+      return []
     }
     const data = merchantDashboardData.data.merchantDashboard
     const { otherPayway, thirdPartTicket } = data
@@ -49,8 +49,8 @@ const MerchantBusinessIntervalReport = () => {
     const setArr = []
     const finalData = []
     const arr = [
-      { key: "otherPayway", name: 'paywayName' },
-      { key: "thirdPartTicket", name: 'ticketName' },
+      { key: 'otherPayway', name: 'paywayName' },
+      { key: 'thirdPartTicket', name: 'ticketName' },
     ]
 
     arr.forEach(({ key, name }) => {
@@ -71,12 +71,12 @@ const MerchantBusinessIntervalReport = () => {
         name,
         otherPayment: {
           usedPrice: other?.usedPrice ?? 0,
-          usedPriceWithNoCash: other?.usedPriceWithNoCash ?? 0
+          usedPriceWithNoCash: other?.usedPriceWithNoCash ?? 0,
         },
         thirdParty: {
           usedPrice: third?.usedPrice ?? 0,
-          usedPriceWithNoCash: third?.usedPriceWithNoCash ?? 0
-        }
+          usedPriceWithNoCash: third?.usedPriceWithNoCash ?? 0,
+        },
       })
     })
 
@@ -93,33 +93,27 @@ const MerchantBusinessIntervalReport = () => {
         setMembershipDisplay(false)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantDailyReportDataV3.loading])
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading) {
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       setIsMemberShipCardActive(isMemberShipCardActive)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
 
   useEffect(() => {
     if (!isServiceTicketMergedData.loading) {
-      const isServiceTicketMerged = idx(
-        isServiceTicketMergedData,
-        _ => _.data.getPriceDisplayOnDailyReportDefault.isServiceTicketMerged
-      )
+      const isServiceTicketMerged = idx(isServiceTicketMergedData, _ => _.data.getPriceDisplayOnDailyReportDefault.isServiceTicketMerged)
       setIsServiceTicketMerged(isServiceTicketMerged)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isServiceTicketMergedData.loading])
   return (
     <Page className="ui-root" title="店家區間累計表">
-      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'none', justifyContent: 'space-between' }}>
         <div className="merchantNamePrint">
           {JSON.parse(localStorage.getItem('userMerchant')).name +
             '   ' +
@@ -129,10 +123,7 @@ const MerchantBusinessIntervalReport = () => {
             '   ' +
             '店家區間累計表'}
         </div>
-        <div className="merchantNamePrint">
-          {'列印時間： ' +
-            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-        </div>
+        <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
       </div>
       <PageHeader
         title="店家區間累計表"
@@ -147,18 +138,15 @@ const MerchantBusinessIntervalReport = () => {
         date={
           <DateSelector
             date={date}
-            attributes={[
-              'thismonth', 'lastmonth', 'dbyesterday',
-              'yesterday', 'today', 'startDate', 'endDate'
-            ]}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
           />
         }
       />
 
       {merchantDailyReportDataV3.error ? (
-          <QueryFailed onRetry={() => merchantDailyReportDataV3.refetch()} />
-        ) : !merchantDailyReportDataV3.loading && !isServiceTicketMergedData.loading && !merchantDashboardData.loading ? (
+        <QueryFailed onRetry={() => merchantDailyReportDataV3.refetch()} />
+      ) : !merchantDailyReportDataV3.loading && !isServiceTicketMergedData.loading && !merchantDashboardData.loading ? (
         idx(
           merchantDailyReportDataV3,
           _ =>

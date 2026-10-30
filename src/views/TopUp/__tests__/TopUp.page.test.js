@@ -13,7 +13,9 @@ import TopUp from '..'
 jest.setTimeout(20000)
 
 jest.mock('components/DateSelector', () => ({ dateChange }) => (
-  <button type="button" onClick={() => dateChange({ startDate: 100, endDate: 200 })}>選日期區間</button>
+  <button type="button" onClick={() => dateChange({ startDate: 100, endDate: 200 })}>
+    選日期區間
+  </button>
 ))
 jest.mock('components/MerchantSearchBar/index', () => ({ values, onFilter }) => (
   <button type="button" onClick={() => onFilter({ ...values, employeeId: 'designer-1', customerId: 'customer-1', payWay: ['LINE Pay'] })}>
@@ -57,8 +59,24 @@ const DEPOSITS = [
   },
 ]
 const USES = [
-  { id: 'u1', orderNo: 'A001', date: new Date(2026, 9, 21, 12).getTime(), money: 300, order: { id: 'o1' }, Customer: { id: 'c1', name: '陳小姐', cellphone: '0912345678' }, Designer: { id: 'd1', name: '王小美', designerNo: '01' } },
-  { id: 'u2', orderNo: 'A002', date: new Date(2026, 9, 20, 12).getTime(), money: 150, order: { id: 'o2' }, Customer: { id: 'c2', name: '林先生', cellphone: '0922333444' }, Designer: { id: 'd2', name: 'Amy', designerNo: null } },
+  {
+    id: 'u1',
+    orderNo: 'A001',
+    date: new Date(2026, 9, 21, 12).getTime(),
+    money: 300,
+    order: { id: 'o1' },
+    Customer: { id: 'c1', name: '陳小姐', cellphone: '0912345678' },
+    Designer: { id: 'd1', name: '王小美', designerNo: '01' },
+  },
+  {
+    id: 'u2',
+    orderNo: 'A002',
+    date: new Date(2026, 9, 20, 12).getTime(),
+    money: 150,
+    order: { id: 'o2' },
+    Customer: { id: 'c2', name: '林先生', cellphone: '0922333444' },
+    Designer: { id: 'd2', name: 'Amy', designerNo: null },
+  },
 ]
 
 let history
@@ -66,7 +84,12 @@ const setup = (fixtures = {}) =>
   renderPage(
     <>
       <TopUp />
-      <Route render={props => { history = props.history; return null }} />
+      <Route
+        render={props => {
+          history = props.history
+          return null
+        }}
+      />
     </>,
     {
       fixtures: {
@@ -131,7 +154,9 @@ describe('入金管理', () => {
     expect(within(total).getByText('1730')).toBeInTheDocument()
     expect(within(total).getByText('1700')).toBeInTheDocument()
     expect(within(total).getByText('-40')).toBeInTheDocument()
-    await wait(() => expect(csvOf('入金紀錄')).toContain('"2026/10/21","陳*姐(C01)/0912***678","1030","1000","王小美/01","信用卡","由客人負擔","-30","週年慶"'))
+    await wait(() =>
+      expect(csvOf('入金紀錄')).toContain('"2026/10/21","陳*姐(C01)/0912***678","1030","1000","王小美/01","信用卡","由客人負擔","-30","週年慶"')
+    )
     const csv = csvOf('入金紀錄')
     expect(csv).toContain('"2026/10/01","林*生/0922***444","500","500","Amy/","LINE Pay","由設計師負擔","-10",""')
     expect(csv).not.toContain('0912345678')
@@ -165,7 +190,13 @@ describe('入金管理', () => {
     await wait(() => expect(depositInput(utils.calls)).toMatchObject({ start: 100, end: 200 }))
     fireEvent.click(screen.getByText('套用篩選'))
     await wait(() =>
-      expect(depositInput(utils.calls)).toMatchObject({ start: 100, end: 200, designerId: 'designer-1', customerId: 'customer-1', payType: ['LINE Pay'] })
+      expect(depositInput(utils.calls)).toMatchObject({
+        start: 100,
+        end: 200,
+        designerId: 'designer-1',
+        customerId: 'customer-1',
+        payType: ['LINE Pay'],
+      })
     )
     expect(useInput(utils.calls)).toMatchObject({ designerId: 'designer-1', customerId: 'customer-1' })
   })

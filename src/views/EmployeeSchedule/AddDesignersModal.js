@@ -17,7 +17,7 @@ function AddDesignersModal({
   setScheduleCard,
   setOpenAddDesignerModal,
   handleSetSchedule,
-  setDisableButton
+  setDisableButton,
 }) {
   const handleDeleteDesigner = index => {
     const newDesigners = cloneDeep(designers)
@@ -51,16 +51,11 @@ function AddDesignersModal({
   const handleAddDesignersToSchedule = () => {
     setDisableButton(true)
     const newScheduleCard = cloneDeep(scheduleCard)
-    const newDesigners = designers.filter(
-      designer => designer.designerId !== '' || designer === null
-    )
+    const newDesigners = designers.filter(designer => designer.designerId !== '' || designer === null)
     if (newScheduleCard[modalCardIndex].scheduleRow[0].designerId === '') {
       newScheduleCard[modalCardIndex].scheduleRow = [...newDesigners]
     } else {
-      newScheduleCard[modalCardIndex].scheduleRow = [
-        ...newScheduleCard[modalCardIndex].scheduleRow,
-        ...newDesigners,
-      ]
+      newScheduleCard[modalCardIndex].scheduleRow = [...newScheduleCard[modalCardIndex].scheduleRow, ...newDesigners]
     }
     setScheduleCard([...newScheduleCard])
     handleSetSchedule(JSON.stringify(newScheduleCard))
@@ -103,13 +98,16 @@ function AddDesignersModal({
   return (
     <Dialog open={openAddDesignerModal}>
       {/* 保留原表單寬 500px；本批僅替換彈窗外殼。 */}
-      <DialogContent hideClose
+      <DialogContent
+        hideClose
         onOpenAutoFocus={event => {
           // 沿用舊 Modal：已有欄位焦點就保留，否則先聚焦面板，避免選人窗自動叫出手機鍵盤。
           event.preventDefault()
           if (!event.target.contains(document.activeElement)) event.target.focus()
         }}
-        className="sm:max-w-[500px]" aria-describedby={undefined}>
+        className="sm:max-w-[500px]"
+        aria-describedby={undefined}
+      >
         <DialogHeader className="items-center">
           <div className="flex w-full items-center justify-between gap-4">
             <DialogTitle>新增設計師</DialogTitle>
@@ -120,10 +118,7 @@ function AddDesignersModal({
         </DialogHeader>
         <DialogBody className="flex flex-col gap-4">
           {designers.map((designer, index) => (
-            <div
-              className="flex items-center justify-center gap-2"
-              key={`${designer.designerId}-${index}`}
-            >
+            <div className="flex items-center justify-center gap-2" key={`${designer.designerId}-${index}`}>
               <div className="w-1/2">
                 <div className="EmployeeScheduleAddDesignersModal">
                   <EmployeeAutoComplete
@@ -179,7 +174,7 @@ AddDesignersModal.propTypes = {
 
 AddDesignersModal.defaultProps = {
   open: false,
-  onClose: () => { },
+  onClose: () => {},
 }
 
 export default memo(AddDesignersModal)

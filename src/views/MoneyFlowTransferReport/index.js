@@ -3,7 +3,7 @@ import Page from 'components/Page'
 import idx from 'idx'
 import { startOfMonth, format } from 'date-fns'
 import useFetchMoneyFlowTransferReport from 'hooks/useFetchMoneyFlowTransferReport'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import DateSelector from 'components/DateSelector'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -54,21 +54,17 @@ const MoneyFlowTransferReport = () => {
       })
       setExcelData(excelData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [moneyFlowTransferReport.loading])
 
   return (
     <Page className="ui-root" title="收支匯款表">
       <div>
         <PageHeader
-          title='收支匯款表'
+          title="收支匯款表"
           actions={
             <>
-              <CSVLink
-                data={excelData}
-                filename="收支匯款表.csv"
-                style={{ display: 'inline' }}
-              >
+              <CSVLink data={excelData} filename="收支匯款表.csv" style={{ display: 'inline' }}>
                 <Button variant="secondary">
                   <Download strokeWidth={1.75} />
                   報表匯出

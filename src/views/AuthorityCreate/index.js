@@ -26,14 +26,13 @@ function AuthorityCreate() {
     <Page className="ui-root" title="新增角色">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
         <PageHeader className="pb-0" title="新增角色" />
-        <AboutAuthority
-          roleName={roleName}
-          setRoleName={setRoleName}
-        />
+        <AboutAuthority roleName={roleName} setRoleName={setRoleName} />
         <div className="flex flex-wrap items-center justify-end gap-3">
           {/* 停用原因（STYLE.md §6）：依 vaild（角色名稱必填） */}
           {vaild && (
-            <p id="authority-create-missing" role="status" className="text-caption text-text-secondary">尚缺：角色名稱</p>
+            <p id="authority-create-missing" role="status" className="text-caption text-text-secondary">
+              尚缺：角色名稱
+            </p>
           )}
           <Button variant="primary" disabled={vaild} aria-describedby={vaild ? 'authority-create-missing' : undefined} onClick={handleSubmit}>
             新增

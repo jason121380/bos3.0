@@ -1,4 +1,21 @@
-import { CalendarDays, ChartColumn, Contact, CreditCard, Gift, LogOut, Megaphone, Package, Pin, Receipt, Search, Settings, Store, Users, Wrench, X } from 'lucide-react'
+import {
+  CalendarDays,
+  ChartColumn,
+  Contact,
+  CreditCard,
+  Gift,
+  LogOut,
+  Megaphone,
+  Package,
+  Pin,
+  Receipt,
+  Search,
+  Settings,
+  Store,
+  Users,
+  Wrench,
+  X,
+} from 'lucide-react'
 import { storedMerchantName } from 'lib/stored-merchant'
 import SlotPortal from 'components/SlotPortal'
 import { SIDEBAR_SEARCH_SLOT_ID } from './TopBar'
@@ -53,12 +70,14 @@ function reduceChildRoutes({ acc, pathname, item, reportListExtended, depth = 0 
         forceOpen={Boolean(item.forceOpen)}
         title={item.title}
         reportListExtended={reportListExtended}
-        renderItems={() => renderNavItems({
-          depth: depth + 1,
-          pathname,
-          items: item.items,
-          reportListExtended: reportListExtended
-        })}
+        renderItems={() =>
+          renderNavItems({
+            depth: depth + 1,
+            pathname,
+            items: item.items,
+            reportListExtended: reportListExtended,
+          })
+        }
       />
     )
   } else {
@@ -112,7 +131,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       const data = idx(getIsReportListExtended, _ => _.data.getIsReportListExtended)
       setReportListExtended(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsReportListExtended.loading])
 
   // 拿參數設定是否啟用紅利點數功能
@@ -122,17 +141,14 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   // 查詢失敗（無資料）時比照載入中視為停用，避免讀 null 讓整個版面拋錯
   const disablePendingOrder = getDisablePendingOrder.loading
     ? true
-    : idx(getDisablePendingOrder, _ => _.data.getParameterAboutSettingFunction.disablePendingOrder) ?? true
+    : (idx(getDisablePendingOrder, _ => _.data.getParameterAboutSettingFunction.disablePendingOrder) ?? true)
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading) {
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       setIsMemberShipCardActive(isMemberShipCardActive)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
 
   useEffect(() => {
@@ -140,7 +156,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       const data = idx(getIsCustomerBonusActive, _ => _.data.getIsCustomerBonusActive)
       setCustomerBonusActive(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsCustomerBonusActive.loading])
 
   useEffect(() => {
@@ -156,9 +172,8 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       })
       dispatch(pinnedTableActions.setPinnedTable(pages))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getUserPinnedTable.loading, dispatch])
-
 
   // Navbar Tab
   const config = []
@@ -173,9 +188,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   const CustomerBonusItem = {
     title: '紅利點數設定',
     icon: Gift,
-    items: [
-      { title: '紅利點數紀錄', href: '/customer-bonus-record' },
-    ],
+    items: [{ title: '紅利點數紀錄', href: '/customer-bonus-record' }],
   }
   const counterItem = {
     title: '櫃檯作業',
@@ -308,7 +321,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
     items: [
       { title: '活動列表', href: '/main-event-list' },
       { title: '活動店家參與列表', href: '/merchant-participating-list' },
-      { title: '活動發券明細', href: '/event-coupon-issuance-details' }
+      { title: '活動發券明細', href: '/event-coupon-issuance-details' },
     ],
   }
   const itemArr = []
@@ -340,26 +353,25 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   itemArr.push(settingItem)
   // render出來的Array
-  const filteredPinnedTable = pinnedTable.filter(d =>
-    d.title.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredPinnedTable = pinnedTable.filter(d => d.title.toLowerCase().includes(searchTerm.toLowerCase()))
 
-  const filteredItemArr = searchTerm.trim() === ''
-    ? itemArr
-    : itemArr.map(category => {
-      const categoryMatches = category.title.toLowerCase().includes(searchTerm.toLowerCase())
-      const filteredItems = category.items.filter(item =>
-        item.title.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-      if (categoryMatches || filteredItems.length > 0) {
-        return {
-          ...category,
-          items: categoryMatches ? category.items : filteredItems,
-          forceOpen: true
-        }
-      }
-      return null
-    }).filter(Boolean)
+  const filteredItemArr =
+    searchTerm.trim() === ''
+      ? itemArr
+      : itemArr
+          .map(category => {
+            const categoryMatches = category.title.toLowerCase().includes(searchTerm.toLowerCase())
+            const filteredItems = category.items.filter(item => item.title.toLowerCase().includes(searchTerm.toLowerCase()))
+            if (categoryMatches || filteredItems.length > 0) {
+              return {
+                ...category,
+                items: categoryMatches ? category.items : filteredItems,
+                forceOpen: true,
+              }
+            }
+            return null
+          })
+          .filter(Boolean)
 
   config.push({
     subheader: merchantName,
@@ -386,14 +398,11 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
         window.location.reload()
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [profile.loading])
 
   // 拿登入者的id
-  const designerId =
-    localStorage.getItem('user') === null
-      ? (window.location = '/auth/login')
-      : JSON.parse(localStorage.getItem('user')).id
+  const designerId = localStorage.getItem('user') === null ? (window.location = '/auth/login') : JSON.parse(localStorage.getItem('user')).id
 
   // 找登入者
   const userData = useFetchUser({ id: designerId === undefined ? null : designerId })
@@ -404,15 +413,13 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       const userPageAuth = idx(userData, _ => _.data.user.pageAuthority.pageAuthority)
       setUserPageAuth(userPageAuth)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [userData.data, userData.loading])
 
   // 登出按鈕
   const handleLogOut = () => {
     document.cookie.split(';').forEach(function (c) {
-      document.cookie = c
-        .replace(/^ +/, '')
-        .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/')
+      document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/')
     })
     clearEngineeringUnlock()
     localStorage.clear()
@@ -494,9 +501,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
     }
   }
   const userName = idx(profile, _ => (_.data.me.name ? _.data.me.name : '使用者名稱'))
-  const userRole = idx(profile, _ =>
-    _.data.me.merchantIdentity.authorityName.length > 0 ? _.data.me.merchantIdentity.authorityName : '權限未設定'
-  )
+  const userRole = idx(profile, _ => (_.data.me.merchantIdentity.authorityName.length > 0 ? _.data.me.merchantIdentity.authorityName : '權限未設定'))
   const avatar = idx(profile, _ => _.data.me.avatar)
 
   // 側欄內容與底部使用者選單；外框（Sidebar）與頂部（TopBar）由 layouts/Dashboard 組合
@@ -535,7 +540,11 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
               aria-label="關閉搜尋"
               title="關閉搜尋"
               onClick={closeSearch}
-              className={cn('absolute right-1 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border-0 bg-transparent p-0 text-text-tertiary hover:bg-surface-hover hover:text-text', 'before:absolute before:-inset-2 before:content-[""]', focusRing)}
+              className={cn(
+                'absolute right-1 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border-0 bg-transparent p-0 text-text-tertiary hover:bg-surface-hover hover:text-text',
+                'before:absolute before:-inset-2 before:content-[""]',
+                focusRing
+              )}
             >
               <X className="h-4 w-4" strokeWidth={1.75} />
             </button>
@@ -546,7 +555,10 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
         {/* 目前店家（Jason 2026/10/21「要呈現現在在哪家店」；同日「不用目前店家的標籤」→ 只留圖示＋店名，標題文字僅供讀屏）：
             只顯示、不可點；切換仍用底部的店家圖示。店名取自 userMerchant，切換店家後整頁重新載入即更新 */}
         {merchantName && (
-          <div className="mb-1 flex items-center gap-2.5 px-2.5 pb-2 pt-1 lg:group-data-[rail=true]/sidebar:hidden" title={`目前店家：${merchantName}`}>
+          <div
+            className="mb-1 flex items-center gap-2.5 px-2.5 pb-2 pt-1 lg:group-data-[rail=true]/sidebar:hidden"
+            title={`目前店家：${merchantName}`}
+          >
             <Store className="h-4 w-4 shrink-0 text-text-secondary" strokeWidth={1.75} aria-hidden="true" />
             <span className="sr-only">目前店家：</span>
             <span className="min-w-0 truncate text-body font-medium text-text">{merchantName}</span>
@@ -590,12 +602,21 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       </SidebarContent>
       {!profile.loading && (
         <SidebarFooter className="flex items-center gap-2 lg:group-data-[rail=true]/sidebar:flex-col">
-          <RouterLink to="/profile/general" className={cn('flex min-w-0 flex-1 items-center gap-2 rounded-md p-1 hover:bg-surface-hover lg:group-data-[rail=true]/sidebar:flex-none lg:group-data-[rail=true]/sidebar:justify-center', focusRing)}>
+          <RouterLink
+            to="/profile/general"
+            className={cn(
+              'flex min-w-0 flex-1 items-center gap-2 rounded-md p-1 hover:bg-surface-hover lg:group-data-[rail=true]/sidebar:flex-none lg:group-data-[rail=true]/sidebar:justify-center',
+              focusRing
+            )}
+          >
             {/* 頭像只是呈現，點擊由外層連結前往個人頁 */}
             {avatar ? (
               <img alt="" src={avatar} className="h-8 w-8 shrink-0 rounded-full border border-solid border-border object-cover" />
             ) : (
-              <span aria-hidden="true" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-hover text-label text-text-secondary">
+              <span
+                aria-hidden="true"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-hover text-label text-text-secondary"
+              >
                 {String(userName).slice(0, 1)}
               </span>
             )}
@@ -606,12 +627,22 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
           </RouterLink>
           {/* 切換店家圖示鈕由 TopBar 以 Portal 畫進這個插槽（開關狀態與店家清單仍在 TopBar），位置在登出左側（Jason 2026/10/20） */}
           <span id="sidebar-merchant-switch-slot" className="contents" />
-          <Button variant="ghost" size="icon" className={cn('shrink-0', SIDEBAR_RAIL_HIDDEN_CLASS)} aria-label="登出" title="登出" onClick={handleLogOut}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn('shrink-0', SIDEBAR_RAIL_HIDDEN_CLASS)}
+            aria-label="登出"
+            title="登出"
+            onClick={handleLogOut}
+          >
             <LogOut strokeWidth={1.75} />
           </Button>
         </SidebarFooter>
       )}
-      <p data-testid="sidebar-app-version" className="m-0 shrink-0 px-3 pb-3 text-center text-caption text-text-tertiary lg:group-data-[rail=true]/sidebar:break-all lg:group-data-[rail=true]/sidebar:px-1">
+      <p
+        data-testid="sidebar-app-version"
+        className="m-0 shrink-0 px-3 pb-3 text-center text-caption text-text-tertiary lg:group-data-[rail=true]/sidebar:break-all lg:group-data-[rail=true]/sidebar:px-1"
+      >
         {APP_VERSION}
       </p>
     </Fragment>

@@ -18,10 +18,14 @@ const HELPER_SETTING = [
 const mockTicket = { id: 'ticket-1', price: 450, service: { id: 'service-1', price: 450, helperDeductionSetting: HELPER_SETTING } }
 
 jest.mock('components/CustomerTicketRecordAutoCompleteForQueueOrder', () => props => (
-  <button type="button" onClick={() => props.onChange(mockTicket)}>選卡券</button>
+  <button type="button" onClick={() => props.onChange(mockTicket)}>
+    選卡券
+  </button>
 ))
 jest.mock('components/EmployeeAutoComplete', () => props => (
-  <button type="button" data-testid={`pick-${props.placeholder}`} onClick={() => props.onChange({ userId: 'helper-9' })}>選助理</button>
+  <button type="button" data-testid={`pick-${props.placeholder}`} onClick={() => props.onChange({ userId: 'helper-9' })}>
+    選助理
+  </button>
 ))
 
 afterEach(cleanup)

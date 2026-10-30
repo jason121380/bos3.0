@@ -33,7 +33,12 @@ const MAIN_EVENT = { nameDefault: '周年慶', startDateDefault: MAIN_START, end
 const setup = (fixtures = {}) =>
   renderPage(<EventRuleCreate match={{ params: { id: 'e1' } }} />, {
     fixtures: {
-      USE_FETCH_GET_ATTRIBUTIONS: { getAttribution: [{ name: '設計部', value: 'd' }, { name: '美容部', value: 'b' }] },
+      USE_FETCH_GET_ATTRIBUTIONS: {
+        getAttribution: [
+          { name: '設計部', value: 'd' },
+          { name: '美容部', value: 'b' },
+        ],
+      },
       GET_MERCHANT_EVENT_FOR_RULES: { mainEvent: MAIN_EVENT },
       CREATE_EVENT_RULE_GROUP: { createEventRuleGroup: true },
       ...fixtures,
@@ -218,21 +223,29 @@ describe('建立規則', () => {
     expect(sent(second.calls)).toEqual(expect.objectContaining({ consumptionTypeUsing: 'ALL', consumptionTypeRules: [] }))
   })
 
-  it.each(CONSUMPTION_TYPES.map(([label], i) => [label, ['請選擇服務套用的歸屬。', '請選擇賣卡先入套用的歸屬。', '請選擇賣卡後入套用的歸屬。', '請選擇用卡先入套用的歸屬。', '請選擇用卡後入套用的歸屬。'][i]]))(
-    '%s 選自訂歸屬卻沒選歸屬：提示「%s」、不送出',
-    async (label, message) => {
-      const { calls } = setup()
-      await loaded()
-      fillBasics()
-      customize()
-      pickOption(fieldByLabel(label), '套用')
-      pickOption(belongSelectOf(label), '自訂')
-      fireEvent.click(submit())
-      await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message, variant: 'error' }))
-      expect(callsOf(calls, 'CREATE_EVENT_RULE_GROUP')).toHaveLength(0)
-      expect(submit()).toBeEnabled()
-    }
-  )
+  it.each(
+    CONSUMPTION_TYPES.map(([label], i) => [
+      label,
+      [
+        '請選擇服務套用的歸屬。',
+        '請選擇賣卡先入套用的歸屬。',
+        '請選擇賣卡後入套用的歸屬。',
+        '請選擇用卡先入套用的歸屬。',
+        '請選擇用卡後入套用的歸屬。',
+      ][i],
+    ])
+  )('%s 選自訂歸屬卻沒選歸屬：提示「%s」、不送出', async (label, message) => {
+    const { calls } = setup()
+    await loaded()
+    fillBasics()
+    customize()
+    pickOption(fieldByLabel(label), '套用')
+    pickOption(belongSelectOf(label), '自訂')
+    fireEvent.click(submit())
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message, variant: 'error' }))
+    expect(callsOf(calls, 'CREATE_EVENT_RULE_GROUP')).toHaveLength(0)
+    expect(submit()).toBeEnabled()
+  })
 
   it('漏填的錯誤訊息：規則名稱、適用店家、自訂卻沒選任何消費類型、付款方式、入金門檻為 0', async () => {
     const { calls } = setup()
@@ -256,9 +269,7 @@ describe('建立規則', () => {
     pickOption(fieldByLabel('現金'), '不套用')
     pickOption(fieldByLabel('其他付款方式'), '套用')
     fireEvent.click(submit())
-    await wait(() =>
-      expect(openSnackbar).toHaveBeenLastCalledWith({ message: '入金儲值其他付款方式金額門檻不得為0。', variant: 'error' })
-    )
+    await wait(() => expect(openSnackbar).toHaveBeenLastCalledWith({ message: '入金儲值其他付款方式金額門檻不得為0。', variant: 'error' }))
     expect(callsOf(calls, 'CREATE_EVENT_RULE_GROUP')).toHaveLength(0)
   })
 

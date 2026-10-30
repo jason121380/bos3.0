@@ -9,9 +9,20 @@
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { callsOf, typeLikeBrowser } from '../../../__tests__/testkit.test'
 import {
-  setup, pageReady, makeOrder, withCustomer, makeFullOrder, checkoutAndGetInput, loginForTest,
-  OTHER_CUSTOMER, CUSTOMER_DETAIL, ASSISTANT, BILL_DATE, pickEmployee,
-  findDialog, statusEl,
+  setup,
+  pageReady,
+  makeOrder,
+  withCustomer,
+  makeFullOrder,
+  checkoutAndGetInput,
+  loginForTest,
+  OTHER_CUSTOMER,
+  CUSTOMER_DETAIL,
+  ASSISTANT,
+  BILL_DATE,
+  pickEmployee,
+  findDialog,
+  statusEl,
 } from './orderEditKit.test'
 
 jest.setTimeout(20000)
@@ -82,7 +93,10 @@ describe('帳單詳細：改顧客', () => {
       ...customerSearch,
       order: withCustomer(),
       FETCH_CUSTOMER_DETAIL: {
-        customer: { ...CUSTOMER_DETAIL, membershipPurchaseRecord: [{ membershipName: '金卡', expiryDay: 30, purchaseDate: BILL_DATE, remark: '', validityDay: 365 }] },
+        customer: {
+          ...CUSTOMER_DETAIL,
+          membershipPurchaseRecord: [{ membershipName: '金卡', expiryDay: 30, purchaseDate: BILL_DATE, remark: '', validityDay: 365 }],
+        },
       },
     })
     await pageReady(page)
@@ -116,9 +130,7 @@ describe('帳單詳細：不留客資', () => {
     expect(customerInput()).toBeDisabled()
     expect(localStorage.getItem('stayInCheckoutWithoutCustomer')).toBe('true')
     const input = await checkoutAndGetInput(page.calls)
-    expect(input).toEqual(
-      expect.objectContaining({ withoutCustomerData: true, walletPay: 0, bonusDecount: 0, bonusDeposit: 0, bonusUsed: 0 })
-    )
+    expect(input).toEqual(expect.objectContaining({ withoutCustomerData: true, walletPay: 0, bonusDecount: 0, bonusDeposit: 0, bonusUsed: 0 }))
     expect(input.customerId).toBeUndefined()
   })
 
@@ -269,7 +281,14 @@ describe('帳單詳細：新增／編輯顧客彈窗的開啟', () => {
   it('以完整表單新增顧客成功：新顧客帶進帳單（顧客欄顯示新顧客），重新結帳送出新顧客', async () => {
     const page = setup({
       FETCH_ADD_CUSTOMER: {
-        addCustomer: { id: 'customer-new', name: '林先生', gender: 'MALE', cellphone: '0922333444', birthday: { year: '', month: '', day: '' }, category: '' },
+        addCustomer: {
+          id: 'customer-new',
+          name: '林先生',
+          gender: 'MALE',
+          cellphone: '0922333444',
+          birthday: { year: '', month: '', day: '' },
+          category: '',
+        },
       },
     })
     await pageReady(page)

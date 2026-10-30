@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import { ChevronsDownUp, ChevronsUpDown, Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
@@ -82,7 +82,9 @@ export default function OrderListTable({
               <TableHead>設計師</TableHead>
               <TableHead>指定</TableHead>
               {raffleDisplay ? <TableHead numeric>活動券</TableHead> : null}
-              <TableHead numeric className="text-text">營業現金應收</TableHead>
+              <TableHead numeric className="text-text">
+                營業現金應收
+              </TableHead>
               <TableHead numeric>服務消費</TableHead>
               <TableHead numeric>店販消費</TableHead>
               {membershipDisplay && <TableHead numeric>會員卡販賣</TableHead>}
@@ -101,29 +103,29 @@ export default function OrderListTable({
           </TableHeader>
           <TableBody id="whiteSpace">
             {orders.length > 0 &&
-                orders.map((order, index) => (
-                  <OrderListRow
-                    key={order.id}
-                    order={order}
-                    index={index}
-                    selectedOrderSet={selectedOrderSet}
-                    handleSelectOne={handleSelectOne}
-                    isExtended={isExtended}
-                    orderStaticDetailLoading={orderStaticDetailLoading}
-                    handleOrderExtend={handleOrderExtend}
-                    getOrderLazy={getOrderLazy}
-                    setPrintOrderId={setPrintOrderId}
-                    setIsPrint={setIsPrint}
-                    disabled={disabled}
-                    orderDataLazy={orderDataLazy}
-                    printOrderId={printOrderId}
-                    location={location}
-                    serialNumberUsing={serialNumberUsing}
-                    raffleDisplay={raffleDisplay}
-                    membershipDisplay={membershipDisplay}
-                    bonusDisplay={bonusDisplay}
-                  />
-                ))}
+              orders.map((order, index) => (
+                <OrderListRow
+                  key={order.id}
+                  order={order}
+                  index={index}
+                  selectedOrderSet={selectedOrderSet}
+                  handleSelectOne={handleSelectOne}
+                  isExtended={isExtended}
+                  orderStaticDetailLoading={orderStaticDetailLoading}
+                  handleOrderExtend={handleOrderExtend}
+                  getOrderLazy={getOrderLazy}
+                  setPrintOrderId={setPrintOrderId}
+                  setIsPrint={setIsPrint}
+                  disabled={disabled}
+                  orderDataLazy={orderDataLazy}
+                  printOrderId={printOrderId}
+                  location={location}
+                  serialNumberUsing={serialNumberUsing}
+                  raffleDisplay={raffleDisplay}
+                  membershipDisplay={membershipDisplay}
+                  bonusDisplay={bonusDisplay}
+                />
+              ))}
           </TableBody>
         </Table>
         {orders.length === 0 && <EmptyState title="此區間沒有帳單" description="調整日期或篩選條件後再試一次。" />}

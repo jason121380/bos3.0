@@ -6,7 +6,7 @@ import { formatNumber } from 'ui/format'
 
 function Results({ userServiceDeductionDetial, setExcelData }) {
   const countTotal = key => {
-    const total = userServiceDeductionDetial.reduce((accu, curVal) => accu + curVal[key] , 0)
+    const total = userServiceDeductionDetial.reduce((accu, curVal) => accu + curVal[key], 0)
     return floatDisplay(total)
   }
 
@@ -85,7 +85,7 @@ function Results({ userServiceDeductionDetial, setExcelData }) {
       })
       setExcelData(excelData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（countTotal）；只在 [userServiceDeductionDetial, setExcelData] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（countTotal）；只在 [userServiceDeductionDetial, setExcelData] 變動時呼叫，補上會每次 render 重跑
   }, [userServiceDeductionDetial, setExcelData])
 
   return (
@@ -99,15 +99,33 @@ function Results({ userServiceDeductionDetial, setExcelData }) {
               <TableHead rowSpan={2}>類別</TableHead>
               <TableHead rowSpan={2}>項目</TableHead>
               <TableHead rowSpan={2}>設計師</TableHead>
-              <TableHead rowSpan={2} numeric>金額</TableHead>
-              <TableHead colSpan={3} className="text-center">扣業績</TableHead>
-              <TableHead rowSpan={2} numeric>實業績</TableHead>
-              <TableHead colSpan={2} className="text-center">依特殊抽成</TableHead>
-              <TableHead colSpan={7} className="text-center">依服務歸屬</TableHead>
-              <TableHead rowSpan={2} numeric>%</TableHead>
-              <TableHead rowSpan={2} numeric>服務抽成</TableHead>
-              <TableHead colSpan={3} className="text-center">扣薪水</TableHead>
-              <TableHead rowSpan={2} numeric>小計</TableHead>
+              <TableHead rowSpan={2} numeric>
+                金額
+              </TableHead>
+              <TableHead colSpan={3} className="text-center">
+                扣業績
+              </TableHead>
+              <TableHead rowSpan={2} numeric>
+                實業績
+              </TableHead>
+              <TableHead colSpan={2} className="text-center">
+                依特殊抽成
+              </TableHead>
+              <TableHead colSpan={7} className="text-center">
+                依服務歸屬
+              </TableHead>
+              <TableHead rowSpan={2} numeric>
+                %
+              </TableHead>
+              <TableHead rowSpan={2} numeric>
+                服務抽成
+              </TableHead>
+              <TableHead colSpan={3} className="text-center">
+                扣薪水
+              </TableHead>
+              <TableHead rowSpan={2} numeric>
+                小計
+              </TableHead>
             </TableRow>
             <TableRow>
               <TableHead numeric>手續費</TableHead>
@@ -142,9 +160,7 @@ function Results({ userServiceDeductionDetial, setExcelData }) {
                 <TableCell numeric>{formatNumber(floatDisplay(data.truthPerformance))}</TableCell>
                 <TableCell numeric>{formatNumber(floatDisplay(data.specialRake_truthPerformance))}</TableCell>
                 <TableCell numeric>{formatNumber(floatDisplay(data.specialRake_specialRake))}</TableCell>
-                <TableCell>
-                  {data.category_categoryName !== '' ? data.category_categoryName : '預設'}
-                </TableCell>
+                <TableCell>{data.category_categoryName !== '' ? data.category_categoryName : '預設'}</TableCell>
                 <TableCell numeric>{formatNumber(floatDisplay(data.category_normalTruthPerformance))}</TableCell>
                 <TableCell numeric>{formatNumber(floatDisplay(data.category_normalRake))}</TableCell>
                 <TableCell numeric>{formatNumber(floatDisplay(data.category_designateTruthPerformance))}</TableCell>

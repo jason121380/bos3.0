@@ -103,7 +103,11 @@ describe('ProductListTreeView 選擇商品', () => {
     fireEvent.click(screen.getByRole('button', { name: '選擇商品' }))
     const search = within(dialog()).getByPlaceholderText('搜尋商品')
     fireEvent.change(search, { target: { value: 'b01' } })
-    expect(itemsIn('全部(3)').filter(li => li.classList.contains('outline-danger')).map(li => li.textContent)).toEqual(['B01 - 髮蠟'])
+    expect(
+      itemsIn('全部(3)')
+        .filter(li => li.classList.contains('outline-danger'))
+        .map(li => li.textContent)
+    ).toEqual(['B01 - 髮蠟'])
     fireEvent.change(search, { target: { value: '不存在' } })
     expect(itemsIn('全部(3)').some(li => li.classList.contains('outline-danger'))).toBe(false)
     fireEvent.click(within(dialog()).getByRole('button', { name: '清除搜尋文字' }))
@@ -132,7 +136,9 @@ describe('ProductListTreeView 選擇商品', () => {
   it('代號為 null 的商品只顯示名稱；搜尋「null」不會比對到', async () => {
     const onValueChange = jest.fn()
     const { settle } = renderPage(<ProductListTreeView onValueChange={onValueChange} />, {
-      fixtures: { GET_PRODUCT_CATEGORIES_TREEVIEW: { productCategories: [{ id: 'c', name: '其他', products: [{ id: 'x', no: null, name: '贈品' }] }] } },
+      fixtures: {
+        GET_PRODUCT_CATEGORIES_TREEVIEW: { productCategories: [{ id: 'c', name: '其他', products: [{ id: 'x', no: null, name: '贈品' }] }] },
+      },
     })
     await settle()
     fireEvent.click(screen.getByRole('button', { name: '選擇商品' }))
@@ -164,7 +170,6 @@ describe('ProductListTreeView 選擇商品', () => {
     expect(label('全部(0)')).toBeInTheDocument()
   })
 })
-
 
 it('鍵盤展開與選取商品後，確認仍回傳商品 id', async () => {
   const { onValueChange } = await setup()

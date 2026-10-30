@@ -16,7 +16,7 @@ export default function useFetchUpdateMoneyFlow() {
         variables: {
           input,
           id,
-          password
+          password,
         },
       }),
   }

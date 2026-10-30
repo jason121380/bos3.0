@@ -18,7 +18,12 @@ const renderList = (overrides, options) =>
   renderPage(<ProductInventoryList />, {
     fixtures: {
       GET_PRODUCT_INVENTORY_LIST: { productInventoryList: LIST },
-      PRODUCT_CATEGORIES: { productCategories: [{ id: 'c1', name: '洗髮' }, { id: 'c2', name: '護髮' }] },
+      PRODUCT_CATEGORIES: {
+        productCategories: [
+          { id: 'c1', name: '洗髮' },
+          { id: 'c2', name: '護髮' },
+        ],
+      },
       ...overrides,
     },
     ...options,

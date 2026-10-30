@@ -9,12 +9,7 @@ import { memo, Fragment, useState, useEffect } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import { CirclePicker } from 'react-color'
 
-const AboutEmployeeSchedule = ({
-  className,
-  setIsMerchantClockInSetting,
-  isMerchantClockInSetting,
-  inputEnable,
-}) => {
+const AboutEmployeeSchedule = ({ className, setIsMerchantClockInSetting, isMerchantClockInSetting, inputEnable }) => {
   const [showColorPicker, setShowColorPicker] = useState(false)
   const [dataIndex, setDataIndex] = useState('')
   const [colorData, setColorData] = useState('')
@@ -168,11 +163,11 @@ const AboutEmployeeSchedule = ({
       newIsMerchantClockInSetting[dataIndex].color = colorData
       setIsMerchantClockInSetting(newIsMerchantClockInSetting)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [colorData, setIsMerchantClockInSetting] 變動時執行；dataIndex、isMerchantClockInSetting 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [colorData, setIsMerchantClockInSetting] 變動時執行；dataIndex、isMerchantClockInSetting 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [colorData, setIsMerchantClockInSetting])
   return (
     <Fragment>
-      <Card className='AboutEmployeeSchedule'>
+      <Card className="AboutEmployeeSchedule">
         <CardHeader>
           <CardTitle>班別設定</CardTitle>
         </CardHeader>
@@ -223,16 +218,12 @@ const AboutEmployeeSchedule = ({
                           label="啟用"
                         />
                         <TextField
-                          value={
-                            data.clockInHour.toString().padStart(2, '0') +
-                            ':' +
-                            data.clockInMinute.toString().padStart(2, '0')
-                          }
+                          value={data.clockInHour.toString().padStart(2, '0') + ':' + data.clockInMinute.toString().padStart(2, '0')}
                           disabled={!inputEnable || !data.isClockInUsing}
                           // disabled={!data.startTime.enable}
                           type="time"
                           label="選擇時間"
-                          variant='standard'
+                          variant="standard"
                           className="w-[100px] flex ml-[12px] [&_input]:!pt-[6px] [&_input]:!px-0 [&_input]:!pb-[7px]"
                           onChange={(event, value) => {
                             handleChangetime('startTime', index, event.target.value)
@@ -253,14 +244,10 @@ const AboutEmployeeSchedule = ({
                         <TextField
                           type="time"
                           label="選擇時間"
-                          variant='standard'
+                          variant="standard"
                           className="w-[100px] flex ml-[12px] [&_input]:!pt-[6px] [&_input]:!px-0 [&_input]:!pb-[7px]"
                           disabled={!inputEnable || !data.isClockOutUsing}
-                          value={
-                            data.clockOutHour.toString().padStart(2, '0') +
-                            ':' +
-                            data.clockOutMinute.toString().padStart(2, '0')
-                          }
+                          value={data.clockOutHour.toString().padStart(2, '0') + ':' + data.clockOutMinute.toString().padStart(2, '0')}
                           onChange={(event, value) => {
                             handleChangetime('endTime', index, event.target.value)
                           }}
@@ -273,11 +260,7 @@ const AboutEmployeeSchedule = ({
                           className="ml-[20px]"
                           checked={data.breakTimeSetting[0].isStartTimeUsing}
                           onChange={event => {
-                            handleChangeEnable(
-                              'breakStart',
-                              index,
-                              data.breakTimeSetting[0].isStartTimeUsing
-                            )
+                            handleChangeEnable('breakStart', index, data.breakTimeSetting[0].isStartTimeUsing)
                           }}
                           label="啟用"
                         />
@@ -285,7 +268,7 @@ const AboutEmployeeSchedule = ({
                           disabled={!inputEnable || !data.breakTimeSetting[0].isStartTimeUsing}
                           type="time"
                           label="選擇時間"
-                          variant='standard'
+                          variant="standard"
                           className="w-[100px] flex ml-[12px] [&_input]:!pt-[6px] [&_input]:!px-0 [&_input]:!pb-[7px]"
                           value={
                             data.breakTimeSetting[0].startHour.toString().padStart(2, '0') +
@@ -304,11 +287,7 @@ const AboutEmployeeSchedule = ({
                           className="ml-[20px]"
                           checked={data.breakTimeSetting[0].isEndTimeHourUsing}
                           onChange={event => {
-                            handleChangeEnable(
-                              'breakEnd',
-                              index,
-                              data.breakTimeSetting[0].isEndTimeHourUsing
-                            )
+                            handleChangeEnable('breakEnd', index, data.breakTimeSetting[0].isEndTimeHourUsing)
                           }}
                           label="啟用"
                         />
@@ -316,7 +295,7 @@ const AboutEmployeeSchedule = ({
                           disabled={!inputEnable || !data.breakTimeSetting[0].isEndTimeHourUsing}
                           type="time"
                           label="選擇時間"
-                          variant='standard'
+                          variant="standard"
                           className="w-[100px] flex ml-[12px] [&_input]:!pt-[6px] [&_input]:!px-0 [&_input]:!pb-[7px]"
                           value={
                             data.breakTimeSetting[0].endHour.toString().padStart(2, '0') +
@@ -335,11 +314,7 @@ const AboutEmployeeSchedule = ({
                           className="ml-[20px]"
                           checked={data.isWorkOverMinutesCalculated}
                           onChange={event => {
-                            handleChangeEnable(
-                              'overtime',
-                              index,
-                              data.isWorkOverMinutesCalculated
-                            )
+                            handleChangeEnable('overtime', index, data.isWorkOverMinutesCalculated)
                           }}
                           label="啟用"
                         />
@@ -351,16 +326,11 @@ const AboutEmployeeSchedule = ({
                           className="ml-[20px]"
                           checked={data.isClockOutBufferMinutesUsing}
                           onChange={event => {
-                            handleChangeEnable(
-                              'bufferTime',
-                              index,
-                              data.isClockOutBufferMinutesUsing
-                            )
+                            handleChangeEnable('bufferTime', index, data.isClockOutBufferMinutesUsing)
                           }}
                           label="啟用"
                         />
                       </div>
-
                     </div>
                     <div className="box-border flex w-full max-w-full basis-full flex-row flex-wrap items-start min-[600px]:max-w-[25%] min-[600px]:basis-1/4">
                       <div className="box-border flex w-full flex-row flex-wrap items-center justify-end">
@@ -436,10 +406,8 @@ const AboutEmployeeSchedule = ({
               )
             })
           ) : (
-            <div className="box-border flex w-full flex-row flex-wrap items-center" key='無資料'>
-              <span className="text-heading text-text">
-                無資料
-              </span>
+            <div className="box-border flex w-full flex-row flex-wrap items-center" key="無資料">
+              <span className="text-heading text-text">無資料</span>
               <AddIcon
                 onClick={() => {
                   inputEnable && addSchedule()

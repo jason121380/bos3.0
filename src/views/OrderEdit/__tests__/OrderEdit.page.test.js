@@ -159,9 +159,7 @@ describe('帳單詳細：重新結帳', () => {
     expect(input.orderInput.designerId).toBe(DESIGNER.userId)
     expect(input.orderInput.withoutCustomerData).toBe(true)
     expect(input.orderInput.serviceOrders).toEqual([expect.objectContaining({ serviceId: SERVICE.id, price: 800 })])
-    await wait(() =>
-      expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '帳單重新結帳成功', variant: 'success' }))
-    )
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '帳單重新結帳成功', variant: 'success' })))
   })
 
   it('店家開啟重新結帳密碼：先跳密碼視窗，輸入後才以該密碼送出', async () => {
@@ -187,9 +185,7 @@ describe('帳單詳細：重新結帳', () => {
     await wait(() => expect(checkout).not.toBeDisabled())
     fireEvent.click(checkout)
     await wait(() =>
-      expect(openSnackbar).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'error', message: expect.stringContaining('帳單已關帳') })
-      )
+      expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('帳單已關帳') }))
     )
     expect(callsOf(calls, 'reCheckoutOrder')).toHaveLength(1)
     await wait(() => expect(checkout).not.toBeDisabled())
@@ -216,9 +212,7 @@ describe('帳單詳細：預約成功的帳單', () => {
     const { input } = callsOf(calls, 'UpdateOrder')[0].variables
     expect(input.updateOrderId).toBe('order-1')
     expect(input.orderInput.serviceOrders).toEqual([expect.objectContaining({ serviceId: SERVICE.id, price: 800 })])
-    await wait(() =>
-      expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '帳單儲存成功', variant: 'success' }))
-    )
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '帳單儲存成功', variant: 'success' })))
   })
 
   it('不留客資的預約單不能「儲存」（儲存需要顧客），並說明缺少顧客', async () => {
@@ -270,12 +264,14 @@ const editCustomerAndSave = async calls => {
 
 describe('帳單詳細：編輯顧客資料', () => {
   it('改姓名與生日後儲存，送出新姓名與新生日', async () => {
-    const { calls } = setup({ order: makeOrder({ customer: CUSTOMER }), FETCH_CUSTOMER_DETAIL: { customer: CUSTOMER_DETAIL }, SET_CUSTOMER: { updateCustomer: true } })
+    const { calls } = setup({
+      order: makeOrder({ customer: CUSTOMER }),
+      FETCH_CUSTOMER_DETAIL: { customer: CUSTOMER_DETAIL },
+      SET_CUSTOMER: { updateCustomer: true },
+    })
     await screen.findByText(/帳單詳細 \(A123\)/)
     const input = await editCustomerAndSave(calls)
-    expect(input).toEqual(
-      expect.objectContaining({ customerId: CUSTOMER.id, name: '陳美美', birthday: { year: '81', month: '1', day: '2' } })
-    )
+    expect(input).toEqual(expect.objectContaining({ customerId: CUSTOMER.id, name: '陳美美', birthday: { year: '81', month: '1', day: '2' } }))
   })
 })
 
@@ -318,7 +314,13 @@ describe('帳單詳細：入金異動權限', () => {
     const page = setup({
       order: makeOrder({ customer: CUSTOMER }),
       GET_MERCHANT_AUTHORITIES: roleWith([
-        { pageTitle: '客戶管理', pageAuthority: [{ pageName: '入金(儲值)', authority: false }, { pageName: '入金(扣除)', authority: false }] },
+        {
+          pageTitle: '客戶管理',
+          pageAuthority: [
+            { pageName: '入金(儲值)', authority: false },
+            { pageName: '入金(扣除)', authority: false },
+          ],
+        },
       ]),
     })
     await pageReady(page)
@@ -329,7 +331,13 @@ describe('帳單詳細：入金異動權限', () => {
     const page = setup({
       order: makeOrder({ customer: CUSTOMER }),
       GET_MERCHANT_AUTHORITIES: roleWith([
-        { pageTitle: '客戶管理', pageAuthority: [{ pageName: '入金(儲值)', authority: true }, { pageName: '入金(扣除)', authority: false }] },
+        {
+          pageTitle: '客戶管理',
+          pageAuthority: [
+            { pageName: '入金(儲值)', authority: true },
+            { pageName: '入金(扣除)', authority: false },
+          ],
+        },
       ]),
     })
     const modal = await openWalletDeposit(page)

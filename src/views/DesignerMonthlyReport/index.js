@@ -6,7 +6,7 @@ import DateSelector from 'components/DateSelector'
 import useFetchDesignerMonthlyReport from 'hooks/useFetchDesignerMonthlyReport'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import format from 'date-fns/format'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -48,11 +48,10 @@ export default function Employees() {
 
   useEffect(() => {
     if (!isDisplayTogglePerformanceButtonData.loading) {
-      const isDisplayTogglePerformanceButton = idx(
-        isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
+      const isDisplayTogglePerformanceButton = idx(isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
       setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isDisplayTogglePerformanceButtonData.loading])
   // ---------------------------------------------------------------------------------------------------
 
@@ -64,18 +63,15 @@ export default function Employees() {
   }
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading) {
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       setIsMemberShipCardActive(isMemberShipCardActive)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
   return (
     <Page className="ui-root" title="設計師業績月報表">
       <div>
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "flex", justifyContent: "space-between" }}>
+        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between' }}>
           <div className="merchantNamePrint">
             {JSON.parse(localStorage.getItem('userMerchant')).name +
               '   ' +
@@ -85,24 +81,14 @@ export default function Employees() {
               '   ' +
               '設計師業績月報表'}
           </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' +
-              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-          </div>
+          <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
         </div>
         <PageHeader
-          title='設計師業績月報表'
+          title="設計師業績月報表"
           actions={
             <>
-              <CSVLink
-                className="noprint"
-                data={excelData}
-                filename="設計師業績月報表.csv"
-              >
-                <Button
-                  disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading}
-                  variant="secondary"
-                >
+              <CSVLink className="noprint" data={excelData} filename="設計師業績月報表.csv">
+                <Button disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading} variant="secondary">
                   <Download strokeWidth={1.75} />
                   報表匯出
                 </Button>
@@ -131,12 +117,7 @@ export default function Employees() {
               <div className="flex flex-wrap items-end gap-3">
                 <div className="flex flex-col gap-1.5">
                   <span className="text-label text-text-secondary">排序依序</span>
-                  <ToggleGroup
-                    size="small"
-                    value={sort}
-                    onChange={handleToggleButtonChangeSort}
-                    exclusive
-                  >
+                  <ToggleGroup size="small" value={sort} onChange={handleToggleButtonChangeSort} exclusive>
                     {sortEnum.map((data, idx) => (
                       <ToggleGroupItem style={{ wordBreak: 'keep-all' }} key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                         {data.label}
@@ -144,22 +125,19 @@ export default function Employees() {
                     ))}
                   </ToggleGroup>
                 </div>
-                {
-                  !isDisplayTogglePerformanceButton && <div className="flex flex-col gap-1.5">
+                {!isDisplayTogglePerformanceButton && (
+                  <div className="flex flex-col gap-1.5">
                     <span className="text-label text-text-secondary">業績依據</span>
-                    <ReferToggleButton
-                      value={performReference}
-                      onChange={handleToggleButtonChange}
-                    />
+                    <ReferToggleButton value={performReference} onChange={handleToggleButtonChange} />
                   </div>
-                }
+                )}
               </div>
             </>
           }
         />
         {designerMontlyListData.error ? (
           <QueryFailed onRetry={() => designerMontlyListData.refetch()} />
-        ) : (!designerMontlyListData.loading && !isMemberShipCardActiveData.loading) ?
+        ) : !designerMontlyListData.loading && !isMemberShipCardActiveData.loading ? (
           idx(designerMontlyListData, _ => (
             <Results
               setExcelData={setExcelData}
@@ -168,12 +146,13 @@ export default function Employees() {
               sort={sort}
               isMemberShipCardActive={isMemberShipCardActive}
             />
-          )) : (
-            // 載入中：與舊版 CircularProgress 相同時機顯示
-            <div className="noprint mt-3" aria-busy="true" aria-label="載入中">
-              <Skeleton className="h-[320px] w-full rounded-lg" />
-            </div>
-          )}
+          ))
+        ) : (
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div className="noprint mt-3" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
+          </div>
+        )}
       </div>
     </Page>
   )

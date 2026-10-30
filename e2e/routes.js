@@ -10,9 +10,7 @@ function dashboardRoutes() {
   const src = fs.readFileSync(path.join(__dirname, '..', 'src', 'dashboardRoutes.js'), 'utf8')
   const paths = [...src.matchAll(/path:\s*'([^']+)'/g)].map(m => m[1])
   const seen = new Set()
-  return paths
-    .map(p => p.replace(/:[A-Za-z]+/g, m => PARAM_VALUES[m] || 'x-1') + (ROUTE_QUERY[p] || ''))
-    .filter(p => !seen.has(p) && seen.add(p))
+  return paths.map(p => p.replace(/:[A-Za-z]+/g, m => PARAM_VALUES[m] || 'x-1') + (ROUTE_QUERY[p] || '')).filter(p => !seen.has(p) && seen.add(p))
 }
 
 module.exports = { dashboardRoutes }

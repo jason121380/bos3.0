@@ -18,7 +18,7 @@ export default function useFetchSettingEmployeeSchedule() {
       setEmployeeSchedule({
         variables: {
           schedule,
-          currentScheduleId
+          currentScheduleId,
         },
       }),
   }

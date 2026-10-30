@@ -739,9 +739,7 @@ const ROWS = [
       invoked: [
         {
           fn: 'setMerchantBookingNotificationSetting',
-          calls: [
-            { operationName: 'SET_MERCHANT_BOOKING_NOTIFICATION_SETTING', variables: { input: { probe: 'input' } } },
-          ],
+          calls: [{ operationName: 'SET_MERCHANT_BOOKING_NOTIFICATION_SETTING', variables: { input: { probe: 'input' } } }],
           resolved: ['setMerchantBookingNotificationSetting'],
         },
       ],
@@ -777,9 +775,7 @@ const ROWS = [
       invoked: [
         {
           fn: 'setMerchantNonDesignateBookingLimit',
-          calls: [
-            { operationName: 'SET_MERCHANT_NON_DESIGNATE_BOOKING_LIMIT', variables: { input: { probe: 'input' } } },
-          ],
+          calls: [{ operationName: 'SET_MERCHANT_NON_DESIGNATE_BOOKING_LIMIT', variables: { input: { probe: 'input' } } }],
           resolved: ['setMerchantDesignateTimeNonDesignateBookingLimit'],
         },
       ],
@@ -1072,9 +1068,7 @@ const ROWS = [
       invoked: [
         {
           fn: 'setPersonProfile',
-          calls: [
-            { operationName: 'SET_PERFORMANCE_RULE_FROM_PERSONAL_PROFILE', variables: { input: { probe: 'input' } } },
-          ],
+          calls: [{ operationName: 'SET_PERFORMANCE_RULE_FROM_PERSONAL_PROFILE', variables: { input: { probe: 'input' } } }],
           resolved: ['setPerformanceRuleFromPersonProfile'],
         },
       ],
@@ -1146,9 +1140,7 @@ const ROWS = [
       invoked: [
         {
           fn: 'setSpecificBookingNotificationDayCount',
-          calls: [
-            { operationName: 'SET_SPECIFIC_BOOKING_NOTIFICATION_DAY_COUNT', variables: { input: { probe: 'input' } } },
-          ],
+          calls: [{ operationName: 'SET_SPECIFIC_BOOKING_NOTIFICATION_DAY_COUNT', variables: { input: { probe: 'input' } } }],
           resolved: ['setSpecificBookingNotificationDayCount'],
         },
       ],
@@ -1380,9 +1372,7 @@ const ROWS = [
     id: 'useFetchSettingEmployeeSchedule',
     hook: useFetchSettingEmployeeSchedule.default,
     args: [],
-    invoke: [
-      { fn: 'setEmployeeSchedule', args: [{ schedule: 'schedule-v', currentScheduleId: 'currentScheduleId-v' }] },
-    ],
+    invoke: [{ fn: 'setEmployeeSchedule', args: [{ schedule: 'schedule-v', currentScheduleId: 'currentScheduleId-v' }] }],
     expect: {
       initial: [],
       shape: { setEmployeeSchedule: 'function' },

@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
-const GET_CUSTOMER_HAIR_INFO= gql`
+const GET_CUSTOMER_HAIR_INFO = gql`
   query GET_CUSTOMER_HAIR_INFO($customerId: ID!) {
     getCustomerHairInfo(customerId: $customerId) {
       hairProperties
@@ -16,7 +16,7 @@ const GET_CUSTOMER_HAIR_INFO= gql`
 export default function useFetchGetCustomerHairInfo(customerId) {
   return useQuery(GET_CUSTOMER_HAIR_INFO, {
     variables: {
-      customerId
+      customerId,
     },
     fetchPolicy: 'cache-and-network',
   })

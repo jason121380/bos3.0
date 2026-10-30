@@ -26,9 +26,7 @@ const pages = [
   },
 ]
 
-function AboutCustomerSideSetting({
-  className, aboutCustomer, setAboutCustomer, inputEnable,
-}) {
+function AboutCustomerSideSetting({ className, aboutCustomer, setAboutCustomer, inputEnable }) {
   const handleSetValue = (key, value) => {
     setAboutCustomer(
       produce(draft => {

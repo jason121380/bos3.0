@@ -9,7 +9,17 @@ test('比較條件的日期、人員與確認保持原回呼；Esc 不關閉且�
   const handleSetData = jest.fn()
   const setOpenModal = jest.fn()
   const handleGetCompareData = jest.fn()
-  render(<CompareFilter open setOpenModal={setOpenModal} compareInputData={[{ dateRange: [], designerIds: [], displayReference: 'performance' }]} userList={[{ userId: 'u1', userName: '測試設計師', userNickName: null, userNo: '01' }]} filterOptions={options => options} handleSetData={handleSetData} handleGetCompareData={handleGetCompareData} />)
+  render(
+    <CompareFilter
+      open
+      setOpenModal={setOpenModal}
+      compareInputData={[{ dateRange: [], designerIds: [], displayReference: 'performance' }]}
+      userList={[{ userId: 'u1', userName: '測試設計師', userNickName: null, userNo: '01' }]}
+      filterOptions={options => options}
+      handleSetData={handleSetData}
+      handleGetCompareData={handleGetCompareData}
+    />
+  )
   fireEvent.click(screen.getByRole('button', { name: '選擇測試日期' }))
   expect(handleSetData).toHaveBeenCalledWith('dateRange', 0, ['2026-10-01', '2026-10-23'])
   fireEvent.click(screen.getByRole('combobox'))

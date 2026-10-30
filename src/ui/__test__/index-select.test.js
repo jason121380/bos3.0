@@ -23,24 +23,11 @@ afterAll(() => {
 
 afterEach(cleanup)
 
-const OPTIONS = [
-  { text: '甲' },
-  { text: '乙', disabled: true },
-  { text: '丙' },
-]
+const OPTIONS = [{ text: '甲' }, { text: '乙', disabled: true }, { text: '丙' }]
 
 const renderSelect = (props = {}) => {
   const onChange = jest.fn()
-  render(
-    <IndexSelect
-      name="status"
-      valueIndex={0}
-      options={OPTIONS}
-      onChange={onChange}
-      buttonProps={{ 'aria-label': '狀態' }}
-      {...props}
-    />
-  )
+  render(<IndexSelect name="status" valueIndex={0} options={OPTIONS} onChange={onChange} buttonProps={{ 'aria-label': '狀態' }} {...props} />)
   return onChange
 }
 
@@ -146,10 +133,7 @@ describe('IndexSelect 觸控第一次就選取', () => {
 
 describe('IndexSelect 清單留在視窗內', () => {
   it('下方空間較少時改向上展開，底緣不越過觸發器、頂緣不越出視窗', () => {
-    const style = placeAnchoredMenu(
-      { top: 700, bottom: 740, left: 16, width: 200 },
-      { viewport: { width: 1024, height: 768 } }
-    )
+    const style = placeAnchoredMenu({ top: 700, bottom: 740, left: 16, width: 200 }, { viewport: { width: 1024, height: 768 } })
     expect(style.position).toBe('fixed')
     expect(style.maxHeight).toBeLessThanOrEqual(320)
     expect(style.top).toBeGreaterThanOrEqual(8)
@@ -157,10 +141,7 @@ describe('IndexSelect 清單留在視窗內', () => {
   })
 
   it('下方空間足夠時往下開，底緣停在視窗內；貼齊右緣時往左收', () => {
-    const style = placeAnchoredMenu(
-      { top: 40, bottom: 76, left: 900, width: 200 },
-      { viewport: { width: 1024, height: 800 } }
-    )
+    const style = placeAnchoredMenu({ top: 40, bottom: 76, left: 900, width: 200 }, { viewport: { width: 1024, height: 800 } })
     expect(style.top).toBe(80)
     expect(style.top + style.maxHeight).toBeLessThanOrEqual(800 - 8)
     expect(style.left + style.width).toBeLessThanOrEqual(1024 - 8)
@@ -177,7 +158,19 @@ describe('IndexSelect 清單留在視窗內', () => {
   })
 
   it('打開的清單套用視窗內定位', () => {
-    const rect = { top: 700, bottom: 740, left: 16, right: 216, width: 200, height: 40, x: 16, y: 700, toJSON() { return {} } }
+    const rect = {
+      top: 700,
+      bottom: 740,
+      left: 16,
+      right: 216,
+      width: 200,
+      height: 40,
+      x: 16,
+      y: 700,
+      toJSON() {
+        return {}
+      },
+    }
     const spy = jest.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(() => rect)
     const previous = window.innerHeight
     Object.defineProperty(window, 'innerHeight', { configurable: true, value: 768 })
@@ -200,13 +193,7 @@ describe('IndexSelect 在對話框內', () => {
         <DialogContent hideClose aria-describedby={undefined}>
           <DialogTitle>上架狀態</DialogTitle>
           <DialogBody data-testid="dialog-body" className="max-h-10 overflow-y-auto">
-            <IndexSelect
-              name="sale"
-              valueIndex={0}
-              options={OPTIONS}
-              onChange={onChange}
-              buttonProps={{ 'aria-label': '狀態' }}
-            />
+            <IndexSelect name="sale" valueIndex={0} options={OPTIONS} onChange={onChange} buttonProps={{ 'aria-label': '狀態' }} />
           </DialogBody>
         </DialogContent>
       </Dialog>

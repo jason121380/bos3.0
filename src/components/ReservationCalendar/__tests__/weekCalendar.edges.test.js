@@ -6,17 +6,43 @@ import { buildWeekCalendar, tidyWeekCalendar, weekDisplay } from '../weekCalenda
 
 const weekStart = startOfWeek(new Date(2026, 9, 21)).getTime() // 2026/10/18（日）
 const at = (day, hour, minute = 0) => setMinutes(setHours(addDays(weekStart, day), hour), minute).getTime()
-const ev = o => Object.assign({
-  type: 'RESERVATION', ids: [], startTime: 0, endTime: 0, timeCost: 2, nameToDisplay: '客人', isDesignate: true,
-  bookingStatus: '預約成功', isCheckin: null, isCusCheckRequired: false, isDone: false, createdOrderId: null, isNoShow: false,
-}, o)
+const ev = o =>
+  Object.assign(
+    {
+      type: 'RESERVATION',
+      ids: [],
+      startTime: 0,
+      endTime: 0,
+      timeCost: 2,
+      nameToDisplay: '客人',
+      isDesignate: true,
+      bookingStatus: '預約成功',
+      isCheckin: null,
+      isCusCheckRequired: false,
+      isDone: false,
+      createdOrderId: null,
+      isNoShow: false,
+    },
+    o
+  )
 const designer = (calendar, extra = {}) => Object.assign({ designerId: 'd1', designerName: '甲', bookingLimit: 2, calendar }, extra)
-const base = { date: weekStart, height: 70, isOne: true, checkinMode: false, bookingCusCheck: false, checkinSettings: { isBookingCheckinEnabled: false }, checkedType: '' }
+const base = {
+  date: weekStart,
+  height: 70,
+  isOne: true,
+  checkinMode: false,
+  bookingCusCheck: false,
+  checkinSettings: { isBookingCheckinEnabled: false },
+  checkedType: '',
+}
 const tidy = (designers, options = {}) => tidyWeekCalendar(designers, [], at(0, 10), { ...base, ...options })
 const merchant = { data: { merchant: { openingHours: '10:00:00', closingHours: '20:00:00' } } }
 const build = calendar =>
   buildWeekCalendar({
-    DesignerCalendar: { loading: false, data: { getMerchantDesignerWeekCalendar: { merchantUnappointCalendar: [], merchantDesignerCalendar: [designer(calendar)] } } },
+    DesignerCalendar: {
+      loading: false,
+      data: { getMerchantDesignerWeekCalendar: { merchantUnappointCalendar: [], merchantDesignerCalendar: [designer(calendar)] } },
+    },
     merchant,
     date: weekStart,
     ...base,
@@ -29,11 +55,13 @@ test('星期標題：英文星期轉成「週(一)」等，未知值回傳 undef
 })
 
 test('同時段的公休（含例假）並排成一組，第二筆依開始時間往下偏移；欄寬依重疊數加一', () => {
-  const week = tidy([designer([
-    ev({ type: 'HOLIDAY', startTime: at(2, 12), endTime: at(2, 13) }),
-    ev({ type: 'RH', startTime: at(2, 12, 30), endTime: at(2, 13, 30) }),
-    ev({ type: 'SH', startTime: at(2, 15), endTime: at(2, 16) }),
-  ])])
+  const week = tidy([
+    designer([
+      ev({ type: 'HOLIDAY', startTime: at(2, 12), endTime: at(2, 13) }),
+      ev({ type: 'RH', startTime: at(2, 12, 30), endTime: at(2, 13, 30) }),
+      ev({ type: 'SH', startTime: at(2, 15), endTime: at(2, 16) }),
+    ]),
+  ])
   expect(week[2].breakGroup.map(g => g.data.length)).toEqual([2, 1])
   expect(week[2].breakGroup[0].data[1].style.marginTop).toBe('71px')
   expect(week[2].breakLength).toBe(3)
@@ -47,10 +75,12 @@ test('同時段的公休（含例假）並排成一組，第二筆依開始時�
 })
 
 test('未知的預約狀態、未知的型別不上色（維持原本沒有 default 時的行為）', () => {
-  const week = tidy([designer([
-    ev({ ids: ['x'], startTime: at(1, 10), endTime: at(1, 11), bookingStatus: '設計師已取消' }),
-    ev({ ids: ['y'], type: 'OTHER', startTime: at(1, 14), endTime: at(1, 15) }),
-  ])])
+  const week = tidy([
+    designer([
+      ev({ ids: ['x'], startTime: at(1, 10), endTime: at(1, 11), bookingStatus: '設計師已取消' }),
+      ev({ ids: ['y'], type: 'OTHER', startTime: at(1, 14), endTime: at(1, 15) }),
+    ]),
+  ])
   const all = week[1].orders.flatMap(g => g.data)
   expect(all.find(d => d.key === 'x').style.backgroundColor).toBeUndefined()
   expect(all.find(d => d.key === 'y').style).toEqual({})
@@ -76,21 +106,28 @@ test('預約早於開店、晚於打烊：時段列往前、往後延伸', () =>
 })
 
 test('零長度（起訖相同）的預約與同時開始的預約視為重疊、並排成一組', () => {
-  const week = tidy([designer([
-    ev({ ids: ['zero'], startTime: at(1, 10), endTime: at(1, 10), timeCost: 0 }),
-    ev({ ids: ['full'], startTime: at(1, 10), endTime: at(1, 11) }),
-    ev({ type: 'HOLIDAY', startTime: at(2, 10), endTime: at(2, 10), timeCost: 0 }),
-    ev({ type: 'HOLIDAY', startTime: at(2, 10), endTime: at(2, 11) }),
-  ])])
+  const week = tidy([
+    designer([
+      ev({ ids: ['zero'], startTime: at(1, 10), endTime: at(1, 10), timeCost: 0 }),
+      ev({ ids: ['full'], startTime: at(1, 10), endTime: at(1, 11) }),
+      ev({ type: 'HOLIDAY', startTime: at(2, 10), endTime: at(2, 10), timeCost: 0 }),
+      ev({ type: 'HOLIDAY', startTime: at(2, 10), endTime: at(2, 11) }),
+    ]),
+  ])
   expect(week[1].orderGroup.map(g => g.data.map(d => d.key))).toEqual([['zero', 'full']])
   expect(week[2].breakGroup.map(g => g.data.length)).toEqual([2])
 })
 
 test('啟用報到但沒選篩選時全部顯示；同一格先進行中後已完成，已完成不加名額', () => {
-  const week = tidy([designer([
-    ev({ ids: ['a'], startTime: at(1, 10), endTime: at(1, 11), isCheckin: true }),
-    ev({ ids: ['b'], startTime: at(1, 10), endTime: at(1, 11), isCheckin: false, isDone: true }),
-  ])], { checkinSettings: { isBookingCheckinEnabled: true }, checkedType: '' })
+  const week = tidy(
+    [
+      designer([
+        ev({ ids: ['a'], startTime: at(1, 10), endTime: at(1, 11), isCheckin: true }),
+        ev({ ids: ['b'], startTime: at(1, 10), endTime: at(1, 11), isCheckin: false, isDone: true }),
+      ]),
+    ],
+    { checkinSettings: { isBookingCheckinEnabled: true }, checkedType: '' }
+  )
   expect(week[1].orderGroup.flatMap(g => g.data).map(d => d.key)).toEqual(['a', 'b'])
   expect(week[1].countOrder[at(1, 10)]).toBe(1)
 })

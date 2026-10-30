@@ -17,28 +17,21 @@ function Results({ report, reportWithAmount, roundDecimal }) {
       </TableHeader>
       <TableBody>
         {reportWithAmount.map(report => {
-          return report.moneyFlow.map((d, index)=> {
+          return report.moneyFlow.map((d, index) => {
             if (d.subjectName !== '小結') {
               return (
                 <TableRow key={index}>
                   <TableCell className="tabular-nums">{format(d.date, 'yyyy/MM/dd')}</TableCell>
                   <TableCell className="tabular-nums">{d.subjectNo}</TableCell>
                   <TableCell>{d.subjectName}</TableCell>
-                  <TableCell numeric>
-                    {formatNumber(d.revenue !== 0 ? roundDecimal(d.revenue) : '')}
-                  </TableCell>
-                  <TableCell numeric>
-                    {formatNumber(d.expenditure !== 0 ? roundDecimal(d.expenditure) : '')}
-                  </TableCell>
+                  <TableCell numeric>{formatNumber(d.revenue !== 0 ? roundDecimal(d.revenue) : '')}</TableCell>
+                  <TableCell numeric>{formatNumber(d.expenditure !== 0 ? roundDecimal(d.expenditure) : '')}</TableCell>
                   <TableCell>{d.remark}</TableCell>
                 </TableRow>
               )
             } else {
               return (
-                <TableRow
-                  className="moneyFlowCatReportSubtotal bg-surface-hover font-medium"
-                  key={index}
-                >
+                <TableRow className="moneyFlowCatReportSubtotal bg-surface-hover font-medium" key={index}>
                   <TableCell />
                   <TableCell />
                   <TableCell>{d.subjectName}</TableCell>
@@ -62,6 +55,5 @@ function Results({ report, reportWithAmount, roundDecimal }) {
     </Table>
   )
 }
-
 
 export default Results

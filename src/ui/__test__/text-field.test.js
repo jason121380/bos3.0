@@ -41,15 +41,7 @@ describe('ui/text-field TextField（與 MUI TextField 相容的介面）', () =>
 
   // InputProps.inputProps 與 inputProps 都要落到輸入元素（Cypress 用 data-testid 找欄位）
   it('InputProps.inputProps 與 inputProps 落在輸入元素上', () => {
-    render(
-      <TextField
-        type="number"
-        value={0}
-        onChange={() => {}}
-        InputProps={{ inputProps: { min: 0 } }}
-        inputProps={{ 'data-testid': 'price' }}
-      />
-    )
+    render(<TextField type="number" value={0} onChange={() => {}} InputProps={{ inputProps: { min: 0 } }} inputProps={{ 'data-testid': 'price' }} />)
     const input = screen.getByTestId('price')
     expect(input.tagName).toBe('INPUT')
     expect(input).toHaveAttribute('min', '0')
@@ -102,7 +94,15 @@ describe('ui/text-field Input／OutlinedInput（與 MUI Input／OutlinedInput �
     const { container } = render(
       <>
         <label htmlFor="date-picker">日期</label>
-        <Input id="date-picker" type="text" value="2026/10/20" onClick={onClick} label="日期" readOnly endAdornment={<InputAdornment position="end">曆</InputAdornment>} />
+        <Input
+          id="date-picker"
+          type="text"
+          value="2026/10/20"
+          onClick={onClick}
+          label="日期"
+          readOnly
+          endAdornment={<InputAdornment position="end">曆</InputAdornment>}
+        />
       </>
     )
     const input = screen.getByLabelText('日期')

@@ -40,7 +40,7 @@ function ServiceCategoryEdit(props) {
         })
       )
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [paymentDetail.data, paymentDetail.loading])
   const handleOnchange = ({ event, key }) => {
     if (key === 'fee' && isNaN(idx(event, _ => _.target.value))) return
@@ -57,7 +57,7 @@ function ServiceCategoryEdit(props) {
     try {
       const res = await updatePayment({
         id: idx(paymentDetail, _ => _.data.merchantPayWay.id),
-        input: { ...payment, fee: Number(fee) }
+        input: { ...payment, fee: Number(fee) },
       })
       if (res) {
         payments.refetch()
@@ -80,31 +80,28 @@ function ServiceCategoryEdit(props) {
     <Page className="ui-root" title="編輯支付方式">
       {/* 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-3xl */}
       <div className="mx-auto flex max-w-3xl flex-col gap-6">
-        <PageHeader className="pb-0" title='編輯支付方式' />
+        <PageHeader className="pb-0" title="編輯支付方式" />
         {paymentDetail.error ? (
           <QueryFailed onRetry={() => paymentDetail.refetch()} />
         ) : (
           <>
-          <AboutPayment
-            payment={payment}
-            onChange={handleOnchange}
-          />
-          <div className="flex flex-wrap items-center gap-3">
-            <Button
-              variant="primary"
-              disabled={vaild}
-              aria-describedby={vaild ? 'payment-edit-missing' : undefined}
-              onClick={handleSubmit}
-              data-testid="update-payment"
-            >
-              儲存
-            </Button>
-            {vaild && (
-              <p id="payment-edit-missing" role="status" className="text-caption text-text-secondary">
-                尚缺：{missing.join('、')}
-              </p>
-            )}
-          </div>
+            <AboutPayment payment={payment} onChange={handleOnchange} />
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                variant="primary"
+                disabled={vaild}
+                aria-describedby={vaild ? 'payment-edit-missing' : undefined}
+                onClick={handleSubmit}
+                data-testid="update-payment"
+              >
+                儲存
+              </Button>
+              {vaild && (
+                <p id="payment-edit-missing" role="status" className="text-caption text-text-secondary">
+                  尚缺：{missing.join('、')}
+                </p>
+              )}
+            </div>
           </>
         )}
       </div>

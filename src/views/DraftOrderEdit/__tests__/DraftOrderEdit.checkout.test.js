@@ -12,8 +12,21 @@ import { loginAs, callsOf } from '../../../__tests__/testkit.test'
 import billPaymentSummary from 'helper/billPaymentSummary'
 import { formatNumber } from 'ui/format'
 import {
-  setupDraft, pageReady, pick, saveDraft, summaryValue, makeOrder, serviceOrder, panel, panelHeader, customerDetail,
-  CUSTOMER, DESIGNER, SERVICE, SERVICE2, TICKET,
+  setupDraft,
+  pageReady,
+  pick,
+  saveDraft,
+  summaryValue,
+  makeOrder,
+  serviceOrder,
+  panel,
+  panelHeader,
+  customerDetail,
+  CUSTOMER,
+  DESIGNER,
+  SERVICE,
+  SERVICE2,
+  TICKET,
 } from './draftPageKit.test'
 import { ordersListPathForOrderDate } from '../ordersListPath'
 import { checkedOutDraft } from '../draftCheckoutGuard'
@@ -87,7 +100,18 @@ describe('掛單詳細：送出前檢查', () => {
   it('會員卡到期日有誤：結帳提示「會員卡到期日有誤」', async () => {
     const page = setupDraft({
       order: makeOrder({
-        membershipOrders: [{ purchaseDate: null, validDayCount: 365, expiryDate: new Date(2026, 0, 1).getTime(), price: 12000, thirdPartyPayId: null, remark: '', seller: { id: DESIGNER.userId }, membership: { uuid: 'card-1', isLocked: 'FALSE', effecitveDay: 365 } }],
+        membershipOrders: [
+          {
+            purchaseDate: null,
+            validDayCount: 365,
+            expiryDate: new Date(2026, 0, 1).getTime(),
+            price: 12000,
+            thirdPartyPayId: null,
+            remark: '',
+            seller: { id: DESIGNER.userId },
+            membership: { uuid: 'card-1', isLocked: 'FALSE', effecitveDay: 365 },
+          },
+        ],
       }),
     })
     await pageReady(page)
@@ -111,7 +135,9 @@ describe('掛單詳細：送出中與失敗', () => {
     fireEvent.click(save())
     await wait(() => expect(save()).toBeDisabled())
     expect(save().parentElement.getAttribute('title')).toBe('處理中，請稍候')
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('網路中斷') })))
+    await wait(() =>
+      expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('網路中斷') }))
+    )
     await wait(() => expect(save()).not.toBeDisabled())
     expect(screen.getByTestId('testkit-location')).toHaveTextContent('/draft-order/order-1')
   })
@@ -150,7 +176,9 @@ describe('掛單詳細：從帶日期區間的掛單列表進來', () => {
     await pageReady(page)
     await wait(() => expect(checkout()).not.toBeDisabled())
     fireEvent.click(checkout())
-    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent('/management/orders?startDate=1760976000000&endDate=1761062399999'))
+    await wait(() =>
+      expect(screen.getByTestId('testkit-location')).toHaveTextContent('/management/orders?startDate=1760976000000&endDate=1761062399999')
+    )
     expect(openSnackbar).not.toHaveBeenCalledWith(expect.objectContaining({ variant: 'error' }))
   })
 })
@@ -181,10 +209,22 @@ describe('掛單詳細：F9 快捷鍵', () => {
 
 describe('掛單詳細：金額彙總', () => {
   const product = (id, price, count) => ({
-    id: `po-${id}`, name: id, count, price, thirdPartyPayId: null, seller: { id: DESIGNER.userId }, product: { id, isLocked: 'FALSE' },
+    id: `po-${id}`,
+    name: id,
+    count,
+    price,
+    thirdPartyPayId: null,
+    seller: { id: DESIGNER.userId },
+    product: { id, isLocked: 'FALSE' },
   })
   const ticket = (id, price, count) => ({
-    id: `to-${id}`, price, count, availableCount: 10, remark: '', service: { id, isLocked: 'FALSE' }, intoPerformanceWhileBuying: false,
+    id: `to-${id}`,
+    price,
+    count,
+    availableCount: 10,
+    remark: '',
+    service: { id, isLocked: 'FALSE' },
+    intoPerformanceWhileBuying: false,
   })
 
   it('多筆店販與預收卡：店販消費、預收卡販賣、業績合計與現金應收正確', async () => {
@@ -215,14 +255,56 @@ describe('掛單詳細：金額彙總', () => {
       bonusDecount: 20,
       serviceOrders: [serviceOrder(SERVICE), serviceOrder(SERVICE2, { thirdPartyPayId: 'tp-1' })],
       productOrders: [
-        { id: 'po-1', name: '洗髮精', count: 2, price: 1200, thirdPartyPayId: null, seller: { id: DESIGNER.userId }, product: { id: 'product-1', isLocked: 'FALSE' } },
-        { id: 'po-2', name: '護髮油', count: 1, price: 500, thirdPartyPayId: 'tp-1', seller: { id: DESIGNER.userId }, product: { id: 'product-2', isLocked: 'FALSE' } },
-        { id: 'po-empty', name: '', count: 1, price: 0, thirdPartyPayId: null, seller: { id: DESIGNER.userId }, product: { id: '', isLocked: 'FALSE' } },
+        {
+          id: 'po-1',
+          name: '洗髮精',
+          count: 2,
+          price: 1200,
+          thirdPartyPayId: null,
+          seller: { id: DESIGNER.userId },
+          product: { id: 'product-1', isLocked: 'FALSE' },
+        },
+        {
+          id: 'po-2',
+          name: '護髮油',
+          count: 1,
+          price: 500,
+          thirdPartyPayId: 'tp-1',
+          seller: { id: DESIGNER.userId },
+          product: { id: 'product-2', isLocked: 'FALSE' },
+        },
+        {
+          id: 'po-empty',
+          name: '',
+          count: 1,
+          price: 0,
+          thirdPartyPayId: null,
+          seller: { id: DESIGNER.userId },
+          product: { id: '', isLocked: 'FALSE' },
+        },
       ],
       ticketOrders: [ticket(TICKET.id, 6000, 1)],
       membershipOrders: [
-        { purchaseDate: null, validDayCount: null, expiryDate: null, price: 3000, thirdPartyPayId: null, remark: '', seller: { id: DESIGNER.userId }, membership: { uuid: 'card-2', isLocked: 'TRUE', effecitveDay: 0 } },
-        { purchaseDate: null, validDayCount: null, expiryDate: null, price: 12000, thirdPartyPayId: 'tp-1', remark: '', seller: { id: DESIGNER.userId }, membership: { uuid: 'card-1', isLocked: 'FALSE', effecitveDay: 365 } },
+        {
+          purchaseDate: null,
+          validDayCount: null,
+          expiryDate: null,
+          price: 3000,
+          thirdPartyPayId: null,
+          remark: '',
+          seller: { id: DESIGNER.userId },
+          membership: { uuid: 'card-2', isLocked: 'TRUE', effecitveDay: 0 },
+        },
+        {
+          purchaseDate: null,
+          validDayCount: null,
+          expiryDate: null,
+          price: 12000,
+          thirdPartyPayId: 'tp-1',
+          remark: '',
+          seller: { id: DESIGNER.userId },
+          membership: { uuid: 'card-1', isLocked: 'FALSE', effecitveDay: 365 },
+        },
       ],
       useTicketOrders: [
         { id: 'record-1', name: '剪髮10次卡', price: 600, pricePerCount: 600, service: { id: TICKET.id }, helperList: [] },
@@ -248,7 +330,12 @@ describe('掛單詳細：金額彙總', () => {
     // 頁面寫回 bill 的形狀（thirdPartyPayId → thirdPartyCouponMerchantId）。helper 只讀這些欄位。
     const { cashDue } = billPaymentSummary({
       serviceOrders: order.serviceOrders.map(d => ({ price: d.price, thirdPartyCouponMerchantId: d.thirdPartyPayId })),
-      productOrders: order.productOrders.map(d => ({ price: d.price, count: d.count, productId: d.product.id, thirdPartyCouponMerchantId: d.thirdPartyPayId })),
+      productOrders: order.productOrders.map(d => ({
+        price: d.price,
+        count: d.count,
+        productId: d.product.id,
+        thirdPartyCouponMerchantId: d.thirdPartyPayId,
+      })),
       membershipOrders: order.membershipOrders.map(d => ({ price: d.price, thirdPartyCouponMerchantId: d.thirdPartyPayId })),
       ticketOrders: order.ticketOrders.map(d => ({ price: d.price, count: d.count })),
       walletPay: order.walletPay,
@@ -333,10 +420,12 @@ describe('掛單詳細：結帳成功後不能再結一次', () => {
     })
     await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent(ordersListPathForOrderDate(date)))
     expect(screen.queryByTestId('checkout')).toBeNull()
-    expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
-      variant: 'warning',
-      message: '這張掛單已結帳，不能再次結帳',
-    }))
+    expect(openSnackbar).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variant: 'warning',
+        message: '這張掛單已結帳，不能再次結帳',
+      })
+    )
   })
 
   it('密碼結帳逾時，但掛單已不在清單：不再送第二次', async () => {
@@ -348,19 +437,21 @@ describe('掛單詳細：結帳成功後不能再結一次', () => {
         throw new Error('Failed to fetch')
       },
       DRAFT_STILL_PENDING: () => ({
-        pendingOrders: stillPending
-          ? { totalCount: 1, orders: [{ id: 'order-1' }] }
-          : { totalCount: 0, orders: [] },
+        pendingOrders: stillPending ? { totalCount: 1, orders: [{ id: 'order-1' }] } : { totalCount: 0, orders: [] },
       }),
     })
     await pageReady(page)
     await wait(() => expect(checkout()).not.toBeDisabled())
     fireEvent.click(checkout())
     await confirmPassword()
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
-      variant: 'warning',
-      message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
-    })))
+    await wait(() =>
+      expect(openSnackbar).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variant: 'warning',
+          message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+        })
+      )
+    )
     expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
     await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent(ordersListPathForOrderDate(makeOrder().date)))
     expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
@@ -381,9 +472,13 @@ describe('掛單詳細：結帳成功後不能再結一次', () => {
     await wait(() => expect(checkout()).not.toBeDisabled())
     fireEvent.click(checkout())
     await confirmPassword()
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
-      message: '網路連線異常，這張掛單尚未結帳，請再確認一次',
-    })))
+    await wait(() =>
+      expect(openSnackbar).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: '網路連線異常，這張掛單尚未結帳，請再確認一次',
+        })
+      )
+    )
     expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
     await wait(() => expect(screen.getByTestId('confirm')).not.toBeDisabled())
     fireEvent.click(screen.getByTestId('confirm'))
@@ -404,9 +499,13 @@ describe('掛單詳細：結帳成功後不能再結一次', () => {
     await wait(() => expect(checkout()).not.toBeDisabled())
     fireEvent.click(checkout())
     await confirmPassword()
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
-      message: '無法確認結帳是否成功。請先到帳單列表查看，不要重複結帳。',
-    })))
+    await wait(() =>
+      expect(openSnackbar).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: '無法確認結帳是否成功。請先到帳單列表查看，不要重複結帳。',
+        })
+      )
+    )
     expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
     await wait(() => expect(checkout()).toBeDisabled())
     expect(checkout().parentElement.getAttribute('title')).toBe('無法確認是否已結帳，請到帳單列表確認')
@@ -450,26 +549,31 @@ describe('掛單詳細：結帳結果不確定時的日期與確認中鎖定', (
       reCheckoutOrder: () => {
         throw new Error('Failed to fetch')
       },
-      DRAFT_STILL_PENDING: ({ input }) => (
+      DRAFT_STILL_PENDING: ({ input }) =>
         input.dateRange.startDate === editedStart
           ? { pendingOrders: { totalCount: 0, orders: [] } }
-          : { pendingOrders: { totalCount: 1, orders: [{ id: 'order-1' }] } }
-      ),
+          : { pendingOrders: { totalCount: 1, orders: [{ id: 'order-1' }] } },
     })
     await pageReady(page)
     const originalQueriesBefore = pendingStarts(page.calls).filter(start => start === originalStart).length
     await changeBillDate()
     await wait(() => expect(checkout()).not.toBeDisabled())
     fireEvent.click(checkout())
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
-      message: '網路連線異常，這張掛單尚未結帳，請再確認一次',
-    })))
+    await wait(() =>
+      expect(openSnackbar).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: '網路連線異常，這張掛單尚未結帳，請再確認一次',
+        })
+      )
+    )
     const sent = callsOf(page.calls, 'reCheckoutOrder')[0].variables.input.orderInput.date
     expect(startOfDay(new Date(sent)).getTime()).toBe(editedStart)
     expect(pendingStarts(page.calls).filter(start => start === originalStart).length).toBeGreaterThan(originalQueriesBefore)
-    expect(openSnackbar).not.toHaveBeenCalledWith(expect.objectContaining({
-      message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
-    }))
+    expect(openSnackbar).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+      })
+    )
     expect(checkedOutDraft('order-1')).toBeNull()
     expect(screen.getByTestId('testkit-location')).toHaveTextContent('/draft-order/order-1')
     await wait(() => expect(checkout()).not.toBeDisabled())
@@ -484,19 +588,21 @@ describe('掛單詳細：結帳結果不確定時的日期與確認中鎖定', (
         throw new Error('Failed to fetch')
       },
       DRAFT_STILL_PENDING: () => ({
-        pendingOrders: afterCheckout
-          ? { totalCount: 0, orders: [] }
-          : { totalCount: 1, orders: [{ id: 'order-1' }] },
+        pendingOrders: afterCheckout ? { totalCount: 0, orders: [] } : { totalCount: 1, orders: [{ id: 'order-1' }] },
       }),
     })
     await pageReady(page)
     await changeBillDate()
     await wait(() => expect(checkout()).not.toBeDisabled())
     fireEvent.click(checkout())
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
-      variant: 'warning',
-      message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
-    })))
+    await wait(() =>
+      expect(openSnackbar).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variant: 'warning',
+          message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+        })
+      )
+    )
     expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
     await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent(ordersListPathForOrderDate(edited)))
   })
@@ -508,10 +614,13 @@ describe('掛單詳細：結帳結果不確定時的日期與確認中鎖定', (
     fireEvent.keyDown(document, { code: 'F9' })
     invokeCheckoutClick()
     expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(0)
-    await wait(() => {
-      expect(checkout()).not.toBeDisabled()
-      expect(checkout().parentElement.getAttribute('title') || '').not.toBe('處理中，請稍候')
-    }, { timeout: 8000 })
+    await wait(
+      () => {
+        expect(checkout()).not.toBeDisabled()
+        expect(checkout().parentElement.getAttribute('title') || '').not.toBe('處理中，請稍候')
+      },
+      { timeout: 8000 }
+    )
     fireEvent.keyDown(document, { code: 'F9' })
     await wait(() => expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1))
   })

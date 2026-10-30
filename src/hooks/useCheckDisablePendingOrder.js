@@ -14,13 +14,13 @@ const useCheckDisablePendingOrder = () => {
       if (disablePendingOrder) {
         openSnackbar({
           variant: 'warning',
-          message: '掛單功能已關閉'
+          message: '掛單功能已關閉',
         })
         history.push('/order/create')
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getDisablePendingOrder.loading, history])
 }
 
-export default useCheckDisablePendingOrder 
+export default useCheckDisablePendingOrder

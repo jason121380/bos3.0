@@ -8,7 +8,7 @@ import { startOfMonth, format } from 'date-fns'
 import useFetchIsPriceDisplayOnDailyReportSetting from 'hooks/useFetchIsPriceDisplayOnDailyReport'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusActive'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
@@ -50,7 +50,7 @@ const PaymentReport = () => {
       setIsMemberShipCardActive(Boolean(memberShipCardActive || membershipTotal !== 0))
       setBonusDisplay(Boolean(bonusActive || (bonusTotal != null && bonusTotal !== 0)))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading, customerBonusActive.loading, businessAnalysisReportData.loading])
 
   useEffect(() => {
@@ -109,24 +109,21 @@ const PaymentReport = () => {
         setExcelData(excelData)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [businessAnalysisReportData.loading, isMemberShipCardActive, bonusDisplay])
 
   useEffect(() => {
     if (!isServiceTicketMergedData.loading) {
-      const isServiceTicketMerged = idx(
-        isServiceTicketMergedData,
-        _ => _.data.getPriceDisplayOnDailyReportDefault.isServiceTicketMerged
-      )
+      const isServiceTicketMerged = idx(isServiceTicketMergedData, _ => _.data.getPriceDisplayOnDailyReportDefault.isServiceTicketMerged)
       setIsServiceTicketMerged(isServiceTicketMerged)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isServiceTicketMergedData.loading])
 
   return (
     <Page title="營業統計分析表" className="BusinessAnalysisReport ui-root">
       <div>
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'none', justifyContent: 'space-between' }}>
           <div className="merchantNamePrint">
             {JSON.parse(localStorage.getItem('userMerchant')).name +
               '   ' +
@@ -136,29 +133,22 @@ const PaymentReport = () => {
               '   ' +
               '營業統計分析表'}
           </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' +
-              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-          </div>
+          <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
         </div>
         <PageHeader
-          title='營業統計分析表'
+          title="營業統計分析表"
           actions={
             <>
-              <CSVLink
-                data={excelData}
-                filename="營業統計分析表.csv"
-                style={{ display: 'inline' }}
-              >
+              <CSVLink data={excelData} filename="營業統計分析表.csv" style={{ display: 'inline' }}>
                 <Button variant="secondary">
                   <Download strokeWidth={1.75} />
                   報表匯出
                 </Button>
               </CSVLink>
-              <Button
-                variant="secondary"
-                onClick={() => window.print()}
-              ><Printer strokeWidth={1.75} />列印</Button>
+              <Button variant="secondary" onClick={() => window.print()}>
+                <Printer strokeWidth={1.75} />
+                列印
+              </Button>
             </>
           }
         />
@@ -175,13 +165,15 @@ const PaymentReport = () => {
           <QueryFailed onRetry={() => businessAnalysisReportData.refetch()} />
         ) : !businessAnalysisReportData.loading && !isMemberShipCardActive.loading ? (
           // 報表查詢失敗時不顯示表格（errorLink 已提示），不整頁錯誤（Jason 2026/10/22）
-          idx(businessAnalysisReportData, _ => _.data.businessAnalysisReport.data) && <Results
-            isServiceTicketMerged={isServiceTicketMerged}
-            data={idx(businessAnalysisReportData, _ => _.data.businessAnalysisReport)}
-            displayReportWithMembership={displayReportWithMembership}
-            isMemberShipCardActive={isMemberShipCardActive}
-            bonusDisplay={bonusDisplay}
-          />
+          idx(businessAnalysisReportData, _ => _.data.businessAnalysisReport.data) && (
+            <Results
+              isServiceTicketMerged={isServiceTicketMerged}
+              data={idx(businessAnalysisReportData, _ => _.data.businessAnalysisReport)}
+              displayReportWithMembership={displayReportWithMembership}
+              isMemberShipCardActive={isMemberShipCardActive}
+              bonusDisplay={bonusDisplay}
+            />
+          )
         ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示
           <div className="noprint" aria-busy="true" aria-label="載入中">

@@ -68,9 +68,7 @@ export default function PaymentCustomerWallet() {
             onFocus={handleFocus}
             onChange={event => {
               const walletPay =
-                +event.target.value <= usableCustomerWallet && +event.target.value <= walletPayLimit
-                  ? +event.target.value
-                  : bill.walletPay
+                +event.target.value <= usableCustomerWallet && +event.target.value <= walletPayLimit ? +event.target.value : bill.walletPay
               handleBillChange({
                 key: 'walletPay',
                 value: walletPay,

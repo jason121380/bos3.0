@@ -2,7 +2,7 @@ import { TextField } from 'ui/text-field'
 import useFetchGetUserBookingRecordList from 'hooks/useFetchGetUserBookingRecordList'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import { Autocomplete } from 'ui/combobox'
 import compareNo from 'utils/compareNo'
 
@@ -29,18 +29,17 @@ function BookingRecordListAutoComplete(
 ) {
   const designerToggle = useToggle()
   const userBookingRecordList = useFetchGetUserBookingRecordList()
-  
+
   useEffect(() => {
     if (setEmployeeAlready !== undefined && !userBookingRecordList.loading) {
       setEmployeeAlready(!userBookingRecordList.loading)
     }
-  }, [userBookingRecordList.loading, setEmployeeAlready]);
+  }, [userBookingRecordList.loading, setEmployeeAlready])
   const [designerKeyword, setDesignerKeyword] = React.useState('')
   // const [inputDisplay, setInputDisplay] = React.useState('')
   // const [keyCode, setKeyCode] = React.useState(null)
 
-  const selectedValue =
-    idx(userBookingRecordList, _ => _.data.getUserBookingRecordList.find(d => d.userId === value)) || null
+  const selectedValue = idx(userBookingRecordList, _ => _.data.getUserBookingRecordList.find(d => d.userId === value)) || null
 
   const handleInputChange = event => {
     idx(event, _ => {
@@ -51,10 +50,10 @@ function BookingRecordListAutoComplete(
   const options = idx(userBookingRecordList, _ => _.data.getUserBookingRecordList) || []
 
   useEffect(() => {
-    if(options.length > 0) {
+    if (options.length > 0) {
       getCustomerData(options)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getCustomerData）；只在 [options] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getCustomerData）；只在 [options] 變動時呼叫，補上會每次 render 重跑
   }, [options])
 
   const filterOptions = (options, state) => {
@@ -66,31 +65,19 @@ function BookingRecordListAutoComplete(
     let userName = []
     if (keyWord !== '' && keyWord.trim() !== '') {
       userNo = newOptions.filter((data, index) => {
-        if (
-          data.userNo !== '' &&
-          data.userNo !== null &&
-          data.userNo.toLowerCase() === keyWord.toLowerCase()
-        ) {
+        if (data.userNo !== '' && data.userNo !== null && data.userNo.toLowerCase() === keyWord.toLowerCase()) {
           return data.userNo.toLowerCase() === keyWord.toLowerCase()
         }
         return false
       })
       userNickName = newOptions.filter((data, index) => {
-        if (
-          data.userNickName !== '' &&
-          data.userNickName !== null &&
-          data.userNickName.toLowerCase().includes(keyWord.toLowerCase())
-        ) {
+        if (data.userNickName !== '' && data.userNickName !== null && data.userNickName.toLowerCase().includes(keyWord.toLowerCase())) {
           return data.userNickName.toLowerCase().includes(keyWord.toLowerCase())
         }
         return false
       })
       userName = newOptions.filter((data, index) => {
-        if (
-          data.userName !== '' &&
-          data.userName !== null &&
-          data.userName.toLowerCase().includes(keyWord.toLowerCase())
-        ) {
+        if (data.userName !== '' && data.userName !== null && data.userName.toLowerCase().includes(keyWord.toLowerCase())) {
           return data.userName.toLowerCase().includes(keyWord.toLowerCase())
         }
         return false
@@ -158,14 +145,10 @@ function BookingRecordListAutoComplete(
         onFocus={onFocus}
         isOptionEqualToValue={(option, value) => option.userName === value.userName}
         getOptionLabel={option =>
-          (option.userNo !== null &&
-            option.userNo !== '' &&
-            option.userNo.toLowerCase().includes(designerKeyword.toLowerCase())) ||
+          (option.userNo !== null && option.userNo !== '' && option.userNo.toLowerCase().includes(designerKeyword.toLowerCase())) ||
           selectedValue !== null
             ? `${
-                option.userNickName !== null && option.userNickName !== ''
-                  ? option.userNickName
-                  : option.userName
+                option.userNickName !== null && option.userNickName !== '' ? option.userNickName : option.userName
               }${option.userNo !== '' && option.userNo !== null ? `-${option.userNo}` : '(無代號)'}`
             : option.userName
         }
@@ -181,13 +164,9 @@ function BookingRecordListAutoComplete(
             )
           )
         }
-        renderOption={({key, ...option}, value) => (
+        renderOption={({ key, ...option }, value) => (
           <div style={{ fontSize: '14px' }} {...option} key={value.userId} data-testid={`${inputProps['data-testid']}-${value.userName}`}>
-            <span>
-              {value.userNickName !== null && value.userNickName !== ''
-                ? value.userNickName
-                : `${value.userName}`}
-            </span>
+            <span>{value.userNickName !== null && value.userNickName !== '' ? value.userNickName : `${value.userName}`}</span>
             {value.userNo !== '' && value.userNo !== null ? `-${value.userNo}` : '(無代號)'}
           </div>
         )}

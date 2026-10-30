@@ -11,8 +11,8 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />
 // 沒給 value 時的預設值放模組層：參數預設 [] 每次渲染都是新陣列，effect（依賴 value）會每次渲染都 setState 而無限重新渲染
 const NO_VALUE = []
 
-const MainEventAutocomplete = ({ value = NO_VALUE, onChange = () => { }, isReadOnly = false, ...rest }) => {
-  const getMainEvents= useFetchGetMainEventsForAutocomplete()
+const MainEventAutocomplete = ({ value = NO_VALUE, onChange = () => {}, isReadOnly = false, ...rest }) => {
+  const getMainEvents = useFetchGetMainEventsForAutocomplete()
   const [selectValue, setSelectValue] = useState([])
   const [options, setOptions] = useState([])
 
@@ -24,7 +24,7 @@ const MainEventAutocomplete = ({ value = NO_VALUE, onChange = () => { }, isReadO
       setSelectValue(newValue)
       setOptions(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMainEvents.loading, value])
 
   return (
@@ -35,7 +35,7 @@ const MainEventAutocomplete = ({ value = NO_VALUE, onChange = () => { }, isReadO
       value={selectValue}
       autoHighlight
       disableCloseOnSelect
-      closeText='close'
+      closeText="close"
       freeSolo
       multiple
       forcePopupIcon
@@ -45,18 +45,11 @@ const MainEventAutocomplete = ({ value = NO_VALUE, onChange = () => { }, isReadO
       getOptionLabel={option => option.nameDefault}
       renderOption={({ key, ...props }, option, { selected }) => (
         <span style={{ fontSize: 14, padding: 0 }} {...props} key={option.id}>
-          <Checkbox
-            style={{ color: 'rgb(var(--text))', padding: 2, marginRight: 4 }}
-            icon={icon}
-            checkedIcon={checkedIcon}
-            checked={selected}
-          />
+          <Checkbox style={{ color: 'rgb(var(--text))', padding: 2, marginRight: 4 }} icon={icon} checkedIcon={checkedIcon} checked={selected} />
           {option.nameDefault}
         </span>
       )}
-      renderInput={params => (
-        <TextField {...params} variant="outlined" label="活動" placeholder='選擇活動' />
-      )}
+      renderInput={params => <TextField {...params} variant="outlined" label="活動" placeholder="選擇活動" />}
     />
   )
 }

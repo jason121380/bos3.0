@@ -80,7 +80,10 @@ const dialog = () => within(screen.getByRole('dialog'))
 const fields = label => dialog().getAllByLabelText(label)
 const type = (input, value) => fireEvent.change(input, { target: { value } })
 // 級距列：以標題文字找到該列，列內的圖示依序為刪除（第 2 列起）、新增（最後一列）
-const tierRows = title => dialog().getAllByText(title).map(node => node.closest('.p-4').parentElement)
+const tierRows = title =>
+  dialog()
+    .getAllByText(title)
+    .map(node => node.closest('.p-4').parentElement)
 const iconIn = (row, kind) => row.querySelector(`svg[class*="${kind}"]`)
 const add = row => fireEvent.click(iconIn(row, 'plus'))
 const remove = row => fireEvent.click(iconIn(row, 'trash'))
@@ -108,7 +111,14 @@ describe('編輯設計師抽成：全段', () => {
       nonSegmented: [
         {
           attribute: '預設',
-          rakeData: { designate: [], nonDesignate: [], nonDistinguish: [{ threshold: 0, rake: 35.5 }, { threshold: 100000, rake: 40 }] },
+          rakeData: {
+            designate: [],
+            nonDesignate: [],
+            nonDistinguish: [
+              { threshold: 0, rake: 35.5 },
+              { threshold: 100000, rake: 40 },
+            ],
+          },
         },
       ],
       segmented: [],
@@ -176,7 +186,10 @@ describe('編輯設計師抽成：全段', () => {
         attribute: '預設',
         rakeData: {
           designate: [{ threshold: 1000, rake: 30 }],
-          nonDesignate: [{ threshold: 2000, rake: 20 }, { threshold: 50000, rake: 25 }],
+          nonDesignate: [
+            { threshold: 2000, rake: 20 },
+            { threshold: 50000, rake: 25 },
+          ],
           nonDistinguish: [],
         },
       },

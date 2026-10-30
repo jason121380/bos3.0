@@ -73,9 +73,7 @@ function Results({
           <CardHeader className="pb-4">
             <div className="flex items-baseline gap-3">
               <CardTitle>所有進貨單</CardTitle>
-              <span className="text-label tabular-nums text-text-secondary">
-                共 {purchaseRecords.length} 筆資料
-              </span>
+              <span className="text-label tabular-nums text-text-secondary">共 {purchaseRecords.length} 筆資料</span>
             </div>
           </CardHeader>
           <div className="px-5 pb-5">
@@ -88,16 +86,16 @@ function Results({
                       checked={selectId.length === selectAllRecords.length && selectAllRecords.length > 0}
                       onChange={event => selectAllData(event)}
                       disabled={selectAllRecords.length === 0}
-                      indeterminate={
-                        selectId.length > 0 && selectId.length < selectAllRecords.length
-                      }
+                      indeterminate={selectId.length > 0 && selectId.length < selectAllRecords.length}
                     />
                   </TableHead>
                   <TableHead className="w-[140px]">單號</TableHead>
                   <TableHead className="w-[110px]">日期</TableHead>
                   <TableHead className="w-[180px]">廠商</TableHead>
                   <TableHead className="w-[100px]">進貨人</TableHead>
-                  <TableHead numeric className="w-[100px]">金額</TableHead>
+                  <TableHead numeric className="w-[100px]">
+                    金額
+                  </TableHead>
                   <TableHead className="w-[150px]">異動時間</TableHead>
                   <TableHead>備註</TableHead>
                   <TableHead className="w-[150px]">入庫時間</TableHead>
@@ -109,10 +107,7 @@ function Results({
                 {purchaseRecords.map((data, index) => {
                   const isSelected = selectId.indexOf(data.uuid) > -1
                   return (
-                    <TableRow
-                      key={`${data.no}-${index}`}
-                      data-state={isSelected ? 'selected' : undefined}
-                    >
+                    <TableRow key={`${data.no}-${index}`} data-state={isSelected ? 'selected' : undefined}>
                       <TableCell className="w-[50px]">
                         <Checkbox
                           aria-label={`選取 ${data.no}`}
@@ -125,26 +120,27 @@ function Results({
                       <TableCell className="w-[110px] tabular-nums">{format(new Date(data.date), 'yyyy/MM/dd')}</TableCell>
                       <TableCell className="w-[180px]">{data.vendorName}</TableCell>
                       <TableCell className="w-[100px]">{data.operatorName}</TableCell>
-                      <TableCell numeric className="w-[100px]">{formatNumber(data.summary)}</TableCell>
-                      <TableCell className="w-[150px] tabular-nums">
-                        {format(new Date(data.updatedAt), 'yyyy/MM/dd HH:mm')}
+                      <TableCell numeric className="w-[100px]">
+                        {formatNumber(data.summary)}
                       </TableCell>
+                      <TableCell className="w-[150px] tabular-nums">{format(new Date(data.updatedAt), 'yyyy/MM/dd HH:mm')}</TableCell>
                       <TableCell>{data.remark}</TableCell>
-                      <TableCell className="w-[150px] tabular-nums">{data.stockInDate && format(new Date(data.stockInDate), 'yyyy/MM/dd HH:mm')}</TableCell>
+                      <TableCell className="w-[150px] tabular-nums">
+                        {data.stockInDate && format(new Date(data.stockInDate), 'yyyy/MM/dd HH:mm')}
+                      </TableCell>
                       <TableCell className="w-[110px] text-center">
                         <Button
                           size="sm"
                           onClick={() => handleCheck(data)}
                           variant={data.stockInDate ? 'ghost' : 'secondary'}
                           className={data.stockInDate ? 'text-danger hover:bg-danger/8' : undefined}
-                        >{data.stockInDate ? '取消入庫' : '確認入庫'}</Button>
+                        >
+                          {data.stockInDate ? '取消入庫' : '確認入庫'}
+                        </Button>
                       </TableCell>
                       <TableCell className="w-[60px] text-right">
                         <Button asChild variant="ghost" size="icon" className="text-text-secondary">
-                          <RouterLink
-                            aria-label={data.stockInDate ? '查看進貨單' : '編輯進貨單'}
-                            to={`/product/restock/edit/${data.uuid}`}
-                          >
+                          <RouterLink aria-label={data.stockInDate ? '查看進貨單' : '編輯進貨單'} to={`/product/restock/edit/${data.uuid}`}>
                             {data.stockInDate ? <Eye strokeWidth={1.75} /> : <Pencil strokeWidth={1.75} />}
                           </RouterLink>
                         </Button>
@@ -168,9 +164,7 @@ function Results({
           aria-label="批次操作"
           className="pointer-events-auto flex max-w-full flex-wrap items-center gap-1 rounded-lg border border-solid border-border bg-background py-1.5 pl-4 pr-1.5 shadow-float"
         >
-          <span className="mr-2 hidden text-label tabular-nums text-text sm:inline">
-            已選取 {selectId.length} 筆項目
-          </span>
+          <span className="mr-2 hidden text-label tabular-nums text-text sm:inline">已選取 {selectId.length} 筆項目</span>
           <span aria-hidden="true" className="mr-1 hidden h-5 w-px bg-border sm:inline-block" />
           <Button size="sm" variant="ghost" className="text-danger hover:bg-danger/8" onClick={() => setConfirmingDelete(true)}>
             <Trash2 strokeWidth={1.75} />

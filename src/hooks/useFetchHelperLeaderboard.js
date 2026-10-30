@@ -22,7 +22,7 @@ const FETCH_HELPER_LEADERBOARD = gql`
 export default function useFetchHelperLeaderboard(input) {
   return useQuery(FETCH_HELPER_LEADERBOARD, {
     variables: {
-      input
+      input,
     },
     fetchPolicy: 'cache-and-network',
   })

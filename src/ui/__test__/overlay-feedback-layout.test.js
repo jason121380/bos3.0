@@ -36,11 +36,7 @@ describe('PageHeader／Breadcrumb', () => {
         breadcrumb={
           <Breadcrumb
             className="bc"
-            items={[
-              { label: '帳單列表', href: '/management/orders', onClick },
-              { label: '首頁', href: '/' },
-              { label: '帳單詳細' },
-            ]}
+            items={[{ label: '帳單列表', href: '/management/orders', onClick }, { label: '首頁', href: '/' }, { label: '帳單詳細' }]}
           />
         }
       />

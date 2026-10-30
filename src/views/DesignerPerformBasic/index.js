@@ -6,7 +6,7 @@ import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
 import { endOfDay, startOfMonth, format, isSameDay } from 'date-fns'
 import idx from 'idx'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import useFetchDesignersLeaderboard from 'hooks/useFetchDesignersLeaderboard'
 import useFetchMonthlyAverageDisplayForDesignerLeaderBoard from 'hooks/useFetchGetMonthlyAverageDisplayForDesignerLeaderBoard'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
@@ -44,10 +44,7 @@ const DesignerPerformBasic = () => {
     startDate: startOfMonth(new Date()).getTime(),
     endDate: endOfDay(new Date()).getTime(),
   })
-  const [
-    monthlyAverageDisplayForDesignerLeaderBoard,
-    setMonthlyAverageDisplayForDesignerLeaderBoard,
-  ] = useState(false)
+  const [monthlyAverageDisplayForDesignerLeaderBoard, setMonthlyAverageDisplayForDesignerLeaderBoard] = useState(false)
   const [isDisplayTogglePerformanceButton, setIsDisplayTogglePerformanceButton] = useState(false)
   const [dataDisplay, setDataDisplay] = useState({
     isDRROCDisplay: false,
@@ -60,7 +57,7 @@ const DesignerPerformBasic = () => {
     merchantId: submitValue,
     reference: performReference,
     isIncludeProductPerformance: isIncludeProductPerformance,
-    isIncludeMembershipPerformance: isIncludeMemberPerformance
+    isIncludeMembershipPerformance: isIncludeMemberPerformance,
   })
   const monthlyAverageDisplayForDesignerLeaderBoardData = useFetchMonthlyAverageDisplayForDesignerLeaderBoard()
   const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
@@ -72,30 +69,26 @@ const DesignerPerformBasic = () => {
       const { isDRROCDisplay, isDRRPEVDisplay } = idx(getDRRDataDisplay, _ => _.data.getParameterReportSetting) || {}
       setDataDisplay({
         isDRROCDisplay,
-        isDRRPEVDisplay
+        isDRRPEVDisplay,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getDRRDataDisplay.loading])
 
   useEffect(() => {
     if (!isDisplayTogglePerformanceButtonData.loading) {
-      const isDisplayTogglePerformanceButton = idx(
-        isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
+      const isDisplayTogglePerformanceButton = idx(isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
       setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isDisplayTogglePerformanceButtonData.loading])
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading) {
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       setIsMemberShipCardActive(isMemberShipCardActive)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading])
 
   useEffect(() => {
@@ -106,7 +99,7 @@ const DesignerPerformBasic = () => {
       )
       setMonthlyAverageDisplayForDesignerLeaderBoard(monthlyAverageDisplayForDesignerLeaderBoard)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [monthlyAverageDisplayForDesignerLeaderBoardData.loading])
 
   useEffect(() => {
@@ -116,25 +109,19 @@ const DesignerPerformBasic = () => {
       if (!report) return
       const excelData = []
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
-      const monthlyAveragePerformanceTotal = idx(
-        designersLeaboardData,
-        _ => _.data.designerLeaderboard.monthlyAveragePerformanceTotal
-      )
-      const averageDisplay = idx(
-        monthlyAverageDisplayForDesignerLeaderBoardData,
-        _ => _.data.getMonthlyAverageDisplayForDesignerLeaderBoard
-      )
+      const monthlyAveragePerformanceTotal = idx(designersLeaboardData, _ => _.data.designerLeaderboard.monthlyAveragePerformanceTotal)
+      const averageDisplay = idx(monthlyAverageDisplayForDesignerLeaderBoardData, _ => _.data.getMonthlyAverageDisplayForDesignerLeaderBoard)
       const membershipTotal = (report || []).reduce((acc, curVal) => acc + curVal.membershipTotal, 0)
-      const membershipDisplay = (isMemberShipCardActive || membershipTotal !== 0)
-      
+      const membershipDisplay = isMemberShipCardActive || membershipTotal !== 0
+
       // 是否顯示會員卡欄位
       setMembershipDisplay(isMemberShipCardActive || membershipTotal !== 0)
-      
+
       const handleCountSummary = key => {
         return Math.round(report.reduce((acc, cur) => acc + cur[key], 0))
       }
 
-      const deleteKey = (data) => {
+      const deleteKey = data => {
         if (!membershipDisplay) {
           delete data['會員卡業績(虛)']
           delete data['會員卡業績(實)']
@@ -167,9 +154,7 @@ const DesignerPerformBasic = () => {
             '服務業績(指)(虛)': Math.round(data.designateServiceTotal),
             '服務業績(不指)(虛)': Math.round(data.nonDesignateServiceTotal),
             '卡券使用業績(虛)': Math.round(data.usedTicketTotal),
-            '卡券販賣(入業績)(虛)': Math.round(
-              data.ticketSellIntoPerformanceDesignate + data.ticketSellIntoPerformanceNonDesignate
-            ),
+            '卡券販賣(入業績)(虛)': Math.round(data.ticketSellIntoPerformanceDesignate + data.ticketSellIntoPerformanceNonDesignate),
             '店販業績 (虛)': Math.round(data.productTotal),
             '會員卡業績(虛)': Math.round(data.membershipTotal),
             '互助使用(點數)/互助使用(金額)': `${Math.round(data.helperPaidPoint)}/${Math.round(data.helperPaidPrice)}`,
@@ -190,7 +175,8 @@ const DesignerPerformBasic = () => {
           '服務業績(指)(虛)': handleCountSummary('designateServiceTotal'),
           '服務業績(不指)(虛)': handleCountSummary('nonDesignateServiceTotal'),
           '卡券使用業績(虛)': handleCountSummary('usedTicketTotal'),
-          '卡券販賣(入業績)(虛)': handleCountSummary('ticketSellIntoPerformanceDesignate') + handleCountSummary('ticketSellIntoPerformanceNonDesignate'),
+          '卡券販賣(入業績)(虛)':
+            handleCountSummary('ticketSellIntoPerformanceDesignate') + handleCountSummary('ticketSellIntoPerformanceNonDesignate'),
           '店販業績 (虛)': handleCountSummary('productTotal'),
           '會員卡業績(虛)': handleCountSummary('membershipTotal'),
           '互助使用(點數)/互助使用(金額)': `${handleCountSummary('helperPaidPoint')}/${handleCountSummary('helperPaidPrice')}`,
@@ -212,14 +198,10 @@ const DesignerPerformBasic = () => {
             '服務業績(指)(實)': Math.round(data.designateServiceTotal),
             '服務業績(不指)(實)': Math.round(data.nonDesignateServiceTotal),
             '卡券使用業績(實)': Math.round(data.usedTicketTotal),
-            '卡券販賣(入業績)(實)': Math.round(
-              data.ticketSellIntoPerformanceDesignate + data.ticketSellIntoPerformanceNonDesignate
-            ),
+            '卡券販賣(入業績)(實)': Math.round(data.ticketSellIntoPerformanceDesignate + data.ticketSellIntoPerformanceNonDesignate),
             '店販業績 (實)': Math.round(data.productTotal),
             '會員卡業績(實)': Math.round(data.membershipTotal),
-            '互助使用(點數)/互助使用(金額)': `${Math.round(data.helperPaidPoint)}/${Math.round(
-              data.helperPaidPrice
-            )}`,
+            '互助使用(點數)/互助使用(金額)': `${Math.round(data.helperPaidPoint)}/${Math.round(data.helperPaidPrice)}`,
             客次數: data.orderCount,
           }
 
@@ -237,7 +219,8 @@ const DesignerPerformBasic = () => {
           '服務業績(指)(實)': handleCountSummary('designateServiceTotal'),
           '服務業績(不指)(實)': handleCountSummary('nonDesignateServiceTotal'),
           '卡券使用業績(實)': handleCountSummary('usedTicketTotal'),
-          '卡券販賣(入業績)(實)': handleCountSummary('ticketSellIntoPerformanceDesignate') + handleCountSummary('ticketSellIntoPerformanceNonDesignate'),
+          '卡券販賣(入業績)(實)':
+            handleCountSummary('ticketSellIntoPerformanceDesignate') + handleCountSummary('ticketSellIntoPerformanceNonDesignate'),
           '店販業績 (實)': handleCountSummary('productTotal'),
           '會員卡業績(實)': handleCountSummary('membershipTotal'),
           '互助使用(點數)/互助使用(金額)': `${handleCountSummary('helperPaidPoint')}/${handleCountSummary('helperPaidPrice')}`,
@@ -252,7 +235,7 @@ const DesignerPerformBasic = () => {
       setExcelData(excelData)
       setMonthlyAveragePerformanceTotal(monthlyAveragePerformanceTotal)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [
     designersLeaboardData.loading,
     performReference,
@@ -260,7 +243,7 @@ const DesignerPerformBasic = () => {
     monthlyAverageDisplayForDesignerLeaderBoardData.loading,
     isMemberShipCardActiveData.loading,
     dataDisplay,
-    performanceDisplay
+    performanceDisplay,
   ])
 
   useEffect(() => {
@@ -268,7 +251,7 @@ const DesignerPerformBasic = () => {
       setIsSubmit(true)
       setSubmitValue(valueSelect)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [date] 變動時執行；valueSelect 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [date] 變動時執行；valueSelect 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [date])
 
   const handleSearchReport = () => {
@@ -301,9 +284,9 @@ const DesignerPerformBasic = () => {
   }
 
   return (
-    <Page className='DesignerPerformBasic ui-root' title="設計師排行榜">
+    <Page className="DesignerPerformBasic ui-root" title="設計師排行榜">
       <div>
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'none', justifyContent: 'space-between' }}>
           <div className="merchantNamePrint">
             {JSON.parse(localStorage.getItem('userMerchant')).name +
               '   ' +
@@ -313,36 +296,27 @@ const DesignerPerformBasic = () => {
               '   ' +
               '設計師排行榜'}
           </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' +
-              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-          </div>
+          <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
         </div>
         {/* 頁首只放「報表匯出」「列印」（STYLE §14）；有資料才顯示，與原本相同 */}
         <PageHeader
-          title='設計師排行榜'
-          actions={excelData.length !== 0 ? (
-            <>
-              <CSVLink
-                data={excelData}
-                filename="設計師排行榜.csv"
-                style={{ display: 'inline' }}
-              >
-                <Button variant="secondary" disabled={designersLeaboardData.loading}>
-                  <Download strokeWidth={1.75} />
-                  報表匯出
+          title="設計師排行榜"
+          actions={
+            excelData.length !== 0 ? (
+              <>
+                <CSVLink data={excelData} filename="設計師排行榜.csv" style={{ display: 'inline' }}>
+                  <Button variant="secondary" disabled={designersLeaboardData.loading}>
+                    <Download strokeWidth={1.75} />
+                    報表匯出
+                  </Button>
+                </CSVLink>
+                <Button variant="secondary" disabled={designersLeaboardData.loading} onClick={() => window.print()}>
+                  <Printer strokeWidth={1.75} />
+                  列印
                 </Button>
-              </CSVLink>
-              <Button
-                variant="secondary"
-                disabled={designersLeaboardData.loading}
-                onClick={() => window.print()}
-              >
-                <Printer strokeWidth={1.75} />
-                列印
-              </Button>
-            </>
-          ) : null}
+              </>
+            ) : null
+          }
         />
         {/* 日期留在篩選列、搜尋在右側；其餘條件收進「篩選」，標籤在上（STYLE §14） */}
         <ReportToolbar
@@ -357,68 +331,46 @@ const DesignerPerformBasic = () => {
             <>
               <div className="noprint flex min-w-0 flex-col gap-1.5">
                 <div className="text-label text-text-secondary">服務業績指定/不指定：</div>
-                <ToggleGroup
-                  size="small"
-                  exclusive
-                  value={performanceDisplay}
-                  onChange={(e, v) => v && setPerformanceDisplay(v)}
-                >
-                  <ToggleGroupItem value='VISIBLE'>顯示</ToggleGroupItem>
-                  <ToggleGroupItem value='HIDDEN'>不顯示</ToggleGroupItem>
+                <ToggleGroup size="small" exclusive value={performanceDisplay} onChange={(e, v) => v && setPerformanceDisplay(v)}>
+                  <ToggleGroupItem value="VISIBLE">顯示</ToggleGroupItem>
+                  <ToggleGroupItem value="HIDDEN">不顯示</ToggleGroupItem>
                 </ToggleGroup>
               </div>
-              {!isDisplayTogglePerformanceButton && <div className="noprint flex min-w-0 flex-col gap-1.5">
-                <div className="text-label text-text-secondary">業績依據：</div>
-                <ReferToggleButton
-                  value={performReference}
-                  onChange={handleToggleButtonChange}
-                />
-              </div>}
-              <div className="noprint flex min-w-0 flex-col gap-1.5">
-                <div className="text-label text-text-secondary">
-                  總業績依據：
+              {!isDisplayTogglePerformanceButton && (
+                <div className="noprint flex min-w-0 flex-col gap-1.5">
+                  <div className="text-label text-text-secondary">業績依據：</div>
+                  <ReferToggleButton value={performReference} onChange={handleToggleButtonChange} />
                 </div>
+              )}
+              <div className="noprint flex min-w-0 flex-col gap-1.5">
+                <div className="text-label text-text-secondary">總業績依據：</div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <ToggleGroup
-                    size="small"
-                    value={isIncludeProductPerformance}
-                    onChange={handleProductPerformanceToggleButtonChange}
-                    exclusive
-                  >
+                  <ToggleGroup size="small" value={isIncludeProductPerformance} onChange={handleProductPerformanceToggleButtonChange} exclusive>
                     {isIncludeProductPerformanceValue.map((data, idx) => (
                       <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                         {data.label}
                       </ToggleGroupItem>
                     ))}
                   </ToggleGroup>
-                  {isMemberShipCardActive ?
-                    <ToggleGroup
-                      size="small"
-                      value={isIncludeMemberPerformance}
-                      onChange={handleMemberPerformanceToggleButtonChange}
-                      exclusive
-                    >
+                  {isMemberShipCardActive ? (
+                    <ToggleGroup size="small" value={isIncludeMemberPerformance} onChange={handleMemberPerformanceToggleButtonChange} exclusive>
                       {isIncludeMemberPerformanceValue.map((data, idx) => (
                         <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                           {data.label}
                         </ToggleGroupItem>
                       ))}
-                    </ToggleGroup> :
-                    membershipDisplay ?
-                      <ToggleGroup
-                        size="small"
-                        value={isIncludeMemberPerformance}
-                        onChange={handleMemberPerformanceToggleButtonChange}
-                        exclusive
-                      >
-                        {isIncludeMemberPerformanceValue.map((data, idx) => (
-                          <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                            {data.label}
-                          </ToggleGroupItem>
-                        ))}
-                      </ToggleGroup> : ''
-                  }
-
+                    </ToggleGroup>
+                  ) : membershipDisplay ? (
+                    <ToggleGroup size="small" value={isIncludeMemberPerformance} onChange={handleMemberPerformanceToggleButtonChange} exclusive>
+                      {isIncludeMemberPerformanceValue.map((data, idx) => (
+                        <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                          {data.label}
+                        </ToggleGroupItem>
+                      ))}
+                    </ToggleGroup>
+                  ) : (
+                    ''
+                  )}
                 </div>
               </div>
               <div className="noprint min-w-0">
@@ -431,11 +383,7 @@ const DesignerPerformBasic = () => {
             </>
           }
           actions={
-            <Button
-              variant="primary"
-              onClick={handleSearchReport}
-              className="shrink-0"
-            >
+            <Button variant="primary" onClick={handleSearchReport} className="shrink-0">
               搜尋
             </Button>
           }
@@ -447,9 +395,7 @@ const DesignerPerformBasic = () => {
             report={idx(designersLeaboardData, _ => _.data.designerLeaderboard.designerLeaderBoard)}
             performReference={performReference}
             monthlyAveragePerformanceTotal={monthlyAveragePerformanceTotal}
-            monthlyAverageDisplayForDesignerLeaderBoard={
-              monthlyAverageDisplayForDesignerLeaderBoard
-            }
+            monthlyAverageDisplayForDesignerLeaderBoard={monthlyAverageDisplayForDesignerLeaderBoard}
             isSubmit={isSubmit}
             membershipDisplay={membershipDisplay}
             setMembershipDisplay={setMembershipDisplay}

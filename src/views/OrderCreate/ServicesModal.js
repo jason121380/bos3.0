@@ -72,11 +72,11 @@ function ServicesModal({
         .map(data =>
           data.type !== ''
             ? data.nameList.map(name => {
-              return {
-                type: `${data.type}-${name}`,
-                helperDeductiontype: data.helperDeductionType,
-              }
-            })
+                return {
+                  type: `${data.type}-${name}`,
+                  helperDeductiontype: data.helperDeductionType,
+                }
+              })
             : []
         )
         .reduce((total, item) => total.concat(item), [])

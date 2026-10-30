@@ -35,9 +35,11 @@ export default function Results({ reportData, format, roundDecimal, handleCountT
           <TableBody>
             {reportData.map((d, i) => (
               <TableRow key={`MembershipSellReport-${i}`} className="group">
-                <TableCell className={cn(sticky, 'bg-background tabular-nums group-hover:bg-surface-hover')}>{format(d.orderDate, 'yyyy/MM/dd')}</TableCell>
+                <TableCell className={cn(sticky, 'bg-background tabular-nums group-hover:bg-surface-hover')}>
+                  {format(d.orderDate, 'yyyy/MM/dd')}
+                </TableCell>
                 <TableCell className="tabular-nums">
-                  <Link className="text-text underline" target='_blank' to={`/order/${d.orderId}`}>{`#${d.orderNo}`}</Link>
+                  <Link className="text-text underline" target="_blank" to={`/order/${d.orderId}`}>{`#${d.orderNo}`}</Link>
                 </TableCell>
                 <TableCell>{d.designerName}</TableCell>
                 <TableCell>{d.customerName}</TableCell>
@@ -55,7 +57,7 @@ export default function Results({ reportData, format, roundDecimal, handleCountT
             <TableRow className="group">
               <TableCell className={cn(sticky, 'bg-background group-hover:bg-surface-hover')} />
               <TableCell colSpan={3} />
-              <TableCell >合計</TableCell>
+              <TableCell>合計</TableCell>
               <TableCell numeric>{formatNumber(handleCountTotal('sellPrice'))}</TableCell>
               <TableCell numeric>{formatNumber(handleCountTotal('count'))}</TableCell>
               <TableCell numeric>{formatNumber(handleCountTotal('summary'))}</TableCell>

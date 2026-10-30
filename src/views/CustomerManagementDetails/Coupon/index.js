@@ -48,9 +48,7 @@ export default function Coupon({ customer, paginationLabel }) {
                     offset: _.data.ticketRecords.pageOffset,
                     count: _.data.ticketRecords.totalCount,
                   }}
-                  onChangePage={(_event, page) =>
-                    handlePageSettingChange({ value: page, key: 'pageOffset', name: 'boughtRecords' })
-                  }
+                  onChangePage={(_event, page) => handlePageSettingChange({ value: page, key: 'pageOffset', name: 'boughtRecords' })}
                   onChangeRowsPerPage={event => {
                     handlePageSettingChange({
                       value: idx(event, _ => _.target.value),
@@ -74,9 +72,7 @@ export default function Coupon({ customer, paginationLabel }) {
                     offset: _.data.ticketRecords.pageOffset,
                     count: _.data.ticketRecords.totalCount,
                   }}
-                  onChangePage={(_event, page) =>
-                    handlePageSettingChange({ value: page, key: 'pageOffset', name: 'usagedResults' })
-                  }
+                  onChangePage={(_event, page) => handlePageSettingChange({ value: page, key: 'pageOffset', name: 'usagedResults' })}
                   onChangeRowsPerPage={event => {
                     handlePageSettingChange({
                       value: idx(event, _ => _.target.value),
@@ -90,7 +86,11 @@ export default function Coupon({ customer, paginationLabel }) {
               )
           )}
         </div>
-      ) : <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中"><Skeleton className="h-[320px] w-full rounded-lg" /></div>}
+      ) : (
+        <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
+          <Skeleton className="h-[320px] w-full rounded-lg" />
+        </div>
+      )}
     </Fragment>
   )
 }

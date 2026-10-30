@@ -41,15 +41,7 @@ const assistantNum = [
   { label: '3', value: '3' },
 ]
 
-function AboutAssistantSetting({
-  className,
-  support,
-  helperDeductionType,
-  onChange,
-  merchantHelperItems,
-  isEdit = false,
-  ...rest
-}) {
+function AboutAssistantSetting({ className, support, helperDeductionType, onChange, merchantHelperItems, isEdit = false, ...rest }) {
   const handleAddAssistantContent = () => {
     const newSupport = cloneDeep(support)
     newSupport.push({
@@ -289,10 +281,7 @@ function AboutAssistantSetting({
         {support.map((content, index) => (
           <div className="flex flex-wrap items-start gap-4" key={index}>
             <Field label="扣項類別" className="w-full sm:w-36">
-              <NativeSelect
-                onChange={event => handleDeductionTypeChange(event, index)}
-                value={content.helperDeductionType}
-              >
+              <NativeSelect onChange={event => handleDeductionTypeChange(event, index)} value={content.helperDeductionType}>
                 {deductions.map((data, idx) => (
                   <NativeSelectOption value={data.value} key={`${data.value}-${idx}`}>
                     {data.label}
@@ -301,10 +290,7 @@ function AboutAssistantSetting({
               </NativeSelect>
             </Field>
             <Field label="類別" className="w-full sm:w-36">
-              <NativeSelect
-                onChange={event => handleHelperType(event, index)}
-                value={content.type}
-              >
+              <NativeSelect onChange={event => handleHelperType(event, index)} value={content.type}>
                 {merchantHelperItems?.map((data, idx) => (
                   <NativeSelectOption value={data.type} key={`${data.type}-${idx}`}>
                     {data.type}
@@ -313,10 +299,7 @@ function AboutAssistantSetting({
               </NativeSelect>
             </Field>
             <Field label="協助人員人數" className="w-full sm:w-36">
-              <NativeSelect
-                onChange={event => handleAssistantName(event, index)}
-                value={content.peopleCount}
-              >
+              <NativeSelect onChange={event => handleAssistantName(event, index)} value={content.peopleCount}>
                 {assistantNum.map((data, idx) => (
                   <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                     {data.label}
@@ -325,10 +308,7 @@ function AboutAssistantSetting({
               </NativeSelect>
             </Field>
             <Field label="扣項方式" className="w-full sm:w-36">
-              <NativeSelect
-                onChange={event => handleDeductionWayChange(event, index)}
-                value={content.deductionWay}
-              >
+              <NativeSelect onChange={event => handleDeductionWayChange(event, index)} value={content.deductionWay}>
                 {deductionWay2.map((data, idx) => (
                   <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                     {data.label}
@@ -344,9 +324,7 @@ function AboutAssistantSetting({
                       type="number"
                       name="designateInput"
                       value={handleReturnDeductionValue(content, content.deductionWay, true)}
-                      onChange={event =>
-                        handleDesignateDeductionWayInput(event, index, content.deductionWay)
-                      }
+                      onChange={event => handleDesignateDeductionWayInput(event, index, content.deductionWay)}
                       onWheel={() => document.activeElement.blur()}
                     />
                   </Field>
@@ -355,9 +333,7 @@ function AboutAssistantSetting({
                       type="number"
                       name="NonDesignateInput"
                       value={handleReturnDeductionValue(content, content.deductionWay, false)}
-                      onChange={event =>
-                        handleNonDesignateDeductionWayInput(event, index, content.deductionWay)
-                      }
+                      onChange={event => handleNonDesignateDeductionWayInput(event, index, content.deductionWay)}
                       onWheel={() => document.activeElement.blur()}
                     />
                   </Field>
@@ -387,9 +363,7 @@ function AboutAssistantSetting({
                       <Input
                         type="number"
                         value={handleReturnValue(content, content.deductionWay)}
-                        onChange={event =>
-                          handleDeductionWayInput(event, index, content.deductionWay)
-                        }
+                        onChange={event => handleDeductionWayInput(event, index, content.deductionWay)}
                         onWheel={() => document.activeElement.blur()}
                       />
                     </Field>
@@ -438,13 +412,7 @@ function AboutAssistantSetting({
                 </Button>
               )}
               {index === support.length - 1 && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-text-secondary"
-                  aria-label="新增互助設定"
-                  onClick={handleAddAssistantContent}
-                >
+                <Button variant="ghost" size="icon" className="text-text-secondary" aria-label="新增互助設定" onClick={handleAddAssistantContent}>
                   <Plus strokeWidth={1.75} />
                 </Button>
               )}

@@ -7,11 +7,11 @@ import PropTypes from 'prop-types'
 import idx from 'idx'
 import { Autocomplete } from 'ui/combobox'
 
-const ProductListTreeView = ({ onValueChange = () => { } }) => {
+const ProductListTreeView = ({ onValueChange = () => {} }) => {
   const productTreeview = useFetchProductTreeview()
   const [products, setProducts] = useState({
     all: [],
-    category: []
+    category: [],
   })
   const [values, setValues] = useState([])
   const [open, setOpen] = useState(false)
@@ -31,7 +31,7 @@ const ProductListTreeView = ({ onValueChange = () => { } }) => {
   useEffect(() => {
     const ids = values.map(d => d.id)
     onValueChange(ids)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（onValueChange）；只在 [values] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（onValueChange）；只在 [values] 變動時呼叫，補上會每次 render 重跑
   }, [values])
 
   useEffect(() => {
@@ -44,14 +44,14 @@ const ProductListTreeView = ({ onValueChange = () => { } }) => {
       })
       setProducts({
         all: allProducts,
-        category: data
+        category: data,
       })
     }
   }, [productTreeview])
 
   return (
     <Fragment>
-      <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'flex-end' }}>
+      <div id="openModal" style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'flex-end' }}>
         <Autocomplete
           className="min-w-0 flex-1 [&_input]:cursor-pointer"
           multiple
@@ -62,7 +62,9 @@ const ProductListTreeView = ({ onValueChange = () => { } }) => {
           isOptionEqualToValue={(option, value) => option.id === value.id}
           popupIcon={
             // 全選：比照店家挑選（MerchantListAutocomplete）用 ui Button；popupIcon 外層可點，故以 asChild 落在 div 上避免巢狀 button，onClick 原樣
-            <Button asChild variant="primary" size="sm" onClick={handleSelectAll}><div>全選</div></Button>
+            <Button asChild variant="primary" size="sm" onClick={handleSelectAll}>
+              <div>全選</div>
+            </Button>
           }
           value={values}
           onChange={(e, v) => {
@@ -71,11 +73,7 @@ const ProductListTreeView = ({ onValueChange = () => { } }) => {
           options={products.all}
           disableCloseOnSelect
           getOptionLabel={option => option.name}
-          renderOption={(props, option) => (
-            <li {...props}>
-              {option.name}
-            </li>
-          )}
+          renderOption={(props, option) => <li {...props}>{option.name}</li>}
           renderInput={params => (
             <TextField
               onClick={handleOnClick}
@@ -91,23 +89,17 @@ const ProductListTreeView = ({ onValueChange = () => { } }) => {
             />
           )}
         />
-        <Button onClick={() => setOpen(true)} variant="primary" className="shrink-0">選擇商品</Button>
+        <Button onClick={() => setOpen(true)} variant="primary" className="shrink-0">
+          選擇商品
+        </Button>
       </div>
-      {!productTreeview.loading &&
-        <ProductListModal
-          open={open}
-          setOpen={setOpen}
-          productList={products}
-          values={values}
-          setValues={setValues}
-        />
-      }
+      {!productTreeview.loading && <ProductListModal open={open} setOpen={setOpen} productList={products} values={values} setValues={setValues} />}
     </Fragment>
   )
 }
 
 ProductListTreeView.propTypes = {
-  onValueChange: PropTypes.func
+  onValueChange: PropTypes.func,
 }
 
 export default ProductListTreeView

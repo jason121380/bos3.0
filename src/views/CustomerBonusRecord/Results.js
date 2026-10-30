@@ -17,14 +17,13 @@ function Results({ className, recordData, refetch, ...rest }) {
   const [selectedRecord, setSelectedRecord] = useState([])
 
   const handleSelectAll = event => {
-    const newSelected = event.target.checked
-      ? recordData.map(data => data.id)
-      : []
+    const newSelected = event.target.checked ? recordData.map(data => data.id) : []
     setSelectedRecord(newSelected)
   }
 
   const handleSelectOne = id => {
-    const newSelect = [...selectedRecord], index = newSelect.indexOf(id)
+    const newSelect = [...selectedRecord],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -35,27 +34,29 @@ function Results({ className, recordData, refetch, ...rest }) {
 
   const handleDelete = () => {
     deleteBonus({
-      bonusId: selectedRecord
-    }).then(res => {
-      if (res.data.deleteBonusDeposit) {
-        openSnackbar({
-          message: '刪除成功',
-          variant: 'success'
-        })
-        setSelectedRecord([])
-        refetch()
-      } else {
-        openSnackbar({
-          message: '刪除失敗',
-          variant: 'warning'
-        })
-      }
-    }).catch(error => {
-      openSnackbar({
-        message: error.message,
-        variant: 'error'
-      })
+      bonusId: selectedRecord,
     })
+      .then(res => {
+        if (res.data.deleteBonusDeposit) {
+          openSnackbar({
+            message: '刪除成功',
+            variant: 'success',
+          })
+          setSelectedRecord([])
+          refetch()
+        } else {
+          openSnackbar({
+            message: '刪除失敗',
+            variant: 'warning',
+          })
+        }
+      })
+      .catch(error => {
+        openSnackbar({
+          message: error.message,
+          variant: 'error',
+        })
+      })
   }
 
   return (
@@ -64,9 +65,7 @@ function Results({ className, recordData, refetch, ...rest }) {
         <CardHeader className="pb-4">
           <div className="flex items-baseline gap-3">
             <CardTitle>紅利點數紀錄</CardTitle>
-            <span className="text-label text-text-secondary tabular-nums">
-              共 {recordData.length} 筆
-            </span>
+            <span className="text-label text-text-secondary tabular-nums">共 {recordData.length} 筆</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -76,13 +75,8 @@ function Results({ className, recordData, refetch, ...rest }) {
                 <TableHead className="w-12">
                   <Checkbox
                     aria-label="全選"
-                    checked={
-                      selectedRecord.length === recordData.length && recordData.length > 0
-                    }
-                    indeterminate={
-                      selectedRecord.length > 0 &&
-                      selectedRecord.length < recordData.length
-                    }
+                    checked={selectedRecord.length === recordData.length && recordData.length > 0}
+                    indeterminate={selectedRecord.length > 0 && selectedRecord.length < recordData.length}
                     onChange={handleSelectAll}
                   />
                 </TableHead>
@@ -97,17 +91,9 @@ function Results({ className, recordData, refetch, ...rest }) {
             </TableHeader>
             <TableBody>
               {recordData.map(data => (
-                <TableRow
-                  key={data.id}
-                  data-state={selectedRecord.indexOf(data.id) > -1 ? 'selected' : undefined}
-                  data-testid="category-row"
-                >
+                <TableRow key={data.id} data-state={selectedRecord.indexOf(data.id) > -1 ? 'selected' : undefined} data-testid="category-row">
                   <TableCell>
-                    <Checkbox
-                      aria-label="選取此筆紀錄"
-                      onChange={() => handleSelectOne(data.id)}
-                      checked={selectedRecord.indexOf(data.id) > -1}
-                    />
+                    <Checkbox aria-label="選取此筆紀錄" onChange={() => handleSelectOne(data.id)} checked={selectedRecord.indexOf(data.id) > -1} />
                   </TableCell>
                   <TableCell>
                     <Button asChild variant="ghost" size="icon" className="text-text-tertiary" aria-label="編輯紀錄">

@@ -13,7 +13,7 @@ export default function useFetchUpdateInventory() {
       updateInventory({
         variables: {
           input,
-          inventoryId
+          inventoryId,
         },
       }),
   }

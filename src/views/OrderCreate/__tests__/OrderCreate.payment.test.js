@@ -9,8 +9,25 @@
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { loginAs, callsOf } from '../../../__tests__/testkit.test'
 import {
-  setupPage, waitPageReady, pickEmployee, pickService, pickCustomer, checkoutButton, sentOrder, summaryValue,
-  authorities, fieldInput, SERVICE, SERVICE_LOCKED, HELPER, CUSTOMER_DETAIL, button, buttons, buttonsIn, queryButton, findButton,
+  setupPage,
+  waitPageReady,
+  pickEmployee,
+  pickService,
+  pickCustomer,
+  checkoutButton,
+  sentOrder,
+  summaryValue,
+  authorities,
+  fieldInput,
+  SERVICE,
+  SERVICE_LOCKED,
+  HELPER,
+  CUSTOMER_DETAIL,
+  button,
+  buttons,
+  buttonsIn,
+  queryButton,
+  findButton,
 } from './orderCreateKit.test'
 
 jest.setTimeout(20000)
@@ -108,7 +125,7 @@ describe('其他付款方式', () => {
 })
 
 describe('扣入金', () => {
-  const prepare = async (overrides) => {
+  const prepare = async overrides => {
     const page = setupPage(overrides)
     await waitPageReady()
     await pickCustomer(page.calls)
@@ -173,9 +190,15 @@ describe('扣入金', () => {
 
   it.each([
     ['登入者的角色不在權限清單', { getMerchantAuthorities: [{ id: 'auth-x', authoritySettings: '[]' }] }],
-    ['角色沒有「客戶管理」區塊', { getMerchantAuthorities: [{ id: 'auth-1', authoritySettings: JSON.stringify([{ pageTitle: '其他', pageAuthority: [] }]) }] }],
+    [
+      '角色沒有「客戶管理」區塊',
+      { getMerchantAuthorities: [{ id: 'auth-1', authoritySettings: JSON.stringify([{ pageTitle: '其他', pageAuthority: [] }]) }] },
+    ],
     ['權限清單查不到', { getMerchantAuthorities: null }],
-    ['客戶管理沒有入金項目', { getMerchantAuthorities: [{ id: 'auth-1', authoritySettings: JSON.stringify([{ pageTitle: '客戶管理', pageAuthority: [] }]) }] }],
+    [
+      '客戶管理沒有入金項目',
+      { getMerchantAuthorities: [{ id: 'auth-1', authoritySettings: JSON.stringify([{ pageTitle: '客戶管理', pageAuthority: [] }]) }] },
+    ],
   ])('%s：視為沒有入金權限（不顯示「異動入金」、頁面不出錯）', async (_name, authority) => {
     await prepare({ GET_MERCHANT_AUTHORITIES: authority })
     expect(await screen.findByText(/入金剩餘/)).toBeInTheDocument()
@@ -185,7 +208,7 @@ describe('扣入金', () => {
 
 describe('紅利點數', () => {
   const field = fieldInput
-  const prepare = async (overrides) => {
+  const prepare = async overrides => {
     const page = setupPage({ GET_CUSTOMER_BONUS: { getIsCustomerBonusActive: true }, ...overrides })
     await waitPageReady()
     await pickCustomer(page.calls)
@@ -261,14 +284,32 @@ describe('紅利點數', () => {
 describe('使用預收卡', () => {
   const RECORDS = [
     {
-      ticketName: '剪髮十次卡', remark: '', price: 700,
+      ticketName: '剪髮十次卡',
+      remark: '',
+      price: 700,
       ticketRecordForOrder: [
-        { id: 'tr-1', no: '1', name: '剪髮十次卡', price: 700, remark: '', helperSetting: [{ type: '助理', helperDeductionType: 'PERCENT', nameList: ['洗髮', '吹整'] }] },
-        { id: 'tr-2', no: '2', name: '剪髮十次卡', price: 700, remark: '', helperSetting: [{ type: '助理', helperDeductionType: 'PERCENT', nameList: ['洗髮', '吹整'] }] },
+        {
+          id: 'tr-1',
+          no: '1',
+          name: '剪髮十次卡',
+          price: 700,
+          remark: '',
+          helperSetting: [{ type: '助理', helperDeductionType: 'PERCENT', nameList: ['洗髮', '吹整'] }],
+        },
+        {
+          id: 'tr-2',
+          no: '2',
+          name: '剪髮十次卡',
+          price: 700,
+          remark: '',
+          helperSetting: [{ type: '助理', helperDeductionType: 'PERCENT', nameList: ['洗髮', '吹整'] }],
+        },
       ],
     },
     {
-      ticketName: '護髮五次卡', remark: '限本店', price: 1000,
+      ticketName: '護髮五次卡',
+      remark: '限本店',
+      price: 1000,
       ticketRecordForOrder: [{ id: 'tr-3', no: '3', name: '護髮五次卡', price: 1000, remark: '限本店', helperSetting: [] }],
     },
   ]
@@ -392,22 +433,33 @@ describe('使用預收卡', () => {
   })
 
   it('卡券設定了兩類助理：兩類的助理欄都列出；指定欄按一般按鍵不跳欄', async () => {
-    await prepare({
-      GET_TICKET_RECORDS_FOR_ORDERS_V2: {
-        ticketRecordsForOrderV2: [
-          {
-            ticketName: '染燙卡', remark: '', price: 3000,
-            ticketRecordForOrder: [{
-              id: 'tr-9', no: '9', name: '染燙卡', price: 3000, remark: '',
-              helperSetting: [
-                { type: '助理', helperDeductionType: 'PERCENT', nameList: ['洗髮'] },
-                { type: '技師', helperDeductionType: 'CASH', nameList: ['上色'] },
+    await prepare(
+      {
+        GET_TICKET_RECORDS_FOR_ORDERS_V2: {
+          ticketRecordsForOrderV2: [
+            {
+              ticketName: '染燙卡',
+              remark: '',
+              price: 3000,
+              ticketRecordForOrder: [
+                {
+                  id: 'tr-9',
+                  no: '9',
+                  name: '染燙卡',
+                  price: 3000,
+                  remark: '',
+                  helperSetting: [
+                    { type: '助理', helperDeductionType: 'PERCENT', nameList: ['洗髮'] },
+                    { type: '技師', helperDeductionType: 'CASH', nameList: ['上色'] },
+                  ],
+                },
               ],
-            }],
-          },
-        ],
+            },
+          ],
+        },
       },
-    }, '1')
+      '1'
+    )
     await pickRecord('染燙卡')
     expect(await screen.findByPlaceholderText('助理-洗髮')).toBeInTheDocument()
     expect(screen.getByPlaceholderText('技師-上色')).toBeInTheDocument()

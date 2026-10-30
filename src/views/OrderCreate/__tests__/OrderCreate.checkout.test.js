@@ -12,8 +12,20 @@ import format from 'date-fns/format'
 import { openSnackbar } from 'elements/snackbars'
 import { loginAs, callsOf, currentLocation } from '../../../__tests__/testkit.test'
 import {
-  setupPage, waitPageReady, pickEmployee, pickService, pickCustomer, checkoutButton, sentOrder,
-  DESIGNER, PRODUCT, MEMBERSHIP, MEMBERSHIP_FOREVER, button, queryButton, findButton,
+  setupPage,
+  waitPageReady,
+  pickEmployee,
+  pickService,
+  pickCustomer,
+  checkoutButton,
+  sentOrder,
+  DESIGNER,
+  PRODUCT,
+  MEMBERSHIP,
+  MEMBERSHIP_FOREVER,
+  button,
+  queryButton,
+  findButton,
 } from './orderCreateKit.test'
 
 jest.setTimeout(20000)
@@ -263,7 +275,9 @@ describe('打帳單：掛單', () => {
     const pending = button('掛單')
     fireEvent.click(pending)
     act(() => pendingConfirm().usehandleCreateDraftOrder())
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('網路暫斷') })))
+    await wait(() =>
+      expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('網路暫斷') }))
+    )
     await wait(() => expect(pending).not.toBeDisabled())
     expect(currentLocation()).toBe('/order/create')
   })
@@ -443,7 +457,12 @@ describe('打帳單：連續打單與載入失敗', () => {
     const { calls } = setupPage({
       GET_TICKET_RECORDS_FOR_ORDERS_V2: {
         ticketRecordsForOrderV2: [
-          { ticketName: '護髮五次卡', remark: '', price: 1000, ticketRecordForOrder: [{ id: 'tr-3', no: '3', name: '護髮五次卡', price: 1000, remark: '', helperSetting: [] }] },
+          {
+            ticketName: '護髮五次卡',
+            remark: '',
+            price: 1000,
+            ticketRecordForOrder: [{ id: 'tr-3', no: '3', name: '護髮五次卡', price: 1000, remark: '', helperSetting: [] }],
+          },
         ],
       },
     })

@@ -135,7 +135,20 @@ describe('顧客追蹤', () => {
   it.each([
     ['查詢失敗', new Error('查詢失敗')],
     ['沒有髮況資料', { getCustomerHairInfo: null }],
-    ['欄位為 null', { getCustomerHairInfo: { hairProperties: null, scalpProperties: null, permAppliance: null, permPotion: null, hairColorCategory: null, hairColor: null, hairDyeFormula: null } }],
+    [
+      '欄位為 null',
+      {
+        getCustomerHairInfo: {
+          hairProperties: null,
+          scalpProperties: null,
+          permAppliance: null,
+          permPotion: null,
+          hairColorCategory: null,
+          hairColor: null,
+          hairDyeFormula: null,
+        },
+      },
+    ],
   ])('髮況%s：以空白顯示、不整頁錯誤', async (_, fixture) => {
     const utils = setup({ GET_CUSTOMER_HAIR_INFO: fixture })
     await utils.settle()
@@ -143,7 +156,6 @@ describe('顧客追蹤', () => {
     expect(screen.getByText('髮質屬性：').nextElementSibling.textContent).toBe('')
   })
 })
-
 
 it('標籤滑鼠刪除與 Backspace 刪除後，確認送出相同欄位與其餘髮況', async () => {
   const utils = setup()

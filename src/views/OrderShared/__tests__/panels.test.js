@@ -16,7 +16,8 @@ import { renderPage, networkRequests } from '../../../__tests__/testkit.test'
 
 // jsdom 沒有 canvas，真的 qrcode 套件一律失敗；以與套件相同的行為代替：有文字回傳 PNG data URL，空字串回傳錯誤（No input text）
 jest.mock('qrcode', () => ({
-  toDataURL: (text, callback) => (text ? callback(null, `data:image/png;base64,${Buffer.from(text).toString('base64')}`) : callback(new Error('No input text'))),
+  toDataURL: (text, callback) =>
+    text ? callback(null, `data:image/png;base64,${Buffer.from(text).toString('base64')}`) : callback(new Error('No input text')),
 }))
 
 afterEach(cleanup)

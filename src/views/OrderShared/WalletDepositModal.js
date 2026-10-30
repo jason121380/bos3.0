@@ -105,7 +105,7 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
       if (moneyStatus === 'MINUS') {
         cloneWalletDeposit.money = cloneWalletDeposit.money * -1
       }
-      const res = await walletDeposit({ input: cloneWalletDeposit, })
+      const res = await walletDeposit({ input: cloneWalletDeposit })
       if (res.data.walletDeposit) {
         openSnackbar({ message: `成功${statusText[moneyStatus]}入金`, variant: 'success' })
         response.refetch()
@@ -136,16 +136,16 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
               format="yyyy/MM/dd HH:mm"
               onChange={e => handleWalletDepositDataChange({ key: 'date', value: new Date(e).getTime() })}
               localeText={{
-                toolbarTitle: '選擇日期'
+                toolbarTitle: '選擇日期',
               }}
               slotProps={{
                 textField: {
                   variant: 'outlined',
-                  size: 'small'
+                  size: 'small',
                 },
                 toolbar: {
-                  toolbarFormat: 'M月d日 HH:mm'
-                }
+                  toolbarFormat: 'M月d日 HH:mm',
+                },
               }}
             />
           </Field>
@@ -164,11 +164,7 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
                 onWheel={() => document.activeElement.blur()}
               />
             </Field>
-            <WalletDepositToggleButton
-              value={moneyStatus}
-              identity={identity}
-              onChange={v => setMoneyStatus(v)}
-            />
+            <WalletDepositToggleButton value={moneyStatus} identity={identity} onChange={v => setMoneyStatus(v)} />
           </div>
           <Field label="設計師" required className="mb-6">
             <EmployeeAutoComplete
@@ -238,11 +234,7 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
           </Field>
         </DialogBody>
         <DialogFooter>
-          <Button
-            variant="primary"
-            onClick={handleSubWalletDeposit}
-            disabled={isClick}
-          >
+          <Button variant="primary" onClick={handleSubWalletDeposit} disabled={isClick}>
             確認{statusText[moneyStatus]}
           </Button>
         </DialogFooter>

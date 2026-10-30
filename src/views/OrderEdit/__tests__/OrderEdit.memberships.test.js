@@ -14,9 +14,19 @@ import { addDays } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import { callsOf } from '../../../__tests__/testkit.test'
 import {
-  setup, pageReady, makeOrder, checkoutAndGetInput, summaryValue, loginForTest, pickEmployee,
-  MEMBERSHIP, DESIGNER, ASSISTANT, BILL_DATE,
-  findDialog, queryDialog,
+  setup,
+  pageReady,
+  makeOrder,
+  checkoutAndGetInput,
+  summaryValue,
+  loginForTest,
+  pickEmployee,
+  MEMBERSHIP,
+  DESIGNER,
+  ASSISTANT,
+  BILL_DATE,
+  findDialog,
+  queryDialog,
 } from './orderEditKit.test'
 
 jest.setTimeout(20000)
@@ -194,7 +204,13 @@ describe('帳單詳細：改會員卡後重新結帳', () => {
     fireEvent.change(remarkOf(0), { target: { value: '生日禮' } })
     const input = await checkoutAndGetInput(page.calls)
     expect(input.membershipOrders).toEqual([
-      expect.objectContaining({ membershipUUID: MEMBERSHIP.uuid, price: 2800, sellerId: ASSISTANT.userId, thirdPartyCouponMerchantId: 'tp-1', remark: '生日禮' }),
+      expect.objectContaining({
+        membershipUUID: MEMBERSHIP.uuid,
+        price: 2800,
+        sellerId: ASSISTANT.userId,
+        thirdPartyCouponMerchantId: 'tp-1',
+        remark: '生日禮',
+      }),
     ])
   })
 

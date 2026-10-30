@@ -10,7 +10,18 @@ import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/
 import { openSnackbar } from 'elements/snackbars'
 import CropImage from '../CropImage'
 import { loginAs, callsOf } from '../../../__tests__/testkit.test'
-import { baseFixtures, renderParameter, openTab, save, sent, checkboxByLabel, controlByLabel, selectValue, typeText, cardOf } from './parameterKit.test'
+import {
+  baseFixtures,
+  renderParameter,
+  openTab,
+  save,
+  sent,
+  checkboxByLabel,
+  controlByLabel,
+  selectValue,
+  typeText,
+  cardOf,
+} from './parameterKit.test'
 
 jest.setTimeout(30000)
 
@@ -88,7 +99,11 @@ describe('功能設定', () => {
     await selectValue(controlByLabel('顧客端顯示設計師名稱'), '優先顯示暱稱')
     // 日結後鎖定：原本「材料自購」，加選「收支」
     const card = cardOf('功能設定')
-    fireEvent.click(within(card).getAllByRole('combobox').find(el => el.tagName === 'INPUT'))
+    fireEvent.click(
+      within(card)
+        .getAllByRole('combobox')
+        .find(el => el.tagName === 'INPUT')
+    )
     fireEvent.click(screen.getByRole('option', { name: '收支' }))
     expect(controlByLabel('起始時間')).toHaveValue('09:00')
     // 營業時間欄位在 updater 內讀 event.target.value，以 typeText 模擬瀏覽器輸入；送出時沒有秒（記錄目前行為）

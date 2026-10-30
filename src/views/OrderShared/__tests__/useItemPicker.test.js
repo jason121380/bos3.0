@@ -116,13 +116,22 @@ describe('useMembershipPicker：會員卡選擇窗', () => {
   it('只查可販售的會員卡，帶入會員卡分類', async () => {
     const { calls, latest } = setup(useMembershipPicker)
     await wait(() => expect(latest.modalProps.productList.data).toBeDefined())
-    expect(lastInput(calls, 'FETCH_MEMBERSHIPS_FOR_MODAL')).toEqual({ isAvailableForSale: true, pageLimit: 50, pageOffset: 0, keyword: '', categoryUUIds: [] })
+    expect(lastInput(calls, 'FETCH_MEMBERSHIPS_FOR_MODAL')).toEqual({
+      isAvailableForSale: true,
+      pageLimit: 50,
+      pageOffset: 0,
+      keyword: '',
+      categoryUUIds: [],
+    })
     expect(latest.modalProps.productList.data).toEqual([expect.objectContaining(CARD)])
     expect(latest.modalProps.productCategories).toEqual([expect.objectContaining({ uuid: 'mc-1', name: 'VIP' })])
   })
 
   it('清單與分類查詢失敗：不拋錯，清單與分類是空的', async () => {
-    const { latest } = setup(useMembershipPicker, { FETCH_MEMBERSHIPS_FOR_MODAL: new Error('網路錯誤'), FETCH_MEMBERSHIPS_CATEGORY: new Error('網路錯誤') })
+    const { latest } = setup(useMembershipPicker, {
+      FETCH_MEMBERSHIPS_FOR_MODAL: new Error('網路錯誤'),
+      FETCH_MEMBERSHIPS_CATEGORY: new Error('網路錯誤'),
+    })
     await wait(() => expect(latest.modalProps.productList.data).toEqual([]))
     expect(latest.modalProps.productCategories).toEqual([])
     expect(latest.modalProps.productList).toEqual({ data: [], totalCount: 0, pageOffset: 0, pageLimit: 50 })
@@ -157,7 +166,13 @@ describe('useMembershipPicker：會員卡選擇窗', () => {
     expect(latest.productsModalOpen).toBe(false)
     expect(latest.modalProps.selectedCategorie).toEqual([])
     await wait(() =>
-      expect(lastInput(calls, 'FETCH_MEMBERSHIPS_FOR_MODAL')).toEqual({ isAvailableForSale: true, pageLimit: 50, pageOffset: 0, keyword: '', categoryUUIds: [] })
+      expect(lastInput(calls, 'FETCH_MEMBERSHIPS_FOR_MODAL')).toEqual({
+        isAvailableForSale: true,
+        pageLimit: 50,
+        pageOffset: 0,
+        keyword: '',
+        categoryUUIds: [],
+      })
     )
   })
 })

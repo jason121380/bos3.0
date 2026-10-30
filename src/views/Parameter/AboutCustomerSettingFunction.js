@@ -10,14 +10,12 @@ import produce from 'immer'
 import { Autocomplete } from 'ui/combobox'
 
 const optionArr = [
-  { label: "同步顧客個人資料", key: 'isCustomerProfileSync' },
-  { label: "一律顯示返回按鈕", key: 'isArrowDisplayForLine' },
-  { label: "顯示完全新客非必填欄位", key: 'isNRCDisplayForNewCus' }
+  { label: '同步顧客個人資料', key: 'isCustomerProfileSync' },
+  { label: '一律顯示返回按鈕', key: 'isArrowDisplayForLine' },
+  { label: '顯示完全新客非必填欄位', key: 'isNRCDisplayForNewCus' },
 ]
 
-function AboutCustomerSettingFunction({
-  className, inputEnable, aboutCustomer, setAboutCustomer, requiredColumnOptions,
-}) {
+function AboutCustomerSettingFunction({ className, inputEnable, aboutCustomer, setAboutCustomer, requiredColumnOptions }) {
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
   const checkedIcon = <CheckBoxIcon fontSize="small" />
 
@@ -58,18 +56,11 @@ function AboutCustomerSettingFunction({
               onChange={(e, v) => handleSetValue('requiredColumnForNewCustomer', v)}
               renderOption={(props, option, { selected }) => (
                 <li {...props}>
-                  <Checkbox
-                    style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    checked={selected}
-                  />
+                  <Checkbox style={{ color: 'rgb(var(--text))', marginRight: 8 }} icon={icon} checkedIcon={checkedIcon} checked={selected} />
                   {option.label}
                 </li>
               )}
-              renderInput={params => (
-                <TextField {...params} variant="outlined" placeholder="欄位名稱" />
-              )}
+              renderInput={params => <TextField {...params} variant="outlined" placeholder="欄位名稱" />}
             />
           </Field>
         </div>

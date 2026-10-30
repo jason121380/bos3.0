@@ -11,9 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 function Results({ orders, ...rest }) {
   return (
     <div {...rest}>
-      <p className="pb-2 text-label tabular-nums text-text-secondary">
-        共 {orders.length} 筆
-      </p>
+      <p className="pb-2 text-label tabular-nums text-text-secondary">共 {orders.length} 筆</p>
       <Card>
         <CardHeader action={<GenericMoreButton />} className="items-center pb-4">
           <CardTitle>帳單紀錄</CardTitle>
@@ -43,28 +41,19 @@ function Results({ orders, ...rest }) {
                 <TableRow key={order.id}>
                   <TableCell>
                     <div className="font-medium tabular-nums">{order.no}</div>
-                    <div className="text-caption tabular-nums text-text-secondary">
-                      {format(new Date(order.date), 'yyyy/MM/dd')}
-                    </div>
+                    <div className="text-caption tabular-nums text-text-secondary">{format(new Date(order.date), 'yyyy/MM/dd')}</div>
                   </TableCell>
                   <TableCell>
                     {idx(order, _ => _.customer.name)}
-                    <div className="text-caption tabular-nums text-text-secondary">
-                      {idx(order, _ => _.customer.cellphone)}
-                    </div>
+                    <div className="text-caption tabular-nums text-text-secondary">{idx(order, _ => _.customer.cellphone)}</div>
                   </TableCell>
                   <TableCell>
-                    {idx(order, _ => _.designer.name)} /{' '}
-                    {idx(order, _ => _.designer.designerNo)}
+                    {idx(order, _ => _.designer.name)} / {idx(order, _ => _.designer.designerNo)}
                   </TableCell>
                   <TableCell>{order.isDesignate ? 'Y' : 'N'}</TableCell>
                   <TableCell>{order.status}</TableCell>
                   <TableCell numeric>
-                    {formatNumber(Math.round(
-                      order.serviceFakeTotal -
-                      order.serviceOtherPayFee -
-                      order.serviceThirdPartyPayFee
-                    ))}
+                    {formatNumber(Math.round(order.serviceFakeTotal - order.serviceOtherPayFee - order.serviceThirdPartyPayFee))}
                     <div className="text-caption text-text-secondary">
                       {order.serviceOrders
                         .map(d => (d.thirdPartyPayName ? '含 ' + d.thirdPartyPayName : null))
@@ -72,17 +61,9 @@ function Results({ orders, ...rest }) {
                         .join(',')}
                     </div>
                   </TableCell>
+                  <TableCell numeric>{formatNumber(order.productFakeTotal - order.productOtherPayFee - order.productThirdPartyPayFee)}</TableCell>
                   <TableCell numeric>
-                    {formatNumber(order.productFakeTotal -
-                      order.productOtherPayFee -
-                      order.productThirdPartyPayFee)}
-                  </TableCell>
-                  <TableCell numeric>
-                    {formatNumber(Math.round(
-                      order.ticketFakeTotal -
-                      order.ticketOtherPayFee -
-                      order.ticketThirdPartyPayFee
-                    ))}
+                    {formatNumber(Math.round(order.ticketFakeTotal - order.ticketOtherPayFee - order.ticketThirdPartyPayFee))}
                   </TableCell>
                   <TableCell numeric>{formatNumber(order.useTicketTotal)}</TableCell>
                   <TableCell numeric>{formatNumber(order.walletPay)}</TableCell>
@@ -91,21 +72,21 @@ function Results({ orders, ...rest }) {
                     <div className="text-caption text-text-secondary">{order.payType2}</div>
                   </TableCell>
                   <TableCell numeric>
-                    {formatNumber(Math.round(
-                      order.serviceFakeTotal -
-                      order.serviceOtherPayFee -
-                      order.serviceThirdPartyPayFee +
-                      order.productFakeTotal -
-                      order.productOtherPayFee -
-                      order.productThirdPartyPayFee
-                    ))}
+                    {formatNumber(
+                      Math.round(
+                        order.serviceFakeTotal -
+                          order.serviceOtherPayFee -
+                          order.serviceThirdPartyPayFee +
+                          order.productFakeTotal -
+                          order.productOtherPayFee -
+                          order.productThirdPartyPayFee
+                      )
+                    )}
                   </TableCell>
                   <TableCell numeric>{formatNumber(order.cashTotal)}</TableCell>
                   <TableCell className="text-right">
                     <Button asChild size="sm" variant="secondary">
-                      <RouterLink to={`/order/${order.id}`}>
-                        詳情
-                      </RouterLink>
+                      <RouterLink to={`/order/${order.id}`}>詳情</RouterLink>
                     </Button>
                   </TableCell>
                 </TableRow>

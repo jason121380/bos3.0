@@ -3,7 +3,13 @@
 // 打卡時間格內的分隔線改 Tailwind
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
-import { LocationOn as LocationOnIcon, ManageAccountsRounded as ManageAccountsRoundedIcon, DesktopWindowsRounded as DesktopWindows, PhoneIphone as PhoneIphoneIcon, QrCode as QrCodeIcon } from 'ui/icons'
+import {
+  LocationOn as LocationOnIcon,
+  ManageAccountsRounded as ManageAccountsRoundedIcon,
+  DesktopWindowsRounded as DesktopWindows,
+  PhoneIphone as PhoneIphoneIcon,
+  QrCode as QrCodeIcon,
+} from 'ui/icons'
 import { format, setHours, setMinutes } from 'date-fns'
 import PropTypes from 'prop-types'
 import { Fragment, useState } from 'react'
@@ -48,7 +54,7 @@ export default function Results({
   const [editData, setEditData] = useState({
     uuid: '',
     date: '',
-    clockInType: ''
+    clockInType: '',
   })
 
   // 顏色之外再給文字標記（WCAG 1.4.1：不以顏色為唯一狀態指示）
@@ -82,15 +88,17 @@ export default function Results({
       input: {
         uuid: editData.uuid,
         date: editData.date,
-      }
-    }).then(res => {
-      if (res.data.updateAttendantRecord) {
-        openSnackbar({ message: '修改成功', variant: 'success' })
-        handleSearch()
-      }
-    }).catch(error => {
-      setEditBtn(false)
+      },
     })
+      .then(res => {
+        if (res.data.updateAttendantRecord) {
+          openSnackbar({ message: '修改成功', variant: 'success' })
+          handleSearch()
+        }
+      })
+      .catch(error => {
+        setEditBtn(false)
+      })
   }
 
   const handleCloseModal = () => {
@@ -101,7 +109,7 @@ export default function Results({
     setEditData({
       uuid: '',
       date: '',
-      clockInType: ''
+      clockInType: '',
     })
     setGoogleMapUrl('')
     // 編輯／刪除成功後按鈕維持 disabled；關閉面板時一併重置，下一筆打卡的操作才不會被鎖住（Codex review PR #255）
@@ -113,20 +121,19 @@ export default function Results({
   const findClockInType = type => {
     switch (type) {
       case 'start':
-        return "上班"
+        return '上班'
       case 'end':
-        return "下班"
+        return '下班'
       case 'breakStart':
-        return "外出"
+        return '外出'
       case 'breakEnd':
-        return "歸回"
+        return '歸回'
       default:
-        return ""
+        return ''
     }
   }
 
   const handleSetEditData = (time, type) => {
-
     if (identity.edit || identity.delete || (time.latitude !== null && time.longitude !== null)) {
       if (time.latitude !== null && time.longitude !== null && time.checkinType !== 'QRCODE') {
         setGoogleMapUrl(`https://www.google.com/maps?q=${time.latitude},${time.longitude}`)
@@ -162,24 +169,26 @@ export default function Results({
 
   const handleDeleteRecord = () => {
     setDelBtn(true)
-    deleteAttendantRecord(editData.uuid).then(res => {
-      if (res.data.deleteAttendantRecord) {
-        openSnackbar({ message: '刪除成功', variant: 'success' })
-        handleSearch()
-      }
-    }).catch(error => {
-      setDelBtn(false)
-    })
+    deleteAttendantRecord(editData.uuid)
+      .then(res => {
+        if (res.data.deleteAttendantRecord) {
+          openSnackbar({ message: '刪除成功', variant: 'success' })
+          handleSearch()
+        }
+      })
+      .catch(error => {
+        setDelBtn(false)
+      })
   }
 
   const getClockInTime = (time, late, firstItem) => {
     if (time === null || time.uuid === null) return
     if (time.isLine) {
       return (
-        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', (late && firstItem) ? colorRedClass : clockInItemClass)}>
+        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', late && firstItem ? colorRedClass : clockInItemClass)}>
           <span></span>
           <span>上</span>
-          <span style={{ color: color(time.distanceValue) }} className={(late && firstItem) ? colorRedLinkLateClass : 'no-underline'}>
+          <span style={{ color: color(time.distanceValue) }} className={late && firstItem ? colorRedLinkLateClass : 'no-underline'}>
             {format(time.time, 'HH:mm')}
             {distanceMark(time.distanceValue)}
             {late && firstItem && <span className="text-caption">遲到</span>}
@@ -188,11 +197,11 @@ export default function Results({
       )
     } else if (time.checkinType === 'CELLPHONE' || (time.checkinType === null && time.latitude !== null && time.longitude !== null)) {
       return (
-        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', (late && firstItem) ? colorRedClass : clockInItemClass)}>
+        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', late && firstItem ? colorRedClass : clockInItemClass)}>
           <PhoneIphoneIcon className="!text-[14px] shrink-0" />
           <span>上</span>
           {time.latitude !== null && time.longitude !== null ? (
-            <span style={{ color: color(time.distanceValue) }} className={(late && firstItem) ? colorRedLinkLateClass : 'no-underline'}>
+            <span style={{ color: color(time.distanceValue) }} className={late && firstItem ? colorRedLinkLateClass : 'no-underline'}>
               {format(time.time, 'HH:mm')}
               {distanceMark(time.distanceValue)}
               {late && firstItem && <span className="text-caption">遲到</span>}
@@ -204,21 +213,21 @@ export default function Results({
       )
     } else if (time.checkinType === 'COMPUTER' || time.checkinType === null) {
       return (
-        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', (late && firstItem) ? colorRedClass : clockInItemClass)}>
+        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', late && firstItem ? colorRedClass : clockInItemClass)}>
           <DesktopWindows className="!text-[14px] shrink-0" />
           <span>上{format(time.time, 'HH:mm')}</span>
         </div>
       )
     } else if (time.checkinType === 'QRCODE' || time.checkinType === null) {
       return (
-        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', (late && firstItem) ? colorRedClass : clockInItemClass)}>
+        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', late && firstItem ? colorRedClass : clockInItemClass)}>
           <QrCodeIcon className="!text-[14px] shrink-0" />
           <span>上{format(time.time, 'HH:mm')}</span>
         </div>
       )
     } else if (time.checkinType === 'ADMIN') {
       return (
-        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', (late && firstItem) ? colorRedClass : clockInItemClass)}>
+        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', late && firstItem ? colorRedClass : clockInItemClass)}>
           <ManageAccountsRoundedIcon className="!text-[14px] shrink-0" />
           <span>上{format(time.time, 'HH:mm')}</span>
         </div>
@@ -231,10 +240,10 @@ export default function Results({
     if (time !== null) {
       if (time.isLine) {
         return (
-          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', (late && lastItem) ? colorRedClass : clockInItemClass)}>
+          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', late && lastItem ? colorRedClass : clockInItemClass)}>
             <span className="lineicon"></span>
             <span>下</span>
-            <span style={{ color: color(time.distanceValue) }} className={(late && lastItem) ? colorRedLinkLateClass : 'no-underline'}>
+            <span style={{ color: color(time.distanceValue) }} className={late && lastItem ? colorRedLinkLateClass : 'no-underline'}>
               {format(time.time, 'HH:mm')}
               {distanceMark(time.distanceValue)}
               {late && lastItem && <span className="text-caption">早退</span>}
@@ -243,11 +252,11 @@ export default function Results({
         )
       } else if (time.checkinType === 'CELLPHONE' || (time.checkinType === null && time.latitude !== null && time.longitude !== null)) {
         return (
-          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', (late && lastItem) ? colorRedClass : clockInItemClass)}>
+          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', late && lastItem ? colorRedClass : clockInItemClass)}>
             <PhoneIphoneIcon className="!text-[14px] shrink-0" />
             <span>下</span>
             {time.latitude !== null && time.longitude !== null ? (
-              <span style={{ color: color(time.distanceValue) }} className={(late && lastItem) ? colorRedLinkLateClass : 'no-underline'}>
+              <span style={{ color: color(time.distanceValue) }} className={late && lastItem ? colorRedLinkLateClass : 'no-underline'}>
                 {format(time.time, 'HH:mm')}
                 {distanceMark(time.distanceValue)}
                 {late && lastItem && <span className="text-caption">早退</span>}
@@ -259,21 +268,21 @@ export default function Results({
         )
       } else if (time.checkinType === 'COMPUTER' || time.checkinType === null) {
         return (
-          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', (late && lastItem) ? colorRedClass : clockInItemClass)}>
+          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', late && lastItem ? colorRedClass : clockInItemClass)}>
             <DesktopWindows className="!text-[14px] shrink-0" />
             <span>下{format(time.time, 'HH:mm')}</span>
           </div>
         )
       } else if (time.checkinType === 'QRCODE' || time.checkinType === null) {
         return (
-          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', (late && lastItem) ? colorRedClass : clockInItemClass)}>
+          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', late && lastItem ? colorRedClass : clockInItemClass)}>
             <QrCodeIcon className="!text-[14px] shrink-0" />
             <span>下{format(time.time, 'HH:mm')}</span>
           </div>
         )
       } else if (time.checkinType === 'ADMIN') {
         return (
-          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', (late && lastItem) ? colorRedClass : clockInItemClass)}>
+          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', late && lastItem ? colorRedClass : clockInItemClass)}>
             <ManageAccountsRoundedIcon className="!text-[14px] shrink-0" />
             <span>下{format(time.time, 'HH:mm')}</span>
           </div>
@@ -427,24 +436,14 @@ export default function Results({
           <Fragment>
             <FormControlLabel
               control={<Checkbox color="primary" />}
-              label='匯出打卡類型'
+              label="匯出打卡類型"
               checked={typeDisplay}
               onChange={(e, v) => setTypeDisplay(v)}
             />
-            <Button
-              disabled={exportHRLoading}
-              variant="secondary"
-              onClick={handleHRExport}
-              size="sm"
-            >
+            <Button disabled={exportHRLoading} variant="secondary" onClick={handleHRExport} size="sm">
               報表匯出(人資格式)
             </Button>
-            <Button
-              disabled={exportLoading}
-              variant="secondary"
-              onClick={handleExport}
-              size="sm"
-            >
+            <Button disabled={exportLoading} variant="secondary" onClick={handleExport} size="sm">
               報表匯出
             </Button>
           </Fragment>
@@ -452,9 +451,7 @@ export default function Results({
       >
         <div className="flex items-baseline gap-3">
           <CardTitle>全店打卡記錄列表</CardTitle>
-          <span className="text-label tabular-nums text-text-secondary">
-            共 {attendanceRecords.length} 筆
-          </span>
+          <span className="text-label tabular-nums text-text-secondary">共 {attendanceRecords.length} 筆</span>
         </div>
       </CardHeader>
       <div className="px-5 pb-5">
@@ -466,7 +463,9 @@ export default function Results({
               <TableHead className="px-2">曠職天數</TableHead>
               <TableHead className="px-2">總遲到分鐘數</TableHead>
               {displayDate.map((date, index) => (
-                <TableHead key={`TableCell-${index}`} className="w-[180px] min-w-[180px] px-2">{date}</TableHead>
+                <TableHead key={`TableCell-${index}`} className="w-[180px] min-w-[180px] px-2">
+                  {date}
+                </TableHead>
               ))}
             </TableRow>
           </TableHeader>
@@ -476,9 +475,15 @@ export default function Results({
                 <TableRow key={`TableRow-${index}`} className="hover:bg-transparent">
                   <TableCell className={`${stickyCell} whitespace-nowrap px-2 py-1 text-label`}>{data.userName}</TableCell>
                   {/* 計算總打卡天數 */}
-                  <TableCell className="whitespace-nowrap bg-accent/8 px-2 py-1 text-label font-bold tabular-nums text-accent">{data.totalClockInDays + ` 天`}</TableCell>
-                  <TableCell numeric className="whitespace-nowrap px-2 py-1 text-label">{formatNumber(data.absenteeismDays)}</TableCell>
-                  <TableCell numeric className="whitespace-nowrap px-2 py-1 text-label">{formatNumber(data.totalLateMinutes)}</TableCell>
+                  <TableCell className="whitespace-nowrap bg-accent/8 px-2 py-1 text-label font-bold tabular-nums text-accent">
+                    {data.totalClockInDays + ` 天`}
+                  </TableCell>
+                  <TableCell numeric className="whitespace-nowrap px-2 py-1 text-label">
+                    {formatNumber(data.absenteeismDays)}
+                  </TableCell>
+                  <TableCell numeric className="whitespace-nowrap px-2 py-1 text-label">
+                    {formatNumber(data.totalLateMinutes)}
+                  </TableCell>
                   {displayDate.map(d => {
                     return data.attendanceRecord.map((record, index) => {
                       if (format(record.date, 'MM/dd') === d.substring(0, 5)) {
@@ -495,11 +500,7 @@ export default function Results({
                                       clockIn.breakRecord.map((br, index) => {
                                         return getBreakTime(br, index)
                                       })}
-                                    {getClockOutTime(
-                                      clockIn.out,
-                                      record.isLeaveEarly,
-                                      record.clockInRecord.length - 1 === clockInIndex
-                                    )}
+                                    {getClockOutTime(clockIn.out, record.isLeaveEarly, record.clockInRecord.length - 1 === clockInIndex)}
                                   </Fragment>
                                 )
                               })}
@@ -521,20 +522,31 @@ export default function Results({
       <Dialog open={open} onOpenChange={o => !o && handleCloseDrawer()}>
         <DialogContent size="sm">
           <DialogHeader>
-            <DialogTitle>已選取打卡記錄:  {showSelectDate && `${format(showSelectDate, 'yyyy/MM/dd  HH:mm')} - ${findClockInType(editData.clockInType)}`}</DialogTitle>
+            <DialogTitle>
+              已選取打卡記錄: {showSelectDate && `${format(showSelectDate, 'yyyy/MM/dd  HH:mm')} - ${findClockInType(editData.clockInType)}`}
+            </DialogTitle>
           </DialogHeader>
           <DialogBody className="empty:hidden">
             {googleMapUrl !== '' && (
               <Button asChild variant="secondary" size="sm">
                 <a href={googleMapUrl} target="_blank" rel="noopener noreferrer">
-                  <LocationOnIcon />查看位置
+                  <LocationOnIcon />
+                  查看位置
                 </a>
               </Button>
             )}
           </DialogBody>
           <DialogFooter className="empty:hidden">
-            {identity.edit && <Button onClick={() => setOpenModal(true)} variant='primary'>編輯</Button>}
-            {identity.delete && <Button variant='danger' disabled={delBtn} onClick={() => setConfirmDeleteOpen(true)}>刪除</Button>}
+            {identity.edit && (
+              <Button onClick={() => setOpenModal(true)} variant="primary">
+                編輯
+              </Button>
+            )}
+            {identity.delete && (
+              <Button variant="danger" disabled={delBtn} onClick={() => setConfirmDeleteOpen(true)}>
+                刪除
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -572,13 +584,13 @@ export default function Results({
           </DialogHeader>
           <DialogBody className="flex flex-col gap-4">
             <p className="m-0 text-label text-text-secondary">
-              已選取打卡記錄:  {showSelectDate && `${format(showSelectDate, 'yyyy/MM/dd  HH:mm')} - ${findClockInType(editData.clockInType)}`}
+              已選取打卡記錄: {showSelectDate && `${format(showSelectDate, 'yyyy/MM/dd  HH:mm')} - ${findClockInType(editData.clockInType)}`}
             </p>
             <Field label="選取時間" htmlFor="attendance-edit-time">
               <Input
                 id="attendance-edit-time"
                 value={!!editData.date && format(new Date(editData.date), 'HH:mm')}
-                type='time'
+                type="time"
                 onChange={event => handleChangeTime(event.target.value)}
               />
             </Field>
@@ -587,11 +599,7 @@ export default function Results({
             <Button onClick={handleCloseModal} variant="secondary">
               取消
             </Button>
-            <Button
-              variant="primary"
-              onClick={handleSubmit}
-              disabled={editBtn}
-            >
+            <Button variant="primary" onClick={handleSubmit} disabled={editBtn}>
               確認
             </Button>
           </DialogFooter>

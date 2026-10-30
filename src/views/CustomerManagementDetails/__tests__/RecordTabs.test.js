@@ -30,7 +30,13 @@ const TICKET = {
   id: 't1',
   price: 333.335,
   no: 'TK-01',
-  order: { id: 'o-buy', date: new Date(2026, 8, 1, 23, 30).getTime(), no: 'A100', customer: { id: 'c1', name: '陳小姐', cellphone: '0912345678' }, designer: { id: 'd1', name: '王小美', designerNo: '01' } },
+  order: {
+    id: 'o-buy',
+    date: new Date(2026, 8, 1, 23, 30).getTime(),
+    no: 'A100',
+    customer: { id: 'c1', name: '陳小姐', cellphone: '0912345678' },
+    designer: { id: 'd1', name: '王小美', designerNo: '01' },
+  },
   service: { id: 's1', name: '護髮五次卡' },
   usageOrder: { id: 'o-use', no: 'A200', date: new Date(2026, 9, 21, 12).getTime() },
 }
@@ -38,7 +44,12 @@ const TICKET = {
 describe('卡券紀錄', () => {
   const fixtures = {
     GetTicket: v => ({
-      ticketRecords: { data: [v.input.isUseTicket ? { ...TICKET, id: 't2', price: 66.666 } : TICKET], pageLimit: v.input.pageLimit, pageOffset: v.input.pageOffset, totalCount: 80 },
+      ticketRecords: {
+        data: [v.input.isUseTicket ? { ...TICKET, id: 't2', price: 66.666 } : TICKET],
+        pageLimit: v.input.pageLimit,
+        pageOffset: v.input.pageOffset,
+        totalCount: 80,
+      },
     }),
   }
 
@@ -54,9 +65,13 @@ describe('卡券紀錄', () => {
     )
     const bought = screen.getByText('卡券購買紀錄').closest('.ui-root').parentElement
     expect(within(bought).getByText('帳單詳情').closest('a')).toHaveAttribute('href', '/order/o-buy')
-    ;['A100', '2026/09/01', '陳小姐 0912345678', '王小美 01', '護髮五次卡', '333.34'].forEach(t => expect(within(bought).getByText(t)).toBeInTheDocument())
+    ;['A100', '2026/09/01', '陳小姐 0912345678', '王小美 01', '護髮五次卡', '333.34'].forEach(t =>
+      expect(within(bought).getByText(t)).toBeInTheDocument()
+    )
     const used = screen.getByText('卡券使用紀錄').closest('.ui-root').parentElement
-    const links = within(used).getAllByText('帳單詳細').map(a => a.closest('a').getAttribute('href'))
+    const links = within(used)
+      .getAllByText('帳單詳細')
+      .map(a => a.closest('a').getAttribute('href'))
     expect(links).toEqual(['/order/o-use', '/order/o-buy'])
     ;['A200', '2026/10/21', 'TK-01', '66.67'].forEach(t => expect(within(used).getByText(t)).toBeInTheDocument())
   })
@@ -75,10 +90,14 @@ describe('卡券紀錄', () => {
     await wait(() => expect(callsOf(utils.calls, 'GetTicket').pop().variables.input).toEqual({ customerId: 'c1', pageLimit: 10, pageOffset: 0 }))
     await utils.settle()
     fireEvent.click(screen.getAllByLabelText('下一頁')[1])
-    await wait(() => expect(callsOf(utils.calls, 'GetTicket').pop().variables.input).toEqual({ customerId: 'c1', pageLimit: 50, pageOffset: 1, isUseTicket: true }))
+    await wait(() =>
+      expect(callsOf(utils.calls, 'GetTicket').pop().variables.input).toEqual({ customerId: 'c1', pageLimit: 50, pageOffset: 1, isUseTicket: true })
+    )
     await utils.settle()
     choose(screen.getAllByLabelText('每頁筆數')[1], '25')
-    await wait(() => expect(callsOf(utils.calls, 'GetTicket').pop().variables.input).toEqual({ customerId: 'c1', pageLimit: 25, pageOffset: 0, isUseTicket: true }))
+    await wait(() =>
+      expect(callsOf(utils.calls, 'GetTicket').pop().variables.input).toEqual({ customerId: 'c1', pageLimit: 25, pageOffset: 0, isUseTicket: true })
+    )
     expect(usedNext).toBeTruthy()
   })
 
@@ -92,7 +111,11 @@ describe('卡券紀錄', () => {
   })
 
   it('沒有資料（後端回 null）時不顯示表格；載入中顯示佔位', async () => {
-    renderDetails({ route: '/management/customers/c1/coupon', fixtures: { GetTicket: { ticketRecords: { data: null } } }, delays: { GetTicket: 2000 } })
+    renderDetails({
+      route: '/management/customers/c1/coupon',
+      fixtures: { GetTicket: { ticketRecords: { data: null } } },
+      delays: { GetTicket: 2000 },
+    })
     expect(await screen.findByLabelText('載入中')).toBeInTheDocument()
     await wait(() => expect(screen.queryByLabelText('載入中')).toBeNull())
     expect(screen.queryByText('卡券購買紀錄')).toBeNull()
@@ -110,7 +133,15 @@ const DEPOSIT = {
   handlingFeeDecountWay: 'BYCUSTOMER',
   handlingFeeDecountPrice: -30,
 }
-const USE = { id: 'u1', orderNo: 'A001', date: new Date(2026, 9, 20, 12).getTime(), money: 300, order: { id: 'o1' }, Customer: { id: 'c1', name: '陳小姐', cellphone: '0912345678' }, Designer: { id: 'd1', name: '王小美', designerNo: '01' } }
+const USE = {
+  id: 'u1',
+  orderNo: 'A001',
+  date: new Date(2026, 9, 20, 12).getTime(),
+  money: 300,
+  order: { id: 'o1' },
+  Customer: { id: 'c1', name: '陳小姐', cellphone: '0912345678' },
+  Designer: { id: 'd1', name: '王小美', designerNo: '01' },
+}
 
 describe('入金紀錄', () => {
   const fixtures = {
@@ -119,13 +150,26 @@ describe('入金紀錄', () => {
       walletDepositRecord: {
         record: [
           DEPOSIT,
-          { ...DEPOSIT, id: 'r2', money: 500, handlingFeeDecountWay: 'BYDESIGNER', handlingFeeDecountPrice: -10, Maker: { id: 'd2', name: 'Amy', designerNo: null }, remark: '' },
+          {
+            ...DEPOSIT,
+            id: 'r2',
+            money: 500,
+            handlingFeeDecountWay: 'BYDESIGNER',
+            handlingFeeDecountPrice: -10,
+            Maker: { id: 'd2', name: 'Amy', designerNo: null },
+            remark: '',
+          },
           { ...DEPOSIT, id: 'r3', money: 200, handlingFeeDecountWay: 'WITHOUTHANDLINGFEE', handlingFeeDecountPrice: 0, remark: '' },
         ],
         totalCount: 120,
       },
     },
-    WALLET_USE_RECORD: { walletUseRecord: { record: [USE, { ...USE, id: 'u2', Designer: { id: 'd2', name: 'Amy', designerNo: null }, Customer: null, money: 150 }], totalCount: 60 } },
+    WALLET_USE_RECORD: {
+      walletUseRecord: {
+        record: [USE, { ...USE, id: 'u2', Designer: { id: 'd2', name: 'Amy', designerNo: null }, Customer: null, money: 150 }],
+        totalCount: 60,
+      },
+    },
   }
 
   it('入金餘額、每筆入金（實付、負擔方、手續費）與合計；入金使用與合計；新增入金導到新增頁', async () => {
@@ -137,7 +181,9 @@ describe('入金紀錄', () => {
     expect(screen.getByText('12,500')).toBeInTheDocument()
     const r1 = screen.getByText('週年慶').closest('tr')
     expect(within(r1).getByText('編輯').closest('a')).toHaveAttribute('href', '/topup/edit/r1')
-    ;['2026/10/21', '陳小姐', '0912345678', '1,030', '1,000', '信用卡', '由客人負擔', '-30'].forEach(t => expect(within(r1).getByText(t)).toBeInTheDocument())
+    ;['2026/10/21', '陳小姐', '0912345678', '1,030', '1,000', '信用卡', '由客人負擔', '-30'].forEach(t =>
+      expect(within(r1).getByText(t)).toBeInTheDocument()
+    )
     expect(r1).toHaveTextContent('王小美 / 01')
     expect(screen.getByText('由設計師負擔')).toBeInTheDocument()
     expect(screen.getByText('不扣項')).toBeInTheDocument()
@@ -193,7 +239,15 @@ describe('入金紀錄', () => {
 
 describe('紅利點數紀錄', () => {
   const RECORDS = [
-    { id: 'b1', customerName: '陳小姐', customerNo: 'C01', date: new Date(2026, 9, 21, 23, 50).getTime(), bonus: 1200, designerName: '王小美', remark: '消費回饋' },
+    {
+      id: 'b1',
+      customerName: '陳小姐',
+      customerNo: 'C01',
+      date: new Date(2026, 9, 21, 23, 50).getTime(),
+      bonus: 1200,
+      designerName: '王小美',
+      remark: '消費回饋',
+    },
     { id: 'b2', customerName: '陳小姐', customerNo: 'C01', date: new Date(2026, 9, 1).getTime(), bonus: -200, designerName: 'Amy', remark: '' },
   ]
   const fixtures = { GET_CUSTOMER_BONUS_RECORD: { customerBonusRecord: RECORDS }, DELETE_BONUS_DEPOSIT: { deleteBonusDeposit: true } }
@@ -232,7 +286,10 @@ describe('紅利點數紀錄', () => {
   })
 
   it('刪除：後端回 false 提示失敗，錯誤以訊息提示', async () => {
-    const utils = renderDetails({ route: '/management/customers/c1/bonus', fixtures: { ...fixtures, DELETE_BONUS_DEPOSIT: { deleteBonusDeposit: false } } })
+    const utils = renderDetails({
+      route: '/management/customers/c1/bonus',
+      fixtures: { ...fixtures, DELETE_BONUS_DEPOSIT: { deleteBonusDeposit: false } },
+    })
     await utils.settle()
     fireEvent.click(screen.getAllByLabelText('選取此筆')[0])
     fireEvent.click(within(toolbar()).getByText('刪除'))
@@ -257,7 +314,11 @@ describe('簡訊、抽獎券、會員卡', () => {
   it('簡訊：日期、時間（台灣時間）、手機、內容；沒有紀錄顯示無資料', async () => {
     const utils = renderDetails({
       route: '/management/customers/c1/SMS',
-      fixtures: { GET_CUSTOMER_SMS_RECORD: { customerSMSRecord: [{ date: new Date(2026, 9, 21, 9, 5).getTime(), cellphone: '0912345678', message: '您的預約已確認' }] } },
+      fixtures: {
+        GET_CUSTOMER_SMS_RECORD: {
+          customerSMSRecord: [{ date: new Date(2026, 9, 21, 9, 5).getTime(), cellphone: '0912345678', message: '您的預約已確認' }],
+        },
+      },
     })
     await utils.settle()
     const row = screen.getByText('您的預約已確認').closest('tr')
@@ -279,7 +340,10 @@ describe('簡訊、抽獎券、會員卡', () => {
       fixtures: {
         GET_CUSTOMER_EVENT_TICKETS_FOR_MERCHANT: {
           customerEventTicketsForMerchant: [
-            { eventName: '週年慶抽獎', tickets: [{ serialNumber: 'SN-1', consumptionDate: new Date(2026, 9, 21, 23).getTime(), consumptionStoreName: '信義店' }] },
+            {
+              eventName: '週年慶抽獎',
+              tickets: [{ serialNumber: 'SN-1', consumptionDate: new Date(2026, 9, 21, 23).getTime(), consumptionStoreName: '信義店' }],
+            },
             { eventName: '已結束活動', tickets: [] },
           ],
         },
@@ -315,7 +379,13 @@ describe('簡訊、抽獎券、會員卡', () => {
           customer: {
             ...CUSTOMER,
             membershipPurchaseRecord: [
-              { membershipName: '舊卡', purchaseDate: new Date(2025, 0, 1).getTime(), expiryDay: new Date(2025, 11, 31).getTime(), validityDay: 365, remark: '續約' },
+              {
+                membershipName: '舊卡',
+                purchaseDate: new Date(2025, 0, 1).getTime(),
+                expiryDay: new Date(2025, 11, 31).getTime(),
+                validityDay: 365,
+                remark: '續約',
+              },
               { membershipName: '金卡', purchaseDate: new Date(2026, 9, 21, 23).getTime(), expiryDay: null, validityDay: null, remark: null },
             ],
           },
@@ -327,7 +397,10 @@ describe('簡訊、抽獎券、會員卡', () => {
     expect(rows[0]).toHaveTextContent('金卡2026/10/21無效期無')
     expect(rows[1]).toHaveTextContent('舊卡2025/01/012025/12/31365續約')
     cleanup()
-    const empty = renderDetails({ route: '/management/customers/c1/membership', fixtures: { GET_IS_MEMBERSHIP_CARD_ACTIVE: { getIsMemberShipCardActive: true } } })
+    const empty = renderDetails({
+      route: '/management/customers/c1/membership',
+      fixtures: { GET_IS_MEMBERSHIP_CARD_ACTIVE: { getIsMemberShipCardActive: true } },
+    })
     await empty.settle()
     expect(screen.getByText('無資料')).toBeInTheDocument()
   })

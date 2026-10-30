@@ -11,12 +11,7 @@ function Error401() {
         className="max-w-xl"
         icon={Lock}
         title="401: We are sorry but we are not able to authenticate you."
-        description={
-          <>
-            You either tried some shady route or you came here by mistake. Whichever it is, try using
-            the navigation
-          </>
-        }
+        description={<>You either tried some shady route or you came here by mistake. Whichever it is, try using the navigation</>}
         action={
           <Button asChild variant="primary">
             <RouterLink to="/">Back to home</RouterLink>

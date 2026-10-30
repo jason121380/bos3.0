@@ -78,7 +78,14 @@ describe('帳單詳細：服務列焦點', () => {
     price: service.price,
     thirdPartyPayName: null,
     thirdPartyPayId: null,
-    service: { id: service.id, name: service.name, no: service.no, isLocked: service.isLocked, isNoCash: false, isBindedThirdPartTicketLocked: 'FALSE' },
+    service: {
+      id: service.id,
+      name: service.name,
+      no: service.no,
+      isLocked: service.isLocked,
+      isNoCash: false,
+      isBindedThirdPartTicketLocked: 'FALSE',
+    },
     helperList: [],
   })
 

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { useState, useEffect, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import useFetchDeletePicking from 'hooks/useFetchDeletePicking'
 import { openSnackbar } from 'elements/snackbars'
 import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
@@ -19,14 +19,7 @@ const sticky1 = 'sticky left-0 z-[1] w-[52px] bg-background'
 const sticky2 = 'sticky left-[52px] z-[1] w-[52px] bg-background'
 const sticky3 = 'sticky left-[104px] z-[1] w-[120px] bg-background'
 
-function Results({
-  pageSetting,
-  className,
-  pickingRecords,
-  refetch,
-  actionsBanned,
-  ...rest
-}) {
+function Results({ pageSetting, className, pickingRecords, refetch, actionsBanned, ...rest }) {
   const blockPicking = actionsBanned.includes('PICKING')
   const [excelData, setExcelData] = useState([])
   const [selectedOrders, setSelectedOrders] = useState([])
@@ -43,15 +36,11 @@ function Results({
     pickingRecords.PickingRecord.forEach(record => {
       excelData.push({
         日期: format(new Date(record.date), 'yyyy/MM/dd'),
-        '商品代號/名稱':
-          record.productNo === null || record.productNo === ''
-            ? record.productName
-            : record.productNo + ' / ' + record.productName,
+        '商品代號/名稱': record.productNo === null || record.productNo === '' ? record.productName : record.productNo + ' / ' + record.productName,
         單價: record.price,
         數量: record.count,
         小計: record.total,
-        領料人: `${record.Picker.name}${record.Picker.designerNo ? `/${record.Picker.designerNo}` : ''
-          }`,
+        領料人: `${record.Picker.name}${record.Picker.designerNo ? `/${record.Picker.designerNo}` : ''}`,
         用途: record.purpose,
         備註: record.remark,
       })
@@ -62,7 +51,7 @@ function Results({
       小計: total('total'),
     })
     setExcelData(excelData)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（total）；只在 [pickingRecords] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（total）；只在 [pickingRecords] 變動時呼叫，補上會每次 render 重跑
   }, [pickingRecords])
 
   const total = key => {
@@ -84,21 +73,18 @@ function Results({
   }
 
   const handleCheckedAll = () => {
-    const selectableLength = (
-      blockPicking ? pickingRecords.PickingRecord.filter(({ isClosed }) => !isClosed).length : recordArr.length
-    )
+    const selectableLength = blockPicking ? pickingRecords.PickingRecord.filter(({ isClosed }) => !isClosed).length : recordArr.length
     return selectedOrders.length === selectableLength && selectableLength > 0
   }
 
   const handlecheckIndeterminate = () => {
-    const selectableLength = (
-      blockPicking ? pickingRecords.PickingRecord.filter(({ isClosed }) => !isClosed).length : recordArr.length
-    )
+    const selectableLength = blockPicking ? pickingRecords.PickingRecord.filter(({ isClosed }) => !isClosed).length : recordArr.length
     return selectedOrders.length > 0 && selectedOrders.length < selectableLength
   }
 
   const handleSelectOne = id => {
-    const newSelect = [...selectedOrders], index = newSelect.indexOf(id)
+    const newSelect = [...selectedOrders],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -128,10 +114,7 @@ function Results({
             className="items-center pb-4"
             action={
               <Button asChild size="sm" variant="secondary">
-                <CSVLink
-                  data={excelData}
-                  filename="材料自購登錄.csv"
-                >
+                <CSVLink data={excelData} filename="材料自購登錄.csv">
                   <Download strokeWidth={1.75} />
                   報表匯出
                 </CSVLink>
@@ -140,9 +123,7 @@ function Results({
           >
             <div className="flex items-baseline gap-3">
               <CardTitle>材料自購登錄列表</CardTitle>
-              <span className="text-label text-text-secondary tabular-nums">
-                共 {pickingRecords.totalCount} 筆
-              </span>
+              <span className="text-label text-text-secondary tabular-nums">共 {pickingRecords.totalCount} 筆</span>
             </div>
           </CardHeader>
           <div className="px-5 pb-5">
@@ -185,19 +166,14 @@ function Results({
                       </TableCell>
                       <TableCell className={`${sticky2} px-2`}>
                         <Button asChild variant="ghost" size="icon" className="text-accent">
-                          <RouterLink
-                            aria-label="編輯"
-                            to={`/employee/picking/edit/${record.id}`}
-                          >
+                          <RouterLink aria-label="編輯" to={`/employee/picking/edit/${record.id}`}>
                             <Pencil strokeWidth={1.75} />
                           </RouterLink>
                         </Button>
                       </TableCell>
                       <TableCell className={`${sticky3} tabular-nums`}>{format(new Date(record.date), 'yyyy/MM/dd')}</TableCell>
                       <TableCell>
-                        {record.productNo === null || record.productNo === ''
-                          ? record.productName
-                          : record.productNo + ' / ' + record.productName}
+                        {record.productNo === null || record.productNo === '' ? record.productName : record.productNo + ' / ' + record.productName}
                       </TableCell>
                       <TableCell numeric>{formatNumber(record.price)}</TableCell>
                       <TableCell numeric>{formatNumber(record.count)}</TableCell>
@@ -217,8 +193,12 @@ function Results({
                   <TableCell className={`${sticky3} bg-surface`} />
                   <TableCell />
                   <TableCell />
-                  <TableCell numeric className="font-medium">{formatNumber(total('count'))}</TableCell>
-                  <TableCell numeric className="font-medium">{formatNumber(total('total'))}</TableCell>
+                  <TableCell numeric className="font-medium">
+                    {formatNumber(total('count'))}
+                  </TableCell>
+                  <TableCell numeric className="font-medium">
+                    {formatNumber(total('total'))}
+                  </TableCell>
                   <TableCell />
                   <TableCell />
                   <TableCell />
@@ -239,9 +219,7 @@ function Results({
           aria-label="批次操作"
           className={`pointer-events-auto flex max-w-full flex-wrap items-center gap-1 rounded-lg border border-solid border-border bg-background py-1.5 pl-4 pr-1.5 shadow-float`}
         >
-          <span className="mr-2 text-label tabular-nums text-text">
-            {selectedOrders.length} selected
-          </span>
+          <span className="mr-2 text-label tabular-nums text-text">{selectedOrders.length} selected</span>
           <span aria-hidden="true" className="mr-1 h-5 w-px bg-border" />
           <Button size="sm" variant="ghost" className="text-danger hover:bg-danger/8" onClick={() => setConfirmingDelete(true)}>
             <Trash2 strokeWidth={1.75} />

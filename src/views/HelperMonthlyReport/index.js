@@ -24,24 +24,18 @@ const HelperMontlyReport = () => {
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading && !helperMonthlyData.loading) {
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const helperMonthlyReport = idx(helperMonthlyData, _ => _.data.helperMonthlyReport)
       const membershipPerformanceTotal = (helperMonthlyReport || []).reduce((accu, curVal) => accu + curVal.membershipPerformance, 0)
       const membershipRakeTotal = (helperMonthlyReport || []).reduce((accu, curVal) => accu + curVal.membershipRake, 0)
-      setMembershipDisplay(
-        (membershipPerformanceTotal !== 0 || membershipRakeTotal !== 0) ||
-        isMemberShipCardActive
-      )
+      setMembershipDisplay(membershipPerformanceTotal !== 0 || membershipRakeTotal !== 0 || isMemberShipCardActive)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading, helperMonthlyData.loading])
 
   return (
     <Page className="ui-root" title="互助月報表">
-      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'none', justifyContent: 'space-between' }}>
         <div className="merchantNamePrint">
           {JSON.parse(localStorage.getItem('userMerchant')).name +
             '   ' +
@@ -51,19 +45,13 @@ const HelperMontlyReport = () => {
             '   ' +
             '互助月報表'}
         </div>
-        <div className="merchantNamePrint">
-          {'列印時間： ' +
-            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-        </div>
+        <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
       </div>
       <PageHeader
         title="互助月報表"
         actions={
           <div className="printGrid print:hidden">
-            <Button
-              variant="secondary"
-              onClick={() => window.print()}
-            >
+            <Button variant="secondary" onClick={() => window.print()}>
               <Printer strokeWidth={1.75} />
               列印
             </Button>
@@ -81,17 +69,12 @@ const HelperMontlyReport = () => {
       />
 
       {helperMonthlyData.error ? (
-          <QueryFailed onRetry={() => helperMonthlyData.refetch()} />
-        ) : !helperMonthlyData.loading ? (
+        <QueryFailed onRetry={() => helperMonthlyData.refetch()} />
+      ) : !helperMonthlyData.loading ? (
         idx(
           helperMonthlyData,
           _ =>
-            _.data.helperMonthlyReport !== null && (
-              <Results
-                helperMonthlyReport={_.data.helperMonthlyReport}
-                membershipDisplay={membershipDisplay}
-              />
-            )
+            _.data.helperMonthlyReport !== null && <Results helperMonthlyReport={_.data.helperMonthlyReport} membershipDisplay={membershipDisplay} />
         )
       ) : (
         <Skeleton className="h-96" aria-busy="true" />

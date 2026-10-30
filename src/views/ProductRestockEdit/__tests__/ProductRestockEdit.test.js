@@ -8,15 +8,7 @@ import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
 import { callsOf, currentLocation, loginAs, renderPage, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
-import {
-  CATEGORIES,
-  RESTOCK_PRODUCTS,
-  clearCombo,
-  inputsByLabel,
-  optionTexts,
-  pickOption,
-  stockInUsing,
-} from '../../__tests__/stockKit.test'
+import { CATEGORIES, RESTOCK_PRODUCTS, clearCombo, inputsByLabel, optionTexts, pickOption, stockInUsing } from '../../__tests__/stockKit.test'
 import ProductRestockEdit from '..'
 
 jest.mock('elements/snackbars', () => ({

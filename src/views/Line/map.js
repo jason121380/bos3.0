@@ -7,7 +7,9 @@ import LiffHelper from '../../helper/liffHelper'
 
 // 原 emotion styled 的 Mark／Button／Button2 改為一般元素＋Tailwind（數值逐一對應）
 // 原為 styled.img（無 alt），維持相同輸出
-const AnyReactComponent = ({ text }) => <img className="relative -left-[20px] -top-[30px] w-[20px]" src="/images/been-here-marker.png" alt="目前位置" />
+const AnyReactComponent = ({ text }) => (
+  <img className="relative -left-[20px] -top-[30px] w-[20px]" src="/images/been-here-marker.png" alt="目前位置" />
+)
 
 function Map({ className, match, location, ...rest }) {
   const storeId = getQueryString({ key: 'storeId', location })
@@ -19,14 +21,16 @@ function Map({ className, match, location, ...rest }) {
   const [profile, setProfile] = useState(null)
 
   useEffect(() => {
-    LiffHelper.getProfile(match.params.id).then(profile => {
-      setProfile({ profile })
-    }).catch(err => {
-      // 尚未登入 LINE 時 LiffHelper.init 會先 liff.login() 導向登入、再以 'NOT_LOGIN' reject，屬正常流程，不提示
-      if (err === 'NOT_LOGIN') return
-      // LIFF 個人資料取不到時原本會在打卡時讀 null 而拋錯；這裡直接提示（errorLink 管不到 LIFF SDK）
-      alert('無法取得 LINE 個人資料，請重新開啟此頁')
-    })
+    LiffHelper.getProfile(match.params.id)
+      .then(profile => {
+        setProfile({ profile })
+      })
+      .catch(err => {
+        // 尚未登入 LINE 時 LiffHelper.init 會先 liff.login() 導向登入、再以 'NOT_LOGIN' reject，屬正常流程，不提示
+        if (err === 'NOT_LOGIN') return
+        // LIFF 個人資料取不到時原本會在打卡時讀 null 而拋錯；這裡直接提示（errorLink 管不到 LIFF SDK）
+        alert('無法取得 LINE 個人資料，請重新開啟此頁')
+      })
     getLocation()
   }, [match.params.id])
 
@@ -82,8 +86,16 @@ function Map({ className, match, location, ...rest }) {
         } else {
           return (
             <>
-              <div className="relative inline-block h-[40px] w-[40%] cursor-pointer border border-solid border-[#00114e] text-center leading-[40px] [transition:all_0.3s] hover:opacity-70 left-[5%] text-[#00114e]" onClick={getLocation}>取得位置</div>
-              <div onClick={checkIn} className="my-4 relative inline-block h-[40px] w-[40%] cursor-pointer border border-solid border-[#00114e] text-center leading-[40px] [transition:all_0.3s] hover:opacity-70 left-[10%] bg-[#00114e] text-[#fff]">
+              <div
+                className="relative inline-block h-[40px] w-[40%] cursor-pointer border border-solid border-[#00114e] text-center leading-[40px] [transition:all_0.3s] hover:opacity-70 left-[5%] text-[#00114e]"
+                onClick={getLocation}
+              >
+                取得位置
+              </div>
+              <div
+                onClick={checkIn}
+                className="my-4 relative inline-block h-[40px] w-[40%] cursor-pointer border border-solid border-[#00114e] text-center leading-[40px] [transition:all_0.3s] hover:opacity-70 left-[10%] bg-[#00114e] text-[#fff]"
+              >
                 確認打卡
               </div>
             </>
@@ -92,12 +104,7 @@ function Map({ className, match, location, ...rest }) {
       })()}
       <br />
       <br />
-      <GoogleMapReact
-        bootstrapURLKeys={{ key: 'AIzaSyAEyuPyJBkX5J0Z6P10Pb0i1A0-pnzQuaI' }}
-        defaultCenter={gps}
-        center={gps}
-        defaultZoom={17}
-      >
+      <GoogleMapReact bootstrapURLKeys={{ key: 'AIzaSyAEyuPyJBkX5J0Z6P10Pb0i1A0-pnzQuaI' }} defaultCenter={gps} center={gps} defaultZoom={17}>
         <AnyReactComponent lat={gps.lat} lng={gps.lng} />
       </GoogleMapReact>
     </Page>

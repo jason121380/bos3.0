@@ -37,8 +37,8 @@ function InventoryWork() {
   const [getInventorysLazy, inventorysData] = useFetchGetInventorysLazy({
     input: {
       dateRange: date,
-      creatorId: creatorId
-    }
+      creatorId: creatorId,
+    },
   })
 
   const handleInputChange = event => {
@@ -58,14 +58,13 @@ function InventoryWork() {
         setFirst(2)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [inventorysData.loading] 變動時執行；first、inventorysData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [inventorysData.loading] 變動時執行；first、inventorysData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [inventorysData.loading])
 
   useEffect(() => {
     getInventorysLazy()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
-
 
   return (
     <Page className="ui-root" title="盤點作業">
@@ -73,11 +72,7 @@ function InventoryWork() {
         title="盤點作業"
         actions={
           <>
-            <DateSelector
-              date={date}
-              attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
-              dateChange={value => setDate(value)}
-            />
+            <DateSelector date={date} attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']} dateChange={value => setDate(value)} />
             <Button
               variant="secondary"
               aria-pressed={!!showFilter}
@@ -88,7 +83,9 @@ function InventoryWork() {
               篩選
             </Button>
             <Button asChild variant="primary">
-              <RouterLink to={draftId === null ? '/inventory-work/create' : `/inventory-work/edit/${draftId}`}>{draftId === null ? '開始盤點' : '繼續盤點'}</RouterLink>
+              <RouterLink to={draftId === null ? '/inventory-work/create' : `/inventory-work/edit/${draftId}`}>
+                {draftId === null ? '開始盤點' : '繼續盤點'}
+              </RouterLink>
             </Button>
           </>
         }
@@ -99,21 +96,13 @@ function InventoryWork() {
         <Card className="mb-6 flex flex-wrap items-center gap-3 p-4">
           <span className="text-label text-text-secondary">篩選條件：</span>
           <Autocomplete
-            options={
-              !users.loading && users.data ? (idx(users, _ => _.data.users.users) || []) : []
-            }
+            options={!users.loading && users.data ? idx(users, _ => _.data.users.users) || [] : []}
             disabled={users.loading}
             size="small"
             style={{ width: 220 }}
             autoHighlight
-            getOptionLabel={option =>
-              option.designerNo === creatorKeyword
-                ? `${option.designerNo} ${option.name}`
-                : option.name
-            }
-            renderOption={(props, option) => (
-              <li {...props} style={{ fontSize: '13px' }}>{`${option.designerNo || ''} ${option.name}`}</li>
-            )}
+            getOptionLabel={option => (option.designerNo === creatorKeyword ? `${option.designerNo} ${option.name}` : option.name)}
+            renderOption={(props, option) => <li {...props} style={{ fontSize: '13px' }}>{`${option.designerNo || ''} ${option.name}`}</li>}
             onChange={(e, value) => {
               setCreatorId(value?.id || null)
             }}
@@ -138,10 +127,7 @@ function InventoryWork() {
               </Button>
             </div>
           ) : null}
-          <Button
-            variant="secondary"
-            onClick={() => getInventorysLazy()}
-          >
+          <Button variant="secondary" onClick={() => getInventorysLazy()}>
             <Search strokeWidth={1.75} />
             查詢
           </Button>
@@ -151,13 +137,13 @@ function InventoryWork() {
         <EmptyState
           title="無法載入盤點資料"
           description="請再試一次。列表不會一直停在載入中。"
-          action={(
+          action={
             <Button type="button" variant="secondary" onClick={() => getInventorysLazy()}>
               重新查詢
             </Button>
-          )}
+          }
         />
-      ) : (!inventorysData.loading && inventorysData.data) ? (
+      ) : !inventorysData.loading && inventorysData.data ? (
         <Results inventorys={inventorys} />
       ) : (
         <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">

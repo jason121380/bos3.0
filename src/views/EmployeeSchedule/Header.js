@@ -9,7 +9,7 @@ function Header({
   disableButton,
   disableButtonUndo,
   disableButtonRedo,
-  undoActive
+  undoActive,
 }) {
   const merchantName = JSON.parse(localStorage.getItem('userMerchant')).name
 
@@ -20,29 +20,17 @@ function Header({
         <>
           {undoActive && (
             <>
-              <Button
-                variant="secondary"
-                onClick={handleUndoScheduleCard}
-                disabled={disableButton || disableButtonUndo}
-              >
+              <Button variant="secondary" onClick={handleUndoScheduleCard} disabled={disableButton || disableButtonUndo}>
                 <Undo2 strokeWidth={1.75} />
                 復原
               </Button>
-              <Button
-                variant="secondary"
-                onClick={handleRedoScheduleCard}
-                disabled={disableButton || disableButtonRedo}
-              >
+              <Button variant="secondary" onClick={handleRedoScheduleCard} disabled={disableButton || disableButtonRedo}>
                 <Redo2 strokeWidth={1.75} />
                 重做
               </Button>
             </>
           )}
-          <Button
-            variant="primary"
-            onClick={handleAddScheduleCard}
-            disabled={disableButton}
-          >
+          <Button variant="primary" onClick={handleAddScheduleCard} disabled={disableButton}>
             <Plus strokeWidth={1.75} />
             新增
           </Button>

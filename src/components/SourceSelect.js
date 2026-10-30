@@ -3,10 +3,7 @@ import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import useFetchGetCustomerReference from 'hooks/useFetchGetCustomerReference'
 import { useState, useEffect, forwardRef } from 'react'
 import idx from 'idx'
-const SourceSelect = ({
-  onChange, className = '', value, emptyOption = false,
-  label = '客戶來源', ...rest
-}, ref) => {
+const SourceSelect = ({ onChange, className = '', value, emptyOption = false, label = '客戶來源', ...rest }, ref) => {
   const getReference = useFetchGetCustomerReference()
 
   if (getReference.loading) {
@@ -14,11 +11,7 @@ const SourceSelect = ({
   }
 
   return (
-    <FormControl
-      {...rest}
-      variant="outlined"
-      className={`${className} w-full`}
-    >
+    <FormControl {...rest} variant="outlined" className={`${className} w-full`}>
       <NativeSelect
         inputRef={ref}
         value={value || ''}
@@ -29,10 +22,16 @@ const SourceSelect = ({
         displayEmpty
         label={label}
       >
-        {emptyOption && <NativeSelectOption value=""><em>無</em></NativeSelectOption>}
+        {emptyOption && (
+          <NativeSelectOption value="">
+            <em>無</em>
+          </NativeSelectOption>
+        )}
         {/* 查詢失敗時 data 為 undefined：當成沒有來源，不讓整頁拋錯（Jason 2026/10/22 fix all） */}
         {(idx(getReference, _ => _.data.getCustomerReference) || []).map(data => (
-          <NativeSelectOption key={data} value={data}>{data}</NativeSelectOption>
+          <NativeSelectOption key={data} value={data}>
+            {data}
+          </NativeSelectOption>
         ))}
       </NativeSelect>
     </FormControl>

@@ -43,7 +43,11 @@ export const PINNED_DEF = [
   { pageTitle: '空的分類', pageAuthority: [] },
 ]
 
-export const baseFixtures = ({ section = profileSection(), me = ME, pinned = { usingStoreIds: ['merchant-1', 'merchant-2'], pinnedSettings: JSON.stringify([{ name: '帳單列表' }]) } } = {}) => ({
+export const baseFixtures = ({
+  section = profileSection(),
+  me = ME,
+  pinned = { usingStoreIds: ['merchant-1', 'merchant-2'], pinnedSettings: JSON.stringify([{ name: '帳單列表' }]) },
+} = {}) => ({
   PROFILE: { me },
   GET_MERCHANT_AUTHORITIES: {
     getMerchantAuthorities: [

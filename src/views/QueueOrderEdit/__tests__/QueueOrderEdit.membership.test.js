@@ -8,8 +8,23 @@ import { addDays } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import { loginAs, callsOf } from '../../../__tests__/testkit.test'
 import {
-  setupQueue, loaded, baseQueue, retry, summaryValue, pickOption, inputOf, panel, panelOf, fieldInput, ticketRecordsFixture,
-  DESIGNER, ASSISTANT, CARD, CUSTOMER, TICKET_RECORD, DATE,
+  setupQueue,
+  loaded,
+  baseQueue,
+  retry,
+  summaryValue,
+  pickOption,
+  inputOf,
+  panel,
+  panelOf,
+  fieldInput,
+  ticketRecordsFixture,
+  DESIGNER,
+  ASSISTANT,
+  CARD,
+  CUSTOMER,
+  TICKET_RECORD,
+  DATE,
 } from './queueKit.test'
 
 jest.setTimeout(20000)
@@ -76,7 +91,9 @@ describe('重新開單：會員卡銷售', () => {
   })
 
   it('選有效天數為 0 的卡：視為永久會籍，不送到期日', async () => {
-    const page = setupQueue({ FETCH_MEMBERSHIPS_FOR_AUTOCOMPLETE: { memberships: { data: [{ ...CARD, uuid: 'card-0', no: 'M00', name: '終身卡', effecitveDay: 0 }] } } })
+    const page = setupQueue({
+      FETCH_MEMBERSHIPS_FOR_AUTOCOMPLETE: { memberships: { data: [{ ...CARD, uuid: 'card-0', no: 'M00', name: '終身卡', effecitveDay: 0 }] } },
+    })
     await loaded(page)
     await pickOption(cardRow(0).seller(), 'Amy-01')
     await pickOption(cardRow(0).card(), '終身卡 - M00')
@@ -128,7 +145,9 @@ describe('重新開單：會員卡銷售', () => {
 
   // 終身卡（有效天數 0）取消勾選：原本到期日＝帳單日當天（已過期、早於日期欄最早可選日），重試照樣送出（Codex review PR #265）
   it('有效天數為 0 的卡取消「永久會籍」：到期日空白待選，重試提示「會員卡到期日有誤」', async () => {
-    const page = setupQueue({ FETCH_MEMBERSHIPS_FOR_AUTOCOMPLETE: { memberships: { data: [{ ...CARD, uuid: 'card-0', no: 'M00', name: '終身卡', effecitveDay: 0 }] } } })
+    const page = setupQueue({
+      FETCH_MEMBERSHIPS_FOR_AUTOCOMPLETE: { memberships: { data: [{ ...CARD, uuid: 'card-0', no: 'M00', name: '終身卡', effecitveDay: 0 }] } },
+    })
     await loaded(page)
     await pickOption(cardRow(0).seller(), 'Amy-01')
     await pickOption(cardRow(0).card(), '終身卡 - M00')
@@ -317,8 +336,7 @@ describe('重新開單：會員卡銷售', () => {
 })
 
 const useRow = () => panel('使用預收卡')
-const withCustomer = (overrides = {}) =>
-  baseQueue({ customerId: CUSTOMER.id, withoutCustomerData: false, ...overrides })
+const withCustomer = (overrides = {}) => baseQueue({ customerId: CUSTOMER.id, withoutCustomerData: false, ...overrides })
 
 describe('重新開單：使用預收卡', () => {
   it('沒有顧客時不顯示「使用預收卡」', async () => {

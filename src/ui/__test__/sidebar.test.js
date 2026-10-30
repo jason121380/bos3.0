@@ -2,12 +2,25 @@
 // 主側欄細項浮層：左緣貼側欄、視窗滿高、由上往下；超過 16 項才換欄。
 import React from 'react'
 import { cleanup, render, screen } from '@testing-library/react'
-import { Sidebar, SidebarFlyout, placeSidebarFlyout, sidebarFlyoutColumnCount, sidebarFlyoutShellWidth, splitSidebarFlyoutColumns, SIDEBAR_FLYOUT_GAP, SIDEBAR_FLYOUT_VIEWPORT_MARGIN } from '../sidebar'
+import {
+  Sidebar,
+  SidebarFlyout,
+  placeSidebarFlyout,
+  sidebarFlyoutColumnCount,
+  sidebarFlyoutShellWidth,
+  splitSidebarFlyoutColumns,
+  SIDEBAR_FLYOUT_GAP,
+  SIDEBAR_FLYOUT_VIEWPORT_MARGIN,
+} from '../sidebar'
 
 const strip = container => container.querySelector('.h-\\[env\\(safe-area-inset-top\\)\\]')
 
 test('抽屜打開時頂部安全區有白色細條，且在遮罩與抽屜之上、不攔點擊', () => {
-  const { container } = render(<Sidebar mobileOpen onMobileClose={() => {}}>內容</Sidebar>)
+  const { container } = render(
+    <Sidebar mobileOpen onMobileClose={() => {}}>
+      內容
+    </Sidebar>
+  )
   const el = strip(container)
   expect(el).toBeTruthy()
   expect(el.className).toContain('bg-canvas')
@@ -17,7 +30,11 @@ test('抽屜打開時頂部安全區有白色細條，且在遮罩與抽屜之�
 })
 
 test('抽屜關閉時不渲染白色細條', () => {
-  const { container } = render(<Sidebar mobileOpen={false} onMobileClose={() => {}}>內容</Sidebar>)
+  const { container } = render(
+    <Sidebar mobileOpen={false} onMobileClose={() => {}}>
+      內容
+    </Sidebar>
+  )
   expect(strip(container)).toBeNull()
 })
 
@@ -73,7 +90,9 @@ describe('側欄細項浮層位置與換欄', () => {
             <SidebarFlyout anchorRef={ref} label="櫃檯作業的細項">
               <div>
                 {names(count).map(name => (
-                  <a key={name} href="/item">{name}</a>
+                  <a key={name} href="/item">
+                    {name}
+                  </a>
                 ))}
               </div>
             </SidebarFlyout>
@@ -107,12 +126,14 @@ describe('側欄細項浮層位置與換欄', () => {
       paddingLeft: SIDEBAR_FLYOUT_GAP,
     })
     // 按鈕在側欄裡面時，外殼接到按鈕，卡片仍只離側欄右緣 4px
-    expect(placeSidebarFlyout({
-      sidebarRight: 264,
-      anchorRight: 252,
-      viewportWidth: 1280,
-      viewportHeight: 800,
-    })).toEqual({
+    expect(
+      placeSidebarFlyout({
+        sidebarRight: 264,
+        anchorRight: 252,
+        viewportWidth: 1280,
+        viewportHeight: 800,
+      })
+    ).toEqual({
       top: 8,
       left: 252,
       height: 784,
@@ -120,12 +141,14 @@ describe('側欄細項浮層位置與換欄', () => {
       paddingLeft: 16,
     })
     // 按鈕比側欄更右時不跟著往右推
-    expect(placeSidebarFlyout({
-      sidebarRight: 264,
-      anchorRight: 480,
-      viewportWidth: 1280,
-      viewportHeight: 800,
-    })).toMatchObject({ left: 264, paddingLeft: 4 })
+    expect(
+      placeSidebarFlyout({
+        sidebarRight: 264,
+        anchorRight: 480,
+        viewportWidth: 1280,
+        viewportHeight: 800,
+      })
+    ).toMatchObject({ left: 264, paddingLeft: 4 })
     // 右側空間不夠時整塊往左收，仍留在視窗內
     expect(placeSidebarFlyout({ sidebarRight: 1200, viewportWidth: 1280, viewportHeight: 800 })).toMatchObject({
       top: 8,

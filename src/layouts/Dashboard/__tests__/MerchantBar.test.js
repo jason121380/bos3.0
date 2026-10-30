@@ -12,7 +12,11 @@ const userMerchants = {
 }
 
 test('開啟切換店家時不自動聚焦搜尋框，焦點停在彈窗', () => {
-  render(<MemoryRouter><MerchantBar open onClose={() => {}} userMerchants={userMerchants} /></MemoryRouter>)
+  render(
+    <MemoryRouter>
+      <MerchantBar open onClose={() => {}} userMerchants={userMerchants} />
+    </MemoryRouter>
+  )
   const dialog = screen.getByRole('dialog')
   const search = screen.getByRole('textbox', { name: '搜尋店家' })
   expect(document.activeElement).not.toBe(search)

@@ -48,7 +48,10 @@ function swap(src, map) {
           keep.push(src.slice(s.start, s.end))
         }
       }
-      if (moved) edits.push(keep.length ? { start: node.start, end: node.end, text: `import { ${keep.join(', ')} } from '@mui/material'` } : removal(src, node))
+      if (moved)
+        edits.push(
+          keep.length ? { start: node.start, end: node.end, text: `import { ${keep.join(', ')} } from '@mui/material'` } : removal(src, node)
+        )
     } else if (/^@mui\/material\/[A-Za-z]+$/.test(source)) {
       const comp = source.split('/')[2]
       const target = map[comp]
@@ -77,7 +80,9 @@ function swap(src, map) {
     .map(([mod, specs]) => `import { ${[...new Set(specs)].join(', ')} } from '${mod}'`)
     .join('\n')
   // 由後往前套用，避免位移；新 import 插在第一個 import 之前（@jsxImportSource 等檔頭註解仍留在最上方）
-  const all = [...edits, ...(insertion ? [{ start: firstImportStart, end: firstImportStart, text: `${insertion}\n` }] : [])].sort((a, b) => b.start - a.start || b.end - a.end)
+  const all = [...edits, ...(insertion ? [{ start: firstImportStart, end: firstImportStart, text: `${insertion}\n` }] : [])].sort(
+    (a, b) => b.start - a.start || b.end - a.end
+  )
   for (const e of all) out = out.slice(0, e.start) + e.text + out.slice(e.end)
   return out
 }

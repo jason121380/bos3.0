@@ -18,7 +18,10 @@ jest.mock('hooks/useFetchMerchant', () => ({
 }))
 
 const tabList = () => screen.getByRole('tablist', { name: '員工設定分類' })
-const tabNames = () => within(tabList()).getAllByRole('tab').map(t => t.textContent)
+const tabNames = () =>
+  within(tabList())
+    .getAllByRole('tab')
+    .map(t => t.textContent)
 
 beforeEach(() => loginAs())
 afterEach(cleanup)

@@ -34,8 +34,7 @@ function ResetPasswordForm({ className, ...rest }) {
       ...prevFormState,
       values: {
         ...prevFormState.values,
-        [event.target.name]:
-          event.target.type === 'checkbox' ? event.target.checked : event.target.value,
+        [event.target.name]: event.target.type === 'checkbox' ? event.target.checked : event.target.value,
       },
       touched: {
         ...prevFormState.touched,
@@ -91,11 +90,7 @@ function ResetPasswordForm({ className, ...rest }) {
   return (
     <form {...rest} className="mt-6 flex flex-col" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-4">
-        <Field
-          label="電話號碼"
-          htmlFor="reset-phone"
-          error={hasError('phone') ? formState.errors.phone[0] : null}
-        >
+        <Field label="電話號碼" htmlFor="reset-phone" error={hasError('phone') ? formState.errors.phone[0] : null}>
           <Input
             id="reset-phone"
             invalid={hasError('phone')}
@@ -108,11 +103,7 @@ function ResetPasswordForm({ className, ...rest }) {
           />
         </Field>
         {showVerification.open ? (
-          <Field
-            label="驗證碼"
-            htmlFor="reset-verification-code"
-            error={hasError('verificationCode') ? formState.errors.verificationCode[0] : null}
-          >
+          <Field label="驗證碼" htmlFor="reset-verification-code" error={hasError('verificationCode') ? formState.errors.verificationCode[0] : null}>
             <Input
               id="reset-verification-code"
               invalid={hasError('verificationCode')}

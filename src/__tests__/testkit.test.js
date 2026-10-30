@@ -36,15 +36,13 @@ export const USER_ID = 'user-1'
 const LIST_NAME = /(^data$|s$|sV\d+$|List|list$|Records|records$|Record$|Data$)/
 const PAGINATION_FIELDS = ['totalCount', 'pageLimit', 'pageOffset']
 const selectionNames = ss => ss.selections.filter(sel => sel.kind === 'Field').map(sel => sel.name.value)
-const containsList = ss =>
-  ss.selections.some(sel => sel.kind === 'Field' && sel.selectionSet && LIST_NAME.test(sel.name.value))
+const containsList = ss => ss.selections.some(sel => sel.kind === 'Field' && sel.selectionSet && LIST_NAME.test(sel.name.value))
 function emptyComposite(sel, fragments, missing, depth) {
   const names = selectionNames(sel.selectionSet)
   // 最外層、只含物件／清單欄位（沒有 id、name 等純量）且內含清單者視為包裝物件（getOrderList { intervalSummary orderList }）；
   // 帶純量欄位的（shortcuts { id name services {…} }）仍是清單
   const hasScalar = sel.selectionSet.selections.some(child => child.kind === 'Field' && !child.selectionSet)
-  const isWrapper =
-    names.some(n => PAGINATION_FIELDS.includes(n)) || (depth === 0 && !hasScalar && containsList(sel.selectionSet))
+  const isWrapper = names.some(n => PAGINATION_FIELDS.includes(n)) || (depth === 0 && !hasScalar && containsList(sel.selectionSet))
   if (!isWrapper && LIST_NAME.test(sel.name.value)) return []
   return fillSelection(sel.selectionSet, {}, fragments, missing, depth + 1)
 }
@@ -65,10 +63,7 @@ function fillSelection(selectionSet, value, fragments, missing, depth = 0) {
           }
         } else if (sel.selectionSet) {
           const filled = fillSelection(sel.selectionSet, v, fragments, missing, depth + 1)
-          out[key] =
-            out[key] && typeof out[key] === 'object' && !Array.isArray(out[key]) && filled
-              ? { ...out[key], ...filled }
-              : filled
+          out[key] = out[key] && typeof out[key] === 'object' && !Array.isArray(out[key]) && filled ? { ...out[key], ...filled } : filled
         } else {
           out[key] = v
         }
@@ -298,24 +293,18 @@ if (isMain) {
     it('依 operation 名稱回應並記錄 variables；Error 轉成 GraphQL 錯誤', async () => {
       const calls = []
       const link = createAutoMockLink({ DEMO: v => ({ other: v.id }) }, { calls })
-      const result = await new Promise(resolve =>
-        ApolloLink.execute(link, { query: QUERY, variables: { id: 'x' } }).subscribe({ next: resolve })
-      )
+      const result = await new Promise(resolve => ApolloLink.execute(link, { query: QUERY, variables: { id: 'x' } }).subscribe({ next: resolve }))
       expect(result.data.other).toBe('x')
       expect(callsOf(calls, 'DEMO')).toEqual([{ operationName: 'DEMO', variables: { id: 'x' } }])
 
       const errLink = createAutoMockLink({ DEMO: new Error('壞了') })
-      const errResult = await new Promise(resolve =>
-        ApolloLink.execute(errLink, { query: QUERY, variables: {} }).subscribe({ next: resolve })
-      )
+      const errResult = await new Promise(resolve => ApolloLink.execute(errLink, { query: QUERY, variables: {} }).subscribe({ next: resolve }))
       expect(errResult.errors[0].message).toBe('壞了')
     })
 
     it("fallback: 'error' 時沒有 fixture 的查詢一律模擬失敗", async () => {
       const link = createAutoMockLink({}, { fallback: 'error' })
-      const result = await new Promise(resolve =>
-        ApolloLink.execute(link, { query: QUERY, variables: {} }).subscribe({ next: resolve })
-      )
+      const result = await new Promise(resolve => ApolloLink.execute(link, { query: QUERY, variables: {} }).subscribe({ next: resolve }))
       expect(result.errors[0].message).toContain('DEMO')
     })
 

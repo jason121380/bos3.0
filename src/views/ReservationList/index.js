@@ -51,53 +51,35 @@ export default function Reservation({ location }) {
       <Header />
       {customerBookingResults.error ? (
         <QueryFailed onRetry={() => customerBookingResults.refetch()} />
-      ) : idx(customerBookingResults, _ =>
-        _.data.viewer.customer.orders.orders.map((data, index) => (
-          <Card key={`order-${index}`}>
-            <CardContent className="flex flex-col gap-3">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex min-w-0 flex-col gap-1">
-                  <p className="text-caption tabular-nums text-text-secondary">
-                    {format(new Date(data.date), 'yyyy/MM/dd HH:mm')}
-                  </p>
-                  <h2 className="text-heading text-text">
-                    {data.designer ? data.designer.name + ' 設計師' : '不指定設計師'}
-                  </h2>
-                  {data.isDesignate ? (
-                    <p className="text-body text-text-secondary">
-                      指定設計師
-                    </p>
-                  ) : (
-                    ''
-                  )}
+      ) : (
+        idx(customerBookingResults, _ =>
+          _.data.viewer.customer.orders.orders.map((data, index) => (
+            <Card key={`order-${index}`}>
+              <CardContent className="flex flex-col gap-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex min-w-0 flex-col gap-1">
+                    <p className="text-caption tabular-nums text-text-secondary">{format(new Date(data.date), 'yyyy/MM/dd HH:mm')}</p>
+                    <h2 className="text-heading text-text">{data.designer ? data.designer.name + ' 設計師' : '不指定設計師'}</h2>
+                    {data.isDesignate ? <p className="text-body text-text-secondary">指定設計師</p> : ''}
+                  </div>
+                  <Badge variant={statusVariant(data.status)} className="shrink-0">
+                    {data.status}
+                  </Badge>
                 </div>
-                <Badge variant={statusVariant(data.status)} className="shrink-0">
-                  {data.status}
-                </Badge>
-              </div>
-              {data.status === '待審核' && (
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="h-11 w-full"
-                  onClick={() => handleCancleOrder(data.id)}
-                >
-                  取消預約
-                </Button>
-              )}
-              {data.status === '預約成功' && (
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="h-11 w-full"
-                  onClick={() => handleCancleOrder(data.id)}
-                >
-                  取消預約
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        ))
+                {data.status === '待審核' && (
+                  <Button variant="secondary" size="lg" className="h-11 w-full" onClick={() => handleCancleOrder(data.id)}>
+                    取消預約
+                  </Button>
+                )}
+                {data.status === '預約成功' && (
+                  <Button variant="secondary" size="lg" className="h-11 w-full" onClick={() => handleCancleOrder(data.id)}>
+                    取消預約
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          ))
+        )
       )}
     </Page>
   )

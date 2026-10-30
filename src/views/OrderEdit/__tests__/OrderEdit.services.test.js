@@ -9,9 +9,19 @@
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { callsOf } from '../../../__tests__/testkit.test'
 import {
-  setup, pageReady, makeOrder, checkoutAndGetInput, summaryValue, loginForTest, pickEmployee,
-  SERVICE, LOCKED_SERVICE, ASSISTANT, DESIGNER,
-  findDialog, queryDialog,
+  setup,
+  pageReady,
+  makeOrder,
+  checkoutAndGetInput,
+  summaryValue,
+  loginForTest,
+  pickEmployee,
+  SERVICE,
+  LOCKED_SERVICE,
+  ASSISTANT,
+  DESIGNER,
+  findDialog,
+  queryDialog,
 } from './orderEditKit.test'
 
 jest.setTimeout(20000)
@@ -216,7 +226,11 @@ describe('帳單詳細：改服務列後重新結帳', () => {
   })
 
   it('第 2 列改選沒有綁卡券的服務：該列卡券清空，第 1 列的助理照送', async () => {
-    const page = setup(servicesFixtures({ order: makeOrder({ serviceOrders: [serviceOrderOf(SERVICE, { helperList: [WASH_HELPER] }), serviceOrderOf(LOCKED_SERVICE)] }) }))
+    const page = setup(
+      servicesFixtures({
+        order: makeOrder({ serviceOrders: [serviceOrderOf(SERVICE, { helperList: [WASH_HELPER] }), serviceOrderOf(LOCKED_SERVICE)] }),
+      })
+    )
     await pageReady(page)
     await helpersReady()
     fireEvent.change(serviceInputs()[1], { target: { value: '剪' } })
@@ -301,9 +315,7 @@ describe('帳單詳細：從清單選擇服務', () => {
     fireEvent.click(within(panel()).getByLabelText('從清單選擇服務', { selector: 'button' }))
     const dialog = within(await findDialog())
     fireEvent.click(dialog.getByRole('button', { name: '剪髮' }))
-    await wait(() =>
-      expect(callsOf(page.calls, 'FETCH_SERVICES').some(c => (c.variables.input.categoryIds || []).includes('sc-1'))).toBe(true)
-    )
+    await wait(() => expect(callsOf(page.calls, 'FETCH_SERVICES').some(c => (c.variables.input.categoryIds || []).includes('sc-1'))).toBe(true))
     fireEvent.click(dialog.getByRole('button', { name: '下一頁' }))
     await wait(() => expect(callsOf(page.calls, 'FETCH_SERVICES').some(c => c.variables.input.pageOffset === 1)).toBe(true))
     fireEvent.click(dialog.getAllByRole('button', { name: '加入' })[0])

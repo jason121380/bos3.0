@@ -10,7 +10,7 @@ export default function useFetchSetAddEmployeeClockInSchedule() {
   const [addEmployeeClockInSchedule] = useMutation(SET_ADD_EMPLOYEE_CLOCK_IN_SCHEDULE)
   return {
     addEmployeeClockInSchedule: ({ input }) =>
-    addEmployeeClockInSchedule({
+      addEmployeeClockInSchedule({
         variables: {
           input,
         },

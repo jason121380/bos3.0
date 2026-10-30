@@ -17,19 +17,15 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
     if (pageRef.current) {
       paginationLabel(pageRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（paginationLabel）；只在 [pageRef.current, walletUseRecord] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（paginationLabel）；只在 [pageRef.current, walletUseRecord] 變動時呼叫，補上會每次 render 重跑
   }, [pageRef.current, walletUseRecord])
 
   return (
     <div {...rest} className={className}>
       <p className="mb-2 text-label tabular-nums text-text-secondary">
-        共 {idx(walletUseRecord.data, _ => _.walletUseRecord.totalCount)} 筆資料,{' '}
-        {resultSetting.usaged.pageOffset + 1}/
+        共 {idx(walletUseRecord.data, _ => _.walletUseRecord.totalCount)} 筆資料, {resultSetting.usaged.pageOffset + 1}/
         {/* 總頁數以總筆數計算（原本用本頁筆數 record.length；Jason 2026/10/22 fix all） */}
-        {Math.ceil(
-          (idx(walletUseRecord.data, _ => _.walletUseRecord.totalCount) || 0) /
-          resultSetting.usaged.pageLimit
-        )}
+        {Math.ceil((idx(walletUseRecord.data, _ => _.walletUseRecord.totalCount) || 0) / resultSetting.usaged.pageLimit)}
       </p>
       <Card>
         <CardHeader className="pb-4">
@@ -52,9 +48,7 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
                   <TableRow key={`${data.id}-${data.index}`}>
                     <TableCell>
                       <Button asChild size="sm" variant="secondary">
-                        <RouterLink to={`/order/${data.order.id}`}>
-                          帳單詳情
-                        </RouterLink>
+                        <RouterLink to={`/order/${data.order.id}`}>帳單詳情</RouterLink>
                       </Button>
                     </TableCell>
                     <TableCell>
@@ -65,12 +59,7 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
                       {idx(data.Customer, _ => _.name)}
                       <div className="text-caption tabular-nums text-text-secondary">{idx(data.Customer, _ => _.cellphone)}</div>
                     </TableCell>
-                    <TableCell>
-                      {idx(
-                        data.Designer,
-                        _ => `${_.name} ${_.designerNo ? ' / ' + _.designerNo : ''}`
-                      )}
-                    </TableCell>
+                    <TableCell>{idx(data.Designer, _ => `${_.name} ${_.designerNo ? ' / ' + _.designerNo : ''}`)}</TableCell>
                     <TableCell numeric>{formatNumber(data.money)}</TableCell>
                   </TableRow>
                 ))
@@ -79,9 +68,7 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
                 <TableCell colSpan={3}></TableCell>
                 <TableCell className="font-bold">合計</TableCell>
                 <TableCell numeric className="font-bold">
-                  {formatNumber(idx(walletUseRecord, _ =>
-                    _.data.walletUseRecord.record.reduce((prev, next) => prev + next.money, 0)
-                  ))}
+                  {formatNumber(idx(walletUseRecord, _ => _.data.walletUseRecord.record.reduce((prev, next) => prev + next.money, 0)))}
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -90,11 +77,9 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
         <div className="flex justify-end px-3 pb-2">
           <TablePagination
             ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
+            labelRowsPerPage="每頁顯示數量"
             count={walletUseRecord.data === undefined ? 0 : idx(walletUseRecord.data, _ => _.walletUseRecord.totalCount)}
-            onPageChange={(_event, page) =>
-              onChange({ event: { target: { value: page } }, key: 'pageOffset' })
-            }
+            onPageChange={(_event, page) => onChange({ event: { target: { value: page } }, key: 'pageOffset' })}
             onRowsPerPageChange={event => onChange({ event, key: 'pageLimit' })}
             page={resultSetting.usaged.pageOffset}
             rowsPerPage={resultSetting.usaged.pageLimit}

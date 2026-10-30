@@ -14,7 +14,10 @@ const ORDER = {
   date: new Date(2026, 9, 21, 23, 50).getTime(),
   previewItem: ['精緻剪髮', '洗髮精'],
   serviceOrders: [{ id: 's1', price: 800 }],
-  productOrders: [{ id: 'p1', price: 300 }, { id: 'p2', price: 200 }],
+  productOrders: [
+    { id: 'p1', price: 300 },
+    { id: 'p2', price: 200 },
+  ],
   ticketOrders: [{ id: 't1', price: 1000 }],
   useTicketOrders: [{ id: 'u1', price: 0 }],
   designer: { id: 'd1', name: '王小美' },
@@ -54,9 +57,7 @@ describe('顧客消費記錄', () => {
   it('未登入：導到顧客登入頁，登入後回到本頁（帶店家 id）', async () => {
     setup()
     await wait(() => expect(currentLocation()).toMatch(/^\/customer\/login\?/))
-    expect(decodeURIComponent(currentLocation())).toBe(
-      '/customer/login?merchantid=m-9&redirect=/customer/consumption/records?merchantid=m-9'
-    )
+    expect(decodeURIComponent(currentLocation())).toBe('/customer/login?merchantid=m-9&redirect=/customer/consumption/records?merchantid=m-9')
   })
 
   it('登入資料沒有 userCode 也視為未登入', async () => {

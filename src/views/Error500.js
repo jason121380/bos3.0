@@ -11,12 +11,7 @@ function Error500() {
         className="max-w-xl"
         icon={ServerCrash}
         title="500: Ooops, something went terribly wrong!"
-        description={
-          <>
-            You either tried some shady route or you came here by mistake. Whichever it is, try using
-            the navigation
-          </>
-        }
+        description={<>You either tried some shady route or you came here by mistake. Whichever it is, try using the navigation</>}
         action={
           <Button asChild variant="primary">
             <RouterLink to="/">Back to home</RouterLink>

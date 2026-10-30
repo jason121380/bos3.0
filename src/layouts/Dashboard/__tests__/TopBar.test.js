@@ -271,7 +271,13 @@ describe('角色權限防呆', () => {
     await wait(() => expect(screen.getByAltText('BeautyOS').closest('a')).toHaveAttribute('href', '/'))
     cleanup()
     const denied = setup({
-      roles: [{ id: 'auth-1', authorityName: '設計師', authoritySettings: JSON.stringify([{ ...ROLE, pageAuthority: [{ pageName: '打帳單', authority: false }] }]) }],
+      roles: [
+        {
+          id: 'auth-1',
+          authorityName: '設計師',
+          authoritySettings: JSON.stringify([{ ...ROLE, pageAuthority: [{ pageName: '打帳單', authority: false }] }]),
+        },
+      ],
     })
     await denied.settle()
     expect(screen.getByAltText('BeautyOS').closest('a')).toHaveAttribute('href', '/profile/general')

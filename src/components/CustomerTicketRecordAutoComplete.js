@@ -44,8 +44,7 @@ export default function CustomerTicketRecordAutoComplete({
 
   const options = idx(ticketRecord, _ => _.data.ticketRecords.data) || []
   const activeIDs = couponUsages.map(d => d.customerTicketId)
-  const selectedValue =
-    idx(ticketRecord, _ => _.data.ticketRecords.data.find(d => d.id === value)) || null
+  const selectedValue = idx(ticketRecord, _ => _.data.ticketRecords.data.find(d => d.id === value)) || null
 
   return (
     <Autocomplete

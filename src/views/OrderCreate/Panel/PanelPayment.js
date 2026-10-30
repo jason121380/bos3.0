@@ -23,11 +23,7 @@ export default function PanelPayment() {
             {!!bill.customerId && customerWallet !== undefined ? `入金可用餘額: ${customerWallet}` : ''}
           </span>
         </p>
-        {teachingMode && (
-          <p className={`m-0 ${styles.paymentTeachTitle}`}>
-            扣入金 第三方支付在這邊輸入**
-          </p>
-        )}
+        {teachingMode && <p className={`m-0 ${styles.paymentTeachTitle}`}>扣入金 第三方支付在這邊輸入**</p>}
         <div className={styles.fieldOutter}>
           <Payment />
         </div>

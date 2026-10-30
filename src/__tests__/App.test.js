@@ -41,7 +41,13 @@ describe('Sentry 錯誤追蹤', () => {
     loadApp('test')
     expect(mockSentry.init).toHaveBeenCalledTimes(1)
     expect(mockSentry.init.mock.calls[0][0]).toEqual(
-      expect.objectContaining({ enabled: false, environment: 'development', release: `bos@${APP_VERSION}`, tracesSampleRate: 0.1, integrations: ['tracing'] })
+      expect.objectContaining({
+        enabled: false,
+        environment: 'development',
+        release: `bos@${APP_VERSION}`,
+        tracesSampleRate: 0.1,
+        integrations: ['tracing'],
+      })
     )
   })
 

@@ -172,7 +172,16 @@ describe('ManagementTable 列表表格卡片', () => {
     expect(onRowsPerPageChange.mock.calls[0][0].target.value).toBe(10)
     cleanup()
     renderPage(
-      <ManagementTable title="帳單" totalCount={3} tableHead={<TableHead>編號</TableHead>} pageLimit={10} pageOffset={0} onPageChange={() => {}} onRowsPerPageChange={() => {}} hidePagination>
+      <ManagementTable
+        title="帳單"
+        totalCount={3}
+        tableHead={<TableHead>編號</TableHead>}
+        pageLimit={10}
+        pageOffset={0}
+        onPageChange={() => {}}
+        onRowsPerPageChange={() => {}}
+        hidePagination
+      >
         {body}
       </ManagementTable>
     )
@@ -188,7 +197,15 @@ describe('ManagementTable 列表表格卡片', () => {
           <button type="button" onClick={() => force(n => n + 1)}>
             重繪
           </button>
-          <ManagementTable title="帳單" totalCount={3} tableHead={<TableHead>編號</TableHead>} pageLimit={10} pageOffset={0} onPageChange={() => {}} onRowsPerPageChange={() => {}}>
+          <ManagementTable
+            title="帳單"
+            totalCount={3}
+            tableHead={<TableHead>編號</TableHead>}
+            pageLimit={10}
+            pageOffset={0}
+            onPageChange={() => {}}
+            onRowsPerPageChange={() => {}}
+          >
             <TableBody>
               <TableRow>
                 <TableCell>
@@ -332,7 +349,10 @@ describe('GoogleAnalytics／Page（依環境變數決定是否送 GA）', () => 
         const container = document.createElement('div')
         document.body.appendChild(container)
         actIn(() => {
-          ReactDOM.render(R.createElement(MemoryRouter, { initialEntries: [route] }, R.createElement(Page, props, child && R.createElement('p', null, child))), container)
+          ReactDOM.render(
+            R.createElement(MemoryRouter, { initialEntries: [route] }, R.createElement(Page, props, child && R.createElement('p', null, child))),
+            container
+          )
         })
         out = {
           container,

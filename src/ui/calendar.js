@@ -113,7 +113,17 @@ export function DayView({ value, month, onMonthChange, onSelect, onOpenYear, con
   return (
     <div className="flex w-[320px] max-w-full flex-col">
       <div className="flex h-12 items-center justify-between pl-6 pr-3">
-        <button type="button" onClick={onOpenYear} aria-label="選擇年份" title="選擇年份" className={cn('flex min-h-10 items-center gap-1 rounded-md px-2 text-label font-semibold text-text hover:bg-surface-hover', focusRing, 'focus-visible:ring-inset focus-visible:ring-offset-0')}>
+        <button
+          type="button"
+          onClick={onOpenYear}
+          aria-label="選擇年份"
+          title="選擇年份"
+          className={cn(
+            'flex min-h-10 items-center gap-1 rounded-md px-2 text-label font-semibold text-text hover:bg-surface-hover',
+            focusRing,
+            'focus-visible:ring-inset focus-visible:ring-offset-0'
+          )}
+        >
           <span aria-live="polite">{fmt(month, 'LLLL yyyy')}</span>
           <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current text-text-secondary" aria-hidden="true">
             <path d={DROP} />
@@ -195,7 +205,12 @@ export function YearView({ value, month, onSelect, constraints }) {
     }
   }, [])
   return (
-    <div ref={listRef} role="radiogroup" aria-label="選擇年份" className="grid max-h-[304px] w-[320px] max-w-full grid-cols-4 gap-y-2 overflow-y-auto px-2 py-2">
+    <div
+      ref={listRef}
+      role="radiogroup"
+      aria-label="選擇年份"
+      className="grid max-h-[304px] w-[320px] max-w-full grid-cols-4 gap-y-2 overflow-y-auto px-2 py-2"
+    >
       {years.map(y => {
         const disabled = y < minYear || y > maxYear
         const isSelected = y === current
@@ -231,40 +246,50 @@ export function MonthView({ value, month, onSelect, onOpenYear, constraints }) {
     <div className="flex w-[320px] max-w-full flex-col">
       {/* 同 MUI：月份視圖上方也有「十月 2026 ▾」標頭，點擊切換到年份 */}
       <div className="flex h-12 items-center pl-6 pr-3">
-        <button type="button" onClick={onOpenYear} aria-label="選擇年份" title="選擇年份" className={cn('flex min-h-10 items-center gap-1 rounded-md px-2 text-label font-semibold text-text hover:bg-surface-hover', focusRing, 'focus-visible:ring-inset focus-visible:ring-offset-0')}>
+        <button
+          type="button"
+          onClick={onOpenYear}
+          aria-label="選擇年份"
+          title="選擇年份"
+          className={cn(
+            'flex min-h-10 items-center gap-1 rounded-md px-2 text-label font-semibold text-text hover:bg-surface-hover',
+            focusRing,
+            'focus-visible:ring-inset focus-visible:ring-offset-0'
+          )}
+        >
           <span aria-live="polite">{fmt(base, 'LLLL yyyy')}</span>
           <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current text-text-secondary" aria-hidden="true">
             <path d={DROP} />
           </svg>
         </button>
       </div>
-    <div role="radiogroup" aria-label={`${year} 年月份`} className="grid grid-cols-3 gap-y-2 px-2 py-3">
-      {Array.from({ length: 12 }, (_, m) => {
-        const first = new Date(year, m, 1)
-        const last = endOfMonth(first)
-        const min = constraints.minDate != null ? new Date(constraints.minDate) : null
-        const max = constraints.maxDate != null ? new Date(constraints.maxDate) : null
-        const disabled = (min && last < startOfDay(min)) || (max && first > endOfDay(max)) || (constraints.disableFuture && first > now)
-        const isSelected = isValidDate(value) && value.getMonth() === m && getYear(value) === year
-        return (
-          <button
-            key={m}
-            type="button"
-            role="radio"
-            aria-checked={isSelected}
-            disabled={disabled}
-            onClick={() => onSelect(new Date(year, m, Math.min(base.getDate(), endOfMonth(first).getDate()), base.getHours(), base.getMinutes()))}
-            className={cn(
-              'mx-auto h-9 w-[84px] max-sm:min-h-10 rounded-lg text-body text-text transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
-              isSelected && 'bg-accent font-semibold text-white hover:bg-accent',
-              disabled && 'pointer-events-none opacity-40'
-            )}
-          >
-            {fmt(first, 'LLL')}
-          </button>
-        )
-      })}
-    </div>
+      <div role="radiogroup" aria-label={`${year} 年月份`} className="grid grid-cols-3 gap-y-2 px-2 py-3">
+        {Array.from({ length: 12 }, (_, m) => {
+          const first = new Date(year, m, 1)
+          const last = endOfMonth(first)
+          const min = constraints.minDate != null ? new Date(constraints.minDate) : null
+          const max = constraints.maxDate != null ? new Date(constraints.maxDate) : null
+          const disabled = (min && last < startOfDay(min)) || (max && first > endOfDay(max)) || (constraints.disableFuture && first > now)
+          const isSelected = isValidDate(value) && value.getMonth() === m && getYear(value) === year
+          return (
+            <button
+              key={m}
+              type="button"
+              role="radio"
+              aria-checked={isSelected}
+              disabled={disabled}
+              onClick={() => onSelect(new Date(year, m, Math.min(base.getDate(), endOfMonth(first).getDate()), base.getHours(), base.getMinutes()))}
+              className={cn(
+                'mx-auto h-9 w-[84px] max-sm:min-h-10 rounded-lg text-body text-text transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+                isSelected && 'bg-accent font-semibold text-white hover:bg-accent',
+                disabled && 'pointer-events-none opacity-40'
+              )}
+            >
+              {fmt(first, 'LLL')}
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }

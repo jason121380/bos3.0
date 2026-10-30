@@ -27,7 +27,9 @@ const category = (overrides = {}) => ({
 })
 
 const fixtures = (overrides = {}) => ({
-  ServiceCategories: { serviceCategories: [category(), category({ id: 'c2', no: 'C2', name: '染髮' }), category({ id: 'c3', no: 'C3', name: '停用類', isUsing: false })] },
+  ServiceCategories: {
+    serviceCategories: [category(), category({ id: 'c2', no: 'C2', name: '染髮' }), category({ id: 'c3', no: 'C3', name: '停用類', isUsing: false })],
+  },
   DEL_SERVICE_CATEGORIES: { deleteServiceCategory: true },
   ...overrides,
 })

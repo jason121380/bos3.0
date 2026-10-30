@@ -8,7 +8,7 @@ import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { startOfMonth, format } from 'date-fns'
 import useFetchProductConsumeList from 'hooks/useFetchProductConsumeList'
 import useFetchGetProductPurpose from 'hooks/useFetchGetProductPurpose'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
@@ -30,8 +30,7 @@ export default function Employees() {
       startDate: date.startDate,
       endDate: date.endDate,
     },
-    designerId:
-      date.employeeId !== null ? (date.employeeId.length > 0 ? date.employeeId : null) : null,
+    designerId: date.employeeId !== null ? (date.employeeId.length > 0 ? date.employeeId : null) : null,
     purpose: [],
   })
   const [purpose, setPurpose] = useState([])
@@ -46,7 +45,7 @@ export default function Employees() {
       const data = idx(getProductPurpose, _ => _.data.getProductPurpose)
       setPurpose(data || [])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getProductPurpose.loading])
 
   useEffect(() => {
@@ -128,12 +127,12 @@ export default function Employees() {
       }
       setExcelData(excelData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [productConsumeListData.loading, value])
   return (
     <Page className="ui-root" title="商品消耗明細">
       <div>
-        <PageHeader title='商品消耗明細'>
+        <PageHeader title="商品消耗明細">
           <Button asChild variant="secondary">
             <CSVLink data={excelData} filename="商品消耗明細.csv">
               <Download strokeWidth={1.75} />
@@ -167,10 +166,20 @@ export default function Employees() {
                 />
               </div>
               <div>
-                <NativeSelect disabled={purpose.length === 0} onChange={event => onChange({ event, key: 'purpose' })} displayEmpty={false} placeholder="請選擇…" label="用途" fullWidth={false} className="min-w-[120px] align-top w-[100px]">
-                  <NativeSelectOption value=''>全部</NativeSelectOption>
+                <NativeSelect
+                  disabled={purpose.length === 0}
+                  onChange={event => onChange({ event, key: 'purpose' })}
+                  displayEmpty={false}
+                  placeholder="請選擇…"
+                  label="用途"
+                  fullWidth={false}
+                  className="min-w-[120px] align-top w-[100px]"
+                >
+                  <NativeSelectOption value="">全部</NativeSelectOption>
                   {purpose.map(data => (
-                    <NativeSelectOption key={data} value={data}>{data}</NativeSelectOption>
+                    <NativeSelectOption key={data} value={data}>
+                      {data}
+                    </NativeSelectOption>
                   ))}
                 </NativeSelect>
               </div>
@@ -180,10 +189,7 @@ export default function Employees() {
         {productConsumeListData.error ? (
           <QueryFailed onRetry={() => productConsumeListData.refetch()} />
         ) : !productConsumeListData.loading ? (
-          <Results
-            value={value != null ? value : ''}
-            productConsumeListReport={idx(productConsumeListData, _ => _.data.productConsumeList)}
-          />
+          <Results value={value != null ? value : ''} productConsumeListReport={idx(productConsumeListData, _ => _.data.productConsumeList)} />
         ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示
           <div aria-busy="true" aria-label="載入中">

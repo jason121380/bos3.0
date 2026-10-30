@@ -16,7 +16,6 @@ import GeneralSettings from './GeneralSettings'
 import MobileBookingSettings from './MobileBookingSettings'
 import PermissionSettings from './PermissionSettings'
 
-
 function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
   const { fetchUpdateUserGeneral } = useFetchUserGeneral()
   const { setUserDisplaySituation } = useFetchSetUserDisplaySituation()
@@ -56,7 +55,7 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
     isRTCO: false,
     selfIntroduction: null,
     selfIntroductionLink: null,
-    employmentStartDate: null
+    employmentStartDate: null,
   })
   const [avatar, setAvatar] = useState('')
   const [identity, setIdentity] = useState('')
@@ -74,7 +73,7 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
     isDisplayOnPerformanceList: false,
     isDisplayOnSalaryReportList: false,
     isDisplayOnClockInReportList: false,
-    isDisplayOnBookingRecord: false
+    isDisplayOnBookingRecord: false,
   })
 
   const [increaseSecondContent, setIncreaseSecondContent] = useState({
@@ -97,11 +96,7 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
       setIdentity(designerDetail.data.merchantDesigner.identity)
       setLineAccountId(designerDetail.data.merchantDesigner.lineAccountId)
       setIsLineBinded(designerDetail.data.merchantDesigner.isLineBinded)
-      setNameInHeader(
-        designerDetail.data.merchantDesigner.firstName +
-        ' ' +
-        designerDetail.data.merchantDesigner.lastName
-      )
+      setNameInHeader(designerDetail.data.merchantDesigner.firstName + ' ' + designerDetail.data.merchantDesigner.lastName)
       setDesigner(
         produce(draft => {
           draft.userId = designerDetail.data.merchantDesigner.id
@@ -116,10 +111,7 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
           draft.gender = designerDetail.data.merchantDesigner.gender
           draft.nickName = designerDetail.data.merchantDesigner.nickName
           draft.jobTitle = designerDetail.data.merchantDesigner.jobTitle
-          draft.status =
-            designerDetail.data.merchantDesigner.status === 'pending'
-              ? 'ok'
-              : designerDetail.data.merchantDesigner.status
+          draft.status = designerDetail.data.merchantDesigner.status === 'pending' ? 'ok' : designerDetail.data.merchantDesigner.status
           draft.designerNo = designerDetail.data.merchantDesigner.designerNo
           // draft.notDesigner = designerDetail.data.merchantDesigner.notDesigner
           draft.remark = designerDetail.data.merchantDesigner.remark
@@ -154,14 +146,12 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
         isDisplayOnBookingRecord: designerDetail.data.merchantDesigner.isDisplayOnBookingRecord,
         isDisplayOnPerformanceList: designerDetail.data.merchantDesigner.isDisplayOnPerformanceList,
         // 薪資出現
-        isDisplayOnSalaryReportList:
-          designerDetail.data.merchantDesigner.isDisplayOnSalaryReportList,
+        isDisplayOnSalaryReportList: designerDetail.data.merchantDesigner.isDisplayOnSalaryReportList,
         // 打卡出現
-        isDisplayOnClockInReportList:
-          designerDetail.data.merchantDesigner.isDisplayOnClockInReportList,
+        isDisplayOnClockInReportList: designerDetail.data.merchantDesigner.isDisplayOnClockInReportList,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designerDetail.data, designerDetail.loading, setNameInHeader])
   const handleFieldChange = ({ value, key }) => {
     setDesigner(
@@ -212,7 +202,6 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
         })
         .catch(err => openSnackbar({ message: err.message, variant: 'error' }))
     }
-
   }
 
   const handleBookingLimit = ({ key, value }) => {
@@ -263,12 +252,7 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
             </div>
             {/* 基本資料表單 */}
             <div>
-              <GeneralSettings
-                profile={designer}
-                onChange={handleFieldChange}
-                onEmployeeResign={handleEmployeeResign}
-                onSubmit={handleSubmit}
-              />
+              <GeneralSettings profile={designer} onChange={handleFieldChange} onEmployeeResign={handleEmployeeResign} onSubmit={handleSubmit} />
             </div>
           </React.Fragment>
         ) : (

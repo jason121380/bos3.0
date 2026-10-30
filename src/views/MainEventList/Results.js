@@ -1,4 +1,9 @@
-import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon, Edit as EditIconSlot, Visibility as VisibilityIcon } from 'ui/icons'
+import {
+  KeyboardArrowDown as KeyboardArrowDownIcon,
+  KeyboardArrowUp as KeyboardArrowUpIcon,
+  Edit as EditIconSlot,
+  Visibility as VisibilityIcon,
+} from 'ui/icons'
 import { Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
@@ -12,8 +17,16 @@ const arrowUp = <KeyboardArrowUpIcon style={{ cursor: 'pointer' }} />
 const arrowDown = <KeyboardArrowDownIcon style={{ cursor: 'pointer' }} />
 
 function Results({
-  events, setEventUsing, setClickData, setDialogOpen, setCollapse,
-  selectIds, setEventRuleUsing, onToggleAll, isAllExpanded, ...rest
+  events,
+  setEventUsing,
+  setClickData,
+  setDialogOpen,
+  setCollapse,
+  selectIds,
+  setEventRuleUsing,
+  onToggleAll,
+  isAllExpanded,
+  ...rest
 }) {
   const renderIsUsing = isUsing => {
     return isUsing ? '上架中' : '已下架'
@@ -39,9 +52,7 @@ function Results({
         >
           <div className="flex items-baseline gap-3">
             <CardTitle>活動清單</CardTitle>
-            <span className="text-label text-text-secondary tabular-nums">
-              共 {events.length} 筆資料
-            </span>
+            <span className="text-label text-text-secondary tabular-nums">共 {events.length} 筆資料</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -67,9 +78,7 @@ function Results({
                   const Icon = isSelect ? KeyboardArrowUpIcon : KeyboardArrowDownIcon
                   return (
                     <Fragment key={id}>
-                      <TableRow
-                        data-state={isSelect ? 'selected' : undefined}
-                      >
+                      <TableRow data-state={isSelect ? 'selected' : undefined}>
                         <TableCell className="px-2">
                           {ruleGroups.length > 0 && (
                             <Button
@@ -130,7 +139,7 @@ function Results({
                                     setClickData({
                                       name: event.nameDefault,
                                       id: id,
-                                      type: 'event'
+                                      type: 'event',
                                     })
                                     setDialogOpen(true)
                                   }}
@@ -163,11 +172,21 @@ function Results({
                                       <TableCell className="font-medium">{rule.nameForGroup}</TableCell>
                                       <TableCell className="tabular-nums">{`${format(rule.startDateForGroup, 'MM/dd')} ~ ${format(rule.endDateForGroup, 'MM/dd')}`}</TableCell>
                                       <TableCell numeric>{`${formatNumber(rule.releasedCount)} / ${formatNumber(rule.maxCountForGroup)}`}</TableCell>
-                                      <TableCell>{(rule.endDateActual && event.endDateActual) ? '主活動關閉' : renderRuleStatus(rule.isUsingForGroup, rule.endDateActual)}</TableCell>
+                                      <TableCell>
+                                        {rule.endDateActual && event.endDateActual
+                                          ? '主活動關閉'
+                                          : renderRuleStatus(rule.isUsingForGroup, rule.endDateActual)}
+                                      </TableCell>
                                       <TableCell>{rule.isSMSNotifyForGroup ? '是' : '否'}</TableCell>
                                       <TableCell>
                                         <div className="flex items-center gap-2">
-                                          <Button asChild variant="ghost" size="icon" className="text-text-tertiary" aria-label={rule.endDateActual ? '檢視規則' : '編輯規則'}>
+                                          <Button
+                                            asChild
+                                            variant="ghost"
+                                            size="icon"
+                                            className="text-text-tertiary"
+                                            aria-label={rule.endDateActual ? '檢視規則' : '編輯規則'}
+                                          >
                                             <RouterLink to={`/event-rule-edit/${rule.id}`}>
                                               {rule.endDateActual ? <VisibilityIcon fontSize="small" /> : <EditIconSlot fontSize="small" />}
                                             </RouterLink>
@@ -194,7 +213,7 @@ function Results({
                                                   setClickData({
                                                     name: rule.nameForGroup,
                                                     id: rule.id,
-                                                    type: 'rule'
+                                                    type: 'rule',
                                                   })
                                                   setDialogOpen(true)
                                                 }}

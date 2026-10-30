@@ -5,7 +5,8 @@ import { cn } from 'ui/utils'
 // - sm 以上兩欄都固定：操作欄寬固定 152px（勾選 16＋間距 4＋三顆 32px 圖示鈕與間距＋左右 12px 內距），帳單編號欄接在 left-[152px]
 // - 手機（< 640px）可視寬度約 320px，兩欄合計超過一半，只固定帳單編號欄（操作欄隨內容捲走，捲回最左即可操作）
 // 底色跟著列：一般 surface（卡片底），hover／勾選時 surface-hover；右緣 1px 分隔線
-const STICKY_BASE = 'bg-surface group-hover:bg-surface-hover group-data-[state=selected]:bg-surface-hover print:static print:bg-transparent print:shadow-none'
+const STICKY_BASE =
+  'bg-surface group-hover:bg-surface-hover group-data-[state=selected]:bg-surface-hover print:static print:bg-transparent print:shadow-none'
 const STICKY_ACTION = 'sm:sticky sm:left-0 sm:w-[152px] sm:min-w-[152px]'
 const STICKY_NO = 'sticky left-0 sm:left-[152px] shadow-[1px_0_0_rgb(var(--border))]'
 export const STICKY_ACTION_HEAD = cn('w-[132px]', STICKY_ACTION, 'z-[3] bg-surface print:static print:bg-transparent')

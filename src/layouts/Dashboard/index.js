@@ -45,9 +45,13 @@ function Dashboard({ route, location }) {
   }, [])
 
   // 回傳 unlisten：原本每次換頁都多掛一個永不釋放的監聽
-  useEffect(() => history.listen((location) => {
-    setUrl(location.pathname)
-  }), [history])
+  useEffect(
+    () =>
+      history.listen(location => {
+        setUrl(location.pathname)
+      }),
+    [history]
+  )
 
   // 裝置不在台灣時區時，每次開啟提示一次：畫面上的日期時間與報表區間都以台灣時間為準（避免出國時誤以為是當地時間）
   useEffect(() => {
@@ -75,7 +79,7 @@ function Dashboard({ route, location }) {
       id: user.id,
       url: url,
       page: null,
-      currentTab: null
+      currentTab: null,
     }
     const tab = url.split('/').pop()
     if (url.includes('/profile/')) {
@@ -88,10 +92,10 @@ function Dashboard({ route, location }) {
     }
     checkPageAuthorityLazy({
       variables: {
-        input: input
-      }
+        input: input,
+      },
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（checkPageAuthorityLazy）；只在 [url] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（checkPageAuthorityLazy）；只在 [url] 變動時呼叫，補上會每次 render 重跑
   }, [url])
 
   useEffect(() => {
@@ -102,17 +106,18 @@ function Dashboard({ route, location }) {
         // 使用者連個人詳細頁基本資料都沒權限的話
         openSnackbar({
           message: '權限異常！請洽詢各店主管',
-          variant: 'warning'
+          variant: 'warning',
         })
       } else if (!data) {
         history.push('/profile/general')
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [checkPageAuthorityData.loading, history] 變動時執行；checkPageAuthorityData、url 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [checkPageAuthorityData.loading, history] 變動時執行；checkPageAuthorityData、url 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [checkPageAuthorityData.loading, history])
 
   const handleToggleNavBar = () => {
-    if (window.innerWidth >= 1024) { // Tailwind lg 斷點，與側欄常駐的斷點一致
+    if (window.innerWidth >= 1024) {
+      // Tailwind lg 斷點，與側欄常駐的斷點一致
       setOpenNavBarDesktop(!openNavBarDesktop)
     } else {
       setOpenNavBarMobile(true)

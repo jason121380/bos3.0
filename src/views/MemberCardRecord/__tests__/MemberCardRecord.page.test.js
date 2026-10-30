@@ -171,7 +171,7 @@ describe('會員卡列表', () => {
   it('批次刪除確認後送出勾選的 uuid，成功後提示並重抓清單，不重新整理', async () => {
     let deleted = []
     const { calls } = setup({
-      deleteMembership: (variables) => {
+      deleteMembership: variables => {
         deleted = variables.itemUUIDs
         return { deleteMembership: true }
       },

@@ -19,7 +19,12 @@ const setup = (fixtures = {}) =>
   renderPage(<CustomerCreate />, {
     fixtures: {
       GET_LAST_CUSTOMER_NO: { getLastCustomerNo: 'C099' },
-      FETCH_DESIGNERS: { merchantDesigners: [{ id: 'd1', name: '王小美' }, { id: 'd2', name: 'Amy' }] },
+      FETCH_DESIGNERS: {
+        merchantDesigners: [
+          { id: 'd1', name: '王小美' },
+          { id: 'd2', name: 'Amy' },
+        ],
+      },
       GET_CUSTOMER_REFERENCE: { getCustomerReference: ['朋友介紹', '網路'] },
       GET_CHECK_IS_CUSTOMER_NO_USED: { checkIsCustomerNoUsed: false },
       FETCH_ADD_CUSTOMER: { addCustomer: { id: 'new-1' } },
@@ -35,7 +40,11 @@ const choose = (select, text) => {
   const option = Array.from(select.querySelectorAll('option')).find(o => o.textContent === text)
   fireEvent.change(select, { target: { value: option.value } })
 }
-const addButtons = () => screen.getAllByText('新增').map(el => el.closest('button')).filter(Boolean)
+const addButtons = () =>
+  screen
+    .getAllByText('新增')
+    .map(el => el.closest('button'))
+    .filter(Boolean)
 
 beforeEach(() => {
   loginAs()

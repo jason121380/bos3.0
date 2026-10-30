@@ -21,17 +21,17 @@ function AboutCustomerBonusRecord({ className, submitData, setSubmitData }) {
       <CardContent>
         <MobileDatePicker
           closeOnSelect
-          label='日期'
+          label="日期"
           value={submitData.date}
           onChange={e => setSubmitData({ ...submitData, date: new Date(e).getTime() })}
           format="yyyy/MM/dd"
           localeText={{
-            toolbarTitle: '選擇日期'
+            toolbarTitle: '選擇日期',
           }}
           slotProps={{
             toolbar: {
-              toolbarFormat: 'M月d日'
-            }
+              toolbarFormat: 'M月d日',
+            },
           }}
           slots={{
             field: inputProps => (
@@ -39,16 +39,18 @@ function AboutCustomerBonusRecord({ className, submitData, setSubmitData }) {
                 <InputLabel htmlFor="date-picker">日期</InputLabel>
                 <Input
                   id="date-picker"
-                  type='text'
+                  type="text"
                   onClick={inputProps.onClick}
                   endAdornment={
-                    <InputAdornment position="end"><InsertInvitationIcon /></InputAdornment>
+                    <InputAdornment position="end">
+                      <InsertInvitationIcon />
+                    </InputAdornment>
                   }
                   label="日期"
                   value={format(inputProps.value, inputProps.format)}
                 />
               </FormControl>
-            )
+            ),
           }}
         />
         <EmployeeAutoComplete
@@ -69,7 +71,7 @@ function AboutCustomerBonusRecord({ className, submitData, setSubmitData }) {
         />
         <Field label="紅利點數" className="mb-6">
           <UiInput
-            type='number'
+            type="number"
             value={submitData.bonus}
             onFocus={e => e.target.select()}
             onChange={e => {
@@ -83,10 +85,7 @@ function AboutCustomerBonusRecord({ className, submitData, setSubmitData }) {
           />
         </Field>
         <Field label="備註">
-          <UiInput
-            value={submitData.remark}
-            onChange={e => setSubmitData({ ...submitData, remark: e.target.value })}
-          />
+          <UiInput value={submitData.remark} onChange={e => setSubmitData({ ...submitData, remark: e.target.value })} />
         </Field>
       </CardContent>
     </Card>

@@ -99,9 +99,9 @@ it('刪除打卡：先跳「確定要刪除這筆打卡紀錄嗎？」，取消�
   fireEvent.click(screen.getByRole('button', { name: '刪除' }))
   const again = await screen.findByRole('dialog', { name: '確定要刪除這筆打卡紀錄嗎？' })
   fireEvent.click(within(again).getByRole('button', { name: '確定' }))
-  await wait(() => expect(callsOf(calls, 'deleteAttendantRecord')).toEqual([
-    { operationName: 'deleteAttendantRecord', variables: { clockInScheduleUUId: 'p-in' } },
-  ]))
+  await wait(() =>
+    expect(callsOf(calls, 'deleteAttendantRecord')).toEqual([{ operationName: 'deleteAttendantRecord', variables: { clockInScheduleUUId: 'p-in' } }])
+  )
 })
 
 it('沒有編輯／刪除權限：沒有定位的打卡格不能點；有定位的可點開看位置，但沒有編輯與刪除', async () => {

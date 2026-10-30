@@ -20,7 +20,7 @@ export default function Employees() {
     businessItemsReportDataDesignation: { serviceCategoriesPerformance: [] },
     businessItemsReportDataNonDesignation: { serviceCategoriesPerformance: [] },
     businessItemsReportDataDesignationProportion: { serviceCategoriesPerformance: [] },
-    businessItemsReportDataPerformanceProportion: { serviceCategoriesPerformance: [] }
+    businessItemsReportDataPerformanceProportion: { serviceCategoriesPerformance: [] },
   })
   const [date, setDate] = useState({
     startDate: startOfMonth(new Date()).getTime(),
@@ -29,7 +29,7 @@ export default function Employees() {
 
   const businessItemsMonthlyReport = useFetchGetBusinessItemsMonthlyReport({
     startDate: date.startDate,
-    endDate: date.endDate
+    endDate: date.endDate,
   })
   const [getBusinessItemsMonthlyReport, businessItemsMonthlyReportData] = useFetchGetBusinessItemsMonthlyReportExcel()
 
@@ -38,7 +38,7 @@ export default function Employees() {
       const data = idx(businessItemsMonthlyReport, _ => _.data.businessItemsMonthlyReport)
       setReportData(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [businessItemsMonthlyReport.loading])
 
   useEffect(() => {
@@ -48,12 +48,12 @@ export default function Employees() {
       link.href = url
       link.click()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [businessItemsMonthlyReportData.loading])
 
   return (
     <Page className="ui-root" title="營業項目月分析表">
-      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'none', justifyContent: 'space-between' }}>
         <div className="merchantNamePrint">
           {JSON.parse(localStorage.getItem('userMerchant')).name +
             '   ' +
@@ -63,10 +63,7 @@ export default function Employees() {
             '   ' +
             '營業項目月分析表'}
         </div>
-        <div className="merchantNamePrint">
-          {'列印時間： ' +
-            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-        </div>
+        <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
       </div>
       <PageHeader
         title="營業項目月分析表"
@@ -81,20 +78,16 @@ export default function Employees() {
                   variables: {
                     input: {
                       startDate: date.startDate,
-                      endDate: date.endDate
-                    }
-                  }
+                      endDate: date.endDate,
+                    },
+                  },
                 })
               }}
             >
               <Download strokeWidth={1.75} />
               報表匯出
             </Button>
-            <Button
-              className="noprint"
-              variant="secondary"
-              onClick={() => window.print()}
-            >
+            <Button className="noprint" variant="secondary" onClick={() => window.print()}>
               <Printer strokeWidth={1.75} />
               列印
             </Button>
@@ -102,22 +95,15 @@ export default function Employees() {
         }
       />
       <ReportToolbar
-        date={
-          <DateSelector
-            date={date}
-            attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-          />
-        }
+        date={<DateSelector date={date} attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']} dateChange={value => setDate(value)} />}
       />
       {businessItemsMonthlyReport.error ? (
-          <QueryFailed onRetry={() => businessItemsMonthlyReport.refetch()} />
-        ) : !businessItemsMonthlyReport.loading ?
-        <Results
-          reportData={reportData}
-          className="mt-2"
-        /> : <Skeleton className="h-96" aria-busy="true" />
-      }
+        <QueryFailed onRetry={() => businessItemsMonthlyReport.refetch()} />
+      ) : !businessItemsMonthlyReport.loading ? (
+        <Results reportData={reportData} className="mt-2" />
+      ) : (
+        <Skeleton className="h-96" aria-busy="true" />
+      )}
     </Page>
   )
 }

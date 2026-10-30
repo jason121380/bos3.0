@@ -17,10 +17,37 @@ jest.mock('elements/snackbars', () => ({
 }))
 
 const DESIGNER = { userId: 'designer-1', userName: '王小美', userNickName: 'Amy', userNo: '01' }
-const SERVICE = { id: 'service-1', no: 'S01', name: '精緻剪髮', price: 800, isLocked: false, isNoCash: false, bindedThirdPartTicket: null, isBindedThirdPartTicketLocked: false }
-const SHAMPOO = { id: 'product-1', no: 'P01', name: '洗髮精', sellPrice: 1200, isLocked: false, isUsing: true, isAvailableForSale: true, productCategory: { id: 'pc-1', name: '洗護' } }
+const SERVICE = {
+  id: 'service-1',
+  no: 'S01',
+  name: '精緻剪髮',
+  price: 800,
+  isLocked: false,
+  isNoCash: false,
+  bindedThirdPartTicket: null,
+  isBindedThirdPartTicketLocked: false,
+}
+const SHAMPOO = {
+  id: 'product-1',
+  no: 'P01',
+  name: '洗髮精',
+  sellPrice: 1200,
+  isLocked: false,
+  isUsing: true,
+  isAvailableForSale: true,
+  productCategory: { id: 'pc-1', name: '洗護' },
+}
 // 停售的商品不應出現在選擇清單
-const RETIRED = { id: 'product-2', no: 'P02', name: '停售髮蠟', sellPrice: 500, isLocked: false, isUsing: true, isAvailableForSale: false, productCategory: { id: 'pc-1', name: '洗護' } }
+const RETIRED = {
+  id: 'product-2',
+  no: 'P02',
+  name: '停售髮蠟',
+  sellPrice: 500,
+  isLocked: false,
+  isUsing: true,
+  isAvailableForSale: false,
+  productCategory: { id: 'pc-1', name: '洗護' },
+}
 
 const ORDER = {
   id: 'order-1',
@@ -94,7 +121,9 @@ const fixtures = (overrides = {}) => ({
   GET_MERCHANT_PASSWORD: { merchantPassword: { reCheckoutOrder: { password: '1234', isUsing: false } } },
   reCheckoutOrder: { reCheckoutOrder: { id: 'order-1' } },
   FETCH_CUSTOMERS_IN_AUTO_COMPLETE: { customers: { customers: [] } },
-  FETCH_ADD_CUSTOMER: { addCustomer: { id: 'customer-new', name: '', gender: 'MALE', cellphone: '0999888777', birthday: { year: '', month: '', day: '' }, category: '' } },
+  FETCH_ADD_CUSTOMER: {
+    addCustomer: { id: 'customer-new', name: '', gender: 'MALE', cellphone: '0999888777', birthday: { year: '', month: '', day: '' }, category: '' },
+  },
   customerWallet: { customerWallet: 0 },
   GET_CUSTOMER_BONUS_RECORD: { customerBonusRecord: [] },
   FETCH_CUSTOMER_DETAIL: { customer: { id: 'customer-new', name: '', cellphone: '0999888777', membershipPurchaseRecord: [], isLineBinded: false } },
@@ -105,7 +134,13 @@ const fixtures = (overrides = {}) => ({
       {
         id: 'auth-1',
         authoritySettings: JSON.stringify([
-          { pageTitle: '客戶管理', pageAuthority: [{ pageName: '入金(儲值)', authority: false }, { pageName: '入金(扣除)', authority: false }] },
+          {
+            pageTitle: '客戶管理',
+            pageAuthority: [
+              { pageName: '入金(儲值)', authority: false },
+              { pageName: '入金(扣除)', authority: false },
+            ],
+          },
         ]),
       },
     ],
@@ -118,8 +153,7 @@ beforeEach(() => {
 })
 afterEach(cleanup)
 
-const setup = () =>
-  renderPage(<OrderEdit match={{ params: { id: 'order-1' } }} />, { fixtures: fixtures(), route: '/order/order-1' })
+const setup = () => renderPage(<OrderEdit match={{ params: { id: 'order-1' } }} />, { fixtures: fixtures(), route: '/order/order-1' })
 
 const checkoutAndGetInput = async calls => {
   const checkout = await screen.findByTestId('checkout')
@@ -149,9 +183,7 @@ describe('帳單詳細：店販「從清單選擇」', () => {
     const options = await screen.findAllByTestId('employee-王小美')
     fireEvent.click(options[options.length - 1])
     const input = await checkoutAndGetInput(calls)
-    expect(input.productOrders).toEqual([
-      expect.objectContaining({ productId: SHAMPOO.id, price: 1200, count: 1, sellerId: DESIGNER.userId }),
-    ])
+    expect(input.productOrders).toEqual([expect.objectContaining({ productId: SHAMPOO.id, price: 1200, count: 1, sellerId: DESIGNER.userId })])
   })
 })
 

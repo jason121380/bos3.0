@@ -25,9 +25,7 @@ import QueryFailed from 'components/QueryFailed'
 function ServiceCategoryEdit({ match }) {
   const isDuplicate = window.location.href.includes('duplicate')
   const deductionDisplay = useSelector(state => state.deductionDisplay.coupon)
-  const merchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
+  const merchantId = localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null
 
   const merchantCommissions = useFetchMerchantCommissionWay()
   const customerCategory = useFetchMerchantCustomerCategory()
@@ -47,7 +45,7 @@ function ServiceCategoryEdit({ match }) {
 
   useEffect(() => {
     ticket.refetch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   useEffect(() => {
@@ -61,17 +59,62 @@ function ServiceCategoryEdit({ match }) {
           draft.price = idx(ticket.data, _ => _.service.price)
           draft.no = idx(ticket.data, _ => _.service.no) + (isDuplicate ? '的副本' : '')
           draft.isLaunched = idx(ticket.data, _ => _.service.isLaunched)
-          draft.ticketAvailableCount = idx(
-            ticket.data,
-            _ => _.service.serviceDetail.ticketAvailableCount
-          )
+          draft.ticketAvailableCount = idx(ticket.data, _ => _.service.serviceDetail.ticketAvailableCount)
           draft.ServiceCategoryId = idx(ticket.data, _ => _.service.serviceCategory.id)
           draft.serviceDeductionItems = idx(ticket.data, _ =>
             _.service.serviceDetail.serviceDeductionItems.length > 0
               ? _.service.serviceDetail.serviceDeductionItems.map(item => {
-                if (item.itemSettings.length === 0) {
-                  return {
-                    ...item,
+                  if (item.itemSettings.length === 0) {
+                    return {
+                      ...item,
+                      itemSettings: [
+                        {
+                          name: '材料費',
+                          type: 'onSales',
+                          price: 0,
+                          isSpecial: false,
+                          deductionWay: '',
+                          designatePrice: 0,
+                          nonDesignatePrice: 0,
+                          deductionOrder: 1,
+                          deductionReference: 0,
+                        },
+                      ],
+                    }
+                  } else {
+                    if (item.itemSettings[0].deductionOrder === null) {
+                      const arr = []
+                      for (let i = 0; i < item.itemSettings.length; i++) {
+                        arr.push({
+                          ...item.itemSettings[i],
+                          name: '材料費',
+                          deductionOrder: i + 1,
+                          deductionReference: 0,
+                        })
+                      }
+                      return {
+                        ...item,
+                        itemSettings: [...arr],
+                      }
+                    } else {
+                      const arr = []
+                      for (let i = 0; i < item.itemSettings.length; i++) {
+                        arr.push({
+                          ...item.itemSettings[i],
+                          name: '材料費',
+                          deductionOrder: i + 1,
+                        })
+                      }
+                      return {
+                        ...item,
+                        itemSettings: [...arr],
+                      }
+                    }
+                  }
+                })
+              : idx(merchantCommissions.data, _ =>
+                  _.merchantCommissionWay.map(data => ({
+                    type: data.name,
                     itemSettings: [
                       {
                         name: '材料費',
@@ -84,68 +127,20 @@ function ServiceCategoryEdit({ match }) {
                         deductionOrder: 1,
                         deductionReference: 0,
                       },
+                      // {
+                      //   name: '材料費',
+                      //   type: 'onSalary',
+                      //   price: 0,
+                      //   isSpecial: false,
+                      //   deductionWay: '',
+                      //   designatePrice: 0,
+                      //   nonDesignatePrice: 0,
+                      //   deductionOrder: 1,
+                      //   deductionReference: 0,
+                      // },
                     ],
-                  }
-                } else {
-                  if (item.itemSettings[0].deductionOrder === null) {
-                    const arr = []
-                    for (let i = 0; i < item.itemSettings.length; i++) {
-                      arr.push({
-                        ...item.itemSettings[i],
-                        name: '材料費',
-                        deductionOrder: i + 1,
-                        deductionReference: 0,
-                      })
-                    }
-                    return {
-                      ...item,
-                      itemSettings: [...arr],
-                    }
-                  } else {
-                    const arr = []
-                    for (let i = 0; i < item.itemSettings.length; i++) {
-                      arr.push({
-                        ...item.itemSettings[i],
-                        name: '材料費',
-                        deductionOrder: i + 1,
-                      })
-                    }
-                    return {
-                      ...item,
-                      itemSettings: [...arr],
-                    }
-                  }
-                }
-              })
-              : idx(merchantCommissions.data, _ =>
-                _.merchantCommissionWay.map(data => ({
-                  type: data.name,
-                  itemSettings: [
-                    {
-                      name: '材料費',
-                      type: 'onSales',
-                      price: 0,
-                      isSpecial: false,
-                      deductionWay: '',
-                      designatePrice: 0,
-                      nonDesignatePrice: 0,
-                      deductionOrder: 1,
-                      deductionReference: 0,
-                    },
-                    // {
-                    //   name: '材料費',
-                    //   type: 'onSalary',
-                    //   price: 0,
-                    //   isSpecial: false,
-                    //   deductionWay: '',
-                    //   designatePrice: 0,
-                    //   nonDesignatePrice: 0,
-                    //   deductionOrder: 1,
-                    //   deductionReference: 0,
-                    // },
-                  ],
-                }))
-              )
+                  }))
+                )
           )
           draft.customerSellSetting = idx(customerCategory.data, _ =>
             _.merchantCustomerCategory.map(data => ({
@@ -157,74 +152,64 @@ function ServiceCategoryEdit({ match }) {
           draft.helperDeductionSetting = idx(ticket.data, _ =>
             _.service.helperDeductionSetting.length > 0
               ? _.service.helperDeductionSetting.map(data => {
-                if (data.type === '') {
-                  return {
-                    ...data,
-                    deductionWay: '',
-                  }
-                } else {
-                  if (data.point || data.designatePoint || data.nonDesignatePoint > 0) {
+                  if (data.type === '') {
                     return {
                       ...data,
-                      // eslint-disable-next-line eqeqeq -- 刻意保留寬鬆比較：值可能是輸入框字串或 null，改成 !== 會改變結果
-                      isDesignate: Number(data.point || 0) === 0,
-                      deductionWay: '點數',
-                    }
-                  } else if (data.cash || data.designateCash || data.nonDesignateCash > 0) {
-                    return {
-                      ...data,
-                      // eslint-disable-next-line eqeqeq -- 刻意保留寬鬆比較：值可能是輸入框字串或 null，改成 !== 會改變結果
-                      isDesignate: Number(data.cash || 0) === 0,
-                      deductionWay: '固定金額',
+                      deductionWay: '',
                     }
                   } else {
-                    return {
-                      ...data,
-                      isDesignate: (data.designatePercent !== 0 || data.nonDesignatePercent !== 0),
-                      deductionWay: '業績%數',
+                    if (data.point || data.designatePoint || data.nonDesignatePoint > 0) {
+                      return {
+                        ...data,
+                        // eslint-disable-next-line eqeqeq -- 刻意保留寬鬆比較：值可能是輸入框字串或 null，改成 !== 會改變結果
+                        isDesignate: Number(data.point || 0) === 0,
+                        deductionWay: '點數',
+                      }
+                    } else if (data.cash || data.designateCash || data.nonDesignateCash > 0) {
+                      return {
+                        ...data,
+                        // eslint-disable-next-line eqeqeq -- 刻意保留寬鬆比較：值可能是輸入框字串或 null，改成 !== 會改變結果
+                        isDesignate: Number(data.cash || 0) === 0,
+                        deductionWay: '固定金額',
+                      }
+                    } else {
+                      return {
+                        ...data,
+                        isDesignate: data.designatePercent !== 0 || data.nonDesignatePercent !== 0,
+                        deductionWay: '業績%數',
+                      }
                     }
                   }
-                }
-              })
+                })
               : [
-                {
-                  helperDeductionType: 'onSales',
-                  type: '',
-                  nameList: [],
-                  peopleCount: 0,
-                  point: 0,
-                  cash: 0,
-                  percent: 0,
-                  designateCash: 0,
-                  nonDesignateCash: 0,
-                  designatePercent: 0,
-                  nonDesignatePercent: 0,
-                  designatePoint: 0,
-                  nonDesignatePoint: 0,
-                  isDesignate: false,
-                  deductionWay: '',
-                  isSplitted: false,
-                },
-              ]
+                  {
+                    helperDeductionType: 'onSales',
+                    type: '',
+                    nameList: [],
+                    peopleCount: 0,
+                    point: 0,
+                    cash: 0,
+                    percent: 0,
+                    designateCash: 0,
+                    nonDesignateCash: 0,
+                    designatePercent: 0,
+                    nonDesignatePercent: 0,
+                    designatePoint: 0,
+                    nonDesignatePoint: 0,
+                    isDesignate: false,
+                    deductionWay: '',
+                    isSplitted: false,
+                  },
+                ]
           )
           draft.isLocked = idx(ticket.data, _ => _.service.isLockedOriginalValue)
-          draft.performanceCalculationMode = idx(
-            ticket.data,
-            _ => _.service.performanceCalculationMode
-          )
+          draft.performanceCalculationMode = idx(ticket.data, _ => _.service.performanceCalculationMode)
           draft.handlingFeeDecountMode = idx(ticket.data, _ => _.service.handlingFeeDecountMode)
         })
       )
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ ticket.data, ticket.loading, customerCategory.data, cus…] 變動時執行；isDuplicate 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
-  }, [
-    ticket.data,
-    ticket.loading,
-    customerCategory.data,
-    customerCategory.loading,
-    merchantCommissions.data,
-    merchantCommissions.loading,
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [ ticket.data, ticket.loading, customerCategory.data, cus…] 變動時執行；isDuplicate 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+  }, [ticket.data, ticket.loading, customerCategory.data, customerCategory.loading, merchantCommissions.data, merchantCommissions.loading])
 
   const [coupon, setCoupon] = useState({
     itemId: '',
@@ -312,26 +297,22 @@ function ServiceCategoryEdit({ match }) {
 
   const handleTidyData = forCreate => {
     const newCoupon = cloneDeep(coupon)
-    const newHelperDeductionSetting = newCoupon.helperDeductionSetting.map(
-      ({ deductionWay, isDesignate, __typename, ...keepProteries }) => {
-        return {
-          ...keepProteries,
-          point: parseFloat(keepProteries.point) || 0,
-          cash: parseFloat(keepProteries.cash) || 0,
-          percent: parseFloat(keepProteries.percent) || 0,
-          designateCash: parseFloat(keepProteries.designateCash) || 0,
-          nonDesignateCash: parseFloat(keepProteries.nonDesignateCash) || 0,
-          designatePercent: parseFloat(keepProteries.designatePercent) || 0,
-          nonDesignatePercent: parseFloat(keepProteries.nonDesignatePercent) || 0,
-          designatePoint: parseFloat(keepProteries.designatePoint) || 0,
-          nonDesignatePoint: parseFloat(keepProteries.nonDesignatePoint) || 0,
-        }
+    const newHelperDeductionSetting = newCoupon.helperDeductionSetting.map(({ deductionWay, isDesignate, __typename, ...keepProteries }) => {
+      return {
+        ...keepProteries,
+        point: parseFloat(keepProteries.point) || 0,
+        cash: parseFloat(keepProteries.cash) || 0,
+        percent: parseFloat(keepProteries.percent) || 0,
+        designateCash: parseFloat(keepProteries.designateCash) || 0,
+        nonDesignateCash: parseFloat(keepProteries.nonDesignateCash) || 0,
+        designatePercent: parseFloat(keepProteries.designatePercent) || 0,
+        nonDesignatePercent: parseFloat(keepProteries.nonDesignatePercent) || 0,
+        designatePoint: parseFloat(keepProteries.designatePoint) || 0,
+        nonDesignatePoint: parseFloat(keepProteries.nonDesignatePoint) || 0,
       }
-    )
+    })
 
-    const newItemSettings = newCoupon.serviceDeductionItems.map(data =>
-      data.itemSettings.map(({ __typename, ...keepProteries }) => keepProteries)
-    )
+    const newItemSettings = newCoupon.serviceDeductionItems.map(data => data.itemSettings.map(({ __typename, ...keepProteries }) => keepProteries))
     newCoupon.serviceDeductionItems.forEach((data, index) =>
       newItemSettings.forEach((data2, index2) => {
         if (index === index2) {
@@ -339,9 +320,7 @@ function ServiceCategoryEdit({ match }) {
         }
       })
     )
-    const newCouponDeductionItems = newCoupon.serviceDeductionItems.map(
-      ({ __typename, ...keepProteries }) => keepProteries
-    )
+    const newCouponDeductionItems = newCoupon.serviceDeductionItems.map(({ __typename, ...keepProteries }) => keepProteries)
 
     newCoupon.helperDeductionSetting = newHelperDeductionSetting
     newCoupon[forCreate ? 'ServiceDeductionItems' : 'serviceDeductionItems'] = newCouponDeductionItems
@@ -395,7 +374,7 @@ function ServiceCategoryEdit({ match }) {
         }
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [tickets.loading, ticket.loading])
 
   useEffect(() => {
@@ -417,68 +396,57 @@ function ServiceCategoryEdit({ match }) {
   // 主要資料讀取失敗：顯示可重試的錯誤狀態，不顯示空白表單（避免把空值存回去）
   if (ticket.error) {
     return (
-      <Page className="ui-root" title={isDuplicate ? "新增卡券項目" : "編輯卡券項目"}>
-        <PageHeader title={isDuplicate ? "新增卡券項目" : "編輯卡券項目"} />
+      <Page className="ui-root" title={isDuplicate ? '新增卡券項目' : '編輯卡券項目'}>
+        <PageHeader title={isDuplicate ? '新增卡券項目' : '編輯卡券項目'} />
         <QueryFailed onRetry={() => ticket.refetch()} />
       </Page>
     )
   }
 
   // 停用原因（STYLE.md §6）：與上方 effect 設定 vaild 的三個欄位相同，依畫面順序列出目前缺的
-  const missing = [
-    !coupon.name && '名稱',
-    !coupon.ServiceCategoryId && '服務類別',
-    !coupon.ticketAvailableCount && '次數',
-  ].filter(Boolean)
+  const missing = [!coupon.name && '名稱', !coupon.ServiceCategoryId && '服務類別', !coupon.ticketAvailableCount && '次數'].filter(Boolean)
 
   return (
-    <Page className="ui-root" title={isDuplicate ? "新增卡券項目" : "編輯卡券項目"} >
+    <Page className="ui-root" title={isDuplicate ? '新增卡券項目' : '編輯卡券項目'}>
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
-        <PageHeader className="pb-0" title={isDuplicate ? "新增卡券項目" : "編輯卡券項目"} />
+        <PageHeader className="pb-0" title={isDuplicate ? '新增卡券項目' : '編輯卡券項目'} />
         <AboutCoupon coupon={coupon} onChange={handleOnChange} isEdit />
 
         {deductionDisplay && coupon2.itemId !== '' && (
-          <AboutDeduction
-            ServiceDeductionItems={coupon2.serviceDeductionItems}
-            onChange={handleOnChange}
-          />
+          <AboutDeduction ServiceDeductionItems={coupon2.serviceDeductionItems} onChange={handleOnChange} />
         )}
 
-        <AboutAssistantSetting
-          merchantHelperItems={merchantHelperItems}
-          support={coupon.helperDeductionSetting}
-          onChange={handleOnChange}
-          isEdit
-        />
+        <AboutAssistantSetting merchantHelperItems={merchantHelperItems} support={coupon.helperDeductionSetting} onChange={handleOnChange} isEdit />
 
         <div className="flex flex-wrap items-center justify-between gap-2">
-        {isDuplicate ? (
-          <Button variant="primary" disabled={saveBtn || vaild} aria-describedby={vaild ? 'coupon-edit-missing' : undefined} onClick={handleCreate}>
-            新增
-          </Button>
-        ) : (
-          <>
-            <Button variant="primary" disabled={saveBtn || vaild} aria-describedby={vaild ? 'coupon-edit-missing' : undefined} onClick={() => handleSubmit('toList')}>
-              儲存
+          {isDuplicate ? (
+            <Button variant="primary" disabled={saveBtn || vaild} aria-describedby={vaild ? 'coupon-edit-missing' : undefined} onClick={handleCreate}>
+              新增
             </Button>
-            <div className="flex flex-wrap gap-2">
+          ) : (
+            <>
               <Button
-                variant="secondary"
-                disabled={couponIndex === 0 || saveBtn || vaild}
-                onClick={() => handleSubmit('toLast')}
+                variant="primary"
+                disabled={saveBtn || vaild}
+                aria-describedby={vaild ? 'coupon-edit-missing' : undefined}
+                onClick={() => handleSubmit('toList')}
               >
-                儲存並上一筆
+                儲存
               </Button>
-              <Button
-                variant="secondary"
-                disabled={couponIndex >= couponsArr.length - 1 || saveBtn || vaild}
-                onClick={() => handleSubmit('toNext')}
-              >
-                儲存並下一筆
-              </Button>
-            </div>
-          </>
-        )}
+              <div className="flex flex-wrap gap-2">
+                <Button variant="secondary" disabled={couponIndex === 0 || saveBtn || vaild} onClick={() => handleSubmit('toLast')}>
+                  儲存並上一筆
+                </Button>
+                <Button
+                  variant="secondary"
+                  disabled={couponIndex >= couponsArr.length - 1 || saveBtn || vaild}
+                  onClick={() => handleSubmit('toNext')}
+                >
+                  儲存並下一筆
+                </Button>
+              </div>
+            </>
+          )}
         </div>
         {vaild && (
           <p id="coupon-edit-missing" role="status" className="text-caption text-text-secondary">

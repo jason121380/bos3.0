@@ -12,7 +12,7 @@ function Results({ recordData, pageSetting, onPageChange, onRowsPerPageChange })
     if (pageRef1.current) {
       paginationLabel(pageRef1.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
   }, [pageRef1.current, pageSetting])
 
   return (
@@ -21,9 +21,7 @@ function Results({ recordData, pageSetting, onPageChange, onRowsPerPageChange })
         <CardHeader className="pb-4">
           <div className="flex items-baseline gap-3">
             <CardTitle>發券明細清單</CardTitle>
-            <span className="text-label text-text-secondary tabular-nums">
-              共 {pageSetting.totalCount} 筆資料
-            </span>
+            <span className="text-label text-text-secondary tabular-nums">共 {pageSetting.totalCount} 筆資料</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -51,12 +49,9 @@ function Results({ recordData, pageSetting, onPageChange, onRowsPerPageChange })
                       <TableCell>{d.ruleName}</TableCell>
                       <TableCell className="tabular-nums">{format(d.orderDate, 'yyyy/MM/dd')}</TableCell>
                       <TableCell>
-                        <a
-                          target='_blank'
-                          href={`/order/${d.orderId}`}
-                          className="font-medium text-accent underline"
-                          rel="noreferrer"
-                        >{d.orderNo === null ? '' : `#${d.orderNo}`}</a>
+                        <a target="_blank" href={`/order/${d.orderId}`} className="font-medium text-accent underline" rel="noreferrer">
+                          {d.orderNo === null ? '' : `#${d.orderNo}`}
+                        </a>
                       </TableCell>
                       <TableCell>{d.customerName}</TableCell>
                       <TableCell className="tabular-nums">{d.customerCellphone}</TableCell>

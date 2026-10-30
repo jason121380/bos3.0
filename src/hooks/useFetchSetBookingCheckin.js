@@ -12,7 +12,7 @@ export default function useFetchSetBookingCheckin() {
     setBookingCheckin: inputData =>
       setBookingCheckin({
         variables: {
-          input : inputData,
+          input: inputData,
         },
       }),
   }

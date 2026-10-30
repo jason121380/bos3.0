@@ -8,10 +8,9 @@ export default function General({ customer, className, isLoading, bookingCusChec
   return (
     <div {...rest} className={clsx('grid grid-cols-12 gap-6', className)}>
       <div className="col-span-12 md:col-span-6 xl:col-span-4">
-        <CustomerInfo bookingCusCheck={bookingCusCheck} customer={customer} isLoading={isLoading}/>
+        <CustomerInfo bookingCusCheck={bookingCusCheck} customer={customer} isLoading={isLoading} />
       </div>
-      <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
-      </div>
+      <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3"></div>
     </div>
   )
 }

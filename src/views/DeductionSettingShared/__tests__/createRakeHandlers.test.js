@@ -116,9 +116,7 @@ describe('切換「全段／分段」', () => {
     handlers.handleToggleButtonChange()
     expect(changes.isSegmented).toBe(false)
     expect(changes.segmented).toEqual([])
-    expect(changes.nonSegmented).toEqual([
-      { attribute: '預設', rakeData: { designate: [], nonDesignate: [], nonDistinguish: [tier(0, 0)] } },
-    ])
+    expect(changes.nonSegmented).toEqual([{ attribute: '預設', rakeData: { designate: [], nonDesignate: [], nonDistinguish: [tier(0, 0)] } }])
     expect(setTabValue).toHaveBeenCalledWith('預設')
     expect(setDeductionIndex).toHaveBeenCalledWith(0)
     unchanged()
@@ -215,7 +213,10 @@ describe('全段：輸入門檻與抽成（只改目前這組的那一列）', (
     const sharing = nonSegmentedSharing()
     const { handlers, changes, unchanged } = setup(sharing)
     handlers[handlerName](inputEvent('60000'), 1, 'threshold')
-    expect(changes.nonSegmented[1].rakeData[type]).toEqual([sharing.nonSegmented[1].rakeData[type][0], { ...sharing.nonSegmented[1].rakeData[type][1], threshold: 60000 }])
+    expect(changes.nonSegmented[1].rakeData[type]).toEqual([
+      sharing.nonSegmented[1].rakeData[type][0],
+      { ...sharing.nonSegmented[1].rakeData[type][1], threshold: 60000 },
+    ])
     unchanged()
   })
 

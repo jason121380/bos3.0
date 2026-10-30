@@ -4,8 +4,21 @@
 import { cleanup, screen } from '@testing-library/react'
 import { loginAs } from '../../../__tests__/testkit.test'
 import {
-  setupQueue, loaded, richQueue, retry, summaryValue, panelOf,
-  DESIGNER, ASSISTANT, SERVICE, SERVICE_DYE, PRODUCT, TICKET, CARD, TICKET_RECORD, CUSTOMER,
+  setupQueue,
+  loaded,
+  richQueue,
+  retry,
+  summaryValue,
+  panelOf,
+  DESIGNER,
+  ASSISTANT,
+  SERVICE,
+  SERVICE_DYE,
+  PRODUCT,
+  TICKET,
+  CARD,
+  TICKET_RECORD,
+  CUSTOMER,
 } from './queueKit.test'
 
 jest.setTimeout(20000)
@@ -23,9 +36,7 @@ describe('重新開單：佇列帳單的各區項目原樣帶回', () => {
     const page = setupQueue({ queue: richQueue(), GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true } })
     await loaded(page)
     // 有內容的區塊自動展開
-    ;['項目消費', '店販銷售', '預收卡販賣', '使用預收卡', '會員卡銷售'].forEach(title =>
-      expect(panelOf(title)).toHaveAttribute('data-state', 'open')
-    )
+    ;['項目消費', '店販銷售', '預收卡販賣', '使用預收卡', '會員卡銷售'].forEach(title => expect(panelOf(title)).toHaveAttribute('data-state', 'open'))
     expect(screen.getByDisplayValue('精緻剪髮(S01)')).toBeInTheDocument()
     expect(screen.getByDisplayValue('染髮(S02)')).toBeInTheDocument()
     // 第三方卡券（團購券，抽成 10%）：顯示扣完後業績；服務綁定且鎖定的卡券不能改
@@ -107,7 +118,12 @@ describe('重新開單：沒有要收金額的佇列帳單也能重試', () => {
     const page = setupQueue({
       queue: richQueue({
         serviceOrders: [{ serviceId: SERVICE.id, price: 0, serviceOrderHelpers: [], thirdPartyCouponMerchantId: null }],
-        productOrders: [], ticketOrders: [], useTicketOrders: [], membershipOrders: [], walletPay: 0, bonusDecount: 0,
+        productOrders: [],
+        ticketOrders: [],
+        useTicketOrders: [],
+        membershipOrders: [],
+        walletPay: 0,
+        bonusDecount: 0,
       }),
     })
     await loaded(page)

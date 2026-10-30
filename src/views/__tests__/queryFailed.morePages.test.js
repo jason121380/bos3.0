@@ -65,10 +65,13 @@ const PAGES = [
 const renderModule = entry => {
   const [modulePath, search = ''] = Array.isArray(entry) ? entry : [entry]
   const Page = require(modulePath).default
-  return renderPage(<Page match={{ params: { id: '1', tab: 'general' } }} location={{ pathname: '/page/1', search }} history={{ push: () => {} }} />, {
-    fallback: 'error',
-    route: `/page/1${search}`,
-  })
+  return renderPage(
+    <Page match={{ params: { id: '1', tab: 'general' } }} location={{ pathname: '/page/1', search }} history={{ push: () => {} }} />,
+    {
+      fallback: 'error',
+      route: `/page/1${search}`,
+    }
+  )
 }
 
 beforeAll(() => {
@@ -77,13 +80,16 @@ beforeAll(() => {
 beforeEach(() => loginAs())
 afterEach(cleanup)
 
-it.each(PAGES.map(entry => [Array.isArray(entry) ? entry[0] : entry, entry]))('%s 查詢失敗：顯示錯誤與重新查詢，不是空白或一直載入', async (_name, entry) => {
-  const utils = renderModule(entry)
-  await utils.settle()
-  expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-  expect((await screen.findAllByText('無法載入資料'))[0]).toBeInTheDocument()
-  expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
-})
+it.each(PAGES.map(entry => [Array.isArray(entry) ? entry[0] : entry, entry]))(
+  '%s 查詢失敗：顯示錯誤與重新查詢，不是空白或一直載入',
+  async (_name, entry) => {
+    const utils = renderModule(entry)
+    await utils.settle()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect((await screen.findAllByText('無法載入資料'))[0]).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: '重新查詢' })[0]).toBeEnabled()
+  }
+)
 
 // 按「搜尋」才送出主查詢的報表：送出後失敗也要顯示錯誤與重新查詢
 it('views/SingleServiceSearchingReport 按搜尋後查詢失敗：顯示錯誤與重新查詢', async () => {

@@ -15,8 +15,7 @@ import { renderProfile } from './profileKit.test'
 jest.setTimeout(20000)
 
 const at = (d, h, m, s = 0) => new Date(2026, 9, d, h, m, s).getTime()
-const choose = (select, text) =>
-  fireEvent.change(select, { target: { value: Array.from(select.options).find(o => o.textContent === text).value } })
+const choose = (select, text) => fireEvent.change(select, { target: { value: Array.from(select.options).find(o => o.textContent === text).value } })
 const cellsOfRow = tr => Array.from(tr.querySelectorAll('td')).map(td => td.textContent)
 
 beforeEach(() => loginAs())
@@ -68,12 +67,20 @@ describe('個人頁：帳單紀錄', () => {
     expect(screen.getByText('共 8 筆, 1 / 1')).toBeInTheDocument()
     expect(headers()).not.toContain('會員卡消費')
     expect(row('A1')).toEqual(expect.arrayContaining(['#A12026/10/19/(一)', '王小美/07', 'Y', '1,200', '301', '2,001', '1,501']))
-    expect(['w20', 'w21', 'w22', 'w23', 'w24', 'w25'].map(no => row(`A${no}`).find(c => c.startsWith(`#A${no}`)).slice(-3))).toEqual(['(二)', '(三)', '(四)', '(五)', '(六)', '(日)'])
+    expect(
+      ['w20', 'w21', 'w22', 'w23', 'w24', 'w25'].map(no =>
+        row(`A${no}`)
+          .find(c => c.startsWith(`#A${no}`))
+          .slice(-3)
+      )
+    ).toEqual(['(二)', '(三)', '(四)', '(五)', '(六)', '(日)'])
     expect(row('A2')).toEqual(expect.arrayContaining(['王小美', 'N', '1,200含 A卡, 含 B卡', '301含 C卡', '熟客']))
   })
 
   it('會員卡、點數折抵、活動券欄依設定或資料顯示', async () => {
-    const orders = [order('1', { raffleCount: 1, membership: 999.5, bonusDecountForReport: 40, TPTName: { service: [], product: [], membership: ['D卡'] } })]
+    const orders = [
+      order('1', { raffleCount: 1, membership: 999.5, bonusDecountForReport: 40, TPTName: { service: [], product: [], membership: ['D卡'] } }),
+    ]
     renderProfile('orderRecord', { fixtures: fixtures({ orders, member: true, bonus: true }) })
     await screen.findByText('#A1')
     await wait(() => expect(headers()).toEqual(expect.arrayContaining(['活動券', '會員卡消費', '點數折抵金額'])))
@@ -117,14 +124,21 @@ describe('個人頁：打卡紀錄', () => {
     const records = [{ latitude: 25.03, longitude: 121.56, checkinDateTime: at(21, 9, 2, 5) }]
     const { calls } = renderProfile('AttendanceRecord', { fixtures: { FETCH_USER_ATTENDANCE: attendance(records) } })
     await screen.findByText('09:02:05')
-    expect(callsOf(calls, 'FETCH_USER_ATTENDANCE')[0].variables).toEqual({ userInput: { id: USER_ID }, allAttendanceInput: { pageLimit: 50, pageOffset: 0 } })
+    expect(callsOf(calls, 'FETCH_USER_ATTENDANCE')[0].variables).toEqual({
+      userInput: { id: USER_ID },
+      allAttendanceInput: { pageLimit: 50, pageOffset: 0 },
+    })
     expect(screen.getByText('2026/10/21')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: '地點' })).toHaveAttribute('href', 'https://www.google.com/maps?q=25.03,121.56')
     fireEvent.click(screen.getByLabelText('下一頁'))
-    await wait(() => expect(callsOf(calls, 'FETCH_USER_ATTENDANCE').map(c => c.variables.allAttendanceInput)).toContainEqual({ pageLimit: 50, pageOffset: 1 }))
+    await wait(() =>
+      expect(callsOf(calls, 'FETCH_USER_ATTENDANCE').map(c => c.variables.allAttendanceInput)).toContainEqual({ pageLimit: 50, pageOffset: 1 })
+    )
     await screen.findByText('09:02:05')
     choose(screen.getByLabelText('每頁筆數'), '10')
-    await wait(() => expect(callsOf(calls, 'FETCH_USER_ATTENDANCE').map(c => c.variables.allAttendanceInput)).toContainEqual({ pageLimit: 10, pageOffset: 0 }))
+    await wait(() =>
+      expect(callsOf(calls, 'FETCH_USER_ATTENDANCE').map(c => c.variables.allAttendanceInput)).toContainEqual({ pageLimit: 10, pageOffset: 0 })
+    )
   })
 
   it('沒有打卡紀錄時顯示無資料；查詢中顯示骨架', async () => {
@@ -142,7 +156,12 @@ describe('個人頁：抽成報表', () => {
           userRakeReport: [
             {
               user: { id: USER_ID, name: '王小美', nickName: '', designerNo: '' },
-              salesAnalytics: { servicePerformanceFakeTotal: 1000.4, ticketUsagePerformanceFakeTotal: 200.4, totalSalaryShouldBePaid: 450.5, membershipPerformanceFakeTotal: 0 },
+              salesAnalytics: {
+                servicePerformanceFakeTotal: 1000.4,
+                ticketUsagePerformanceFakeTotal: 200.4,
+                totalSalaryShouldBePaid: 450.5,
+                membershipPerformanceFakeTotal: 0,
+              },
             },
           ],
         },
@@ -174,7 +193,9 @@ describe('個人頁：抽成報表（日期）', () => {
     window.history.replaceState(null, '', `/?startDate=${start}&endDate=${end}`)
     const { calls } = renderProfile('rakeReport', {
       fixtures: {
-        FETCH_DESIGNER_RAKE_REPORT: { userRakeReport: [{ user: { id: USER_ID, name: '王小美', nickName: 'Amy', designerNo: '07' }, salesAnalytics: {} }] },
+        FETCH_DESIGNER_RAKE_REPORT: {
+          userRakeReport: [{ user: { id: USER_ID, name: '王小美', nickName: 'Amy', designerNo: '07' }, salesAnalytics: {} }],
+        },
       },
     })
     await screen.findByText('07 Amy 王小美')
@@ -245,7 +266,11 @@ describe('個人頁：薪資條', () => {
   it('沒有加扣項時顯示 0 的空白薪資條；只有扣項、只有加項；不顯示虛業績與天數', async () => {
     renderProfile('paySlip', {
       fixtures: fixtures(
-        [slip({ increaseItem: [], decreaseItem: [] }), slip({ userId: USER_ID, name: '只有扣項', increaseItem: [] }), slip({ name: '只有加項', decreaseItem: [] })],
+        [
+          slip({ increaseItem: [], decreaseItem: [] }),
+          slip({ userId: USER_ID, name: '只有扣項', increaseItem: [] }),
+          slip({ name: '只有加項', decreaseItem: [] }),
+        ],
         { fake: false, epwd: false }
       ),
     })
@@ -289,8 +314,24 @@ describe('個人頁：設計師日報表', () => {
   const report = (overrides = {}) => ({
     user: { id: USER_ID, name: '王小美', nickName: 'Amy', designerNo: '07' },
     orderRecord: [
-      { orderId: 'o1', designation: true, orderNo: 'A001', category: '項目消費', itemName: '剪髮', fakePerformance: 1000.04, truthPerformance: 950.06 },
-      { orderId: 'o2', designation: false, orderNo: 'A002', category: '店販', itemName: '洗髮精', fakePerformance: 123456.7, truthPerformance: 100000.4 },
+      {
+        orderId: 'o1',
+        designation: true,
+        orderNo: 'A001',
+        category: '項目消費',
+        itemName: '剪髮',
+        fakePerformance: 1000.04,
+        truthPerformance: 950.06,
+      },
+      {
+        orderId: 'o2',
+        designation: false,
+        orderNo: 'A002',
+        category: '店販',
+        itemName: '洗髮精',
+        fakePerformance: 123456.7,
+        truthPerformance: 100000.4,
+      },
     ],
     currentDay: day(),
     tillNow: day({ performanceFakeTotal: 30000, orderTotalCount: 30 }),
@@ -303,7 +344,9 @@ describe('個人頁：設計師日報表', () => {
   })
   const fixtures = ({ reports = [report()], price = true, pointPrice = true, hidden = false } = {}) => ({
     FETCH_DESIGNER_DAILY_REPORT: { designerDailyReport: reports },
-    GET_PRICE_DISPLAY_ON_DAILY_REPORT_DEFAULT: { getPriceDisplayOnDailyReportDefault: { isPriceDisplayOnDailyReport: price, isHelperPointPriceDisplay: pointPrice } },
+    GET_PRICE_DISPLAY_ON_DAILY_REPORT_DEFAULT: {
+      getPriceDisplayOnDailyReportDefault: { isPriceDisplayOnDailyReport: price, isHelperPointPriceDisplay: pointPrice },
+    },
     GET_IS_ZERO_VALUE_HIDDEN_ON_DAILY_REPORT: { getIsZeroValueHiddenOnDailyReport: hidden },
   })
   const summary = label => cellsOfRow(screen.getByText(label).closest('tr')).slice(1)
@@ -351,15 +394,37 @@ describe('個人頁：設計師日報表', () => {
 
   it('隱藏 0 值時：當日為 0 但累計不為 0 的列照常顯示', async () => {
     const zero = day({
-      performanceFakeTotal: 0, performanceTruthTotal: 0, performanceDesignateTruthTotal: 0, performanceNonDesignateTruthTotal: 0,
-      thirdPartHandlingFee: 0, helperRetrievePoint: 0, orderTotalCount: 0, designateOrderCount: 0, nonDesignateOrderCount: 0,
-      orderAveragePrice: 0, orderTypeCount: 0, orderTypeAveragePrice: 0, walletDeposit: 0,
+      performanceFakeTotal: 0,
+      performanceTruthTotal: 0,
+      performanceDesignateTruthTotal: 0,
+      performanceNonDesignateTruthTotal: 0,
+      thirdPartHandlingFee: 0,
+      helperRetrievePoint: 0,
+      orderTotalCount: 0,
+      designateOrderCount: 0,
+      nonDesignateOrderCount: 0,
+      orderAveragePrice: 0,
+      orderTypeCount: 0,
+      orderTypeAveragePrice: 0,
+      walletDeposit: 0,
     })
     const till = day({ thirdPartHandlingFee: 5, helperRetrievePoint: 2, walletDeposit: 300 })
     renderProfile('designerSelfRecord', { fixtures: fixtures({ hidden: true, reports: [report({ currentDay: zero, tillNow: till })] }) })
     await screen.findByText('A001*')
     await wait(() => expect(screen.getByText('入金儲值')).toBeInTheDocument())
-    for (const label of ['實業績', '指定實業績', '不指定實業績', '手續費', '互助獲得', '總客數', '指定客', '不指定客', '客單價', '客項次(服務)', '平均項次單價']) {
+    for (const label of [
+      '實業績',
+      '指定實業績',
+      '不指定實業績',
+      '手續費',
+      '互助獲得',
+      '總客數',
+      '指定客',
+      '不指定客',
+      '客單價',
+      '客項次(服務)',
+      '平均項次單價',
+    ]) {
       expect(screen.getByText(label)).toBeInTheDocument()
     }
     expect(summary('入金儲值')).toEqual(['0', '300'])
@@ -412,11 +477,18 @@ describe('個人頁：互助日報表', () => {
   })
   const fixtures = ({ helperRecord, productRecord = [], price = true }) => ({
     GET_USER_HELPER_RETRIEVE: { getUserHelperRetrieve: { helperRecord, productRecord, membershipRecord: [] } },
-    GET_PRICE_DISPLAY_ON_DAILY_REPORT_DEFAULT: { getPriceDisplayOnDailyReportDefault: { isPriceDisplayOnDailyReport: true, isHelperPointPriceDisplay: price } },
+    GET_PRICE_DISPLAY_ON_DAILY_REPORT_DEFAULT: {
+      getPriceDisplayOnDailyReportDefault: { isPriceDisplayOnDailyReport: true, isHelperPointPriceDisplay: price },
+    },
   })
   // 以標題開頭（原文含多個空白）找到該互助者的卡片
   const cardOf = prefix =>
-    within(screen.getAllByText(/互助報表$/).find(n => n.textContent.startsWith(prefix)).closest('.mb-6'))
+    within(
+      screen
+        .getAllByText(/互助報表$/)
+        .find(n => n.textContent.startsWith(prefix))
+        .closest('.mb-6')
+    )
 
   it('以登入者 id 與今天查詢；依互助者分組並依編號排序（數字、字母、暱稱、姓名）；金額與點數合計', async () => {
     const p10 = person('h10', '十號', '10')
@@ -482,7 +554,10 @@ describe('個人頁：互助日報表', () => {
   // 以同一支查詢另查整月，依互助者加總點數、不含點金額、點數換算金額、店販業績與店販抽成。
   it('店販業績逐品項單價×數量加總；累計欄為當月 1 日到所選日期的加總', async () => {
     const p2 = person('h2', '二號', '2')
-    const today = { helperRecord: [helper(p2, { helperPoint: 1, helperFeeNoPoint: 100, helperFeeOnlyPoint: 10 })], productRecord: [product(p2), product(p2, { orderNo: 'A004', productUnitPrice: 50, productCount: 1, productRake: 5 })] }
+    const today = {
+      helperRecord: [helper(p2, { helperPoint: 1, helperFeeNoPoint: 100, helperFeeOnlyPoint: 10 })],
+      productRecord: [product(p2), product(p2, { orderNo: 'A004', productUnitPrice: 50, productCount: 1, productRake: 5 })],
+    }
     const month = {
       helperRecord: [
         ...today.helperRecord,

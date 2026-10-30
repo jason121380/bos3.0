@@ -29,7 +29,7 @@ function Services() {
       const services = idx(servicesData, _ => _.data.services)
       setServices(services)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [serviceCategoriesData.loading, servicesData.loading])
 
   const handlePageChange = ({ value, key }) => {
@@ -64,8 +64,8 @@ function Services() {
       />
 
       {servicesData.error ? (
-          <QueryFailed onRetry={() => servicesData.refetch()} />
-        ) : !servicesData.loading ?
+        <QueryFailed onRetry={() => servicesData.refetch()} />
+      ) : !servicesData.loading ? (
         services !== undefined && (
           <Results
             services={services}
@@ -73,14 +73,15 @@ function Services() {
             onPageChange={handlePageChange}
             onRowsPerPageChange={handleRowsPerPageChange}
           />
-        ) : (
-          <div className="flex flex-col gap-2">
-            <Skeleton className="h-11 w-full" />
-            <Skeleton className="h-11 w-full" />
-            <Skeleton className="h-11 w-full" />
-            <Skeleton className="h-11 w-full" />
-          </div>
-        )}
+        )
+      ) : (
+        <div className="flex flex-col gap-2">
+          <Skeleton className="h-11 w-full" />
+          <Skeleton className="h-11 w-full" />
+          <Skeleton className="h-11 w-full" />
+          <Skeleton className="h-11 w-full" />
+        </div>
+      )}
     </Page>
   )
 }

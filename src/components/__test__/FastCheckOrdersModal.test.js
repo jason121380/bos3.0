@@ -114,7 +114,9 @@ describe('FastCheckOrdersModal 帳單速查', () => {
     const [head, row, total] = within(table).getAllByRole('row')
     expect(head).toHaveTextContent('會員卡販賣')
     expect(head).toHaveTextContent('點數折抵金額(-)')
-    const cells = within(row).getAllByRole('cell').map(c => c.textContent)
+    const cells = within(row)
+      .getAllByRole('cell')
+      .map(c => c.textContent)
     expect(cells.slice(1, 6)).toEqual(['A001', '王小明', '設計師甲', 'Y', '1,234'])
     expect(cells[6]).toBe('1,001含 街口, 含 悠遊付')
     expect(cells[7]).toBe('300含 街口, 含 全支付')
@@ -123,14 +125,21 @@ describe('FastCheckOrdersModal 帳單速查', () => {
     // 第三方：服務與店販的第三方名稱合併、不重複
     expect(cells[14]).toBe('100含 街口, 含 悠遊付, 含 全支付')
     expect(cells.slice(15)).toEqual(['60LINE Pay', '40', '10', '常客', '現場'])
-    const totals = within(total).getAllByRole('cell').map(c => c.textContent)
+    const totals = within(total)
+      .getAllByRole('cell')
+      .map(c => c.textContent)
     expect(totals.slice(4)).toEqual(['合計', '1,234', '1,001', '300', '500', '121', '200', '1,500', '50', '80', '100', '60', '40', '10', ''])
   })
 
   it('會員卡、點數功能關閉且期間金額為 0 時不顯示該欄；不指定帳單顯示 N；沒有第三方付款時不顯示「含」', async () => {
     const plain = order({ isDesignate: false, serviceOrders: [], productOrders: [], membershipOrders: [] })
     const { settle } = renderPage(<Harness />, {
-      fixtures: fixturesWith({ orders: [plain], intervalSummary: { ...summary, membership: 0, bonusDecountForReport: 0 }, membershipActive: false, bonusActive: false }),
+      fixtures: fixturesWith({
+        orders: [plain],
+        intervalSummary: { ...summary, membership: 0, bonusDecountForReport: 0 },
+        membershipActive: false,
+        bonusActive: false,
+      }),
     })
     await settle()
     const table = await screen.findByRole('table')
@@ -150,7 +159,12 @@ describe('FastCheckOrdersModal 帳單速查', () => {
     const [head, , total] = within(table).getAllByRole('row')
     expect(head).toHaveTextContent('會員卡販賣')
     expect(head).toHaveTextContent('點數折抵金額(-)')
-    expect(within(total).getAllByRole('cell').map(c => c.textContent).slice(5, 9)).toEqual(['0', '0', '0', '5'])
+    expect(
+      within(total)
+        .getAllByRole('cell')
+        .map(c => c.textContent)
+        .slice(5, 9)
+    ).toEqual(['0', '0', '0', '5'])
   })
 
   it('會員卡功能開啟但期間合計沒有會員卡欄位值時顯示 0', async () => {
@@ -158,7 +172,11 @@ describe('FastCheckOrdersModal 帳單速查', () => {
     await settle()
     const table = await screen.findByRole('table')
     const total = within(table).getAllByRole('row').pop()
-    expect(within(total).getAllByRole('cell').map(c => c.textContent)[8]).toBe('0')
+    expect(
+      within(total)
+        .getAllByRole('cell')
+        .map(c => c.textContent)[8]
+    ).toBe('0')
   })
 
   // 已修正（Jason 2026/10/22 fix all）：第三方卡券欄的「含 …」原本只有服務與店販「都有」項目時才顯示（&&），

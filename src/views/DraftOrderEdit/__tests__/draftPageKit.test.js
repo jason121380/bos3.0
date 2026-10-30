@@ -39,8 +39,24 @@ export const PRODUCT = { id: 'product-1', no: 'P01', name: '洗髮精', sellPric
 export const PRODUCT2 = { id: 'product-2', no: 'P02', name: '護髮油', sellPrice: 500, isLocked: 'FALSE', isUsing: true, isAvailableForSale: true }
 export const TICKET = { id: 'ticket-1', no: 'T01', name: '剪髮10次卡', price: 6000, ticketAvailableCount: 10, isLocked: 'FALSE', isUsing: true }
 export const TICKET_LOCKED = { id: 'ticket-2', no: 'T02', name: '護髮5次卡', price: 3000, ticketAvailableCount: 5, isLocked: 'TRUE', isUsing: true }
-export const YEAR_CARD = { uuid: 'card-1', no: 'M01', name: '年卡', sellPrice: 12000, effecitveDay: 365, isLocked: 'FALSE', membershipCategory: { id: 'mc-1', uuid: 'mc-1', name: '年卡類' } }
-export const FOREVER_CARD = { uuid: 'card-2', no: 'M02', name: '永久卡', sellPrice: 30000, effecitveDay: 0, isLocked: 'TRUE', membershipCategory: { id: 'mc-1', uuid: 'mc-1', name: '年卡類' } }
+export const YEAR_CARD = {
+  uuid: 'card-1',
+  no: 'M01',
+  name: '年卡',
+  sellPrice: 12000,
+  effecitveDay: 365,
+  isLocked: 'FALSE',
+  membershipCategory: { id: 'mc-1', uuid: 'mc-1', name: '年卡類' },
+}
+export const FOREVER_CARD = {
+  uuid: 'card-2',
+  no: 'M02',
+  name: '永久卡',
+  sellPrice: 30000,
+  effecitveDay: 0,
+  isLocked: 'TRUE',
+  membershipCategory: { id: 'mc-1', uuid: 'mc-1', name: '年卡類' },
+}
 // 第三方卡券：百分比手續費與固定金額手續費各一
 export const THIRD_PARTY = [
   { id: 'tp-1', name: '街口券', fee: 10, type: 'PERCENT' },
@@ -110,8 +126,7 @@ export const customerDetail = (overrides = {}) => ({
   ...overrides,
 })
 
-const customerById = (id, customer, otherCustomers) =>
-  (customer && customer.id === id ? customer : otherCustomers[id]) || null
+const customerById = (id, customer, otherCustomers) => (customer && customer.id === id ? customer : otherCustomers[id]) || null
 
 // 預設：不留客資的掛單、一個服務；店家沒開第三方卡券、沒開助理指定、沒開紅利；所有選項清單都有資料
 export const draftFixtures = ({

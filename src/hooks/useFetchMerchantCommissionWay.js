@@ -12,9 +12,7 @@ const GET_MERCHANT_COMMISSION_ITEMS = settingsQuery(gql`
 `)
 
 export default function useFetchMerchantCommissionWay() {
-  const merchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
+  const merchantId = localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null
 
   return useQuery(GET_MERCHANT_COMMISSION_ITEMS, {
     variables: {

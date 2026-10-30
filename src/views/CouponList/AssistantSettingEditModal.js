@@ -260,10 +260,7 @@ function AssistantSettingEditModal({
           {helperDeductionSetting.map((content, index) => (
             <div className="flex flex-wrap items-end gap-3" key={index}>
               <Field label="扣項類別" className="w-full sm:w-36">
-                <NativeSelect
-                  onChange={event => handleDeductionTypeChange(event, index)}
-                  value={content.helperDeductionType}
-                >
+                <NativeSelect onChange={event => handleDeductionTypeChange(event, index)} value={content.helperDeductionType}>
                   {deductions.map((data, idx) => (
                     <NativeSelectOption value={data.value} key={`${data.value}-${idx}`}>
                       {data.label}
@@ -281,10 +278,7 @@ function AssistantSettingEditModal({
                 </NativeSelect>
               </Field>
               <Field label="協助人員人數" className="w-full sm:w-36">
-                <NativeSelect
-                  onChange={event => handleAssistantName(event, index)}
-                  value={content.peopleCount}
-                >
+                <NativeSelect onChange={event => handleAssistantName(event, index)} value={content.peopleCount}>
                   {assistantNum.map((data, idx) => (
                     <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                       {data.label}
@@ -293,10 +287,7 @@ function AssistantSettingEditModal({
                 </NativeSelect>
               </Field>
               <Field label="扣項方式" className="w-full sm:w-36">
-                <NativeSelect
-                  value={content.deductionWay}
-                  onChange={event => handleDeductionWayChange(event, index)}
-                >
+                <NativeSelect value={content.deductionWay} onChange={event => handleDeductionWayChange(event, index)}>
                   {deductionWay2.map((data, idx) => (
                     <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                       {data.label}
@@ -323,12 +314,12 @@ function AssistantSettingEditModal({
                 </span>
               )}
               {content.designatePercent ||
-                content.designateCash ||
-                content.designatePoint ||
-                content.designatePercent ||
-                content.designateCash ||
-                content.designatePoint > 0 ||
-                content.isDesignate ? (
+              content.designateCash ||
+              content.designatePoint ||
+              content.designatePercent ||
+              content.designateCash ||
+              content.designatePoint > 0 ||
+              content.isDesignate ? (
                 <>
                   <Field
                     className="w-28"
@@ -346,17 +337,11 @@ function AssistantSettingEditModal({
                       type="number"
                       name="designateInput"
                       value={
-                        content.designatePercent ||
-                          content.designateCash ||
-                          content.designatePoint > 0
-                          ? content.designatePercent ||
-                          content.designateCash ||
-                          content.designatePoint
+                        content.designatePercent || content.designateCash || content.designatePoint > 0
+                          ? content.designatePercent || content.designateCash || content.designatePoint
                           : 0
                       }
-                      onChange={event =>
-                        handleDesignateDeductionWayInput(event, index, content.deductionWay)
-                      }
+                      onChange={event => handleDesignateDeductionWayInput(event, index, content.deductionWay)}
                       onWheel={() => document.activeElement.blur()}
                     />
                   </Field>
@@ -376,17 +361,11 @@ function AssistantSettingEditModal({
                       type="number"
                       name="NonDesignateInput"
                       value={
-                        content.nonDesignatePercent ||
-                          content.nonDesignateCash ||
-                          content.nonDesignatePoint > 0
-                          ? content.nonDesignatePercent ||
-                          content.nonDesignateCash ||
-                          content.nonDesignatePoint
+                        content.nonDesignatePercent || content.nonDesignateCash || content.nonDesignatePoint > 0
+                          ? content.nonDesignatePercent || content.nonDesignateCash || content.nonDesignatePoint
                           : 0
                       }
-                      onChange={event =>
-                        handleNonDesignateDeductionWayInput(event, index, content.deductionWay)
-                      }
+                      onChange={event => handleNonDesignateDeductionWayInput(event, index, content.deductionWay)}
                       onWheel={() => document.activeElement.blur()}
                     />
                   </Field>
@@ -395,24 +374,12 @@ function AssistantSettingEditModal({
                 content.deductionWay !== '' && (
                   <Field
                     className="w-28"
-                    label={
-                      content.deductionWay
-                        ? content.deductionWay
-                        : content.point > 0
-                          ? '點數'
-                          : content.cash > 0
-                            ? '固定金額'
-                            : '業績%數'
-                    }
+                    label={content.deductionWay ? content.deductionWay : content.point > 0 ? '點數' : content.cash > 0 ? '固定金額' : '業績%數'}
                   >
                     <Input
                       type="number"
                       name="designateInput"
-                      value={
-                        content.percent || content.cash || content.point > 0
-                          ? content.percent || content.cash || content.point
-                          : 0
-                      }
+                      value={content.percent || content.cash || content.point > 0 ? content.percent || content.cash || content.point : 0}
                       onChange={event => handleDeductionWayInput(event, index, content.deductionWay)}
                       onWheel={() => document.activeElement.blur()}
                     />
@@ -421,13 +388,7 @@ function AssistantSettingEditModal({
               )}
               <div className="flex items-center gap-1">
                 {content.deductionWay !== '' && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-text-secondary"
-                    aria-label="清除此互助設定"
-                    onClick={() => handleClear(index)}
-                  >
+                  <Button variant="ghost" size="icon" className="text-text-secondary" aria-label="清除此互助設定" onClick={() => handleClear(index)}>
                     <Delete strokeWidth={1.75} />
                   </Button>
                 )}
@@ -443,13 +404,7 @@ function AssistantSettingEditModal({
                   </Button>
                 )}
                 {index === helperDeductionSetting.length - 1 && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-text-secondary"
-                    aria-label="新增互助設定"
-                    onClick={handleAddAssistantContent}
-                  >
+                  <Button variant="ghost" size="icon" className="text-text-secondary" aria-label="新增互助設定" onClick={handleAddAssistantContent}>
                     <Plus strokeWidth={1.75} />
                   </Button>
                 )}

@@ -24,17 +24,17 @@ function CustomerWalletLeaderboard() {
   const [getCustomerWalletExcel, customerWalletDateExcel] = useFetchGetCustomerWalletLeaderboardExcel()
   const [reportData, setReportData] = useState([])
   const [inputData, setInputData] = useState({
-    "orderType": 'DEPOSIT',
-    "designerIds": [],
-    "dateRange": {
-      "startDate": startOfMonth(new Date()).getTime(),
-      "endDate": endOfMonth(new Date()).getTime(),
+    'orderType': 'DEPOSIT',
+    'designerIds': [],
+    'dateRange': {
+      'startDate': startOfMonth(new Date()).getTime(),
+      'endDate': endOfMonth(new Date()).getTime(),
     },
   })
 
   useEffect(() => {
     handleSearch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [inputData.dateRange] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [inputData.dateRange] 變動時呼叫，補上會每次 render 重跑
   }, [inputData.dateRange])
 
   useEffect(() => {
@@ -48,8 +48,8 @@ function CustomerWalletLeaderboard() {
     if (!customerWalletDateExcel.loading && customerWalletDateExcel.data) {
       const url = customerWalletDateExcel.data.customerWalletLeaderboardExcel
       const link = document.createElement('a')
-			link.href = url
-			link.click()
+      link.href = url
+      link.click()
     }
   }, [customerWalletDateExcel])
 
@@ -61,12 +61,12 @@ function CustomerWalletLeaderboard() {
     if (rangeLimit(inputData.dateRange)) {
       openSnackbar({
         message: '時間篩選區間不可超過一年',
-        variant: 'error'
+        variant: 'error',
       })
     } else {
       getCustomerWallet({
         variables: {
-          input: inputData
+          input: inputData,
         },
       })
     }
@@ -77,12 +77,12 @@ function CustomerWalletLeaderboard() {
     if (rangeLimit(inputData.dateRange)) {
       openSnackbar({
         message: '時間篩選區間不可超過一年',
-        variant: 'error'
+        variant: 'error',
       })
     } else {
       getCustomerWalletExcel({
         variables: {
-          input: inputData
+          input: inputData,
         },
       })
     }
@@ -101,11 +101,10 @@ function CustomerWalletLeaderboard() {
       <PageHeader
         title="顧客入金排行榜"
         actions={
-          <Button
-            variant='secondary'
-            disabled={customerWalletDateExcel.loading || exportMaskOff}
-            onClick={handleGetExcelData}
-          ><Download strokeWidth={1.75} />報表匯出</Button>
+          <Button variant="secondary" disabled={customerWalletDateExcel.loading || exportMaskOff} onClick={handleGetExcelData}>
+            <Download strokeWidth={1.75} />
+            報表匯出
+          </Button>
         }
       />
       <BackendExportNotice settingOff={exportMaskOff} />
@@ -118,7 +117,7 @@ function CustomerWalletLeaderboard() {
       />
       {customerWalletData.error ? (
         <QueryFailed onRetry={handleSearch} />
-      ) : (!customerWalletData.loading && customerWalletData.data) ? (
+      ) : !customerWalletData.loading && customerWalletData.data ? (
         <Results reportData={reportData} />
       ) : (
         <Skeleton className="h-96" aria-busy="true" />

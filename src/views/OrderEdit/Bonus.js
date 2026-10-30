@@ -6,23 +6,20 @@ import produce from 'immer'
 import { getBonusWalletPayLimit, isBonusDepositDisabled } from 'views/OrderShared/bonusRules'
 
 function Bonus({ customerBonus }) {
-  const {
-    setBill, bill, handleBillChange, onceRef, bonusConversion, bonusSetting,
-    bonusRewardWithLINE, isLineBinded
-  } = useContext(billContext)
+  const { setBill, bill, handleBillChange, onceRef, bonusConversion, bonusSetting, bonusRewardWithLINE, isLineBinded } = useContext(billContext)
   const bonusOnChange = (event, key) => {
-    const value = Number(event.target.value);
+    const value = Number(event.target.value)
     onceRef.current = false
     if (!isNaN(value) && value >= 0) {
       if (key === 'bonusUsed' && value <= customerBonus + bill.bonusDeposit) {
-        handleBillChange({ key, value });
+        handleBillChange({ key, value })
       } else if (key === 'bonusDecount' && value <= walletPayLimit()) {
-        handleBillChange({ key, value });
+        handleBillChange({ key, value })
       } else if (key === 'bonusDeposit') {
-        handleBillChange({ key, value });
+        handleBillChange({ key, value })
       }
     }
-  };
+  }
   // 「點數折抵金額」上限與「點數給點」是否停用：四頁同一套規則（OrderShared/bonusRules）
   const walletPayLimit = () => getBonusWalletPayLimit(bill)
   const bonusDepositDisabled = () => isBonusDepositDisabled({ bonusRewardWithLINE, isLineBinded, bonusSetting })
@@ -35,9 +32,9 @@ function Bonus({ customerBonus }) {
         })
       )
     }
-  // 刻意不把換算率放進依賴（Jason 2026/10/30 選 B）：換算率比帳單晚到時不重算 bonusDecount，
-  // 舊帳單一律維持結帳當時存的紅利折抵金額；補依賴會在設定到時把已存金額改成重算值。勿當成漏依賴修掉。
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 紅利換算率晚到時刻意不重算，舊帳單維持結帳當時的折抵金額（Jason 2026/10/30 選 B，見上方註解）
+    // 刻意不把換算率放進依賴（Jason 2026/10/30 選 B）：換算率比帳單晚到時不重算 bonusDecount，
+    // 舊帳單一律維持結帳當時存的紅利折抵金額；補依賴會在設定到時把已存金額改成重算值。勿當成漏依賴修掉。
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 紅利換算率晚到時刻意不重算，舊帳單維持結帳當時的折抵金額（Jason 2026/10/30 選 B，見上方註解）
   }, [bill.bonusUsed, setBill])
 
   return (
@@ -52,12 +49,7 @@ function Bonus({ customerBonus }) {
         />
       </Field>
       <Field label="點數扣點" className="flex w-[200px] justify-start">
-        <TextField
-          fullWidth
-          value={bill.bonusUsed}
-          variant="outlined"
-          onChange={event => bonusOnChange(event, 'bonusUsed')}
-        />
+        <TextField fullWidth value={bill.bonusUsed} variant="outlined" onChange={event => bonusOnChange(event, 'bonusUsed')} />
       </Field>
       <Field label="點數折抵金額" className="flex w-[200px] justify-start">
         <TextField

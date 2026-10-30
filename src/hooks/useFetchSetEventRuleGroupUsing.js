@@ -1,6 +1,6 @@
 import { gql, useMutation } from '@apollo/client'
 
-const SET_EVENT_RULE_GROUP_USING= gql`
+const SET_EVENT_RULE_GROUP_USING = gql`
   mutation SET_EVENT_RULE_GROUP_USING($input: SetEventRuleGroupUsingInput) {
     setEventRuleGroupUsing(input: $input)
   }

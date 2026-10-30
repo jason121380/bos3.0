@@ -10,7 +10,7 @@ export default function useFetchSetMerchantHairCondition() {
   const [setMerchantHairCondition] = useMutation(SET_MERCHANT_HAIR_CONDITION)
   return {
     setMerchantHairCondition: ({ input }) =>
-    setMerchantHairCondition({
+      setMerchantHairCondition({
         variables: {
           input,
         },

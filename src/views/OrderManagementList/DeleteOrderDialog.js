@@ -4,14 +4,7 @@ import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, Dia
 import { Field, Input } from 'ui/input'
 
 // 刪除帳單密碼彈窗；自 ResultsV2.js 原樣搬出，state 與 handler 由 props 傳入
-export default function DeleteOrderDialog({
-  openDialog,
-  handleCloseDialog,
-  deleteOrderPwd,
-  setDeleteOrderPwd,
-  isClick,
-  handleConfirmCancel,
-}) {
+export default function DeleteOrderDialog({ openDialog, handleCloseDialog, deleteOrderPwd, setDeleteOrderPwd, isClick, handleConfirmCancel }) {
   return (
     <Dialog open={openDialog} onOpenChange={o => !o && handleCloseDialog()}>
       <DialogContent size="sm">

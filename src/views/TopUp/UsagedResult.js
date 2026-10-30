@@ -8,7 +8,7 @@ import format from 'date-fns/format'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { CSVLink } from "react-csv"
+import { CSVLink } from 'react-csv'
 import { maskCustomerName, maskCellphone } from 'helper/exportCustomerMask'
 
 function UsagedResult({ className, walletUseRecord, resultSetting, onChange, date, paginationLabel, isCustomerDataMarked, ...rest }) {
@@ -23,9 +23,10 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
         excelData.push({
           '帳單編號/時間': `#${data.orderNo}-` + format(data.date, 'yyyy/MM/dd'),
           // 匯出檔依設定遮罩姓名與手機（比照帳單列表；Jason 2026/10/22 同意）
-          客戶: isCustomerDataMarked !== false
-            ? `${maskCustomerName(data.Customer.name)}/${maskCellphone(data.Customer.cellphone)}`
-            : `${data.Customer.name}/${data.Customer.cellphone}`,
+          客戶:
+            isCustomerDataMarked !== false
+              ? `${maskCustomerName(data.Customer.name)}/${maskCellphone(data.Customer.cellphone)}`
+              : `${data.Customer.name}/${data.Customer.cellphone}`,
           // 設計師代號讀 Designer.designerNo（原本讀不存在的 data.designerNo 匯出 undefined；Jason 2026/10/22 fix all）
           設計師: `${data.Designer.name}` + `${data.Designer.designerNo ? ' / ' + data.Designer.designerNo : ''}`,
           使用金額: data.money,
@@ -39,7 +40,7 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
       })
       setExcelData(excelData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [walletUseRecord.loading, isCustomerDataMarked])
   return (
     <div {...rest} className={className}>
@@ -48,14 +49,12 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
         totalCount={idx(walletUseRecord.data, _ => _.walletUseRecord.totalCount) || 0}
         pageLimit={resultSetting.usaged.pageLimit}
         pageOffset={resultSetting.usaged.pageOffset}
-        onPageChange={(_event, page) =>
-          onChange({ event: { target: { value: page } }, key: 'pageOffset' })
-        }
+        onPageChange={(_event, page) => onChange({ event: { target: { value: page } }, key: 'pageOffset' })}
         onRowsPerPageChange={event => onChange({ event, key: 'pageLimit' })}
         rowsPerPageOptions={[5, 10, 25, 50, 1000]}
         excelData={excelData}
         excelFilename="入金使用.csv"
-        tableHead={(
+        tableHead={
           <>
             <TableHead className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">操作</TableHead>
             <TableHead className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">帳單編號/時間</TableHead>
@@ -63,7 +62,7 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
             <TableHead className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">設計師</TableHead>
             <TableHead className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">使用金額</TableHead>
           </>
-        )}
+        }
       >
         <TableBody>
           {idx(walletUseRecord.data, _ =>
@@ -71,9 +70,7 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
               <TableRow key={`${data.id}-${data.index}`}>
                 <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">
                   <Button asChild size="sm" variant="secondary">
-                    <RouterLink to={`/order/${data.order.id}`}>
-                      帳單詳情
-                    </RouterLink>
+                    <RouterLink to={`/order/${data.order.id}`}>帳單詳情</RouterLink>
                   </Button>
                 </TableCell>
                 <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">
@@ -85,10 +82,7 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
                   <div className="text-caption tabular-nums text-text-secondary">{idx(data.Customer, _ => _.cellphone)}</div>
                 </TableCell>
                 <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">
-                  {idx(
-                    data.Designer,
-                    _ => `${_.name}${_.designerNo ? ' / ' + _.designerNo : ''}`
-                  )}
+                  {idx(data.Designer, _ => `${_.name}${_.designerNo ? ' / ' + _.designerNo : ''}`)}
                 </TableCell>
                 <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">{data.money}</TableCell>
               </TableRow>
@@ -98,9 +92,7 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
             <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">合計</TableCell>
             <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap" colSpan={3} />
             <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">
-              {idx(walletUseRecord, _ =>
-                _.data.walletUseRecord.record.reduce((prev, next) => prev + next.money, 0)
-              )}
+              {idx(walletUseRecord, _ => _.data.walletUseRecord.record.reduce((prev, next) => prev + next.money, 0))}
             </TableCell>
           </TableRow>
         </TableBody>
@@ -110,7 +102,7 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
 }
 
 UsagedResult.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
 }
 
 export default UsagedResult

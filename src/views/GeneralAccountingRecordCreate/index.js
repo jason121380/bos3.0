@@ -8,9 +8,7 @@ import General from './General'
 export default function AccountingRecordCreate() {
   const stayInCreateAccountInMemory = JSON.parse(localStorage.getItem('stayInCreateAccount'))
 
-  const [stayInCreateAccount, setStayInCreateAccount] = useState(
-    stayInCreateAccountInMemory !== null ? stayInCreateAccountInMemory : false
-  )
+  const [stayInCreateAccount, setStayInCreateAccount] = useState(stayInCreateAccountInMemory !== null ? stayInCreateAccountInMemory : false)
 
   const handleStayInCreateAccount = () => {
     if (!stayInCreateAccount) {
@@ -28,10 +26,7 @@ export default function AccountingRecordCreate() {
           title="新增收借支紀錄"
           actions={
             <label className="flex cursor-pointer items-center gap-2 text-body text-text">
-              <Checkbox
-                checked={stayInCreateAccount}
-                onChange={handleStayInCreateAccount}
-              />
+              <Checkbox checked={stayInCreateAccount} onChange={handleStayInCreateAccount} />
               連續新增收借支
             </label>
           }

@@ -111,7 +111,12 @@ export function rowsUnderHeading(title, root = document.body) {
 
 // 設定扣項的一列：type（扣業績／扣薪水／無扣項）、way（依業績%數／依固定金額）、special（分指定/不指定）、數字與基準點。
 // getRows(title) 取該區塊的列（頁面用 rowsOf(sectionOf)，彈窗用 rowsUnderHeading）；wayLabel 為「扣成方式」或彈窗的「抽成方式」
-export function fillDeductionRow(title, index, { type, way, special, price, designate, nonDesignate, ref }, { getRows = t => rowsOf(sectionOf(t)), wayLabel = '扣成方式' } = {}) {
+export function fillDeductionRow(
+  title,
+  index,
+  { type, way, special, price, designate, nonDesignate, ref },
+  { getRows = t => rowsOf(sectionOf(t)), wayLabel = '扣成方式' } = {}
+) {
   const row = () => getRows(title)[index]
   if (type) pick(controlByLabel('扣項類別', row()), type)
   if (way) pick(controlByLabel(wayLabel, row()), way)

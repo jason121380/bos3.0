@@ -8,7 +8,10 @@ import { renderDetails, ORDER, CUSTOMER } from './detailsKit.test'
 
 jest.setTimeout(20000)
 
-const tabNames = () => within(screen.getByRole('tablist')).getAllByRole('tab').map(t => t.textContent)
+const tabNames = () =>
+  within(screen.getByRole('tablist'))
+    .getAllByRole('tab')
+    .map(t => t.textContent)
 const BASE_TABS = ['基本資料', '消費記錄', '卡券紀錄', '入金紀錄', '顧客追蹤', '簡訊發送紀錄', '抽獎券紀錄']
 
 beforeEach(() => loginAs())
@@ -46,7 +49,17 @@ describe('顧客詳細：分頁清單', () => {
       },
     })
     await utils.settle()
-    expect(tabNames()).toEqual(['基本資料', '消費記錄', '卡券紀錄', '紅利點數紀錄', '入金紀錄', '顧客追蹤', '簡訊發送紀錄', '抽獎券紀錄', '會員卡列表'])
+    expect(tabNames()).toEqual([
+      '基本資料',
+      '消費記錄',
+      '卡券紀錄',
+      '紅利點數紀錄',
+      '入金紀錄',
+      '顧客追蹤',
+      '簡訊發送紀錄',
+      '抽獎券紀錄',
+      '會員卡列表',
+    ])
   })
 
   it('開啟紅利與會員卡：兩個分頁都有；顧客買過會員卡也會有會員卡列表', async () => {
@@ -58,7 +71,14 @@ describe('顧客詳細：分頁清單', () => {
     expect(tabNames()).toContain('會員卡列表')
     cleanup()
     const bought = renderDetails({
-      fixtures: { FETCH_CUSTOMER_DETAIL: { customer: { ...CUSTOMER, membershipPurchaseRecord: [{ membershipName: '金卡', purchaseDate: 1, expiryDay: null, validityDay: null, remark: null }] } } },
+      fixtures: {
+        FETCH_CUSTOMER_DETAIL: {
+          customer: {
+            ...CUSTOMER,
+            membershipPurchaseRecord: [{ membershipName: '金卡', purchaseDate: 1, expiryDay: null, validityDay: null, remark: null }],
+          },
+        },
+      },
     })
     await bought.settle()
     expect(tabNames()).toContain('會員卡列表')
@@ -95,7 +115,12 @@ describe('顧客詳細：切換分頁與返回', () => {
   it('從客資篩選匯出進來：麵包屑顯示客資篩選匯出，切換分頁保留 backto，返回回上一頁', async () => {
     window.history.replaceState({}, '', '/management/customers/c1/general?backto=customer-filter')
     let history
-    const utils = renderDetails({ route: '/management/customer-filter-export', onHistory: h => { history = h } })
+    const utils = renderDetails({
+      route: '/management/customer-filter-export',
+      onHistory: h => {
+        history = h
+      },
+    })
     history.push('/management/customers/c1/general')
     await utils.settle()
     expect(screen.getByRole('navigation', { name: '麵包屑' })).toHaveTextContent('客資篩選匯出')
@@ -121,9 +146,7 @@ describe('顧客詳細：切換分頁與返回', () => {
     await wait(() => expect(currentLocation()).toBe('/management/customers'))
   })
 
-  it.each([
-    ['查無此顧客', { customer: null }],
-  ])('顧客%s：顯示找不到這位顧客，返回鈕回客戶列表', async (_, fixture) => {
+  it.each([['查無此顧客', { customer: null }]])('顧客%s：顯示找不到這位顧客，返回鈕回客戶列表', async (_, fixture) => {
     const utils = renderDetails({ fixtures: { FETCH_CUSTOMER_DETAIL: fixture } })
     await utils.settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()

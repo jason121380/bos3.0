@@ -28,7 +28,6 @@ const SERVICE = {
   isBindedThirdPartTicketLocked: false,
 }
 
-
 // 佇列中保存的是送出當時的 OrderInput（JSON 字串）
 const queuedInput = (overrides = {}) => ({
   no: 'A777',
@@ -115,7 +114,6 @@ const fixtures = ({ queue = queuedInput(), order = makeOrder(), password = false
   },
   ...overrides,
 })
-
 
 const setup = (options = {}, { delays } = {}) =>
   renderPage(<QueueOrderEdit match={{ params: { id: 'queue-1' } }} />, {
@@ -325,9 +323,7 @@ describe('重新開單：編輯顧客資料', () => {
     })
     await screen.findByText(/重新開單 \(A777\)/)
     const input = await editCustomerAndSave(calls)
-    expect(input).toEqual(
-      expect.objectContaining({ customerId: CUSTOMER.id, name: '陳美美', birthday: { year: '81', month: '1', day: '2' } })
-    )
+    expect(input).toEqual(expect.objectContaining({ customerId: CUSTOMER.id, name: '陳美美', birthday: { year: '81', month: '1', day: '2' } }))
   })
 })
 

@@ -75,27 +75,21 @@ export default function DecreaseDetail({ history, location }) {
               visible={['employee', 'customer']}
               lastInLeaderBoard={true}
             />
-            <ProductAutoComplete
-              label="商品名稱"
-              value={pageSetting.productId}
-              onChange={handleProductChange}
-            />
+            <ProductAutoComplete label="商品名稱" value={pageSetting.productId} onChange={handleProductChange} />
           </>
         }
       />
 
       {productOrders.error ? (
-          <QueryFailed onRetry={() => productOrders.refetch()} />
-        ) : !productOrders.loading ? (
+        <QueryFailed onRetry={() => productOrders.refetch()} />
+      ) : !productOrders.loading ? (
         idx(
           productOrders,
           _ =>
             _.data.productOrders && (
               <Results
                 results={_.data.productOrders}
-                handleOnChangePage={(_event, page) =>
-                  handleOnChangePage({ page, key: 'merchantSell' })
-                }
+                handleOnChangePage={(_event, page) => handleOnChangePage({ page, key: 'merchantSell' })}
                 handleOnChangeRowsPerPage={event =>
                   handleOnChangeRowsPerPage({
                     value: idx(event, _ => _.target.value),

@@ -7,9 +7,7 @@ const SET_MERCHANT_MONTHLY_CHECKOUT_REMARK = gql`
 `
 
 export default function useFetchSettingMerchantMonthlyCheckoutRemark() {
-  const [setMerchantMerchantMonthlyCheckoutRemark] = useMutation(
-    SET_MERCHANT_MONTHLY_CHECKOUT_REMARK
-  )
+  const [setMerchantMerchantMonthlyCheckoutRemark] = useMutation(SET_MERCHANT_MONTHLY_CHECKOUT_REMARK)
   return {
     setMerchantMerchantMonthlyCheckoutRemark: ({ date, remark }) =>
       setMerchantMerchantMonthlyCheckoutRemark({

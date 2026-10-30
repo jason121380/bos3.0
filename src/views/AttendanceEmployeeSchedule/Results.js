@@ -8,9 +8,20 @@ import { Button as UiButton } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 
 export default function Results({
-  displayDate, rawTime, fontColor, tagId, employeeSchedule,
-  setEmployeeSchedule, editBefore, exportExcel, exportLoading,
-  saveData, isClick, loading, isEditing, setIsEditing,
+  displayDate,
+  rawTime,
+  fontColor,
+  tagId,
+  employeeSchedule,
+  setEmployeeSchedule,
+  editBefore,
+  exportExcel,
+  exportLoading,
+  saveData,
+  isClick,
+  loading,
+  isEditing,
+  setIsEditing,
 }) {
   const setSchedule = (dataIndex, time) => {
     if (!isEditing) return
@@ -37,9 +48,11 @@ export default function Results({
   const editSchedule = (scheduleId, dataIndex, time) => {
     if (!isEditing) return
     const newData = cloneDeep(employeeSchedule)
-    const index = newData[dataIndex].clockInSchedule.map(d => {
-      return d.date
-    }).indexOf(time)
+    const index = newData[dataIndex].clockInSchedule
+      .map(d => {
+        return d.date
+      })
+      .indexOf(time)
     if (tagId === '' || scheduleId === tagId.id) {
       newData[dataIndex].clockInSchedule[index].clockInSetting.id = null
       setEmployeeSchedule(newData)
@@ -149,7 +162,9 @@ export default function Results({
                   <span
                     className="!inline-block !w-[100px] !overflow-hidden text-ellipsis !whitespace-nowrap text-[12px] ![color:var(--schedule-tag-fg)]"
                     style={{ '--schedule-tag-fg': fontColor(filterData[0].clockInSetting.color) }}
-                  >{filterData[0].clockInSetting.name}</span>
+                  >
+                    {filterData[0].clockInSetting.name}
+                  </span>
                 </UiButton>
               </TableCell>
             )
@@ -186,16 +201,14 @@ export default function Results({
         })
         if (filterData.length > 0) {
           if (filterData[0].clockInSetting.id === null) {
-            return (
-              <TableCell key={time} className="beforeToday !w-[120px] !min-w-[120px] !px-[8px] !py-[4px] !text-[13px] [&&]:text-center" />
-            )
+            return <TableCell key={time} className="beforeToday !w-[120px] !min-w-[120px] !px-[8px] !py-[4px] !text-[13px] [&&]:text-center" />
           } else {
             return (
               <TableCell key={time} className="beforeToday !w-[120px] !min-w-[120px] !px-[8px] !py-[4px] !text-[13px] [&&]:text-center">
-                <UiButton
-                  variant="ghost"
-                  className="h-[36px] !overflow-hidden rounded-[18px] p-[4px] leading-[16px] max-sm:h-[36px]">
-                  <span className="!inline-block !w-[100px] !overflow-hidden text-ellipsis !whitespace-nowrap text-[12px]">{filterData[0].clockInSetting.name}</span>
+                <UiButton variant="ghost" className="h-[36px] !overflow-hidden rounded-[18px] p-[4px] leading-[16px] max-sm:h-[36px]">
+                  <span className="!inline-block !w-[100px] !overflow-hidden text-ellipsis !whitespace-nowrap text-[12px]">
+                    {filterData[0].clockInSetting.name}
+                  </span>
                 </UiButton>
               </TableCell>
             )
@@ -214,63 +227,55 @@ export default function Results({
       <CardHeader
         className="items-center pb-4"
         action={
-          <UiButton
-            size="sm"
-            variant="secondary"
-            disabled={exportLoading}
-            onClick={exportExcel}
-          >
+          <UiButton size="sm" variant="secondary" disabled={exportLoading} onClick={exportExcel}>
             報表匯出
           </UiButton>
         }
       >
         <div className="flex items-baseline gap-3">
           <CardTitle>班表總表列表</CardTitle>
-          <span className="text-label tabular-nums text-text-secondary">
-            共 {employeeSchedule.length} 人
-          </span>
+          <span className="text-label tabular-nums text-text-secondary">共 {employeeSchedule.length} 人</span>
         </div>
       </CardHeader>
       <div className="mt-0">
-        <Table
-          aria-label="a dense table"
-          wrapperClassName="AttendanceEmployeeScheduleTable max-h-[calc(100vh-380px)] rounded-md bg-background"
-        >
-            <TableHeader className="sticky top-0 z-[100] bg-background [outline:1px_solid_rgb(var(--border))]">
-              <TableRow className="hover:bg-transparent">
-                <TableHead className="sticky left-0 z-[99] !w-[150px] !min-w-[150px] !overflow-hidden text-ellipsis !whitespace-nowrap ![background-color:rgb(var(--surface))] !p-[8px] !text-[13px] !font-semibold text-text [outline:1px_solid_rgb(var(--border))]">設計師</TableHead>
-                {displayDate.map((date, index) => (
-                  <TableHead
-                    key={index}
-                    style={{ cursor: isEditing ? 'pointer' : 'default' }}
-                    onClick={() => addMultiColumnSchedule(Number(rawTime[index]))}
-                    className="!w-[120px] !min-w-[120px] ![background-color:rgb(var(--surface))] !p-[8px] [&&]:text-center !text-[13px] !font-semibold whitespace-nowrap text-text"
-                  >
-                    {date}
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {employeeSchedule.length > 0 &&
-                employeeSchedule.map((data, dataIndex) => {
-                  return (
-                    <TableRow key={dataIndex}>
-                      <TableCell
-                        style={{ cursor: isEditing ? 'pointer' : 'default' }}
-                        onClick={() => addMultiRowSchedule(dataIndex)}
-                        className="sticky left-0 z-[99] !w-[150px] !min-w-[150px] !overflow-hidden text-ellipsis !whitespace-nowrap bg-background !px-[8px] !py-[4px] !text-[13px] [outline:1px_solid_rgb(var(--border))]"
-                        key={data.user.name}
-                      >
-                        {data.user.name}
-                      </TableCell>
-                      {rawTime.map(time => {
-                        return showTagData(parseInt(time, 10), data, dataIndex)
-                      })}
-                    </TableRow>
-                  )
-                })}
-            </TableBody>
+        <Table aria-label="a dense table" wrapperClassName="AttendanceEmployeeScheduleTable max-h-[calc(100vh-380px)] rounded-md bg-background">
+          <TableHeader className="sticky top-0 z-[100] bg-background [outline:1px_solid_rgb(var(--border))]">
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="sticky left-0 z-[99] !w-[150px] !min-w-[150px] !overflow-hidden text-ellipsis !whitespace-nowrap ![background-color:rgb(var(--surface))] !p-[8px] !text-[13px] !font-semibold text-text [outline:1px_solid_rgb(var(--border))]">
+                設計師
+              </TableHead>
+              {displayDate.map((date, index) => (
+                <TableHead
+                  key={index}
+                  style={{ cursor: isEditing ? 'pointer' : 'default' }}
+                  onClick={() => addMultiColumnSchedule(Number(rawTime[index]))}
+                  className="!w-[120px] !min-w-[120px] ![background-color:rgb(var(--surface))] !p-[8px] [&&]:text-center !text-[13px] !font-semibold whitespace-nowrap text-text"
+                >
+                  {date}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {employeeSchedule.length > 0 &&
+              employeeSchedule.map((data, dataIndex) => {
+                return (
+                  <TableRow key={dataIndex}>
+                    <TableCell
+                      style={{ cursor: isEditing ? 'pointer' : 'default' }}
+                      onClick={() => addMultiRowSchedule(dataIndex)}
+                      className="sticky left-0 z-[99] !w-[150px] !min-w-[150px] !overflow-hidden text-ellipsis !whitespace-nowrap bg-background !px-[8px] !py-[4px] !text-[13px] [outline:1px_solid_rgb(var(--border))]"
+                      key={data.user.name}
+                    >
+                      {data.user.name}
+                    </TableCell>
+                    {rawTime.map(time => {
+                      return showTagData(parseInt(time, 10), data, dataIndex)
+                    })}
+                  </TableRow>
+                )
+              })}
+          </TableBody>
         </Table>
       </div>
     </Card>

@@ -8,9 +8,13 @@ const path = require('path')
 const assert = require('assert').strict
 const { chromium } = require('playwright')
 const directory = path.resolve(process.argv[2] || '/tmp/ui-components-harness')
-const html = '<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="/entry.css"><link rel="stylesheet" href="/tailwind.css"><div id="root"></div><script src="/entry.js"></script>'
+const html =
+  '<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="/entry.css"><link rel="stylesheet" href="/tailwind.css"><div id="root"></div><script src="/entry.js"></script>'
 async function main() {
-  const browser = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1'] })
+  const browser = await chromium.launch({
+    executablePath: '/usr/bin/google-chrome',
+    args: ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1'],
+  })
   let failed = 0
   for (const kind of ['tree-mouse', 'tree-keyboard', 'rating', 'tag']) {
     const context = await browser.newContext({ viewport: { width: 1000, height: 850 }, hasTouch: false })
@@ -45,7 +49,9 @@ async function main() {
           // 底色與字色都在 transition-colors 內，兩者都到終值才斷言。
           return style.backgroundColor === 'rgba(26, 115, 232, 0.12)' && style.color === 'rgb(26, 115, 232)'
         })
-        const selectedStyle = await a.locator('[data-tree-content]').evaluate(el => ({ background: getComputedStyle(el).backgroundColor, color: getComputedStyle(el).color }))
+        const selectedStyle = await a
+          .locator('[data-tree-content]')
+          .evaluate(el => ({ background: getComputedStyle(el).backgroundColor, color: getComputedStyle(el).color }))
         assert(selectedStyle.background.endsWith(', 0.12)'), `選取底色須為 accent 12%：${selectedStyle.background}`)
         assert.equal(selectedStyle.color, 'rgb(26, 115, 232)')
         assert.equal(await page.locator('#tree-value').textContent(), 'a')
@@ -75,7 +81,9 @@ async function main() {
       }
       await page.keyboard.press('Escape')
       await page.getByRole('dialog').waitFor({ state: 'detached' })
-      await page.waitForFunction(() => !document.body.style.pointerEvents && !document.body.hasAttribute('data-scroll-locked') && document.body.style.overflow !== 'hidden')
+      await page.waitForFunction(
+        () => !document.body.style.pointerEvents && !document.body.hasAttribute('data-scroll-locked') && document.body.style.overflow !== 'hidden'
+      )
       if (kind === 'rating') {
         const four = page.getByRole('radio', { name: '4 星' })
         await four.click()
@@ -103,9 +111,14 @@ async function main() {
     } catch (error) {
       failed++
       console.error(`FAIL ${kind}: ${error.message}`)
-    } finally { await context.close() }
+    } finally {
+      await context.close()
+    }
   }
   await browser.close()
   if (failed) process.exitCode = 1
 }
-main().catch(error => { console.error(error); process.exitCode = 1 })
+main().catch(error => {
+  console.error(error)
+  process.exitCode = 1
+})

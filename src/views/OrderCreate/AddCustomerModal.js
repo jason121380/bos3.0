@@ -22,7 +22,6 @@ import SourceSelect from 'components/SourceSelect'
 import { GENDER_OPTIONS, makeFieldChange, makeBirthdayChange } from 'views/OrderShared/customerFormInput'
 import { Autocomplete } from 'ui/combobox'
 
-
 function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, customerInModal, onCustomerAdded }) {
   const lastCustomerNo = useFetchGetLastCustomerNo()
   const inputLabel = React.useRef()
@@ -68,9 +67,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
     birthday: customer.birthday || { year: '', month: '', day: '' },
     PreferDesignerId: customer.PreferDesignerId || '',
     OfficialBrandMerchantId:
-      customer.OfficialBrandMerchantId || localStorage.getItem('userMerchant')
-        ? JSON.parse(localStorage.getItem('userMerchant')).id
-        : null,
+      customer.OfficialBrandMerchantId || localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
     email: customer.email || '',
     address: customer.address || '',
     lineId: customer.lineId || '',
@@ -78,8 +75,6 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
     remark: customer.remark || '',
     source: customer.source || '',
   })
-
-
 
   React.useEffect(() => {
     setValues({
@@ -110,7 +105,6 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
   const handleFieldChange = makeFieldChange(setValues)
   const handleBirthdayChange = makeBirthdayChange(birthdayObj, setBirthdayObj)
 
-
   const handlePreferDesignerChange = value => {
     setValues(
       produce(draft => {
@@ -125,25 +119,27 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
       const newValues = cloneDeep(values)
       delete newValues.id
       delete newValues.latestDesigner
-      updateCustomer({ input: { ...newValues, birthday: birthdayObj } }).then(() => {
-        openSnackbar({ variant: 'success', message: '成功更新顧客資訊' })
-        setBill(
-          produce(draft => {
-            draft.customerId = values.customerId
-            draft.customerCellphone = ''
-          })
-        )
-        onClose()
-      }).catch(error => {
-        setQuickAddCustomer(false)
-        // 更新失敗：把下方先清掉的顧客帶回帳單（原本失敗時帳單的顧客被悄悄清空）
-        setBill(
-          produce(draft => {
-            draft.customerId = values.customerId
-            draft.customerCellphone = ''
-          })
-        )
-      })
+      updateCustomer({ input: { ...newValues, birthday: birthdayObj } })
+        .then(() => {
+          openSnackbar({ variant: 'success', message: '成功更新顧客資訊' })
+          setBill(
+            produce(draft => {
+              draft.customerId = values.customerId
+              draft.customerCellphone = ''
+            })
+          )
+          onClose()
+        })
+        .catch(error => {
+          setQuickAddCustomer(false)
+          // 更新失敗：把下方先清掉的顧客帶回帳單（原本失敗時帳單的顧客被悄悄清空）
+          setBill(
+            produce(draft => {
+              draft.customerId = values.customerId
+              draft.customerCellphone = ''
+            })
+          )
+        })
       setBill(
         produce(draft => {
           draft.customerId = null
@@ -158,46 +154,46 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
       } else {
         addCustomer({
           input: { ...newValues, birthday: birthdayObj },
-        }).then(res => {
-          setCustomer({
-            ...customer,
-            customerId: res.data.addCustomer.id,
-            birthday: res.data.addCustomer.birthday,
-            name: res.data.addCustomer.name,
-            gender: res.data.addCustomer.gender,
-          })
-          openSnackbar({
-            message: '成功新增客戶',
-            variant: 'success',
-          })
-          // 新增成功後帳單帶入這位新顧客（與只輸入手機時的快速建檔相同；原本新增完帳單仍沒有顧客）
-          onCustomerAdded && onCustomerAdded(res.data.addCustomer)
-          onClose()
-          setCustomer({
-            customerId: '',
-            category: '',
-            name: '',
-            cellphone: '',
-            birthday: {
-              year: '',
-              month: '',
-              day: '',
-            },
-            OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-              ? JSON.parse(localStorage.getItem('userMerchant')).id
-              : null,
-            gender: 'MALE',
-            no: '',
-            nickName: '',
-            PreferDesignerId: '',
-            email: '',
-            address: '',
-            lineId: '',
-            remark: '',
-          })
-        }).catch(error => {
-          setQuickAddCustomer(false)
         })
+          .then(res => {
+            setCustomer({
+              ...customer,
+              customerId: res.data.addCustomer.id,
+              birthday: res.data.addCustomer.birthday,
+              name: res.data.addCustomer.name,
+              gender: res.data.addCustomer.gender,
+            })
+            openSnackbar({
+              message: '成功新增客戶',
+              variant: 'success',
+            })
+            // 新增成功後帳單帶入這位新顧客（與只輸入手機時的快速建檔相同；原本新增完帳單仍沒有顧客）
+            onCustomerAdded && onCustomerAdded(res.data.addCustomer)
+            onClose()
+            setCustomer({
+              customerId: '',
+              category: '',
+              name: '',
+              cellphone: '',
+              birthday: {
+                year: '',
+                month: '',
+                day: '',
+              },
+              OfficialBrandMerchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
+              gender: 'MALE',
+              no: '',
+              nickName: '',
+              PreferDesignerId: '',
+              email: '',
+              address: '',
+              lineId: '',
+              remark: '',
+            })
+          })
+          .catch(error => {
+            setQuickAddCustomer(false)
+          })
       }
     }
   }
@@ -261,7 +257,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
   }
 
   // ui/combobox 以選項物件（已選的設計師）或 id 字串呼叫：物件直接取姓名；原本物件一律回空字串，選了之後欄位顯示空白
-  const optionLabel = (id) => {
+  const optionLabel = id => {
     if (id === '' || id === null) {
       return ''
     } else if (typeof id === 'object') {
@@ -286,8 +282,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
     checkIsCustomerNoUsedLazy({
       variables: {
         input: values.no,
-        customerId: values.customerId === "" ? null : values.customerId,
-      }
+        customerId: values.customerId === '' ? null : values.customerId,
+      },
     })
   }
 
@@ -298,11 +294,11 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
       setNoVerify(data)
       data && setFocus('no')
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [checkIsCustomerNoUsedLazyData.loading])
 
   React.useEffect(() => {
-    if (values.no !== "") {
+    if (values.no !== '') {
       setIsSetTime(true)
       const timer = setTimeout(() => {
         checkNo()
@@ -313,7 +309,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
     } else {
       setNoVerify(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（checkNo）；只在 [values.no] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（checkNo）；只在 [values.no] 變動時呼叫，補上會每次 render 重跑
   }, [values.no])
 
   React.useEffect(() => {
@@ -321,19 +317,22 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
       const data = idx(lastCustomerNo, _ => _.data.getLastCustomerNo)
       setLastNo(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [lastCustomerNo.loading])
 
   return (
     <Dialog open={open}>
       {/* 保留原表單寬 700px；本批僅替換彈窗外殼。 */}
-      <DialogContent hideClose
+      <DialogContent
+        hideClose
         onOpenAutoFocus={event => {
           // 沿用舊 Modal：已有欄位焦點就保留，否則先聚焦面板，避免選人窗自動叫出手機鍵盤。
           event.preventDefault()
           if (!event.target.contains(document.activeElement)) event.target.focus()
         }}
-        className="sm:max-w-[700px]" aria-describedby={undefined}>
+        className="sm:max-w-[700px]"
+        aria-describedby={undefined}
+      >
         <DialogHeader className="items-center pb-4">
           <div className="flex w-full items-center justify-between gap-4">
             <DialogTitle>{values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}</DialogTitle>
@@ -344,11 +343,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
         <DialogBody>
           <div className="grid grid-cols-1 gap-x-6 gap-y-4 min-[900px]:grid-cols-2">
             <div className="min-w-0">
-              <Field
-                label="客戶編號"
-                htmlFor="addCustomerModal-no"
-                error={noVerify && !isSetTime ? '客戶編號重複' : ''}
-              >
+              <Field label="客戶編號" htmlFor="addCustomerModal-no" error={noVerify && !isSetTime ? '客戶編號重複' : ''}>
                 <div className="relative">
                   <Input
                     id="addCustomerModal-no"
@@ -365,9 +360,9 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                       {isSetTime ? (
                         <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
                       ) : !noVerify ? (
-                        <CheckRoundedIcon color='success' />
+                        <CheckRoundedIcon color="success" />
                       ) : (
-                        <WarningAmberRoundedIcon color='error' />
+                        <WarningAmberRoundedIcon color="error" />
                       )}
                     </span>
                   )}
@@ -387,14 +382,11 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
               </Field>
             </div>
             <div className="min-w-0">
-              <FormControl
-                focused={focus === 'gender'}
-                onKeyDown={e => e.key === 'Enter' && setFocus('email')}
-                variant="outlined" fullWidth>
+              <FormControl focused={focus === 'gender'} onKeyDown={e => e.key === 'Enter' && setFocus('email')} variant="outlined" fullWidth>
                 <NativeSelect
                   inputRef={genderRef}
                   value={values.gender}
-                  name='gender'
+                  name="gender"
                   onChange={event => {
                     handleFieldChange(event)
                   }}
@@ -534,8 +526,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                     <NativeSelectOption value={data.userId} key={`${data.userId}-${index}`}>
                       {data.userName}
                     </NativeSelectOption>
-                  ))
-                  }
+                  ))}
                 </NativeSelect>
               </Field>
             </div>
@@ -553,24 +544,29 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                 isOptionEqualToValue={(option, value) => option.userId === value}
                 autoSelect
                 getOptionLabel={optionLabel}
-                renderOption={(props, option) => <li {...props} key={option.userId} >{`${option.userName}${!!option.userNo ? '-' + option.userNo : '(無代號)'}`}</li>}
-                renderInput={(params) =>
+                renderOption={(props, option) => (
+                  <li {...props} key={option.userId}>{`${option.userName}${!!option.userNo ? '-' + option.userNo : '(無代號)'}`}</li>
+                )}
+                renderInput={params => (
                   <TextField
                     onFocus={() => {
                       preferDesignerRef.current.addEventListener('keydown', handleClick)
                     }}
                     inputRef={preferDesignerRef}
-                    variant='outlined' {...params}
-                    name='preferDesigner'
+                    variant="outlined"
+                    {...params}
+                    name="preferDesigner"
                     label="偏好設計師"
                   />
-                }
+                )}
                 filterOptions={(options, state) => {
                   const keyword = state.inputValue
                   if (keyword === '' || keyword.length === 0) {
                     return options
                   } else {
-                    const newOptions = options.filter(d => d.userNo !== null && d.userNo.includes(keyword) || d.userName !== null && d.userName.includes(keyword))
+                    const newOptions = options.filter(
+                      d => (d.userNo !== null && d.userNo.includes(keyword)) || (d.userName !== null && d.userName.includes(keyword))
+                    )
                     return newOptions
                   }
                 }}
@@ -600,13 +596,10 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
             )}
           </div>
           <div className="flex gap-2">
-            <Button variant="secondary" onClick={onClose}>取消</Button>
-            <Button
-              variant="primary"
-              onClick={handleSubmit}
-              disabled={quickAddCustomer}
-              ref={submitRef}
-            >
+            <Button variant="secondary" onClick={onClose}>
+              取消
+            </Button>
+            <Button variant="primary" onClick={handleSubmit} disabled={quickAddCustomer} ref={submitRef}>
               {values.customerId.length > 0 ? '儲存' : '新增'}
             </Button>
           </div>

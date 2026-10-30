@@ -24,14 +24,22 @@ jest.mock('ui/date-picker', () => {
 })
 jest.mock('components/EmployeeAutoComplete', () => ({ value, onChange }) => (
   <div data-testid="designer" data-value={value || ''}>
-    <button type="button" onClick={() => onChange({ userId: 'designer-2', userName: 'Amy' })}>選設計師</button>
-    <button type="button" onClick={() => onChange({ id: '' })}>清除設計師</button>
+    <button type="button" onClick={() => onChange({ userId: 'designer-2', userName: 'Amy' })}>
+      選設計師
+    </button>
+    <button type="button" onClick={() => onChange({ id: '' })}>
+      清除設計師
+    </button>
   </div>
 ))
 jest.mock('components/CustomerAutoComplete', () => ({ value, onChange }) => (
   <div data-testid="customer" data-value={value || ''}>
-    <button type="button" onClick={() => onChange({ id: 'customer-2', name: '林先生' })}>選顧客</button>
-    <button type="button" onClick={() => onChange({ id: '' })}>清除顧客</button>
+    <button type="button" onClick={() => onChange({ id: 'customer-2', name: '林先生' })}>
+      選顧客
+    </button>
+    <button type="button" onClick={() => onChange({ id: '' })}>
+      清除顧客
+    </button>
   </div>
 ))
 
@@ -167,9 +175,7 @@ describe('編輯紅利點數紀錄', () => {
     expect(callsOf(utils.calls, 'UPDATE_BONUS_DEPOSIT')).toHaveLength(0)
   })
 
-  it.each([
-    ['查無紀錄', { customerBonusDepositRecord: null }],
-  ])('%s時保留預設值、不整頁錯誤，儲存被必填檢查擋下', async (_, fixture) => {
+  it.each([['查無紀錄', { customerBonusDepositRecord: null }]])('%s時保留預設值、不整頁錯誤，儲存被必填檢查擋下', async (_, fixture) => {
     const utils = setup({ GET_CUSTOMER_BONUS_DEPOSIT_RECORD: fixture })
     await utils.settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()

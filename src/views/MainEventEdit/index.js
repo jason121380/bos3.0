@@ -26,14 +26,11 @@ function MainEventEdit({ match }) {
     maxCountDefault: 0,
     isPublic: true,
     endDateActual: null,
-    merchantIds: []
+    merchantIds: [],
   })
 
   const handleSubmit = async () => {
-    const {
-      nameDefault, startDateDefault, endDateDefault, isSMSNotifyDefault,
-      maxCountDefault, isPublic, merchantIds
-    } = cloneDeep(inputValue)
+    const { nameDefault, startDateDefault, endDateDefault, isSMSNotifyDefault, maxCountDefault, isPublic, merchantIds } = cloneDeep(inputValue)
     const submitData = {
       nameDefault: nameDefault.trim(),
       startDateDefault: startOfDay(startDateDefault).getTime(),
@@ -41,7 +38,7 @@ function MainEventEdit({ match }) {
       isSMSNotifyDefault,
       maxCountDefault,
       isPublic,
-      merchantIds: isPublic ? [] : merchantIds
+      merchantIds: isPublic ? [] : merchantIds,
     }
 
     try {
@@ -49,25 +46,25 @@ function MainEventEdit({ match }) {
       if (!submitData.nameDefault) throw new Error('請輸入活動名稱。')
       const res = await updateMainEvent({
         eventId: match.params.id,
-        mainEventInput: submitData
+        mainEventInput: submitData,
       })
       if (res.data.updateMainEvent) {
         openSnackbar({
           message: '儲存成功',
-          variant: 'success'
+          variant: 'success',
         })
         history.push('/main-event-list')
       } else {
         openSnackbar({
           message: '儲存失敗',
-          variant: 'warning'
+          variant: 'warning',
         })
         setIsClick(false)
       }
     } catch (error) {
       openSnackbar({
         message: error.message,
-        variant: 'error'
+        variant: 'error',
       })
       setIsClick(false)
     }
@@ -98,7 +95,7 @@ function MainEventEdit({ match }) {
       // 查詢失敗或查無活動時不帶入（原本表單資料變 undefined 整頁進入錯誤畫面）
       if (data) setInputValue(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMainEvent.loading])
 
   useEffect(() => {
@@ -111,7 +108,7 @@ function MainEventEdit({ match }) {
         maxCountDefault: 0,
         isPublic: true,
         endDateActual: null,
-        merchantIds: []
+        merchantIds: [],
       })
     }
   }, [])
@@ -131,7 +128,12 @@ function MainEventEdit({ match }) {
             isClick={isClick}
             submit={handleSubmit}
           />
-        ) : <div className="flex flex-col gap-4"><Skeleton className="h-14 w-full" /><Skeleton className="h-64 w-full" /></div>}
+        ) : (
+          <div className="flex flex-col gap-4">
+            <Skeleton className="h-14 w-full" />
+            <Skeleton className="h-64 w-full" />
+          </div>
+        )}
       </div>
     </Page>
   )

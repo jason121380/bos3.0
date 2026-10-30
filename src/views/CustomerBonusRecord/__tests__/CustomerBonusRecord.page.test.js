@@ -15,7 +15,15 @@ jest.mock('elements/snackbars', () => ({
 }))
 
 const RECORDS = [
-  { id: 'b1', customerName: '陳小姐', customerNo: 'C01', date: new Date(2026, 9, 21, 23, 30).getTime(), bonus: 30, designerName: '王小美', remark: '生日禮' },
+  {
+    id: 'b1',
+    customerName: '陳小姐',
+    customerNo: 'C01',
+    date: new Date(2026, 9, 21, 23, 30).getTime(),
+    bonus: 30,
+    designerName: '王小美',
+    remark: '生日禮',
+  },
   { id: 'b2', customerName: '林先生', customerNo: 'C02', date: new Date(2026, 9, 1, 0, 10).getTime(), bonus: -10, designerName: 'Amy', remark: '' },
 ]
 

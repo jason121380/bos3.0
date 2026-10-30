@@ -12,7 +12,7 @@ export default function Results({ reportData, className }) {
     // BusinessItemsMonthlyAnalyzeReportTable：@media print 與螢幕樣式的掛鉤（以 table／th／td 標籤選取），保留在表格外框
     <Table
       dense
-      wrapperClassName='BusinessItemsMonthlyAnalyzeReportTable max-h-[calc(100vh-260px)] overflow-auto'
+      wrapperClassName="BusinessItemsMonthlyAnalyzeReportTable max-h-[calc(100vh-260px)] overflow-auto"
       className={className}
       aria-label="a dense table"
     >
@@ -20,7 +20,9 @@ export default function Results({ reportData, className }) {
         <TableRow className="hover:bg-transparent">
           <TableHead className={`${STICKY_COL} bg-surface`}>月份</TableHead>
           {reportData.businessItemsReportData[0].serviceCategoriesPerformance.map((data, index) => (
-            <TableHead numeric key={index}>{data.categoriesName}</TableHead>
+            <TableHead numeric key={index}>
+              {data.categoriesName}
+            </TableHead>
           ))}
           <TableHead numeric>客數</TableHead>
           <TableHead numeric>店販收入</TableHead>
@@ -84,7 +86,9 @@ export default function Results({ reportData, className }) {
         <TableRow>
           <TableCell className={`${STICKY_COL} font-bold`}>業績比</TableCell>
           {reportData.businessItemsReportDataPerformanceProportion.serviceCategoriesPerformance.map((service, index) => (
-            <TableCell numeric key={`performanceProportion-${index}`}>{service.performance}%</TableCell>
+            <TableCell numeric key={`performanceProportion-${index}`}>
+              {service.performance}%
+            </TableCell>
           ))}
           <TableCell numeric>-</TableCell>
           <TableCell numeric>-</TableCell>

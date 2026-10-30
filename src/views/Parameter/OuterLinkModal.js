@@ -19,15 +19,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import idx from 'idx'
 import { Autocomplete } from 'ui/combobox'
 
-const OuterLinkModal = ({
-  isCus = false,
-  open,
-  onModalClose,
-  isCreate,
-  updateData,
-  setUpdateData,
-  refetchLink
-}) => {
+const OuterLinkModal = ({ isCus = false, open, onModalClose, isCreate, updateData, setUpdateData, refetchLink }) => {
   const { createLink } = useFetchCreateMerchantExternalLink()
   const { updateLink } = useFetchUpdateMerchantExternalLink()
   const { deleteLink } = useFetchDeleteMerchantExternalLink()
@@ -42,7 +34,7 @@ const OuterLinkModal = ({
     name: '',
     url: '',
     isTop: false,
-    userAuthIds: []
+    userAuthIds: [],
   })
   const handleGetValue = key => {
     return isCreate ? createData[key] : updateData[key]
@@ -50,12 +42,13 @@ const OuterLinkModal = ({
 
   const openSnack = (msg, variant = 'warning') => {
     setIsClick(false)
-    variant !== 'success' && openSnackbar({
-      message: msg,
-      variant: variant,
-    })
+    variant !== 'success' &&
+      openSnackbar({
+        message: msg,
+        variant: variant,
+      })
   }
-  
+
   const handleCheckData = data => {
     if (data.name.trim() === '') {
       openSnack('請輸入名稱')
@@ -67,22 +60,22 @@ const OuterLinkModal = ({
     }
   }
 
-  const handleCreateLink = async() => {
+  const handleCreateLink = async () => {
     setIsClick(true)
     if (handleCheckData(createData)) return
     try {
       // mutation 失敗會拋錯（進 catch），成功一定有回傳
-      await (isCus ?
-        createCusLink({
-          name: createData.name,
-          url:  createData.url,
-          isTop: createData.isTop
-        })
+      await (isCus
+        ? createCusLink({
+            name: createData.name,
+            url: createData.url,
+            isTop: createData.isTop,
+          })
         : createLink({
-          name: createData.name,
-          url:  createData.url,
-          userAuthIds: createData.userAuthIds.map(d => d.id)
-        }))
+            name: createData.name,
+            url: createData.url,
+            userAuthIds: createData.userAuthIds.map(d => d.id),
+          }))
       openSnack('新增成功', 'success')
       refetchLink()
       onModalClose()
@@ -91,23 +84,23 @@ const OuterLinkModal = ({
     }
   }
 
-  const handleUpdateLink = async() => {
+  const handleUpdateLink = async () => {
     setIsClick(true)
     if (handleCheckData(updateData)) return
     try {
-      await (isCus ?
-        updateCusLink({
-          id: updateData.id,
-          name: updateData.name,
-          url:  updateData.url,
-          isTop:  updateData.isTop
-        })
+      await (isCus
+        ? updateCusLink({
+            id: updateData.id,
+            name: updateData.name,
+            url: updateData.url,
+            isTop: updateData.isTop,
+          })
         : updateLink({
-          id: updateData.id,
-          name: updateData.name,
-          url:  updateData.url,
-          userAuthIds: updateData.userAuthIds.map(d => d.id)
-        }))
+            id: updateData.id,
+            name: updateData.name,
+            url: updateData.url,
+            userAuthIds: updateData.userAuthIds.map(d => d.id),
+          }))
       openSnack('儲存成功', 'success')
       refetchLink()
       onModalClose()
@@ -116,7 +109,7 @@ const OuterLinkModal = ({
     }
   }
 
-  const handleDeleteLink = async() => {
+  const handleDeleteLink = async () => {
     setIsClick(true)
     try {
       await (isCus ? deleteCusLink(updateData.id) : deleteLink(updateData.id))
@@ -128,47 +121,42 @@ const OuterLinkModal = ({
     }
   }
 
-  const handleInputOnChange = (key , value) => {
+  const handleInputOnChange = (key, value) => {
     const newData = cloneDeep(isCreate ? createData : updateData)
     newData[key] = value
     isCreate ? setCreateData(newData) : setUpdateData(newData)
   }
-  
+
   return (
     <Dialog open={open}>
       {/* 保留舊預設 600px 寬；原 MuiDialog 後代掛點改對應正式三段，避免舊 class 失效。 */}
-      <DialogContent hideClose
+      <DialogContent
+        hideClose
         onOpenAutoFocus={event => {
           // 沿用舊 Modal：已有欄位焦點就保留，否則先聚焦面板，避免選人窗自動叫出手機鍵盤。
           event.preventDefault()
           if (!event.target.contains(document.activeElement)) event.target.focus()
         }}
-        size="md" aria-describedby={undefined} className="sm:max-w-[600px] overflow-y-visible [&_[data-outer-title]]:text-[16px]">
+        size="md"
+        aria-describedby={undefined}
+        className="sm:max-w-[600px] overflow-y-visible [&_[data-outer-title]]:text-[16px]"
+      >
         <DialogHeader className="pt-2 pb-0">
           <DialogTitle data-outer-title>
             {`${isCreate ? '新增' : '編輯'}外部連結`}
             {isCus && (
-              <CheckboxField
-                className="ml-3"
-                label="置頂"
-                checked={handleGetValue('isTop')}
-                onChange={(e, v) => handleInputOnChange('isTop', v)}
-              />
+              <CheckboxField className="ml-3" label="置頂" checked={handleGetValue('isTop')} onChange={(e, v) => handleInputOnChange('isTop', v)} />
             )}
           </DialogTitle>
         </DialogHeader>
         <div className="h-px bg-border" />
         <DialogBody className="flex flex-col gap-[10px] overflow-y-visible">
           <Field label="名稱">
-            <Input
-              placeholder='請輸入名稱'
-              value={handleGetValue('name')}
-              onChange={e => handleInputOnChange('name', e.target.value)}
-            />
+            <Input placeholder="請輸入名稱" value={handleGetValue('name')} onChange={e => handleInputOnChange('name', e.target.value)} />
           </Field>
           <Field label="網址">
             <Input
-              placeholder='請輸入網址 ex:https://www.mlgroup.io'
+              placeholder="請輸入網址 ex:https://www.mlgroup.io"
               value={handleGetValue('url')}
               onChange={e => handleInputOnChange('url', e.target.value)}
             />
@@ -188,38 +176,30 @@ const OuterLinkModal = ({
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 renderOption={(props, option, { selected }) => (
                   <li {...props}>
-                    <Checkbox
-                      style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                      icon={icon}
-                      checkedIcon={checkedIcon}
-                      checked={selected}
-                    />
+                    <Checkbox style={{ color: 'rgb(var(--text))', marginRight: 8 }} icon={icon} checkedIcon={checkedIcon} checked={selected} />
                     {option.authorityName}
                   </li>
                 )}
-                renderInput={params => (
-                  <TextField {...params} variant="outlined" placeholder="選擇權限" />
-                )}
+                renderInput={params => <TextField {...params} variant="outlined" placeholder="選擇權限" />}
               />
             </Field>
           )}
         </DialogBody>
         <DialogFooter className="flex-wrap justify-between gap-[10px] border-t-0 pt-0">
           <div>
-            {isCreate ? '' :
-              <Button
-                onClick={handleDeleteLink}
-                disabled={isClick}
-                variant="danger">刪除</Button>
-            }
+            {isCreate ? (
+              ''
+            ) : (
+              <Button onClick={handleDeleteLink} disabled={isClick} variant="danger">
+                刪除
+              </Button>
+            )}
           </div>
           <div className="flex gap-[10px] flex-wrap">
-            <Button disabled={isClick} variant="secondary" onClick={onModalClose}>取消</Button>
-            <Button
-              disabled={isClick}
-              variant="primary"
-              onClick={() => isCreate ? handleCreateLink() : handleUpdateLink()}
-              >
+            <Button disabled={isClick} variant="secondary" onClick={onModalClose}>
+              取消
+            </Button>
+            <Button disabled={isClick} variant="primary" onClick={() => (isCreate ? handleCreateLink() : handleUpdateLink())}>
               {isCreate ? '新增' : '儲存'}
             </Button>
           </div>

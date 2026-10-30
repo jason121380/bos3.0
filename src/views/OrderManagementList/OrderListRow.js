@@ -72,17 +72,20 @@ export default function OrderListRow({
               }}
               disabled={disabled || order.status === '建立中'}
             >
-              {orderDataLazy.loading && printOrderId === order.id ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : <Printer strokeWidth={1.75} />}
+              {orderDataLazy.loading && printOrderId === order.id ? (
+                <LoaderCircle className="animate-spin" strokeWidth={1.75} />
+              ) : (
+                <Printer strokeWidth={1.75} />
+              )}
             </Button>
             <Button asChild variant="ghost" size="icon" className="text-text-secondary">
               <RouterLink
                 aria-label="查看帳單"
-                to={`/order/${location.search.length > 0
-                  ? `${order.id}?startDate=${location.search
-                    .split('=')[1]
-                    .substring(0, 13)}&endDate=${location.search.split('=')[2]}`
-                  : order.id
-                  }`}
+                to={`/order/${
+                  location.search.length > 0
+                    ? `${order.id}?startDate=${location.search.split('=')[1].substring(0, 13)}&endDate=${location.search.split('=')[2]}`
+                    : order.id
+                }`}
                 data-testid={`order-${index}`}
                 {...linkDisabled(order.status === '建立中')}
               >
@@ -93,7 +96,8 @@ export default function OrderListRow({
         </TableCell>
         <TableCell className={STICKY_NO_CELL}>
           <div className="font-medium tabular-nums">
-            {`#${order.orderNo}`}{serialNumberUsing && order.serialNumber ? ` (${order.serialNumber})` : ''}
+            {`#${order.orderNo}`}
+            {serialNumberUsing && order.serialNumber ? ` (${order.serialNumber})` : ''}
           </div>
           <div className="text-caption tabular-nums text-text-secondary">
             {format(new Date(order.date), 'yyyy/MM/dd')}
@@ -120,7 +124,9 @@ export default function OrderListRow({
             </TableCell>
             <TableCell>{order.isDesignate ? 'Y' : 'N'}</TableCell>
             {raffleDisplay ? <TableCell numeric>{formatNumber(order.raffleCount)}</TableCell> : null}
-            <TableCell numeric className="font-medium">{formatMoney(Math.round(order.businessCash))}</TableCell>
+            <TableCell numeric className="font-medium">
+              {formatMoney(Math.round(order.businessCash))}
+            </TableCell>
             <TableCell numeric>
               {formatMoney(Math.round(order.service))}
               <div className="text-caption text-text-secondary">{order.TPTName.service.length > 0 && renderTpName(order.TPTName.service)}</div>
@@ -132,7 +138,9 @@ export default function OrderListRow({
             {membershipDisplay && (
               <TableCell numeric>
                 {formatMoney(Math.round(order.membership))}
-                <div className="text-caption text-text-secondary">{order.TPTName.membership.length > 0 && renderTpName(order.TPTName.membership)}</div>
+                <div className="text-caption text-text-secondary">
+                  {order.TPTName.membership.length > 0 && renderTpName(order.TPTName.membership)}
+                </div>
               </TableCell>
             )}
             <TableCell numeric>{formatMoney(truncateDecimal(order.usedTicket))}</TableCell>
@@ -166,25 +174,22 @@ export default function OrderListRow({
               <div className="w-[60px] flex-none text-right">數量</div>
               <div className="w-[200px] flex-none">互助人</div>
             </div>
-            {order.staticDetail && order.staticDetail.map((data, index) => (
-              <div key={index} className="flex items-start gap-3 py-1.5 text-body text-text">
-                <div className="w-[100px] flex-none">{data.designerName}</div>
-                <div className="w-[300px] flex-none">{`${data.itemName}(${data.serviceType})`}</div>
-                <div className="w-[80px] flex-none text-right tabular-nums">
-                  {formatMoney(data.serviceType === '卡券使用' ? truncateDecimal(data.price) : data.price)}
+            {order.staticDetail &&
+              order.staticDetail.map((data, index) => (
+                <div key={index} className="flex items-start gap-3 py-1.5 text-body text-text">
+                  <div className="w-[100px] flex-none">{data.designerName}</div>
+                  <div className="w-[300px] flex-none">{`${data.itemName}(${data.serviceType})`}</div>
+                  <div className="w-[80px] flex-none text-right tabular-nums">
+                    {formatMoney(data.serviceType === '卡券使用' ? truncateDecimal(data.price) : data.price)}
+                  </div>
+                  <div className="w-[60px] flex-none text-right tabular-nums">{data.count}</div>
+                  <div className="w-[200px] flex-none">
+                    {data.helperList.length > 0
+                      ? data.helperList.map((helper, idx) => <div key={idx}>{`${helper.helperType}[${helper.helperName}]`}</div>)
+                      : '-'}
+                  </div>
                 </div>
-                <div className="w-[60px] flex-none text-right tabular-nums">{data.count}</div>
-                <div className="w-[200px] flex-none">
-                  {data.helperList.length > 0 ? (
-                    data.helperList.map((helper, idx) => (
-                      <div key={idx}>{`${helper.helperType}[${helper.helperName}]`}</div>
-                    ))
-                  ) : (
-                    '-'
-                  )}
-                </div>
-              </div>
-            ))}
+              ))}
           </TableCell>
         </TableRow>
       )}

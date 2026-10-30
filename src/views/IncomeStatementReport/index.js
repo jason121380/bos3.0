@@ -22,8 +22,8 @@ export default function IncomeStatementReport() {
   })
 
   return (
-    <Page title="損益表" className='IncomeStatementReport ui-root'>
-      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+    <Page title="損益表" className="IncomeStatementReport ui-root">
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'none', justifyContent: 'space-between' }}>
         <div className="merchantNamePrint">
           {JSON.parse(localStorage.getItem('userMerchant')).name +
             '   ' +
@@ -31,20 +31,14 @@ export default function IncomeStatementReport() {
             '   ' +
             '損益表'}
         </div>
-        <div className="merchantNamePrint">
-          {'列印時間： ' +
-            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-        </div>
+        <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
       </div>
       <PageHeader
         title="損益表"
         actions={
           <>
             <HeaderActionsSlot />
-            <Button
-              variant="secondary"
-              onClick={() => window.print()}
-            >
+            <Button variant="secondary" onClick={() => window.print()}>
               <Printer strokeWidth={1.75} />
               列印
             </Button>
@@ -58,24 +52,21 @@ export default function IncomeStatementReport() {
             attributes={['lastmonth', 'thismonth', 'startDate']}
             dateChange={value => setDate(value)}
             onlyStart
-            inputFormat='yyyy/MM'
+            inputFormat="yyyy/MM"
             pickerOption={{
-              views: ['month', 'year']
+              views: ['month', 'year'],
             }}
           />
         }
       />
       {merchantIncomeStatementDataV2OuterStore.error ? (
-          <QueryFailed onRetry={() => merchantIncomeStatementDataV2OuterStore.refetch()} />
-        ) : merchantIncomeStatementDataV2OuterStore.loading ? (
+        <QueryFailed onRetry={() => merchantIncomeStatementDataV2OuterStore.refetch()} />
+      ) : merchantIncomeStatementDataV2OuterStore.loading ? (
         <Skeleton className="h-96" aria-busy="true" />
       ) : (
         idx(merchantIncomeStatementDataV2OuterStore, _ => (
           <React.Fragment>
-            <Results
-              className="mt-2"
-              incomeStatement={_.data.merchantIncomeStatementV2ForOuterStore}
-            />
+            <Results className="mt-2" incomeStatement={_.data.merchantIncomeStatementV2ForOuterStore} />
           </React.Fragment>
         ))
       )}

@@ -39,8 +39,12 @@ function Results({ reportData }) {
                 ))}
                 <TableRow className="bg-surface font-medium">
                   <TableCell colSpan={2}></TableCell>
-                  <TableCell numeric><strong>合計</strong></TableCell>
-                  <TableCell numeric className="font-bold">{formatNumber(reserveCheckSummary.reduce((a, b) => a + b.reservePrice , 0))}</TableCell>
+                  <TableCell numeric>
+                    <strong>合計</strong>
+                  </TableCell>
+                  <TableCell numeric className="font-bold">
+                    {formatNumber(reserveCheckSummary.reduce((a, b) => a + b.reservePrice, 0))}
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -51,7 +55,13 @@ function Results({ reportData }) {
                 <TableRow className="hover:bg-transparent">
                   <TableHead className={`${STICKY_COL} top-0 z-[101] border-r border-r-border-strong bg-surface`}>品名</TableHead>
                   {productReserveChecks.map(d => (
-                    <TableHead key={d.id} className="sticky top-0 z-[100] min-w-[100px] border-r border-r-border-strong bg-surface text-center" colSpan={3}>{d.productName}</TableHead>
+                    <TableHead
+                      key={d.id}
+                      className="sticky top-0 z-[100] min-w-[100px] border-r border-r-border-strong bg-surface text-center"
+                      colSpan={3}
+                    >
+                      {d.productName}
+                    </TableHead>
                   ))}
                 </TableRow>
                 <TableRow className="hover:bg-transparent">
@@ -72,9 +82,15 @@ function Results({ reportData }) {
                     {productReserveChecks.map(({ id, reserveChecks }) => {
                       return (
                         <Fragment key={id}>
-                          <TableCell className={`${SEP} text-center tabular-nums text-accent`}>{reserveChecks[i].isCreated ? reserveChecks[i].in : '-'}</TableCell>
-                          <TableCell className={`${SEP} text-center tabular-nums text-danger`}>{reserveChecks[i].isCreated ? reserveChecks[i].out : '-'}</TableCell>
-                          <TableCell className={`${GROUP_END} text-center tabular-nums`}>{reserveChecks[i].isCreated ? reserveChecks[i].balance : '-'}</TableCell>
+                          <TableCell className={`${SEP} text-center tabular-nums text-accent`}>
+                            {reserveChecks[i].isCreated ? reserveChecks[i].in : '-'}
+                          </TableCell>
+                          <TableCell className={`${SEP} text-center tabular-nums text-danger`}>
+                            {reserveChecks[i].isCreated ? reserveChecks[i].out : '-'}
+                          </TableCell>
+                          <TableCell className={`${GROUP_END} text-center tabular-nums`}>
+                            {reserveChecks[i].isCreated ? reserveChecks[i].balance : '-'}
+                          </TableCell>
                         </Fragment>
                       )
                     })}

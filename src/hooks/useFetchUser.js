@@ -200,13 +200,10 @@ const FETCH_DESIGNER_SALES_DETAIL = gql`
 `
 
 export const useLazyFetchDesignerSalesDetail = variables => {
-  const [fetchDesignerSalesDetail, designerSalesDetail] = useLazyQuery(
-    FETCH_DESIGNER_SALES_DETAIL,
-    {
-      variables,
-      fetchPolicy: 'cache-and-network',
-    }
-  )
+  const [fetchDesignerSalesDetail, designerSalesDetail] = useLazyQuery(FETCH_DESIGNER_SALES_DETAIL, {
+    variables,
+    fetchPolicy: 'cache-and-network',
+  })
   return {
     fetchDesignerSalesDetail,
     designerSalesDetail,

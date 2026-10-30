@@ -24,8 +24,12 @@ jest.mock('ui/date-picker', () => ({
 }))
 jest.mock('components/BookingRecordListAutoComplete', () => ({ onChange, value }) => (
   <div data-testid="designer-picker" data-value={value || ''}>
-    <button type="button" onClick={() => onChange({ id: '' })}>全部設計師</button>
-    <button type="button" onClick={() => onChange({ id: 'row-1', userId: 'd-1' })}>只看王小美</button>
+    <button type="button" onClick={() => onChange({ id: '' })}>
+      全部設計師
+    </button>
+    <button type="button" onClick={() => onChange({ id: 'row-1', userId: 'd-1' })}>
+      只看王小美
+    </button>
   </div>
 ))
 
@@ -35,25 +39,79 @@ const WEEK_END = new Date(2025, 2, 15, 23, 59, 59, 999).getTime()
 const ROUTE = `/management/reservation/designers?startDate=${WEEK_START}&endDate=${WEEK_END}`
 const at = (day, h, m = 0) => new Date(2025, 2, 9 + day, h, m).getTime()
 const item = (type, start, cost, extra = {}) => ({
-  type, ids: [], startTime: start, endTime: start + cost * SLOT, timeCost: cost, nameToDisplay: '', isDesignate: false,
-  bookingStatus: null, isUnwelcome: false, customerId: null, customerCellphone: null, remark: '', remarkForCustomer: '',
-  isBookingCostUsing: false, companionCount: 0, notificationDayCount: null, notificationDate: null, displayBirthdayIcon: false,
-  isCheckin: null, isCusCheckRequired: false, isDone: false, createdOrderId: null, isNoShow: false, ...extra,
+  type,
+  ids: [],
+  startTime: start,
+  endTime: start + cost * SLOT,
+  timeCost: cost,
+  nameToDisplay: '',
+  isDesignate: false,
+  bookingStatus: null,
+  isUnwelcome: false,
+  customerId: null,
+  customerCellphone: null,
+  remark: '',
+  remarkForCustomer: '',
+  isBookingCostUsing: false,
+  companionCount: 0,
+  notificationDayCount: null,
+  notificationDate: null,
+  displayBirthdayIcon: false,
+  isCheckin: null,
+  isCusCheckRequired: false,
+  isDone: false,
+  createdOrderId: null,
+  isNoShow: false,
+  ...extra,
 })
 const AMY = {
-  designerId: 'd-1', designerName: '王小美', designerNickname: 'Amy', designerNo: '01', bookingLimit: 2,
+  designerId: 'd-1',
+  designerName: '王小美',
+  designerNickname: 'Amy',
+  designerNo: '01',
+  bookingLimit: 2,
   calendar: [
     item('RESERVATION', at(1, 10), 2, {
-      ids: ['b-1'], nameToDisplay: '陳小姐', isDesignate: true, bookingStatus: '預約成功', isBookingCostUsing: true, customerId: 'c-1',
-      customerCellphone: '0912000111', remark: '剪髮', remarkForCustomer: '想要安靜', companionCount: 1, isCheckin: false,
-      notificationDayCount: 1, notificationDate: at(0, 9), displayBirthdayIcon: true,
+      ids: ['b-1'],
+      nameToDisplay: '陳小姐',
+      isDesignate: true,
+      bookingStatus: '預約成功',
+      isBookingCostUsing: true,
+      customerId: 'c-1',
+      customerCellphone: '0912000111',
+      remark: '剪髮',
+      remarkForCustomer: '想要安靜',
+      companionCount: 1,
+      isCheckin: false,
+      notificationDayCount: 1,
+      notificationDate: at(0, 9),
+      displayBirthdayIcon: true,
     }),
-    item('RESERVATION', at(1, 10, 30), 1, { ids: ['b-2'], nameToDisplay: '林先生', bookingStatus: '待審核', isBookingCostUsing: true, customerId: 'c-2', customerCellphone: '0922' }),
+    item('RESERVATION', at(1, 10, 30), 1, {
+      ids: ['b-2'],
+      nameToDisplay: '林先生',
+      bookingStatus: '待審核',
+      isBookingCostUsing: true,
+      customerId: 'c-2',
+      customerCellphone: '0922',
+    }),
     item('RESERVATION', at(1, 12), 1, { ids: ['b-5'], nameToDisplay: '已開單客', bookingStatus: '預約成功', isDone: true, createdOrderId: 'o-9' }),
     item('RESERVATION', at(2, 10), 1, {
-      ids: ['b-3'], nameToDisplay: '黃小姐', bookingStatus: '已完成', isCheckin: true, isNoShow: true, customerId: 'c-3', customerCellphone: '0933',
+      ids: ['b-3'],
+      nameToDisplay: '黃小姐',
+      bookingStatus: '已完成',
+      isCheckin: true,
+      isNoShow: true,
+      customerId: 'c-3',
+      customerCellphone: '0933',
     }),
-    item('RESERVATION', at(3, 10), 1, { ids: ['b-4'], nameToDisplay: '取消客', bookingStatus: '設計師已取消', customerId: 'c-4', customerCellphone: '0944' }),
+    item('RESERVATION', at(3, 10), 1, {
+      ids: ['b-4'],
+      nameToDisplay: '取消客',
+      bookingStatus: '設計師已取消',
+      customerId: 'c-4',
+      customerCellphone: '0944',
+    }),
     item('HOLIDAY', at(1, 14), 2, { ids: ['h-1'], nameToDisplay: '公休' }),
   ],
 }
@@ -218,12 +276,15 @@ describe('全店模式', () => {
   })
 
   it('點空白格：新預約連到顧客預約頁（帶時間、不帶設計師）；關閉全店預約送該時段', async () => {
-    const utils = setup({ fixtures: { adminBookingTimeAllStore: sequence(new Error('有預約'), { adminBookingTimeAllStore: { storeId: 'merchant-1' } }) } })
+    const utils = setup({
+      fixtures: { adminBookingTimeAllStore: sequence(new Error('有預約'), { adminBookingTimeAllStore: { storeId: 'merchant-1' } }) },
+    })
     await ready(utils)
     fireEvent.click(dayCell(2, row(11)))
     await screen.findByRole('button', { name: '關閉全店預約' })
     expect(within(dialog()).getByText('新預約').closest('a')).toHaveAttribute(
-      'href', `/customer/reservation/merchant-1?usingLineLogin=0&date=${at(2, 11)}&designerId=`
+      'href',
+      `/customer/reservation/merchant-1?usingLineLogin=0&date=${at(2, 11)}&designerId=`
     )
     fireEvent.click(button('關閉全店預約'))
     await wait(() => expect(openSnackbar).toHaveBeenLastCalledWith({ message: '有預約', variant: 'error' }))
@@ -234,7 +295,11 @@ describe('全店模式', () => {
   })
 
   it('點全店不可預約：開啟全店預約送 appointable: true；不可預約的空白格點了沒反應；後端沒回店家時不關窗', async () => {
-    const utils = setup({ fixtures: { adminBookingTimeAllStore: sequence({ adminBookingTimeAllStore: { storeId: null } }, { adminBookingTimeAllStore: { storeId: 'merchant-1' } }) } })
+    const utils = setup({
+      fixtures: {
+        adminBookingTimeAllStore: sequence({ adminBookingTimeAllStore: { storeId: null } }, { adminBookingTimeAllStore: { storeId: 'merchant-1' } }),
+      },
+    })
     await ready(utils)
     fireEvent.click(dayCell(3, row(15)))
     expect(dialog()).toBeNull()
@@ -270,7 +335,8 @@ describe('指定一位設計師', () => {
     fireEvent.click(dayCell(1, row(11)))
     await screen.findByRole('button', { name: '關閉預約' })
     expect(within(dialog()).getByText('新預約').closest('a')).toHaveAttribute(
-      'href', `/customer/reservation/merchant-1?usingLineLogin=0&date=${at(1, 11)}&designerId=d-1`
+      'href',
+      `/customer/reservation/merchant-1?usingLineLogin=0&date=${at(1, 11)}&designerId=d-1`
     )
     fireEvent.click(button('關閉預約'))
     await closedDialog()
@@ -353,7 +419,9 @@ describe('預約明細', () => {
   // af7ec13 修正（Jason 2026/10/22 fix all）：OrderTable.js 原本以 `rest.status` 判斷待審核（週曆資料的欄位是 bookingStatus），
   // 待審核的預約也開成「預約成功」的明細（有「編輯」連結）；改讀 bookingStatus 後開審核窗，沒有「編輯」。
   it('待審核的預約開審核窗（沒有「編輯」連結）；接受預約送 isApproval: true', async () => {
-    const utils = setup({ fixtures: { verifyBooking: sequence(new Error('已過期'), { verifyBooking: { id: null } }, { verifyBooking: { id: 'b-2' } }) } })
+    const utils = setup({
+      fixtures: { verifyBooking: sequence(new Error('已過期'), { verifyBooking: { id: null } }, { verifyBooking: { id: 'b-2' } }) },
+    })
     await ready(utils)
     fireEvent.click(block('林先生'))
     await screen.findByText('電話: 0922')
@@ -440,7 +508,17 @@ describe('報到、名稱、格子', () => {
 
   it('預約還沒到：不顯示未報到圖示', async () => {
     const start = new Date(2099, 0, 4).getTime()
-    const FUTURE = { ...AMY, calendar: [item('RESERVATION', new Date(2099, 0, 5, 10).getTime(), 1, { ids: ['f-1'], nameToDisplay: '未來客', bookingStatus: '預約成功', isCheckin: false })] }
+    const FUTURE = {
+      ...AMY,
+      calendar: [
+        item('RESERVATION', new Date(2099, 0, 5, 10).getTime(), 1, {
+          ids: ['f-1'],
+          nameToDisplay: '未來客',
+          bookingStatus: '預約成功',
+          isCheckin: false,
+        }),
+      ],
+    }
     const utils = setup({ checkin: true, designers: [FUTURE], route: `/r?startDate=${start}&endDate=${start + 7 * 86400000 - 1}` })
     await ready(utils)
     expect(lucide(block('未來客'), 'square-x')).toBeNull()

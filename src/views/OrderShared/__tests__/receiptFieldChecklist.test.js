@@ -1,10 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import {
-  POINT_BALANCE_LABEL,
-  SHARED_RECEIPT_FIELDS,
-  RECEIPT_TEMPLATES,
-} from '../receiptFieldChecklist'
+import { POINT_BALANCE_LABEL, SHARED_RECEIPT_FIELDS, RECEIPT_TEMPLATES } from '../receiptFieldChecklist'
 
 const root = path.resolve(__dirname, '../../../..')
 

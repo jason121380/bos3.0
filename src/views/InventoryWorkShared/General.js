@@ -10,10 +10,7 @@ import { formatNumber } from 'ui/format'
 
 // 新增盤點／編輯盤點共用（2026/10/30 自兩頁合併，畫面與 handler 逐字保留）。
 // info：編輯頁才傳（建立時間、建立者），新增頁不傳＝null，不顯示這一行。
-function General({
-  info = null, isClick, inventoryData, setInventoryData, categoriesData,
-  handleCreateIventory, sort, setSort
-}) {
+function General({ info = null, isClick, inventoryData, setInventoryData, categoriesData, handleCreateIventory, sort, setSort }) {
   const [categorys, setCategorys] = useState([])
 
   const handleSecectVariant = id => {
@@ -48,21 +45,16 @@ function General({
 
   const Buttons = ({ sortDisplay = false }) => (
     <Fragment>
-      {sortDisplay &&
+      {sortDisplay && (
         <div className="flex items-center gap-2 text-body text-text-secondary">
           <span>排序：</span>
-          <ToggleGroup
-            size="small"
-            exclusive
-            value={sort}
-            onChange={(e, value) => value && setSort(value)}
-          >
-            <ToggleGroupItem value='inventory'>庫存</ToggleGroupItem>
-            <ToggleGroupItem value='no'>代號</ToggleGroupItem>
-            <ToggleGroupItem value='count'>差異</ToggleGroupItem>
+          <ToggleGroup size="small" exclusive value={sort} onChange={(e, value) => value && setSort(value)}>
+            <ToggleGroupItem value="inventory">庫存</ToggleGroupItem>
+            <ToggleGroupItem value="no">代號</ToggleGroupItem>
+            <ToggleGroupItem value="count">差異</ToggleGroupItem>
           </ToggleGroup>
         </div>
-      }
+      )}
       <Button disabled={isClick} onClick={() => handleCreateIventory()} variant="secondary">
         儲存盤點
       </Button>
@@ -90,9 +82,7 @@ function General({
                 <span className="whitespace-break-spaces text-caption tabular-nums text-text-secondary">
                   {`建立時間:${format(info.date, 'yyyy/MM/dd HH:mm')}`}
                 </span>
-                <span className="whitespace-break-spaces text-caption text-text-secondary">
-                  {`建立者:${info.creatorName}`}
-                </span>
+                <span className="whitespace-break-spaces text-caption text-text-secondary">{`建立者:${info.creatorName}`}</span>
               </div>
             )}
           </div>
@@ -142,13 +132,10 @@ function General({
                           className="w-[100px]"
                           aria-label={`${productName} 盤點數量`}
                           value={inventoryCount === null ? '' : inventoryCount}
-                          placeholder=''
+                          placeholder=""
                           onChange={e => {
                             const newData = cloneDeep(inventoryData)
-                            if (
-                              e.target.value.match(/^[0-9]*$/) === null ||
-                              e.target.value.match(/^[0-9]*$/)[0] === ''
-                            ) {
+                            if (e.target.value.match(/^[0-9]*$/) === null || e.target.value.match(/^[0-9]*$/)[0] === '') {
                               newData[index].inventoryCount = null
                             } else {
                               newData[index].inventoryCount = Number(e.target.value)

@@ -21,9 +21,12 @@ test('HTTP 狀態碼：依原因給下一步（重新登入、縮小檔案、稍
 })
 
 test('頁面加的開頭保留：使用者知道是哪個動作失敗', () => {
-  expect(friendlyErrorMessage('刪除訂單失敗: Response not successful: Received status code 502')).toBe(`刪除訂單失敗：${FRIENDLY_MESSAGES.server}（502）`)
-  expect(friendlyErrorMessage('內部錯誤:Cannot read properties of undefined (reading \'id\')'))
-    .toBe(`內部錯誤：${FRIENDLY_MESSAGES.server}（Cannot read properties of undefined (reading 'id')）`)
+  expect(friendlyErrorMessage('刪除訂單失敗: Response not successful: Received status code 502')).toBe(
+    `刪除訂單失敗：${FRIENDLY_MESSAGES.server}（502）`
+  )
+  expect(friendlyErrorMessage("內部錯誤:Cannot read properties of undefined (reading 'id')")).toBe(
+    `內部錯誤：${FRIENDLY_MESSAGES.server}（Cannot read properties of undefined (reading 'id')）`
+  )
 })
 
 test('資料格式錯誤與程式例外：中文說明＋原文（給客服）', () => {

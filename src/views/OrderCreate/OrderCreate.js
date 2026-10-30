@@ -9,8 +9,10 @@ import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusAc
 import useFetchGetIsBonusConversion from 'hooks/useFetchGetIsBonusConversion'
 import { useFetchGetIsBonusRewardWithLine } from 'hooks/useFetchGetParameterAboutSettingFunction'
 import {
-  useFetchGetIsPrintWindowClosureDelayed, useFetchGetSerialNumberUsing,
-  useFetchGetIsLBCusDisplay, useFetchGetIsCusWalletUsageForOrder
+  useFetchGetIsPrintWindowClosureDelayed,
+  useFetchGetSerialNumberUsing,
+  useFetchGetIsLBCusDisplay,
+  useFetchGetIsCusWalletUsageForOrder,
 } from 'hooks/useFetchGetParameterOrderCreateSetting'
 import useFetchGetBonusRewardRule from 'hooks/useFetchGetBonusRewardRule'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
@@ -34,15 +36,11 @@ function OrderCreate() {
   // 指不指定依據
   const [designationSettingForOrderCreate, setDesignationSettingForOrderCreate] = useState(false)
   const getIsPrintWindowClosureDelayed = useFetchGetIsPrintWindowClosureDelayed()
-  const stayInCheckoutWithoutCustomer = JSON.parse(
-    localStorage.getItem('stayInCheckoutWithoutCustomer')
-  )
+  const stayInCheckoutWithoutCustomer = JSON.parse(localStorage.getItem('stayInCheckoutWithoutCustomer'))
   const [bill, setBill] = useState({
     isDesignate: designationSettingForOrderCreate,
     date:
-      JSON.parse(localStorage.getItem('lockDateTimeStamp')) === null
-        ? new Date().getTime()
-        : JSON.parse(localStorage.getItem('lockDateTimeStamp')),
+      JSON.parse(localStorage.getItem('lockDateTimeStamp')) === null ? new Date().getTime() : JSON.parse(localStorage.getItem('lockDateTimeStamp')),
     isReserved: false,
     payType: [],
     amountByOtherPay: 0,
@@ -62,7 +60,7 @@ function OrderCreate() {
     bonusDeposit: 0,
     bonusUsed: 0,
     source: null,
-    serialNumber: null
+    serialNumber: null,
   })
   const lastOrderStatusData = useFetchGetLatestOrderStatus({ date: bill.date })
   const stayInCheckOrderDetailMemory = JSON.parse(localStorage.getItem('stayInCheckOrderDetail'))
@@ -77,12 +75,8 @@ function OrderCreate() {
   const [checkoutBtnClick, setCheckoutBtnClick] = useState(false)
   const [focus, setFocus] = useState('customer')
 
-  const [checkOrderDetailSwitch, setCheckOrderDetailSwitch] = useState(
-    stayInCheckOrderDetailMemory !== null ? stayInCheckOrderDetailMemory : false
-  )
-  const [stayInCreateOrder, setStayInCreateOrder] = useState(
-    stayInCreateOrderInMemory !== null ? stayInCreateOrderInMemory : false
-  )
+  const [checkOrderDetailSwitch, setCheckOrderDetailSwitch] = useState(stayInCheckOrderDetailMemory !== null ? stayInCheckOrderDetailMemory : false)
+  const [stayInCreateOrder, setStayInCreateOrder] = useState(stayInCreateOrderInMemory !== null ? stayInCreateOrderInMemory : false)
   const [walletPayBalanceForDetail, setWalletPayBalanceForDetail] = useState(0)
   const [customerWallet, setCustomerWallet] = useState(0)
   const [reset, setReset] = useState('')
@@ -103,12 +97,12 @@ function OrderCreate() {
       price: 0,
       bonus: 0,
       mode: 'ROUNDING',
-    }
+    },
   })
   const getIsBonusConversion = useFetchGetIsBonusConversion()
   const [bonusConversion, setBonusConversion] = useState({
     isBonusConversion: false,
-    bonusConversionRate: 0
+    bonusConversionRate: 0,
   })
   const [serialNumberUsing, setSerialNumberUsing] = useState(false)
   const [LBCusDisplay, setLBCusDisplay] = useState(false)
@@ -124,13 +118,13 @@ function OrderCreate() {
   // 查詢失敗（data 為 undefined）時維持「停用掛單」的保守預設，不在 render 階段拋錯
   const disablePendingOrder = getDisablePendingOrder.loading
     ? true
-    : idx(getDisablePendingOrder, _ => _.data.getParameterAboutSettingFunction.disablePendingOrder) ?? true
+    : (idx(getDisablePendingOrder, _ => _.data.getParameterAboutSettingFunction.disablePendingOrder) ?? true)
 
   useEffect(() => {
     if (!memberShipActive.loading) {
       setMemberShipCardActive(idx(memberShipActive, _ => _.data.getIsMemberShipCardActive) ?? false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [memberShipActive.loading])
 
   useEffect(() => {
@@ -138,7 +132,7 @@ function OrderCreate() {
       const data = idx(getIsBonusRewardWithLine, _ => _.data.getParameterAboutSettingFunction.isBonusRewardWithLine)
       setBonusRewardWithLINE(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBonusRewardWithLine.loading])
 
   useEffect(() => {
@@ -146,7 +140,7 @@ function OrderCreate() {
       const data = idx(getIsCusWalletUsageForOrder, _ => _.data.getParameterOrderCreateSetting.isCusWalletUsageForOrder)
       setWalletFuncDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsCusWalletUsageForOrder.loading])
 
   useEffect(() => {
@@ -154,7 +148,7 @@ function OrderCreate() {
       const data = idx(getIsLBCusDisplay, _ => _.data.getParameterOrderCreateSetting.isLBCusDisplay)
       setLBCusDisplay(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsLBCusDisplay.loading])
 
   useEffect(() => {
@@ -162,7 +156,7 @@ function OrderCreate() {
       const data = idx(getSerialNumberUsing, _ => _.data.getParameterOrderCreateSetting.isOrderSerialNumberUsing)
       setSerialNumberUsing(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getSerialNumberUsing.loading])
 
   useEffect(() => {
@@ -170,14 +164,14 @@ function OrderCreate() {
       const data = idx(getIsPrintWindowClosureDelayed, _ => _.data.getParameterOrderCreateSetting.isPrintWindowClosureDelayed)
       setClosureDelayed(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsPrintWindowClosureDelayed.loading])
 
   useEffect(() => {
     if (!customerBonusActive.loading) {
       setBonusActive(idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) ?? false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerBonusActive.loading])
 
   useEffect(() => {
@@ -185,7 +179,7 @@ function OrderCreate() {
       const data = idx(getIsBonusConversion, _ => _.data.getParameterAboutSettingFunction)
       setBonusConversion(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getIsBonusConversion.loading])
 
   useEffect(() => {
@@ -193,16 +187,13 @@ function OrderCreate() {
       const data = idx(getBindedThirdPartTicketLockedSetting, _ => _.data.getBindedThirdPartTicketLockedSetting)
       setBindedThirdPart(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBindedThirdPartTicketLockedSetting.loading])
 
   // 指不指定依據data
   useEffect(() => {
     if (!designationSettingForOrderCreateData.loading && !lastOrderStatusData.loading) {
-      const designationSettingForOrderCreate = idx(
-        designationSettingForOrderCreateData,
-        _ => _.data.getDesignationSettingForOrderCreate
-      )
+      const designationSettingForOrderCreate = idx(designationSettingForOrderCreateData, _ => _.data.getDesignationSettingForOrderCreate)
       const status = idx(lastOrderStatusData, _ => _.data.getLatestOrderStatus)
       if (designationSettingForOrderCreate === 'DESIGNATE') {
         setDesignationSettingForOrderCreate(true)
@@ -228,14 +219,14 @@ function OrderCreate() {
         }
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [designationSettingForOrderCreateData.loading, lastOrderS…] 變動時執行；designationSettingForOrderCreateData、handleBillChange、lastOrderStatusData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [designationSettingForOrderCreateData.loading, lastOrderS…] 變動時執行；designationSettingForOrderCreateData、handleBillChange、lastOrderStatusData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [designationSettingForOrderCreateData.loading, lastOrderStatusData.loading])
 
   // state重置後重新拿上一筆訂單編號跟參數設定的指定不指定
   useEffect(() => {
     designationSettingForOrderCreateData.refetch()
     lastOrderStatusData.refetch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [reset] 變動時執行；designationSettingForOrderCreateData、lastOrderStatusData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [reset] 變動時執行；designationSettingForOrderCreateData、lastOrderStatusData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [reset])
 
   useEffect(() => {
@@ -243,7 +234,7 @@ function OrderCreate() {
       const data = idx(getBonusRewardRule, _ => _.data.getParameterAboutSettingFunction.bonusRewardRule)
       setBonusSetting(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getBonusRewardRule.loading])
 
   // 先請後端更新可打單人員再顯示打帳單。更新失敗（例如網路暫斷）時仍顯示頁面、沿用現有名單：
@@ -254,7 +245,7 @@ function OrderCreate() {
       .then(() => {
         setUpdateUserOrderableListDone(true)
       })
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   const handleDisplayOrderDetail = () => {
@@ -308,79 +299,79 @@ function OrderCreate() {
         bonusDeposit: 0,
         bonusUsed: 0,
         source: null,
-        serialNumber: null
+        serialNumber: null,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [reset] 變動時執行；designationSettingForOrderCreate、stayInCheckoutWithoutCustomer 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [reset] 變動時執行；designationSettingForOrderCreate、stayInCheckoutWithoutCustomer 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [reset])
 
   return (
     <Page title="打帳單" className="ui-root">
       <>
-      {updateUserOrderableListDone && (
-        <Provider
-          value={{
-            handleBillChange,
-            bill,
-            setBill,
-            orderDetailPaymentShouldPay,
-            cashPayment,
-            openOrderDetail,
-            setOpenOrderDetail,
-            focus,
-            setFocus,
-            checkOrderDetailSwitch,
-            setCheckOrderDetailSwitch,
-            handleDisplayOrderDetail,
-            stayInCheckoutWithoutCustomer,
-            checkoutBtn,
-            setCheckoutBtn,
-            setStayInCreateOrder,
-            stayInCreateOrder,
-            setWalletPayBalanceForDetail,
-            walletPayBalanceForDetail,
-            isClick,
-            setIsClick,
-            designationSettingForOrderCreate,
-            setDesignationSettingForOrderCreate,
-            lastOrderStatusData,
-            setCheckoutBtnClick,
-            checkoutBtnClick,
-            designationSettingForOrderCreateData,
-            customerWallet,
-            setCustomerWallet,
-            bindedThirdPart,
-            setCustomerBonus,
-            customerBonus,
-            bonusActive,
-            reset,
-            setReset,
-            closureDelayed,
-            bonusSetting,
-            bonusConversion,
-            serialNumberUsing,
-            LBCusDisplay,
-            walletFuncDisplay,
-            isLineBinded,
-            setIsLineBinded,
-            bonusRewardWithLINE,
-            services,
-            setServices,
-            sells,
-            setSells,
-            couponSells,
-            setCouponSells,
-            memberCardSells,
-            setMemberCardSells,
-            memberShipCardActive,
-            disablePendingOrder
-          }}
-        >
-          <Header />
-          <Head />
-          <Panel />
-        </Provider>
-      )}
+        {updateUserOrderableListDone && (
+          <Provider
+            value={{
+              handleBillChange,
+              bill,
+              setBill,
+              orderDetailPaymentShouldPay,
+              cashPayment,
+              openOrderDetail,
+              setOpenOrderDetail,
+              focus,
+              setFocus,
+              checkOrderDetailSwitch,
+              setCheckOrderDetailSwitch,
+              handleDisplayOrderDetail,
+              stayInCheckoutWithoutCustomer,
+              checkoutBtn,
+              setCheckoutBtn,
+              setStayInCreateOrder,
+              stayInCreateOrder,
+              setWalletPayBalanceForDetail,
+              walletPayBalanceForDetail,
+              isClick,
+              setIsClick,
+              designationSettingForOrderCreate,
+              setDesignationSettingForOrderCreate,
+              lastOrderStatusData,
+              setCheckoutBtnClick,
+              checkoutBtnClick,
+              designationSettingForOrderCreateData,
+              customerWallet,
+              setCustomerWallet,
+              bindedThirdPart,
+              setCustomerBonus,
+              customerBonus,
+              bonusActive,
+              reset,
+              setReset,
+              closureDelayed,
+              bonusSetting,
+              bonusConversion,
+              serialNumberUsing,
+              LBCusDisplay,
+              walletFuncDisplay,
+              isLineBinded,
+              setIsLineBinded,
+              bonusRewardWithLINE,
+              services,
+              setServices,
+              sells,
+              setSells,
+              couponSells,
+              setCouponSells,
+              memberCardSells,
+              setMemberCardSells,
+              memberShipCardActive,
+              disablePendingOrder,
+            }}
+          >
+            <Header />
+            <Head />
+            <Panel />
+          </Provider>
+        )}
       </>
     </Page>
   )

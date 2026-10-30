@@ -100,7 +100,6 @@ describe('評價結果畫面（Status）', () => {
   })
 })
 
-
 it('鍵盤改星等後送出數字值，清空回呼仍由頁面忽略', async () => {
   const utils = setup()
   await screen.findByText('設計師: 王小美')

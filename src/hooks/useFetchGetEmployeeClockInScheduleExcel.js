@@ -7,11 +7,8 @@ const FETCH_GET_EMPLOYEE_CLOCK_IN_SCHEDULE_EXCEL = gql`
 `
 
 export default function useFetchGetEmployeeClockInScheduleExcel() {
-  const [getEmployeeClockInScheduleExcelLazy, getEmployeeClockInScheduleExcelData] = useLazyQuery(
-    FETCH_GET_EMPLOYEE_CLOCK_IN_SCHEDULE_EXCEL,
-    {
-      fetchPolicy: 'cache-and-network',
-    }
-  )
+  const [getEmployeeClockInScheduleExcelLazy, getEmployeeClockInScheduleExcelData] = useLazyQuery(FETCH_GET_EMPLOYEE_CLOCK_IN_SCHEDULE_EXCEL, {
+    fetchPolicy: 'cache-and-network',
+  })
   return [getEmployeeClockInScheduleExcelLazy, getEmployeeClockInScheduleExcelData]
 }

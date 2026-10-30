@@ -86,7 +86,7 @@ function CustomerFilterExport() {
     baseDateRange: null,
     customerIsCome: null,
     isUnwelcome: 'ALL',
-    category: []
+    category: [],
   })
   const [disable, setDisable] = useState([false, false])
   const [belong, setBelong] = useState([])
@@ -101,8 +101,8 @@ function CustomerFilterExport() {
     if (exportMaskOff) return
     getCustomersWithoutSortingExcelLazy({
       variables: {
-        input: pageSetting
-      }
+        input: pageSetting,
+      },
     })
   }
 
@@ -111,7 +111,7 @@ function CustomerFilterExport() {
       const url = idx(getCustomersWithoutSortingExcelLazyData, _ => _.data.customersWithoutSortingExcel)
       url && window.open(url)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getCustomersWithoutSortingExcelLazyData.loading])
 
   const handlePageChange = ({ value, key }) => {
@@ -204,10 +204,10 @@ function CustomerFilterExport() {
   }
 
   useEffect(() => {
-    const queryString = new URLSearchParams(location.search).get("pageSetting")
+    const queryString = new URLSearchParams(location.search).get('pageSetting')
     if (queryString) {
       const parseData = JSON.parse(queryString)
-      const { startDate = null, endDate = null } = parseData.consumptionRange ?? {};
+      const { startDate = null, endDate = null } = parseData.consumptionRange ?? {}
       setPageSetting(parseData)
       setCustomerIsCome(parseData.customerIsCome)
       setBelong(parseData.category)
@@ -224,7 +224,7 @@ function CustomerFilterExport() {
         setDisable([false, false])
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   useEffect(() => {
@@ -232,117 +232,126 @@ function CustomerFilterExport() {
     if (!customerList.loading) {
       once = true
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [customerList.loading, history] 變動時執行；pageSetting 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [customerList.loading, history] 變動時執行；pageSetting 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [customerList.loading, history])
 
   return (
     <Page className="ui-root" title="客資篩選匯出">
-        <PageHeader
-          title='客資篩選匯出'
-          actions={
-            <>
-              <Button
-                variant="secondary"
-                aria-pressed={!!showFilter}
-                onClick={() => setShowFilter(!showFilter)}
-                className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
-              >
-                <ListFilter strokeWidth={1.75} />
-                篩選
-              </Button>
-              <Button variant="primary" onClick={handleExcel} disabled={getCustomersWithoutSortingExcelLazyData.loading || exportMaskOff}>
-                {'報表匯出'}
-              </Button>
-            </>
-          }
-        />
-        <BackendExportNotice settingOff={exportMaskOff} />
-        {/* 以 hidden 收合（取代 MUI Collapse）：SearchBar 內有非受控輸入，保持掛載，收合後內容與舊版一樣保留 */}
-        <div hidden={!showFilter}>
-          <Card className="mb-6 p-4">
-            <SearchBar
-              setCustomerNoSort={setPageSetting}
-              inCustomerFilterExport
-              setBelong={setBelong}
-              setCustomerIsCome={setCustomerIsCome}
-              handleClearData={handleClearData}
-              getQuery
-              onSearchV2={event =>
-                handleSearch(event)
-              }
-              onDesignerV2={event =>
-                handlePageChange({
-                  key: 'preferDesigner',
-                  value: event.userId,
-                })
-              }
-              onDesignerV3={event =>
-                handlePageChange({
-                  key: 'latestDesigner',
-                  value: event.userId,
-                })
-              }
-              onBirthdayStart={event =>
-                handlePageChange({
-                  key: 'birthday',
-                  value: event,
-                })
-              }
-              onCustomerSource={event => {
-                handlePageChange({
-                  key: 'source',
-                  value: event.props.value,
-                })
-              }}
-              onIsUnwelcome={event => {
-                handlePageChange({
-                  key: 'isUnwelcome',
-                  value: event.target.value,
-                })
-              }}
-            />
+      <PageHeader
+        title="客資篩選匯出"
+        actions={
+          <>
+            <Button
+              variant="secondary"
+              aria-pressed={!!showFilter}
+              onClick={() => setShowFilter(!showFilter)}
+              className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+            >
+              <ListFilter strokeWidth={1.75} />
+              篩選
+            </Button>
+            <Button variant="primary" onClick={handleExcel} disabled={getCustomersWithoutSortingExcelLazyData.loading || exportMaskOff}>
+              {'報表匯出'}
+            </Button>
+          </>
+        }
+      />
+      <BackendExportNotice settingOff={exportMaskOff} />
+      {/* 以 hidden 收合（取代 MUI Collapse）：SearchBar 內有非受控輸入，保持掛載，收合後內容與舊版一樣保留 */}
+      <div hidden={!showFilter}>
+        <Card className="mb-6 p-4">
+          <SearchBar
+            setCustomerNoSort={setPageSetting}
+            inCustomerFilterExport
+            setBelong={setBelong}
+            setCustomerIsCome={setCustomerIsCome}
+            handleClearData={handleClearData}
+            getQuery
+            onSearchV2={event => handleSearch(event)}
+            onDesignerV2={event =>
+              handlePageChange({
+                key: 'preferDesigner',
+                value: event.userId,
+              })
+            }
+            onDesignerV3={event =>
+              handlePageChange({
+                key: 'latestDesigner',
+                value: event.userId,
+              })
+            }
+            onBirthdayStart={event =>
+              handlePageChange({
+                key: 'birthday',
+                value: event,
+              })
+            }
+            onCustomerSource={event => {
+              handlePageChange({
+                key: 'source',
+                value: event.props.value,
+              })
+            }}
+            onIsUnwelcome={event => {
+              handlePageChange({
+                key: 'isUnwelcome',
+                value: event.target.value,
+              })
+            }}
+          />
 
-            <div className="mt-3 flex flex-wrap items-end gap-2.5">
-              <Button variant="secondary" className="shrink-0" onClick={handleClickOpen} >
-                篩選最後消費週期
-                <ChevronDown strokeWidth={1.75} />
-              </Button>
-              <div className="flex w-fit flex-col gap-1 text-label text-text-secondary">
-                來店消費：
-                <ToggleGroup
-                  size='small'
-                  exclusive
-                  value={customerIsCome === null ? '' : customerIsCome}
-                  onChange={(e, v) => {
-                    setCustomerIsCome(v === '' ? null : v)
-                    if (v === '') {
-                      setBelong([])
-                    }
-                  }}
-                >
-                  <ToggleGroupItem value=''>全部</ToggleGroupItem>
-                  <ToggleGroupItem value={true}>有</ToggleGroupItem>
-                  <ToggleGroupItem value={false}>無</ToggleGroupItem>
-                </ToggleGroup>
+          <div className="mt-3 flex flex-wrap items-end gap-2.5">
+            <Button variant="secondary" className="shrink-0" onClick={handleClickOpen}>
+              篩選最後消費週期
+              <ChevronDown strokeWidth={1.75} />
+            </Button>
+            <div className="flex w-fit flex-col gap-1 text-label text-text-secondary">
+              來店消費：
+              <ToggleGroup
+                size="small"
+                exclusive
+                value={customerIsCome === null ? '' : customerIsCome}
+                onChange={(e, v) => {
+                  setCustomerIsCome(v === '' ? null : v)
+                  if (v === '') {
+                    setBelong([])
+                  }
+                }}
+              >
+                <ToggleGroupItem value="">全部</ToggleGroupItem>
+                <ToggleGroupItem value={true}>有</ToggleGroupItem>
+                <ToggleGroupItem value={false}>無</ToggleGroupItem>
+              </ToggleGroup>
+            </div>
+            {customerIsCome !== null && (
+              <div className="flex-[1_1_250px]">
+                <BelongAutocomplete fetchData value={belong} onChange={v => setBelong(v)} />
               </div>
-              {customerIsCome !== null && (
-                <div className="flex-[1_1_250px]">
-                  <BelongAutocomplete
-                    fetchData
-                    value={belong}
-                    onChange={v => setBelong(v)}
-                  />
-                </div>
-              )}
-              <Dialog open={open} onOpenChange={o => { if (!o) handleClose() }}>
-                {/* 保留原 600px；原 md 以下全螢幕。 */}
-                <DialogContent hideClose
-          onOpenAutoFocus={event => {
-            // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
-            event.preventDefault()
-            if (!event.target.contains(document.activeElement)) event.target.focus()
-          }} aria-describedby={undefined} className={fullScreen ? "!inset-0 !h-[100dvh] !max-h-[100dvh] !w-full !max-w-none !translate-x-0 !translate-y-0 !rounded-none overflow-hidden" : "!max-w-[600px] overflow-hidden"}>
-                <DialogHeader><DialogTitle>更多篩選</DialogTitle></DialogHeader>
+            )}
+            <Dialog
+              open={open}
+              onOpenChange={o => {
+                if (!o) handleClose()
+              }}
+            >
+              {/* 保留原 600px；原 md 以下全螢幕。 */}
+              <DialogContent
+                hideClose
+                onOpenAutoFocus={event => {
+                  // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
+                  event.preventDefault()
+                  if (!event.target.contains(document.activeElement)) event.target.focus()
+                }}
+                aria-describedby={undefined}
+                className={
+                  fullScreen
+                    ? '!inset-0 !h-[100dvh] !max-h-[100dvh] !w-full !max-w-none !translate-x-0 !translate-y-0 !rounded-none overflow-hidden'
+                    : '!max-w-[600px] overflow-hidden'
+                }
+              >
+                <DialogHeader>
+                  <DialogTitle>更多篩選</DialogTitle>
+                </DialogHeader>
                 <DialogBody>
                   <div
                     className={styles.formGroup}
@@ -360,7 +369,9 @@ function CustomerFilterExport() {
                       label="來店之顧客"
                     >
                       {selecterCustomer.map((data, index) => (
-                        <NativeSelectOption key={index} value={data.value}>{data.label}</NativeSelectOption>
+                        <NativeSelectOption key={index} value={data.value}>
+                          {data.label}
+                        </NativeSelectOption>
                       ))}
                     </NativeSelect>
                   </div>
@@ -427,7 +438,9 @@ function CustomerFilterExport() {
                         label="之前/之後"
                       >
                         {selecter.map((data, index) => (
-                          <NativeSelectOption key={index} value={data.value}>{data.label}</NativeSelectOption>
+                          <NativeSelectOption key={index} value={data.value}>
+                            {data.label}
+                          </NativeSelectOption>
                         ))}
                       </NativeSelect>
                     </div>
@@ -451,42 +464,40 @@ function CustomerFilterExport() {
                   </div>
                 </DialogBody>
                 <DialogActions className="ui-root gap-2" style={{ margin: '10px' }}>
-                  <Button
-                    variant="ghost"
-                    className="mr-auto text-danger hover:bg-danger/8"
-                    onClick={handleClearData}
-                  >
+                  <Button variant="ghost" className="mr-auto text-danger hover:bg-danger/8" onClick={handleClearData}>
                     <Trash2 strokeWidth={1.75} />
                     清除
                   </Button>
                   <Button onClick={handleClose} variant="secondary">
                     取消
                   </Button>
-                  <Button
-                    onClick={handleSearchDate}
-                    variant="primary"
-                  >
+                  <Button onClick={handleSearchDate} variant="primary">
                     確認
                   </Button>
                 </DialogActions>
-              </DialogContent></Dialog>
-            </div>
-          </Card>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </Card>
+      </div>
+      {customerList.error ? (
+        <QueryFailed onRetry={() => customerList.refetch()} />
+      ) : !customerList.loading ? (
+        idx(customerList.data, _ => (
+          <Results
+            customers={_.customersWithoutSorting.customers}
+            refetch={customerList.refetch}
+            pageLimit={_.customersWithoutSorting.pageLimit}
+            pageOffset={_.customersWithoutSorting.pageOffset}
+            totalCount={_.customersWithoutSorting.totalCount}
+            onPageChange={handlePageChange}
+          />
+        ))
+      ) : (
+        <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
+          <Skeleton className="h-[320px] w-full rounded-lg" />
         </div>
-        {customerList.error ? (
-          <QueryFailed onRetry={() => customerList.refetch()} />
-        ) : !customerList.loading ?
-          idx(customerList.data, _ => (
-            <Results
-              customers={_.customersWithoutSorting.customers}
-              refetch={customerList.refetch}
-              pageLimit={_.customersWithoutSorting.pageLimit}
-              pageOffset={_.customersWithoutSorting.pageOffset}
-              totalCount={_.customersWithoutSorting.totalCount}
-              onPageChange={handlePageChange}
-            />
-          )) : <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中"><Skeleton className="h-[320px] w-full rounded-lg" /></div>
-        }
+      )}
     </Page>
   )
 }

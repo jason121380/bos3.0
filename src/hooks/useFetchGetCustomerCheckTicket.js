@@ -1,4 +1,4 @@
-import { gql, useLazyQuery, } from '@apollo/client'
+import { gql, useLazyQuery } from '@apollo/client'
 
 const GET_CUSTOMER_CHECK_TICKET = gql`
   query GET_CUSTOMER_CHECK_TICKET($input: CustomerCheckTicketInput!) {

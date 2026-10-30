@@ -6,8 +6,19 @@ import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react
 import { openSnackbar } from 'elements/snackbars'
 import { loginAs, callsOf } from '../../../__tests__/testkit.test'
 import {
-  setupQueue, loaded, baseQueue, retry, summaryValue, pickOption, inputOf, panel, panelOf, fieldInput,
-  DESIGNER, PRODUCT, TICKET,
+  setupQueue,
+  loaded,
+  baseQueue,
+  retry,
+  summaryValue,
+  pickOption,
+  inputOf,
+  panel,
+  panelOf,
+  fieldInput,
+  DESIGNER,
+  PRODUCT,
+  TICKET,
 } from './queueKit.test'
 
 jest.setTimeout(20000)
@@ -32,7 +43,14 @@ const productButton = id => products().getByTestId(id)
 const expand = title => fireEvent.click(within(panelOf(title)).getByRole('button', { expanded: false }))
 const SHAMPOO_LIST = { ...PRODUCT, cost: 100, isAvailableForSale: true, productCategory: { id: 'pc-1', name: '洗護' } }
 const productListFixtures = {
-  undefined: { products: { totalCount: 2, pageOffset: 0, pageLimit: 50, data: [SHAMPOO_LIST, { ...SHAMPOO_LIST, id: 'p-off', name: '停售品', isAvailableForSale: false }] } },
+  undefined: {
+    products: {
+      totalCount: 2,
+      pageOffset: 0,
+      pageLimit: 50,
+      data: [SHAMPOO_LIST, { ...SHAMPOO_LIST, id: 'p-off', name: '停售品', isAvailableForSale: false }],
+    },
+  },
   PRODUCT_CATEGORIES: { productCategories: [{ id: 'pc-1', name: '洗護' }] },
 }
 
@@ -56,9 +74,7 @@ describe('重新開單：店販銷售', () => {
     await wait(() => expect(summaryValue('店販消費')).toHaveTextContent(/^0$/))
     fireEvent.change(row.price(), { target: { value: '250' } })
     const input = await retry(page.calls)
-    expect(input.productOrders).toEqual([
-      expect.objectContaining({ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 250, count: 3 }),
-    ])
+    expect(input.productOrders).toEqual([expect.objectContaining({ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 250, count: 3 })])
     expect(input.productOrders[0]).not.toHaveProperty('isLocked')
   })
 
@@ -83,7 +99,9 @@ describe('重新開單：店販銷售', () => {
 
   it('第三方卡券付的店販：顯示扣完後業績、不收現金；改回不用卡券後照常收現金', async () => {
     const page = setupQueue({
-      queue: baseQueue({ productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 1, thirdPartyCouponMerchantId: null }] }),
+      queue: baseQueue({
+        productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 1, thirdPartyCouponMerchantId: null }],
+      }),
       GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true },
     })
     await loaded(page)
@@ -101,7 +119,9 @@ describe('重新開單：店販銷售', () => {
   // 金額彙總的規則不變：店販用第三方卡券時不收現金。
   it('固定金額的第三方卡券：扣完後業績＝價格－手續費；現金應收仍不含這筆店販', async () => {
     const page = setupQueue({
-      queue: baseQueue({ productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 1, thirdPartyCouponMerchantId: 'tp-2' }] }),
+      queue: baseQueue({
+        productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 1, thirdPartyCouponMerchantId: 'tp-2' }],
+      }),
       GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true },
     })
     await loaded(page)
@@ -112,7 +132,9 @@ describe('重新開單：店販銷售', () => {
 
   it('取消第三方卡券後恢復收現金', async () => {
     const page = setupQueue({
-      queue: baseQueue({ productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 1, thirdPartyCouponMerchantId: 'tp-1' }] }),
+      queue: baseQueue({
+        productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 1, thirdPartyCouponMerchantId: 'tp-1' }],
+      }),
       GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true },
     })
     await loaded(page)
@@ -125,7 +147,9 @@ describe('重新開單：店販銷售', () => {
 
   it('新增、刪除、清除列：刪掉與清掉的店販不送出', async () => {
     const page = setupQueue({
-      queue: baseQueue({ productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 2, thirdPartyCouponMerchantId: null }] }),
+      queue: baseQueue({
+        productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 2, thirdPartyCouponMerchantId: null }],
+      }),
     })
     await loaded(page)
     expect(summaryValue('店販消費')).toHaveTextContent('600')
@@ -147,7 +171,9 @@ describe('重新開單：店販銷售', () => {
 
   it('只有一列時清除：該列回到空白', async () => {
     const page = setupQueue({
-      queue: baseQueue({ productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 2, thirdPartyCouponMerchantId: null }] }),
+      queue: baseQueue({
+        productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 2, thirdPartyCouponMerchantId: null }],
+      }),
     })
     await loaded(page)
     fireEvent.click(productButton('merchantSsell-0-clear'))
@@ -158,7 +184,9 @@ describe('重新開單：店販銷售', () => {
 
   it('數量清空視為 0：該列不算進店販也不送出', async () => {
     const page = setupQueue({
-      queue: baseQueue({ productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 2, thirdPartyCouponMerchantId: null }] }),
+      queue: baseQueue({
+        productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 2, thirdPartyCouponMerchantId: null }],
+      }),
     })
     await loaded(page)
     fireEvent.change(productRow(0).count(), { target: { value: '' } })
@@ -272,7 +300,9 @@ describe('重新開單：預收卡販賣', () => {
 
   it('新增、刪除、清除列：刪掉與清掉的卡券不送出', async () => {
     const page = setupQueue({
-      queue: baseQueue({ ticketOrders: [{ serviceId: TICKET.id, availableCount: 5, price: 1000, count: 1, remark: '', intoPerformanceWhileBuying: false }] }),
+      queue: baseQueue({
+        ticketOrders: [{ serviceId: TICKET.id, availableCount: 5, price: 1000, count: 1, remark: '', intoPerformanceWhileBuying: false }],
+      }),
     })
     await loaded(page)
     expect(summaryValue('預收卡販賣')).toHaveTextContent('1,000')

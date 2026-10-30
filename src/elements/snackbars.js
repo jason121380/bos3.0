@@ -38,7 +38,16 @@ export function normalizeSnackbarMessage(message, variant) {
 }
 
 // 確認型的對話框文案；判斷順序與確認鈕的 callback 分派（下方 confirmAction）一致。只決定呈現，不影響執行內容。
-function getConfirmCopy({ resign, isDailyCheckout, salaryCheckout, salaryItemsLock, orderPending, deleteSystemRecordPending, deleteInventoryWork, selectedOrders }) {
+function getConfirmCopy({
+  resign,
+  isDailyCheckout,
+  salaryCheckout,
+  salaryItemsLock,
+  orderPending,
+  deleteSystemRecordPending,
+  deleteInventoryWork,
+  selectedOrders,
+}) {
   const reloadNote = '處理期間請勿跳頁或重新整理，完成後頁面會自動重新整理。'
   if (!resign) return { title: '確認批次編輯', confirmLabel: '確定覆蓋' }
   if (isDailyCheckout) {
@@ -235,31 +244,44 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
   }
   // 確認型：對話框（取消／Esc／點背景只關閉；確認鈕的分派與停用條件與原本相同）
   if (resign || groupEdit) {
-    const copy = getConfirmCopy({ resign, isDailyCheckout, salaryCheckout, salaryItemsLock, orderPending, deleteSystemRecordPending, deleteInventoryWork, selectedOrders })
+    const copy = getConfirmCopy({
+      resign,
+      isDailyCheckout,
+      salaryCheckout,
+      salaryItemsLock,
+      orderPending,
+      deleteSystemRecordPending,
+      deleteInventoryWork,
+      selectedOrders,
+    })
     const confirmAction = resign
       ? isDailyCheckout
         ? () => dailyCheckout()
         : () =>
-          salaryCheckout
-            ? handleSalaryCheckout()
-            : salaryItemsLock
-              ? handleSalaryItemsLock()
-              : orderPending
-                ? usehandleCreateDraftOrderFunc()
-                : deleteSystemRecordPending
-                  ? deleteSystemRecordFunc()
-                  : deleteInventoryWork
-                    ? deleteInventoryWorkFunc()
-                    : handleResignEmployee(designerId)
+            salaryCheckout
+              ? handleSalaryCheckout()
+              : salaryItemsLock
+                ? handleSalaryItemsLock()
+                : orderPending
+                  ? usehandleCreateDraftOrderFunc()
+                  : deleteSystemRecordPending
+                    ? deleteSystemRecordFunc()
+                    : deleteInventoryWork
+                      ? deleteInventoryWorkFunc()
+                      : handleResignEmployee(designerId)
       : () => (serviceHelperGroupEdit ? handleSubmitHelperDeduction() : handleSubmitDeduction())
     const confirmDisabled = resign ? (isDailyCheckout ? isDailyCheckoutLoading : orderPendingBtn) : undefined
     return (
       <Dialog
         open
-        onOpenChange={value => { if (!value) onClose() }}
+        onOpenChange={value => {
+          if (!value) onClose()
+        }}
       >
         <DialogContent size="sm" hideClose role="alertdialog" aria-describedby="client-snackbar">
-          <DialogHeader><DialogTitle>{copy.title}</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle>{copy.title}</DialogTitle>
+          </DialogHeader>
           <DialogBody>
             <div id="client-snackbar" className="flex flex-col gap-2">
               <p className="whitespace-pre-line text-body text-text">{typeof message === 'string' ? message.trim() : message}</p>
@@ -302,8 +324,12 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
             >
               <circle cx="20" cy="20" r="18" fill="none" stroke="rgb(var(--border))" strokeWidth="3.6" />
               <circle
-                cx="20" cy="20" r="18" fill="none"
-                stroke="rgb(var(--primary))" strokeWidth="3.6"
+                cx="20"
+                cy="20"
+                r="18"
+                fill="none"
+                stroke="rgb(var(--primary))"
+                strokeWidth="3.6"
                 pathLength="100"
                 strokeDasharray="100"
                 strokeDashoffset={100 - (progress <= 100 ? progress : 99)}
@@ -328,7 +354,7 @@ SnackbarContentWrapper.propTypes = {
   variant: PropTypes.oneOf(['error', 'info', 'success', 'warning']).isRequired,
 }
 
-let openSnackbarFunction = () => { }
+let openSnackbarFunction = () => {}
 
 export function openSnackbar({
   message,
@@ -364,7 +390,7 @@ export function openSnackbar({
   systemUpdateId,
   systemUpdateRecord,
   deleteInventoryWork,
-  deleteInventoryWorkFunc
+  deleteInventoryWorkFunc,
 }) {
   openSnackbarFunction({
     message: normalizeSnackbarMessage(message, variant),
@@ -400,7 +426,7 @@ export function openSnackbar({
     systemUpdateId,
     systemUpdateRecord,
     deleteInventoryWork,
-    deleteInventoryWorkFunc
+    deleteInventoryWorkFunc,
   })
 }
 
@@ -439,7 +465,7 @@ export default function CustomizedSnackbars() {
     systemUpdateId,
     systemUpdateRecord,
     deleteInventoryWork,
-    deleteInventoryWorkFunc
+    deleteInventoryWorkFunc,
   }) => {
     setSnackbarState({
       open: true,
@@ -476,7 +502,7 @@ export default function CustomizedSnackbars() {
       systemUpdateId,
       systemUpdateRecord,
       deleteInventoryWork,
-      deleteInventoryWorkFunc
+      deleteInventoryWorkFunc,
     })
   }
   useEffect(() => {
@@ -495,8 +521,8 @@ export default function CustomizedSnackbars() {
     groupEdit: false,
     serviceHelperGroupEdit: false,
     designerId: '',
-    handleSubmitDeductionSetting: () => { },
-    handleSubmitHelperDeductionSetting: () => { },
+    handleSubmitDeductionSetting: () => {},
+    handleSubmitHelperDeductionSetting: () => {},
     salaryCheckout: false,
     checkoutProcessing: false,
     progressCount: 0,
@@ -505,15 +531,15 @@ export default function CustomizedSnackbars() {
     isDailyCheckout: false,
     selectedOrders: [],
     waitCloseOrderResults: null,
-    setSelectedOrders: () => { },
+    setSelectedOrders: () => {},
     checkoutStaff: null,
     orderPending: false,
-    usehandleCreateDraftOrder: () => { },
+    usehandleCreateDraftOrder: () => {},
     deleteSystemRecordPending: false,
     systemUpdateId: '',
-    systemUpdateRecord: () => { },
+    systemUpdateRecord: () => {},
     deleteInventoryWork: false,
-    deleteInventoryWorkFunc: () => { }
+    deleteInventoryWorkFunc: () => {},
   })
 
   const {
@@ -551,7 +577,7 @@ export default function CustomizedSnackbars() {
     systemUpdateId,
     systemUpdateRecord,
     deleteInventoryWork,
-    deleteInventoryWorkFunc
+    deleteInventoryWorkFunc,
   } = snackbarState
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {

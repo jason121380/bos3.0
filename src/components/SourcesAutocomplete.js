@@ -5,11 +5,7 @@ import useFetchGetCustomerReference from 'hooks/useFetchGetCustomerReference'
 import idx from 'idx'
 import { Autocomplete } from 'ui/combobox'
 
-export default function SourcesAutocomplete({
-  className = '',
-  onChange = () => { },
-  value,
-}) {
+export default function SourcesAutocomplete({ className = '', onChange = () => {}, value }) {
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
   const checkedIcon = <CheckBoxIcon fontSize="small" />
   const getReference = useFetchGetCustomerReference()
@@ -30,7 +26,7 @@ export default function SourcesAutocomplete({
         <span style={{ fontSize: 14, padding: 6 }} {...props}>
           <Checkbox
             className="!p-[2px]"
-            style={{ color: 'rgb(var(--text))', marginRight: 4}}
+            style={{ color: 'rgb(var(--text))', marginRight: 4 }}
             icon={icon}
             checkedIcon={checkedIcon}
             checked={selected}
@@ -38,9 +34,7 @@ export default function SourcesAutocomplete({
           {option}
         </span>
       )}
-      renderInput={params => (
-        <TextField {...params} variant="outlined" label="帳單來源" />
-      )}
+      renderInput={params => <TextField {...params} variant="outlined" label="帳單來源" />}
     />
   )
 }

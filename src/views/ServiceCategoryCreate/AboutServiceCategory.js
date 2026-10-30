@@ -39,11 +39,7 @@ function AboutServiceCategory({ className, attributions, setAttr, attr, ...rest 
             })}
           />
         </Field>
-        <FormControl
-          variant="outlined"
-          fullWidth
-          error={!!errors.attribution}
-        >
+        <FormControl variant="outlined" fullWidth error={!!errors.attribution}>
           <NativeSelect
             name="attribution"
             value={attr}
@@ -54,10 +50,7 @@ function AboutServiceCategory({ className, attributions, setAttr, attr, ...rest 
             label="服務歸屬"
           >
             {attributions.map((data, idx) => (
-              <NativeSelectOption
-                value={data.value}
-                key={`attribution-${idx}`}
-              >
+              <NativeSelectOption value={data.value} key={`attribution-${idx}`}>
                 {data.name}
               </NativeSelectOption>
             ))}

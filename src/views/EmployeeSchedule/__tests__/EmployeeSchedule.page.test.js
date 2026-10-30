@@ -19,9 +19,15 @@ jest.mock('elements/snackbars', () => ({ openSnackbar: jest.fn() }))
 jest.mock('components/EmployeeAutoComplete', () => ({ onChange, onKeyDown, value }) => (
   <div data-testid="employee-picker" data-value={value || ''}>
     <input aria-label="人員" onKeyDown={onKeyDown} readOnly value={value || ''} />
-    <button type="button" onClick={() => onChange({ userId: 'u5' })}>選小陳</button>
-    <button type="button" onClick={() => onChange({ userId: 'u6' })}>選小林</button>
-    <button type="button" onClick={() => onChange({})}>清除人員</button>
+    <button type="button" onClick={() => onChange({ userId: 'u5' })}>
+      選小陳
+    </button>
+    <button type="button" onClick={() => onChange({ userId: 'u6' })}>
+      選小林
+    </button>
+    <button type="button" onClick={() => onChange({})}>
+      清除人員
+    </button>
   </div>
 ))
 
@@ -63,7 +69,8 @@ const act$ = (name, label, cardIndex = 0) => fireEvent.click(within(personRow(na
 const saves = calls => callsOf(calls, 'SET_EMPLOYEE_SCHEDULE').map(c => ({ ...c.variables, schedule: JSON.parse(c.variables.schedule) }))
 const lastSaved = calls => saves(calls).pop()
 // 送出的班表人員順序（名稱＋* 表示已標記時間）
-const order = (schedule, cardIndex = 0) => schedule[cardIndex].scheduleRow.map(r => (r.designerId ? NAME[r.designerId] : '（空）') + (r.timeAdded ? '*' : ''))
+const order = (schedule, cardIndex = 0) =>
+  schedule[cardIndex].scheduleRow.map(r => (r.designerId ? NAME[r.designerId] : '（空）') + (r.timeAdded ? '*' : ''))
 const savedAfter = async (utils, n) => {
   await wait(() => expect(saves(utils.calls)).toHaveLength(n))
   await utils.settle()

@@ -16,7 +16,6 @@ function Reservation({ match, location }) {
 
   const [setDefaultLineMenu] = useMutation(SetDefaultLineMenu)
 
-
   useEffect(() => {
     const LIFFLogin = () => {
       window.liff
@@ -60,7 +59,7 @@ function Reservation({ match, location }) {
         })
     }
     LIFFLogin()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在掛載時執行一次
   }, [])
 
   return (

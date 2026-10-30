@@ -16,19 +16,16 @@ const FETCH_DESIGNER_BOOKING_TIMES = gql`
   }
 `
 export const useLazyFetchDesignerBookingTimes = ({ designerId, storeId, date }) => {
-  const [fetchDesignerBookingTimes, designerBookingTimesResponse] = useLazyQuery(
-    FETCH_DESIGNER_BOOKING_TIMES,
-    {
-      fetchPolicy: 'cache-and-network',
-      variables: {
-        GetBookingTimesInput: {
-          designerId,
-          storeId,
-          date,
-        },
+  const [fetchDesignerBookingTimes, designerBookingTimesResponse] = useLazyQuery(FETCH_DESIGNER_BOOKING_TIMES, {
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      GetBookingTimesInput: {
+        designerId,
+        storeId,
+        date,
       },
-    }
-  )
+    },
+  })
   return {
     fetchDesignerBookingTimes,
     designerBookingTimesResponse,

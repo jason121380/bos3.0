@@ -14,9 +14,11 @@ beforeEach(loginAs)
 afterEach(cleanup)
 it('快速查帳內人員搜尋選值及 Esc 只關選單，原關閉鈕仍可關窗', async () => {
   const close = jest.fn()
-  const page = renderPage(<FastCheckOrdersModal open setOpenModal={close} date={new Date(2026, 9, 23).getTime()} />, { fixtures: {
-    GET_USERS_ORDERABLE_LIST: { getUserOrderableList: [{ userId: 'd1', userName: '王小美', userNo: '01', userNickName: '' }] },
-  } })
+  const page = renderPage(<FastCheckOrdersModal open setOpenModal={close} date={new Date(2026, 9, 23).getTime()} />, {
+    fixtures: {
+      GET_USERS_ORDERABLE_LIST: { getUserOrderableList: [{ userId: 'd1', userName: '王小美', userNo: '01', userNickName: '' }] },
+    },
+  })
   await page.settle()
   const dialog = screen.getByRole('dialog')
   fireEvent.click(within(dialog).getByRole('button', { name: '起始時間' }))
@@ -39,7 +41,12 @@ it('快速查帳內人員搜尋選值及 Esc 只關選單，原關閉鈕仍可�
 })
 it('編輯顧客 Select 可選值，取消仍呼叫原 onClose', async () => {
   const close = jest.fn()
-  const page = renderPage(<StoreProvider value={{ refetch: jest.fn() }}><CustomerEditModal open onClose={close} customer={CUSTOMER} /></StoreProvider>, { fixtures: baseFixtures() })
+  const page = renderPage(
+    <StoreProvider value={{ refetch: jest.fn() }}>
+      <CustomerEditModal open onClose={close} customer={CUSTOMER} />
+    </StoreProvider>,
+    { fixtures: baseFixtures() }
+  )
   await page.settle()
   const dialog = screen.getByRole('dialog')
   const select = dialog.querySelector('select[name="gender"]')
@@ -53,7 +60,12 @@ it('編輯顧客 Select 可選值，取消仍呼叫原 onClose', async () => {
 })
 
 it('顧客建立預約的日期 Esc 只關 picker，面板仍由原取消鈕關閉', async () => {
-  const page = renderPage(<StoreProvider value={{ refetch: jest.fn() }}><CustomerInfo customer={CUSTOMER} /></StoreProvider>, { fixtures: baseFixtures() })
+  const page = renderPage(
+    <StoreProvider value={{ refetch: jest.fn() }}>
+      <CustomerInfo customer={CUSTOMER} />
+    </StoreProvider>,
+    { fixtures: baseFixtures() }
+  )
   await page.settle()
   fireEvent.click(screen.getByRole('button', { name: '建立預約' }))
   const dialog = screen.getByRole('dialog')

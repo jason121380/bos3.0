@@ -11,9 +11,7 @@ export const emptyCustomerForm = () => ({
     month: '',
     day: '',
   },
-  OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null,
+  OfficialBrandMerchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
   gender: 'MALE',
   no: '',
   nickName: '',
@@ -26,9 +24,7 @@ export const emptyCustomerForm = () => ({
 
 // 只輸入手機就按「新增顧客」時，先建立顧客送出的 input（addCustomer 的 variables）
 export const quickAddCustomerInput = customerCellphone => ({
-  OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null,
+  OfficialBrandMerchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null,
   gender: 'MALE',
   cellphone: customerCellphone,
   birthday: {
@@ -66,18 +62,14 @@ export const getCustomerOptionLabel = option => {
     return option.inputValue
   }
   // Regular option
-  return option.name === undefined || option.no === undefined
-    ? option.cellphone
-    : option.name + '/' + option.cellphone + '/' + option.no
+  return option.name === undefined || option.no === undefined ? option.cellphone : option.name + '/' + option.cellphone + '/' + option.no
 }
 
 // Render the option, use getOptionLabel by default
 export const renderCustomerOption = ({ key, ...props }, option) => {
   return (
     <li key={option.id || option.cellphone} {...props}>
-      {option.name === undefined || option.no === undefined
-        ? option.cellphone
-        : option.name + '/' + option.cellphone + '/' + option.no}
+      {option.name === undefined || option.no === undefined ? option.cellphone : option.name + '/' + option.cellphone + '/' + option.no}
     </li>
   )
 }

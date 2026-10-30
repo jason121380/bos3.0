@@ -23,7 +23,12 @@ const FIXTURES = {
       { id: 'job-2', jobTitle: '助理' },
     ],
   },
-  MERCHANT_COMMISSION_WAY: { merchantCommissionWay: [{ id: 'c1', name: '依服務' }, { id: 'c2', name: '依業績' }] },
+  MERCHANT_COMMISSION_WAY: {
+    merchantCommissionWay: [
+      { id: 'c1', name: '依服務' },
+      { id: 'c2', name: '依業績' },
+    ],
+  },
   USE_FETCH_GET_ATTRIBUTIONS_FOR_RAKE: {
     getAttributionForRake: [
       { label: '預設', value: '預設' },
@@ -45,7 +50,10 @@ const card = () => within(screen.getByText('抽成方式設定').closest('.ui-ro
 const fields = label => card().getAllByLabelText(label)
 const type = (input, value) => fireEvent.change(input, { target: { value } })
 // 級距列：分指定與分段的列是 div.w-full.flex-wrap；全段不分指定的列是標題所在的 div.flex
-const tierRows = title => card().getAllByText(title).map(node => node.closest('div.w-full.flex-wrap') || node.closest('div.flex'))
+const tierRows = title =>
+  card()
+    .getAllByText(title)
+    .map(node => node.closest('div.w-full.flex-wrap') || node.closest('div.flex'))
 const iconIn = (row, kind) => row.querySelector(`svg[class*="${kind}"]`)
 const add = row => fireEvent.click(iconIn(row, 'plus'))
 const remove = row => fireEvent.click(iconIn(row, 'trash'))
@@ -189,8 +197,14 @@ describe('抽成設定：全段級距', () => {
       {
         attribute: '預設',
         rakeData: {
-          designate: [{ threshold: 0, rake: 40 }, { threshold: 60000, rake: 45 }],
-          nonDesignate: [{ threshold: 0, rake: 35 }, { threshold: 70000, rake: 38 }],
+          designate: [
+            { threshold: 0, rake: 40 },
+            { threshold: 60000, rake: 45 },
+          ],
+          nonDesignate: [
+            { threshold: 0, rake: 35 },
+            { threshold: 70000, rake: 38 },
+          ],
           nonDistinguish: [],
         },
       },

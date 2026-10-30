@@ -33,19 +33,11 @@ function Results({ reportForDisplay }) {
         })}
         <TableRow className="font-bold">
           <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
-          <TableCell numeric>
-            {formatNumber(reportForDisplay.reduce((total, item) => (total = total + item.businessCash), 0))}
-          </TableCell>
-          <TableCell numeric>
-            {formatNumber(reportForDisplay.reduce((total, item) => (total = total + item.cashRevenue), 0))}
-          </TableCell>
-          <TableCell numeric>
-            {formatNumber(reportForDisplay.reduce((total, item) => (total = total + item.cashExpenditure), 0))}
-          </TableCell>
+          <TableCell numeric>{formatNumber(reportForDisplay.reduce((total, item) => (total = total + item.businessCash), 0))}</TableCell>
+          <TableCell numeric>{formatNumber(reportForDisplay.reduce((total, item) => (total = total + item.cashRevenue), 0))}</TableCell>
+          <TableCell numeric>{formatNumber(reportForDisplay.reduce((total, item) => (total = total + item.cashExpenditure), 0))}</TableCell>
           <TableCell></TableCell>
-          <TableCell numeric>
-            {formatNumber(reportForDisplay.reduce((total, item) => (total = total + item.cashBalance), 0))}
-          </TableCell>
+          <TableCell numeric>{formatNumber(reportForDisplay.reduce((total, item) => (total = total + item.cashBalance), 0))}</TableCell>
           <TableCell numeric>N/A</TableCell>
         </TableRow>
       </TableBody>

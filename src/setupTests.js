@@ -47,9 +47,7 @@ const mockConsoleMethod = realConsoleMethod => {
   const ignoredMessages = ['test was not wrapped in act(...)']
 
   return (message, ...args) => {
-    const containsIgnoredMessage = ignoredMessages.some(ignoredMessage =>
-      message.includes(ignoredMessage)
-    )
+    const containsIgnoredMessage = ignoredMessages.some(ignoredMessage => message.includes(ignoredMessage))
 
     if (!containsIgnoredMessage) {
       realConsoleMethod(message, ...args)

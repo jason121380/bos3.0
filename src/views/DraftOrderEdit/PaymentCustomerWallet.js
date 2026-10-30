@@ -25,9 +25,7 @@ export default function PaymentCustomerWallet() {
     if (!orderDetail.loading && idx(orderDetail, _ => _.data.order.customer)) {
       // 如果訂單的顧客跟現在的顧客是一樣就把原本他被扣的入金餘額放上去
       if (orderDetail.data.order.customer.id === bill.customerId) {
-        setWalletPayByOrder(
-          orderDetail.data.order.walletPay === null ? 0 : orderDetail.data.order.walletPay
-        )
+        setWalletPayByOrder(orderDetail.data.order.walletPay === null ? 0 : orderDetail.data.order.walletPay)
       }
       // 如果換其他顧客，walletPay欄位就會清空
       if (orderDetail.data.order.customer.id !== bill.customerId) {
@@ -38,20 +36,20 @@ export default function PaymentCustomerWallet() {
         setWalletPayByOrder(0)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [orderDetail.loading, bill.customerId] 變動時執行；handleBillChange、orderDetail 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [orderDetail.loading, bill.customerId] 變動時執行；handleBillChange、orderDetail 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [orderDetail.loading, bill.customerId])
 
   const walletPayLimit =
     bill.serviceOrders.reduce((total, item) => total + item.price, 0) +
     bill.productOrders.reduce((total, item) => (total = total + item.price * item.count), 0) +
     bill.ticketOrders.reduce((total, item) => (total = total + item.price * item.count), 0) +
-    bill.membershipOrders.reduce((total, item) => (total = total + item.price ), 0) -
+    bill.membershipOrders.reduce((total, item) => (total = total + item.price), 0) -
     bill.amountByOtherPay
 
   const handleFocus = event => {
     event.target.select()
   }
-  
+
   return (
     <React.Fragment>
       {usableCustomerWallet > 0 && bill.customerId && (
@@ -62,9 +60,7 @@ export default function PaymentCustomerWallet() {
             onFocus={handleFocus}
             onChange={event => {
               const walletPay =
-                +event.target.value <= usableCustomerWallet && +event.target.value <= walletPayLimit
-                  ? +event.target.value
-                  : bill.walletPay
+                +event.target.value <= usableCustomerWallet && +event.target.value <= walletPayLimit ? +event.target.value : bill.walletPay
               handleBillChange({
                 key: 'walletPay',
                 value: walletPay,

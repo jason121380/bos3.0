@@ -5,20 +5,14 @@ import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TablePagination, TableRow } from 'ui/table'
 
-const AttendanceRecord = ({
-  page,
-  onChangePage,
-  onChangeRowsPerPage,
-  results,
-  ...rest
-}) => {
+const AttendanceRecord = ({ page, onChangePage, onChangeRowsPerPage, results, ...rest }) => {
   const pageRef = useRef(null)
 
   useEffect(() => {
     if (pageRef.current) {
       paginationLabel(pageRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
   }, [results, pageRef.current])
 
   return (
@@ -43,17 +37,11 @@ const AttendanceRecord = ({
                 <TableRow key={`attendance-record-${idx}`}>
                   <TableCell className="tabular-nums">
                     {format(new Date(data.checkinDateTime), 'HH:mm:ss')}
-                    <div className="text-caption text-text-secondary">
-                      {format(new Date(data.checkinDateTime), 'yyyy/MM/dd')}
-                    </div>
+                    <div className="text-caption text-text-secondary">{format(new Date(data.checkinDateTime), 'yyyy/MM/dd')}</div>
                   </TableCell>
                   <TableCell className="text-right">
                     <Button asChild size="sm" variant="secondary">
-                      <a
-                        href={`https://www.google.com/maps?q=${data.latitude},${data.longitude}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
+                      <a href={`https://www.google.com/maps?q=${data.latitude},${data.longitude}`} target="_blank" rel="noopener noreferrer">
                         地點
                       </a>
                     </Button>

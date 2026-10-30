@@ -14,12 +14,12 @@ export default function useFetchGetIsDisplayFakePerformanceInSalaryReport() {
 }
 
 export function useFetchGetIsDisplayFakePerformanceInSalaryReportLazy() {
-  const [
-    fetchGetIsDisplayFakePerformanceInSalaryReportLazy,
-    getIsDisplayFakePerformanceInSalaryReportLazyData,
-  ] = useLazyQuery(GET_IS_DISPLAY_FAKE_PERFORMANCE_IN_SALARY_REPORT, {
-    fetchPolicy: SETTINGS_FETCH_POLICY,
-  })
+  const [fetchGetIsDisplayFakePerformanceInSalaryReportLazy, getIsDisplayFakePerformanceInSalaryReportLazyData] = useLazyQuery(
+    GET_IS_DISPLAY_FAKE_PERFORMANCE_IN_SALARY_REPORT,
+    {
+      fetchPolicy: SETTINGS_FETCH_POLICY,
+    }
+  )
   return {
     fetchGetIsDisplayFakePerformanceInSalaryReportLazy,
     getIsDisplayFakePerformanceInSalaryReportLazyData,

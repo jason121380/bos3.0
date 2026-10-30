@@ -14,9 +14,7 @@ function ServiceCategoryCreate() {
   const history = useHistory()
   const { createProductCategory } = useFetchCreateProductCategory()
   const productCategories = useFetchProductCategories()
-  const OfficialBrandMerchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
+  const OfficialBrandMerchantId = localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null
 
   const { register, handleSubmit, errors } = useForm()
   const onSubmit = data => {

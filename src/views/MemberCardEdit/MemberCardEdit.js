@@ -18,7 +18,8 @@ import { PageHeader } from 'ui/page-header'
 import QueryFailed from 'components/QueryFailed'
 
 // 色票浮層：沿用舊版置中固定定位（CirclePicker 接受 className）
-const colorPickerClass = 'fixed left-1/2 top-1/2 z-[1400] box-content -translate-x-1/2 -translate-y-1/2 rounded-md border border-solid border-border-strong bg-background pb-3 pl-5 pr-3 pt-5 shadow-float'
+const colorPickerClass =
+  'fixed left-1/2 top-1/2 z-[1400] box-content -translate-x-1/2 -translate-y-1/2 rounded-md border border-solid border-border-strong bg-background pb-3 pl-5 pr-3 pt-5 shadow-float'
 // 顏色預覽按鈕：背景色由 style 帶入目前色碼
 const swatchClass = 'h-9 w-16 shrink-0 rounded-md border border-solid border-border-strong p-0'
 
@@ -91,9 +92,9 @@ export default function MemberCardEdit({ match }) {
     color: '#FFFFFF',
     effecitveDay: 0,
     commissionWay: 'fixed',
-    textColor: "#FFFFFF",
+    textColor: '#FFFFFF',
     image: '',
-    comment: ""
+    comment: '',
   })
   const [colorData, setColorData] = useState(submitValue.color)
   const [colorTextData, setColorTextData] = useState(submitValue.textColor)
@@ -102,11 +103,7 @@ export default function MemberCardEdit({ match }) {
   //disable 儲存
   const valid = !(submitValue.no && submitValue.name && submitValue.MembershipCategoryUUID)
   // 停用原因（STYLE.md §6）：依上方 valid 的三個必填欄位，只列目前真的缺的
-  const missingFields = [
-    !submitValue.no && '代號',
-    !submitValue.name && '名稱',
-    !submitValue.MembershipCategoryUUID && '會員卡類別',
-  ].filter(Boolean)
+  const missingFields = [!submitValue.no && '代號', !submitValue.name && '名稱', !submitValue.MembershipCategoryUUID && '會員卡類別'].filter(Boolean)
 
   // 拿到後端回傳的自來的資料先show出來
   useEffect(() => {
@@ -134,18 +131,18 @@ export default function MemberCardEdit({ match }) {
           draft.isLocked = tmp.isLocked
           draft.effecitveDay = tmp.effecitveDay
           draft.image = tmp.image
-          draft.color = tmp.color !== null ? tmp.color : ""
+          draft.color = tmp.color !== null ? tmp.color : ''
           draft.textColor = tmp.textColor
           draft.comment = tmp.comment
         })
       )
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [membership.loading])
 
   // 拿到此筆的index
   useEffect(() => {
-    if (membershipList !== undefined &&  !membership.loading) {
+    if (membershipList !== undefined && !membership.loading) {
       const currentMembershipID = idx(membership, _ => _.data.membership.uuid)
       setMembershipIndexArray(membershipList.data)
       membershipList.data.forEach((d, index) => {
@@ -154,7 +151,7 @@ export default function MemberCardEdit({ match }) {
         }
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [membershipList, membership.loading])
 
   // 換資料
@@ -184,7 +181,7 @@ export default function MemberCardEdit({ match }) {
 
   // 儲存
   const handleSubmit = () => {
-    if ( parseInt(submitValue.effecitveDay, 10)< 0) {
+    if (parseInt(submitValue.effecitveDay, 10) < 0) {
       openSnackbar({ message: '請輸入有效期限大於或等於0', variant: 'error' })
     } else {
       updateMembership({
@@ -207,7 +204,7 @@ export default function MemberCardEdit({ match }) {
 
   // 儲存並上一筆
   const handleToLastItem = () => {
-    if ( parseInt(submitValue.effecitveDay, 10)< 0) {
+    if (parseInt(submitValue.effecitveDay, 10) < 0) {
       openSnackbar({ message: '請輸入有效期限大於或等於0', variant: 'error' })
     } else {
       updateMembership({
@@ -229,7 +226,7 @@ export default function MemberCardEdit({ match }) {
   }
   //儲存並下一筆
   const handleToNextItem = () => {
-    if ( parseInt(submitValue.effecitveDay, 10)< 0) {
+    if (parseInt(submitValue.effecitveDay, 10) < 0) {
       openSnackbar({ message: '請輸入有效期限大於或等於0', variant: 'error' })
     } else {
       updateMembership({
@@ -264,16 +261,10 @@ export default function MemberCardEdit({ match }) {
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 <Field label="代號">
-                  <Input
-                    value={submitValue.no}
-                    onChange={event => handleOnChange({ event, key: 'no' })}
-                  />
+                  <Input value={submitValue.no} onChange={event => handleOnChange({ event, key: 'no' })} />
                 </Field>
                 <Field label="名稱">
-                  <Input
-                    value={submitValue.name}
-                    onChange={event => handleOnChange({ event, key: 'name' })}
-                  />
+                  <Input value={submitValue.name} onChange={event => handleOnChange({ event, key: 'name' })} />
                 </Field>
                 <Field label="會員卡類別">
                   <NativeSelect
@@ -339,7 +330,7 @@ export default function MemberCardEdit({ match }) {
                       name="color"
                       value={submitValue.color}
                       onChange={event => {
-                        setSubmitValue({...submitValue, color: event.target.value  })
+                        setSubmitValue({ ...submitValue, color: event.target.value })
                       }}
                     />
                     <Button
@@ -361,7 +352,7 @@ export default function MemberCardEdit({ match }) {
                           color={colorData}
                           onChange={event => {
                             setColorData(event.hex)
-                            setSubmitValue({...submitValue, color: event.hex  })
+                            setSubmitValue({ ...submitValue, color: event.hex })
                             setShowColorPicker(false)
                           }}
                         />
@@ -376,7 +367,7 @@ export default function MemberCardEdit({ match }) {
                       name="textColor"
                       value={submitValue.textColor}
                       onChange={event => {
-                        setSubmitValue({...submitValue, textColor: event.target.value  })
+                        setSubmitValue({ ...submitValue, textColor: event.target.value })
                       }}
                     />
                     <Button
@@ -398,7 +389,7 @@ export default function MemberCardEdit({ match }) {
                           color={colorTextData}
                           onChange={event => {
                             setColorTextData(event.hex)
-                            setSubmitValue({...submitValue, textColor: event.hex  })
+                            setSubmitValue({ ...submitValue, textColor: event.hex })
                             setShowTextColorPicker(false)
                           }}
                         />
@@ -426,11 +417,7 @@ export default function MemberCardEdit({ match }) {
                   />
                 </Field>
                 <Field label="打帳單是否能更改預設價格">
-                  <NativeSelect
-                    name="isLocked"
-                    value={submitValue.isLocked}
-                    onChange={event => handleOnChange({ event, key: 'isLocked' })}
-                  >
+                  <NativeSelect name="isLocked" value={submitValue.isLocked} onChange={event => handleOnChange({ event, key: 'isLocked' })}>
                     {lockStatus.map((data, idx) => (
                       <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                         {data.label}
@@ -458,13 +445,7 @@ export default function MemberCardEdit({ match }) {
                       ))}
                     </NativeSelect>
                   </Field>
-                  <Field
-                    label={
-                      submitValue.commissionWay === 'byCost' || submitValue.commissionWay === 'byPrice'
-                        ? '抽成數字%'
-                        : '抽成數字'
-                    }
-                  >
+                  <Field label={submitValue.commissionWay === 'byCost' || submitValue.commissionWay === 'byPrice' ? '抽成數字%' : '抽成數字'}>
                     <Input
                       type="number"
                       value={submitValue.commission}
@@ -481,18 +462,10 @@ export default function MemberCardEdit({ match }) {
                   {`尚缺：${missingFields.join('、')}`}
                 </p>
               )}
-              <Button
-                variant="secondary"
-                disabled={membershipIndex === 0 || valid}
-                onClick={handleToLastItem}
-              >
+              <Button variant="secondary" disabled={membershipIndex === 0 || valid} onClick={handleToLastItem}>
                 儲存並上一筆
               </Button>
-              <Button
-                variant="secondary"
-                disabled={membershipIndex === membershipIndexArray.length - 1 || valid}
-                onClick={handleToNextItem}
-              >
+              <Button variant="secondary" disabled={membershipIndex === membershipIndexArray.length - 1 || valid} onClick={handleToNextItem}>
                 儲存並下一筆
               </Button>
               <Button variant="primary" disabled={valid} aria-describedby={valid ? 'member-card-edit-missing' : undefined} onClick={handleSubmit}>

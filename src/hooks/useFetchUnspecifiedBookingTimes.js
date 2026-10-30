@@ -9,18 +9,15 @@ const FETCH_UNSPECIFIED_BOOKING_TIMES = gql`
   }
 `
 export const useLazyFetchUnspecifiedBookingTimes = ({ storeId, date }) => {
-  const [fetchUnspecifiedBookingTimes, unspecifiedBookingTimesResponse] = useLazyQuery(
-    FETCH_UNSPECIFIED_BOOKING_TIMES,
-    {
-      fetchPolicy: 'cache-and-network',
-      variables: {
-        UnspecifiedBookingTimesInput: {
-          storeId,
-          date,
-        },
+  const [fetchUnspecifiedBookingTimes, unspecifiedBookingTimesResponse] = useLazyQuery(FETCH_UNSPECIFIED_BOOKING_TIMES, {
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      UnspecifiedBookingTimesInput: {
+        storeId,
+        date,
       },
-    }
-  )
+    },
+  })
   return {
     fetchUnspecifiedBookingTimes,
     unspecifiedBookingTimesResponse,

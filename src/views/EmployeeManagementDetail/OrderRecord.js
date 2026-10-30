@@ -48,15 +48,12 @@ function OrderRecord({ results, page, onChangePage, onChangeRowsPerPage, members
   }
 
   useEffect(() => {
-    const data = results.slice(
-      page.limit * page.offset,
-      (page.limit * page.offset) + page.limit
-    )
+    const data = results.slice(page.limit * page.offset, page.limit * page.offset + page.limit)
     setOrders(data)
     if (pageRef.current) {
       paginationLabel(pageRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- pageRef.current 放進依賴，讓分頁元件掛上 DOM 後的下一次 render 補上中文分頁標籤
   }, [results, page.limit, page.offset, pageRef.current])
 
   useEffect(() => {
@@ -102,10 +99,7 @@ function OrderRecord({ results, page, onChangePage, onChangeRowsPerPage, members
                 <TableRow key={data.id} data-testid={`order-row`}>
                   <TableCell>
                     <Button asChild size="sm" variant="secondary">
-                      <RouterLink
-                        to={`/order/${data.id}`}
-                        data-testid={`order-${index}`}
-                      >
+                      <RouterLink to={`/order/${data.id}`} data-testid={`order-${index}`}>
                         詳情
                       </RouterLink>
                     </Button>
@@ -113,15 +107,12 @@ function OrderRecord({ results, page, onChangePage, onChangeRowsPerPage, members
                   <TableCell>
                     <div className="font-medium tabular-nums">#{data.orderNo}</div>
                     <div className="text-caption tabular-nums text-text-secondary">
-                      {format(new Date(data.date), 'yyyy/MM/dd')}/
-                      {weekDisplay(format(new Date(data.date), 'eeee'))}
+                      {format(new Date(data.date), 'yyyy/MM/dd')}/{weekDisplay(format(new Date(data.date), 'eeee'))}
                     </div>
                   </TableCell>
                   <TableCell>
                     {data.customerName}
-                    <div className="text-caption tabular-nums text-text-secondary">
-                      {data.customerCellphone}
-                    </div>
+                    <div className="text-caption tabular-nums text-text-secondary">{data.customerCellphone}</div>
                   </TableCell>
                   <TableCell>
                     {data.designerName}
@@ -131,15 +122,11 @@ function OrderRecord({ results, page, onChangePage, onChangeRowsPerPage, members
                   {raffleDisplay ? <TableCell numeric>{formatNumber(data.raffleCount)}</TableCell> : null}
                   <TableCell numeric>
                     {formatNumber(Math.round(data.service))}
-                    <div className="text-caption text-text-secondary">
-                      {data.TPTName.service.length > 0 && renderTpName(data.TPTName.service)}
-                    </div>
+                    <div className="text-caption text-text-secondary">{data.TPTName.service.length > 0 && renderTpName(data.TPTName.service)}</div>
                   </TableCell>
                   <TableCell numeric>
                     {formatNumber(Math.round(data.product))}
-                    <div className="text-caption text-text-secondary">
-                      {data.TPTName.product.length > 0 && renderTpName(data.TPTName.product)}
-                    </div>
+                    <div className="text-caption text-text-secondary">{data.TPTName.product.length > 0 && renderTpName(data.TPTName.product)}</div>
                   </TableCell>
                   {membershipDisplay && (
                     <TableCell numeric>
@@ -157,16 +144,11 @@ function OrderRecord({ results, page, onChangePage, onChangeRowsPerPage, members
                     {formatNumber(data.otherPayWayForDecount)}
                     <div className="text-caption text-text-secondary">{data.otherPayName}</div>
                   </TableCell>
-                  <TableCell numeric>
-                    {formatNumber(Math.round(
-                      data.service + data.product + data.usedTicket + data.membership
-                    ))}
-                  </TableCell>
+                  <TableCell numeric>{formatNumber(Math.round(data.service + data.product + data.usedTicket + data.membership))}</TableCell>
                   <TableCell numeric>{formatNumber(data.businessCash)}</TableCell>
                   <TableCell>{data.remark}</TableCell>
                 </TableRow>
-              )
-              )}
+              ))}
             </TableBody>
           </Table>
           {/* pageRef 保留：paginationLabel 只改寫 MUI 分頁文字，新分頁元件已是中文，查無元素時不動作 */}

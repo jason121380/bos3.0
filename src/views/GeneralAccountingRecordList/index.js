@@ -44,10 +44,7 @@ function AccountingRecordList() {
       <Toolbar>
         <DateSelector
           date={pageSetting}
-          attributes={[
-            'thismonth', 'lastmonth', 'dbyesterday',
-            'yesterday', 'today', 'startDate', 'endDate'
-          ]}
+          attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
           // 快速選擇日期只回傳起訖，合併進原條件：保留「現場現金」限制、篩選與筆數（Jason 2026/10/22）
           dateChange={value => setPageSetting(prev => ({ ...prev, ...value }))}
         />
@@ -89,15 +86,8 @@ function AccountingRecordList() {
       )}
       {getMoneyFlowsForAccounting.error ? (
         <QueryFailed onRetry={() => getMoneyFlowsForAccounting.refetch()} />
-      ) : idx(
-        getMoneyFlowsForAccounting,
-        _ =>
-          _.data.moneyFlows && (
-            <Results
-              moneyFlows={_.data.moneyFlows}
-              pageSetting={pageSetting}
-            />
-          )
+      ) : (
+        idx(getMoneyFlowsForAccounting, _ => _.data.moneyFlows && <Results moneyFlows={_.data.moneyFlows} pageSetting={pageSetting} />)
       )}
     </Page>
   )

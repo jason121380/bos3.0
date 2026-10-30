@@ -26,15 +26,13 @@ function ComodityCategories() {
       />
       {productCategories.error ? (
         <QueryFailed onRetry={() => productCategories.refetch()} />
-      ) : !productCategories.loading ?
-        <Results
-          refetchCategories={productCategories.refetch}
-          categories={categories}
-        /> : (
-          <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
-            <Skeleton className="h-[320px] w-full rounded-lg" />
-          </div>
-        )}
+      ) : !productCategories.loading ? (
+        <Results refetchCategories={productCategories.refetch} categories={categories} />
+      ) : (
+        <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
+          <Skeleton className="h-[320px] w-full rounded-lg" />
+        </div>
+      )}
     </Page>
   )
 }

@@ -13,7 +13,7 @@ const ProductSalesVolumeRanking = ({ data }) => {
             <CardTitle className="whitespace-nowrap">商品銷售數量排行</CardTitle>
             <CardDescription className="whitespace-nowrap text-caption">期間內商品銷售數量排行</CardDescription>
           </div>
-          {data.length > 0 ?
+          {data.length > 0 ? (
             <Table dense wrapperClassName="mt-0">
               <TableHeader>
                 <TableRow>
@@ -35,9 +35,10 @@ const ProductSalesVolumeRanking = ({ data }) => {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table> :
+            </Table>
+          ) : (
             <EmptyState title="無資料" className="h-[350px]" />
-          }
+          )}
         </CardContent>
       </Card>
     </div>

@@ -46,32 +46,27 @@ export default function AccountingSubject({ history, location }) {
     <Page title="收支科目明細" className="ui-root">
       <PageHeader title="收支科目明細" />
       <Toolbar>
-        <MerchantSearchBar
-          values={date}
-          onFilter={values => setDate(values)}
-          outside
-          visible={['datePicker', 'payment']}
-        />
+        <MerchantSearchBar values={date} onFilter={values => setDate(values)} outside visible={['datePicker', 'payment']} />
       </Toolbar>
       {moneyAccountDetail.error ? (
         <QueryFailed onRetry={() => moneyAccountDetail.refetch()} />
-      ) : idx(
-        moneyAccountDetail,
-        _ =>
-          _.data.moneyAccountDetail && (
-            <Results
-              results={_.data.moneyAccountDetail}
-              handleOnChangePage={(_event, page) =>
-                handleOnChangePage({ page, key: 'moneyAccountDetail' })
-              }
-              handleOnChangeRowsPerPage={event =>
-                handleOnChangeRowsPerPage({
-                  value: idx(event, _ => _.target.value),
-                  key: 'moneyAccountDetail',
-                })
-              }
-            />
-          )
+      ) : (
+        idx(
+          moneyAccountDetail,
+          _ =>
+            _.data.moneyAccountDetail && (
+              <Results
+                results={_.data.moneyAccountDetail}
+                handleOnChangePage={(_event, page) => handleOnChangePage({ page, key: 'moneyAccountDetail' })}
+                handleOnChangeRowsPerPage={event =>
+                  handleOnChangeRowsPerPage({
+                    value: idx(event, _ => _.target.value),
+                    key: 'moneyAccountDetail',
+                  })
+                }
+              />
+            )
+        )
       )}
     </Page>
   )

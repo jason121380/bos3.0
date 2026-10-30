@@ -16,7 +16,21 @@ const useStableId = () => {
 }
 
 const FormControl = React.forwardRef(function FormControl(
-  { fullWidth = false, error = false, required = false, disabled = false, size, className, style, children, variant, focused, margin, css: _css, ...rest },
+  {
+    fullWidth = false,
+    error = false,
+    required = false,
+    disabled = false,
+    size,
+    className,
+    style,
+    children,
+    variant,
+    focused,
+    margin,
+    css: _css,
+    ...rest
+  },
   ref
 ) {
   const id = useStableId()

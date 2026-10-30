@@ -49,32 +49,26 @@ function CheckoutDaily() {
       const data = idx(getisDailyCheckoutBlockedByDraftOrder, _ => _.data.getIsDailyCheckoutBlockedByDraftOrder)
       setDailyCheckoutBlockedByDraftOrder(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getisDailyCheckoutBlockedByDraftOrder.loading])
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading && !dailyMoneyFlowReport.loading) {
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       // 查詢失敗時不整頁錯誤（日結紀錄區塊本身不顯示），Jason 2026/10/22
       const membership = (idx(dailyMoneyFlowReport, _ => _.data.dailyMoneyFlowReport.summary.membership) || 0) !== 0
       setIsMemberShipCardActive(isMemberShipCardActive || membership)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isMemberShipCardActiveData.loading, dailyMoneyFlowReport.loading])
 
   useEffect(() => {
     if (!customerBonusActive.loading && !dailyMoneyFlowReport.loading) {
-      const bonusActive = idx(
-        customerBonusActive,
-        _ => _.data.getIsCustomerBonusActive
-      )
+      const bonusActive = idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive)
       const bonus = (idx(dailyMoneyFlowReport, _ => _.data.dailyMoneyFlowReport.summary.bonusDecountForReport) || 0) !== 0
       setBonusDisplay(bonusActive || bonus)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerBonusActive.loading, dailyMoneyFlowReport.loading])
 
   return (

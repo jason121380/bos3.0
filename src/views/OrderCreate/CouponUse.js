@@ -37,7 +37,7 @@ export default function CouponUse({
   isLast,
   focusRow,
   focus,
-  setFocus
+  setFocus,
 }) {
   const { bill } = useContext(billContext)
   const [price, setPrice] = useState(0)
@@ -46,7 +46,7 @@ export default function CouponUse({
   const couponRef = useRef()
 
   function handleCustomerTicketChange(value) {
-    if(value === null){
+    if (value === null) {
       handleClear()
     } else {
       setPrice(idx(value, _ => _.price))
@@ -95,19 +95,19 @@ export default function CouponUse({
       couponRef.current.focus()
     }
   }, [expanded, focusFirstField])
-  
+
   useEffect(() => {
     if (index === focusRow && focus === 'coupon') {
       couponRef.current.focus()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [focus, focusRow] 變動時執行；index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [focus, focusRow] 變動時執行；index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [focus, focusRow])
-  
+
   useEffect(() => {
     if (couponUsages[index].price) {
       setPrice(couponUsages[index].price)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [couponUsages] 變動時執行；index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [couponUsages] 變動時執行；index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [couponUsages])
 
   // render 時已讀 helper[index].map，能執行到這裡 helper[index] 一定存在
@@ -122,7 +122,7 @@ export default function CouponUse({
         .fill()
         .map((_, i) => elRefs[i] || createRef())
     )
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [helper] 變動時執行；index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [helper] 變動時執行；index 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [helper])
 
   const handleFocus = event => {
@@ -136,13 +136,13 @@ export default function CouponUse({
         {bill.customerId && (
           <Field label="預收卡">
             <CustomerTicketRecordAutoCompleteForOrderCreate
-              label=''
+              label=""
               className={styles.couponField}
               customerId={bill.customerId}
               value={couponUsage.customerTicketId}
               onChange={value => {
                 handleCustomerTicketChange(value)
-                if(!value && helper[index].length > 0) {
+                if (!value && helper[index].length > 0) {
                   helperRefs[0].current.focus()
                 }
               }}
@@ -169,10 +169,7 @@ export default function CouponUse({
         )}
         {couponUsage.customerTicketId ? (
           <Field label="金額" className={styles.priceField}>
-            <Input
-              disabled
-              value={Math.round(price)}
-            />
+            <Input disabled value={Math.round(price)} />
           </Field>
         ) : (
           ''
@@ -236,12 +233,13 @@ export default function CouponUse({
             />
           </Fragment>
         ))}
-        <RowIconButton label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`} onClick={handleClear} >
-<Eraser aria-hidden="true" strokeWidth={1.75} />
-</RowIconButton>
+        <RowIconButton label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`} onClick={handleClear}>
+          <Eraser aria-hidden="true" strokeWidth={1.75} />
+        </RowIconButton>
         {!first ? (
           <RowIconButton
-            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
+            label="刪除此列"
+            className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               removeCouponUse({ index })
             }}
@@ -252,11 +250,7 @@ export default function CouponUse({
           ''
         )}
       </div>
-      {last && couponUsage.customerTicketId ? (
-        <AddRowButton onClick={addCouponUse} />
-      ) : (
-        ''
-      )}
+      {last && couponUsage.customerTicketId ? <AddRowButton onClick={addCouponUse} /> : ''}
     </Fragment>
   )
 }

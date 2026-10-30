@@ -6,8 +6,19 @@ import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react
 import { loginAs, callsOf, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import { openSnackbar } from 'elements/snackbars'
 import {
-  setupQueue, loaded, baseQueue, retry, summaryValue, pickOption, servicesPage, inputOf, chooseNative,
-  DESIGNER, ASSISTANT, SERVICE, SERVICE_DYE,
+  setupQueue,
+  loaded,
+  baseQueue,
+  retry,
+  summaryValue,
+  pickOption,
+  servicesPage,
+  inputOf,
+  chooseNative,
+  DESIGNER,
+  ASSISTANT,
+  SERVICE,
+  SERVICE_DYE,
 } from './queueKit.test'
 
 jest.setTimeout(20000)
@@ -113,7 +124,15 @@ describe('重新開單：從清單選擇服務', () => {
 
   it('換頁與每頁筆數改變時以新的分頁條件查詢', async () => {
     const page = setupQueue({
-      FETCH_SERVICES: v => ({ ...servicesPage([{ ...SERVICE, serviceCategory: { id: 'cat-1', name: '剪髮' } }]), services: { totalCount: 120, pageOffset: v.input.pageOffset || 0, pageLimit: v.input.pageLimit || 50, data: [{ ...SERVICE, serviceCategory: { id: 'cat-1', name: '剪髮' } }] } }),
+      FETCH_SERVICES: v => ({
+        ...servicesPage([{ ...SERVICE, serviceCategory: { id: 'cat-1', name: '剪髮' } }]),
+        services: {
+          totalCount: 120,
+          pageOffset: v.input.pageOffset || 0,
+          pageLimit: v.input.pageLimit || 50,
+          data: [{ ...SERVICE, serviceCategory: { id: 'cat-1', name: '剪髮' } }],
+        },
+      }),
     })
     await loaded(page)
     fireEvent.click(screen.getByLabelText('從清單選擇服務'))
@@ -237,7 +256,12 @@ describe('重新開單：服務的助理', () => {
 
 describe('重新開單：項目消費區塊', () => {
   it('佇列帳單沒有服務：區塊收合、只有一列空白服務；收合時標題顯示已填筆數與小計', async () => {
-    const page = setupQueue({ queue: baseQueue({ serviceOrders: [], productOrders: [{ sellerId: 'designer-1', productId: 'product-1', price: 300, count: 1, thirdPartyCouponMerchantId: null }] }) })
+    const page = setupQueue({
+      queue: baseQueue({
+        serviceOrders: [],
+        productOrders: [{ sellerId: 'designer-1', productId: 'product-1', price: 300, count: 1, thirdPartyCouponMerchantId: null }],
+      }),
+    })
     await loaded(page)
     const header = screen.getByTestId('panelService')
     expect(header).toHaveAttribute('aria-expanded', 'false')
@@ -258,10 +282,13 @@ describe('重新開單：項目消費區塊', () => {
     fireEvent.click(await screen.findByLabelText('從清單選擇服務'))
     expect(screen.queryByRole('dialog')).toBeNull()
     // 服務清單回來後再按就會開啟（輪詢到開啟為止）
-    await wait(() => {
-      fireEvent.click(screen.getByLabelText('從清單選擇服務'))
-      expect(screen.getByRole('dialog')).toBeInTheDocument()
-    }, { timeout: 15000 })
+    await wait(
+      () => {
+        fireEvent.click(screen.getByLabelText('從清單選擇服務'))
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      },
+      { timeout: 15000 }
+    )
   }, 30000)
 })
 
@@ -294,13 +321,16 @@ describe('重新開單：服務的第三方卡券', () => {
   })
 
   it('服務綁定的卡券鎖定方式為「依店家設定」：店家設定鎖定時不能改；未開第三方卡券也照樣顯示這張卡券', async () => {
-    const page = setupQueue({
-      queue: baseQueue({ serviceOrders: [{ serviceId: SERVICE.id, price: 800, serviceOrderHelpers: [], thirdPartyCouponMerchantId: 'tp-1' }] }),
-      FETCH_SERVICES: servicesPage([{ ...SERVICE, isBindedThirdPartTicketLocked: 'UNSET' }]),
-      GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: {
-        getBindedThirdPartTicketLockedSetting: { service: true, product: false, membership: false },
+    const page = setupQueue(
+      {
+        queue: baseQueue({ serviceOrders: [{ serviceId: SERVICE.id, price: 800, serviceOrderHelpers: [], thirdPartyCouponMerchantId: 'tp-1' }] }),
+        FETCH_SERVICES: servicesPage([{ ...SERVICE, isBindedThirdPartTicketLocked: 'UNSET' }]),
+        GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: {
+          getBindedThirdPartTicketLockedSetting: { service: true, product: false, membership: false },
+        },
       },
-    }, { delays: { FETCH_SERVICES: 30 } })
+      { delays: { FETCH_SERVICES: 30 } }
+    )
     await loaded(page)
     expect(inputOf(screen.getByTestId('service-0-thirdParty'))).toBeDisabled()
     expect(screen.getByText('扣完後業績:720')).toBeInTheDocument()
@@ -308,14 +338,17 @@ describe('重新開單：服務的第三方卡券', () => {
 
   // 店家設定比服務清單晚到：原本只在服務列變動時套用設定，設定晚到就一直不鎖（coverage wave 1，2026/10/22）
   it('「依店家設定」且店家設定比服務資料晚到：設定回來後照樣鎖定', async () => {
-    const page = setupQueue({
-      queue: baseQueue({ serviceOrders: [{ serviceId: SERVICE.id, price: 800, serviceOrderHelpers: [], thirdPartyCouponMerchantId: 'tp-1' }] }),
-      GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true },
-      FETCH_SERVICES: servicesPage([{ ...SERVICE, isBindedThirdPartTicketLocked: 'UNSET' }]),
-      GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: {
-        getBindedThirdPartTicketLockedSetting: { service: true, product: false, membership: false },
+    const page = setupQueue(
+      {
+        queue: baseQueue({ serviceOrders: [{ serviceId: SERVICE.id, price: 800, serviceOrderHelpers: [], thirdPartyCouponMerchantId: 'tp-1' }] }),
+        GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true },
+        FETCH_SERVICES: servicesPage([{ ...SERVICE, isBindedThirdPartTicketLocked: 'UNSET' }]),
+        GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: {
+          getBindedThirdPartTicketLockedSetting: { service: true, product: false, membership: false },
+        },
       },
-    }, { delays: { GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: 300 } })
+      { delays: { GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: 300 } }
+    )
     await screen.findByText(/重新開單 \(A777\)/)
     await page.settle()
     expect(inputOf(screen.getByTestId('service-0-thirdParty'))).toHaveValue('團購券')

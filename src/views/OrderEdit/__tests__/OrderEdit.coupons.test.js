@@ -8,9 +8,20 @@
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { callsOf } from '../../../__tests__/testkit.test'
 import {
-  setup, pageReady, makeOrder, withCustomer, checkoutAndGetInput, summaryValue, loginForTest, pickEmployee,
-  TICKET, TICKET_RECORD, ASSISTANT, DESIGNER,
-  findDialog, queryDialog,
+  setup,
+  pageReady,
+  makeOrder,
+  withCustomer,
+  checkoutAndGetInput,
+  summaryValue,
+  loginForTest,
+  pickEmployee,
+  TICKET,
+  TICKET_RECORD,
+  ASSISTANT,
+  DESIGNER,
+  findDialog,
+  queryDialog,
 } from './orderEditKit.test'
 
 jest.setTimeout(20000)
@@ -260,9 +271,7 @@ describe('帳單詳細：使用預收卡', () => {
     price: 600,
     pricePerCount: 600,
     service: { id: TICKET.id, no: TICKET.no, name: TICKET.name, price: 6000 },
-    helperList: [
-      { id: 'uh-1', type: '助理-洗髮', isDesignate: false, helperDeductiontype: 'CASH', helper: { id: ASSISTANT.userId } },
-    ],
+    helperList: [{ id: 'uh-1', type: '助理-洗髮', isDesignate: false, helperDeductiontype: 'CASH', helper: { id: ASSISTANT.userId } }],
     ...extra,
   })
   const ticketRecords = { GetTicket: { ticketRecords: { data: [TICKET_RECORD] } } }

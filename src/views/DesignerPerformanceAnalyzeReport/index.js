@@ -7,7 +7,9 @@ import compareNo from 'utils/compareNo'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import ReferToggleButton from 'components/ReferToggleButton'
 import { startOfMonth, format } from 'date-fns'
-import useFetchDesignerPerformanceAnalyzeReport, { useFetchDesignerPerformanceAnalyzeCompareReport } from 'hooks/useFetchDesignerPerformanceAnalyzeReport'
+import useFetchDesignerPerformanceAnalyzeReport, {
+  useFetchDesignerPerformanceAnalyzeCompareReport,
+} from 'hooks/useFetchDesignerPerformanceAnalyzeReport'
 import { useFetchDesignerPerformanceAnalyzeExcelLazy } from 'hooks/useFetchDesignerPerformanceAnalyzeExcel'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
@@ -29,9 +31,16 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
 
 const checkArray = [
-  'totalPerformance', 'totalOrderCount', 'orderAveragePrice', 'orderDesignateCount',
-  'orderDesignatePercentage', 'orderNonDesignateCount', 'orderNonDesignatePercentage',
-  'productPerformance', 'productPerformancePercentage', 'serviceTypeAnalyze',
+  'totalPerformance',
+  'totalOrderCount',
+  'orderAveragePrice',
+  'orderDesignateCount',
+  'orderDesignatePercentage',
+  'orderNonDesignateCount',
+  'orderNonDesignatePercentage',
+  'productPerformance',
+  'productPerformancePercentage',
+  'serviceTypeAnalyze',
 ]
 
 const DesignerPerformanceAnalyzeReport = () => {
@@ -64,7 +73,7 @@ const DesignerPerformanceAnalyzeReport = () => {
         input: inputData.dateRange,
         designerIds: inputData.designerIds,
         displayReference: inputData.displayReference,
-      }
+      },
     })
   }
 
@@ -73,10 +82,11 @@ const DesignerPerformanceAnalyzeReport = () => {
     // 編號自然排序（英數編號也有效）、空編號排最後（原本 a.userNo - b.userNo 對英數編號得 NaN、空編號當 0 排最前；Jason 2026/10/22 fix all）
     const newOptions = [...options].sort((a, b) => compareNo(a.userNo, b.userNo))
     if (keyWord !== '' && keyWord.trim() !== '') {
-      const filterData = newOptions.filter(data =>
-        (data.userNo !== null && data.userNo !== '' && data.userNo.toLowerCase() === keyWord.toLowerCase()) ||
-        (data.userNickName !== null && data.userNickName !== '' && data.userNickName.toLowerCase().includes(keyWord.toLowerCase())) ||
-        (data.userName !== null && data.userName !== '' && data.userName.toLowerCase().includes(keyWord.toLowerCase()))
+      const filterData = newOptions.filter(
+        data =>
+          (data.userNo !== null && data.userNo !== '' && data.userNo.toLowerCase() === keyWord.toLowerCase()) ||
+          (data.userNickName !== null && data.userNickName !== '' && data.userNickName.toLowerCase().includes(keyWord.toLowerCase())) ||
+          (data.userName !== null && data.userName !== '' && data.userName.toLowerCase().includes(keyWord.toLowerCase()))
       )
       return filterData
     } else {
@@ -90,7 +100,7 @@ const DesignerPerformanceAnalyzeReport = () => {
         input: inputData.dateRange,
         designerIds: inputData.designerIds,
         displayReference: inputData.displayReference,
-      }
+      },
     })
   }
 
@@ -129,8 +139,8 @@ const DesignerPerformanceAnalyzeReport = () => {
     if (!compareInputData.length) return
     getAnalyzeCompareReport({
       variables: {
-        input: compareInputData
-      }
+        input: compareInputData,
+      },
     })
   }
 
@@ -139,82 +149,52 @@ const DesignerPerformanceAnalyzeReport = () => {
       const data = idx(getUserList, _ => _.data.getUserOrderableList)
       setUserList(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getUserList.loading])
 
   useEffect(() => {
     if (!isDisplayTogglePerformanceButtonData.loading) {
-      const isDisplayTogglePerformanceButton = idx(
-        isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
+      const isDisplayTogglePerformanceButton = idx(isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
       setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [isDisplayTogglePerformanceButtonData.loading])
 
   useEffect(() => {
     if (!compareDisplay) return
-    if (
-      !analyzeCompareReport.loading && analyzeCompareReport.data &&
-      !isMemberShipCardActiveData.loading
-    ) {
+    if (!analyzeCompareReport.loading && analyzeCompareReport.data && !isMemberShipCardActiveData.loading) {
       const reportData = []
-      const report = idx(
-        analyzeCompareReport, _ => _.data.designerPerforamnceAnalyzeCompareReport
-      )
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+      const report = idx(analyzeCompareReport, _ => _.data.designerPerforamnceAnalyzeCompareReport)
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       report.forEach(data => {
         const filterData = data.filter(d => {
-          return checkArray.some(key => (
-            key === 'serviceTypeAnalyze' ? d[key].length !== 0 : d[key] !== 0
-          ))
+          return checkArray.some(key => (key === 'serviceTypeAnalyze' ? d[key].length !== 0 : d[key] !== 0))
         })
         reportData.push(filterData)
-      });
+      })
       const isMembershipIsZero = reportData.some(reports => {
         return reports.some(d => d.membershipPerformance !== 0)
       })
       setIsMemberShipCardActive(isMemberShipCardActive || isMembershipIsZero)
       setCompareData(reportData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-  }, [
-    analyzeCompareReport.loading,
-    isMemberShipCardActiveData.loading,
-    compareDisplay
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+  }, [analyzeCompareReport.loading, isMemberShipCardActiveData.loading, compareDisplay])
 
   useEffect(() => {
     if (compareDisplay) return
-    if (
-      !analyzeReport.loading && analyzeReport.data &&
-      !isMemberShipCardActiveData.loading
-    ) {
-      const report = idx(
-        analyzeReport,
-        _ => _.data.designerPerforamnceAnalyzeReport
-      )
-      const isMemberShipCardActive = idx(
-        isMemberShipCardActiveData,
-        _ => _.data.getIsMemberShipCardActive
-      )
+    if (!analyzeReport.loading && analyzeReport.data && !isMemberShipCardActiveData.loading) {
+      const report = idx(analyzeReport, _ => _.data.designerPerforamnceAnalyzeReport)
+      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const isMembershipIsZero = report.some(result => result.membershipPerformance !== 0)
       const filrterData = report.filter(data => {
-        return checkArray.some(key => (
-          key === 'serviceTypeAnalyze' ? data[key].length !== 0 : data[key] !== 0
-        ))
+        return checkArray.some(key => (key === 'serviceTypeAnalyze' ? data[key].length !== 0 : data[key] !== 0))
       })
       setIsMemberShipCardActive(isMemberShipCardActive || isMembershipIsZero)
       setReportForDisplay(filrterData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-  }, [
-    analyzeReport.loading,
-    isMemberShipCardActiveData.loading,
-    compareDisplay
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+  }, [analyzeReport.loading, isMemberShipCardActiveData.loading, compareDisplay])
 
   useEffect(() => {
     if (!designerPerforamnceAnalyzeExcelLazyData.loading && designerPerforamnceAnalyzeExcelLazyData.data !== undefined) {
@@ -223,17 +203,17 @@ const DesignerPerformanceAnalyzeReport = () => {
       link.href = url
       link.click()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designerPerforamnceAnalyzeExcelLazyData.loading])
 
   useEffect(() => {
     handleSearch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [inputData.dateRange, inputData.displayReference] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（handleSearch）；只在 [inputData.dateRange, inputData.displayReference] 變動時呼叫，補上會每次 render 重跑
   }, [inputData.dateRange, inputData.displayReference])
 
   return (
     <Page className="ui-root" title="設計師業績分析表">
-      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: 'none', justifyContent: 'space-between' }}>
         <div className="merchantNamePrint">
           {JSON.parse(localStorage.getItem('userMerchant')).name +
             '   ' +
@@ -243,21 +223,14 @@ const DesignerPerformanceAnalyzeReport = () => {
             '   ' +
             '設計師業績分析表'}
         </div>
-        <div className="merchantNamePrint">
-          {'列印時間： ' +
-            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-        </div>
+        <div className="merchantNamePrint">{'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}</div>
       </div>
       <PageHeader
         title="設計師業績分析表"
         actions={
           <>
             {compareDisplay && (
-              <Button
-                variant="secondary"
-                disabled={getUserList.loading}
-                onClick={() => setOpenModal(true)}
-              >
+              <Button variant="secondary" disabled={getUserList.loading} onClick={() => setOpenModal(true)}>
                 設定條件
               </Button>
             )}
@@ -265,18 +238,11 @@ const DesignerPerformanceAnalyzeReport = () => {
             {/* 報表版型（STYLE §14）：匯出／列印固定在頁首右側；比較模式下原本整區隱藏，維持不顯示 */}
             {!compareDisplay && (
               <>
-                <Button
-                  variant="secondary"
-                  onClick={handleExcel}
-                  disabled={designerPerforamnceAnalyzeExcelLazyData.loading}
-                >
+                <Button variant="secondary" onClick={handleExcel} disabled={designerPerforamnceAnalyzeExcelLazyData.loading}>
                   <Download strokeWidth={1.75} />
                   報表匯出
                 </Button>
-                <Button
-                  variant="secondary"
-                  onClick={() => window.print()}
-                >
+                <Button variant="secondary" onClick={() => window.print()}>
                   <Printer strokeWidth={1.75} />
                   列印
                 </Button>
@@ -331,40 +297,22 @@ const DesignerPerformanceAnalyzeReport = () => {
                       })
                     )
                   }}
-                  getOptionLabel={option =>
-                    option.userNickName !== null && option.userNickName.trim() ? option.userNickName : option.userName
-                  }
+                  getOptionLabel={option => (option.userNickName !== null && option.userNickName.trim() ? option.userNickName : option.userName)}
                   filterOptions={filterOptions}
                   renderOption={({ key, ...props }, option, { selected }) => (
                     <li key={option.userId} {...props}>
-                      <Checkbox
-                        style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                        icon={icon}
-                        checkedIcon={checkedIcon}
-                        checked={selected}
-                      />
+                      <Checkbox style={{ color: 'rgb(var(--text))', marginRight: 8 }} icon={icon} checkedIcon={checkedIcon} checked={selected} />
                       {option.userNickName !== null && option.userNickName.trim() ? option.userNickName : option.userName}
                       {option.userNo !== null && option.userNo.trim() ? ` - ${option.userNo}` : ''}
                     </li>
                   )}
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      label="設計師篩選"
-                      placeholder="選擇設計師"
-                    />
-                  )}
+                  renderInput={params => <TextField {...params} variant="outlined" label="設計師篩選" placeholder="選擇設計師" />}
                 />
               </div>
             </>
           }
           actions={
-            <Button
-              variant="primary"
-              disabled={analyzeReport.loading || !analyzeReport.data}
-              onClick={handleSearch}
-            >
+            <Button variant="primary" disabled={analyzeReport.loading || !analyzeReport.data} onClick={handleSearch}>
               搜尋
             </Button>
           }
@@ -380,19 +328,14 @@ const DesignerPerformanceAnalyzeReport = () => {
         />
       ) : analyzeReport.error ? (
         <QueryFailed onRetry={handleSearch} />
-      ) : (!analyzeReport.loading && analyzeReport.data && !isMemberShipCardActiveData.loading && reportForDisplay !== null ? (
-        <Results
-          report={reportForDisplay}
-          date={inputData.dateRange}
-          isMemberShipCardActive={isMemberShipCardActive}
-        />
+      ) : !analyzeReport.loading && analyzeReport.data && !isMemberShipCardActiveData.loading && reportForDisplay !== null ? (
+        <Results report={reportForDisplay} date={inputData.dateRange} isMemberShipCardActive={isMemberShipCardActive} />
       ) : (
         // 載入中：與舊版 CircularProgress 相同時機顯示
         <div className="mt-6 flex flex-col gap-6" aria-busy="true" aria-label="載入中">
           <Skeleton className="h-[280px] w-full rounded-lg" />
         </div>
-      ))
-      }
+      )}
       <CompareFilter
         open={openModal}
         setOpenModal={setOpenModal}

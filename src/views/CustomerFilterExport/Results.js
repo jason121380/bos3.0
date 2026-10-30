@@ -24,16 +24,7 @@ const styles = {
   unWelcome: '[&_td]:!text-[red]',
 }
 
-function Results({
-  className,
-  customers,
-  pageLimit,
-  pageOffset,
-  refetch,
-  totalCount,
-  onPageChange,
-  ...rest
-}) {
+function Results({ className, customers, pageLimit, pageOffset, refetch, totalCount, onPageChange, ...rest }) {
   const [selectedCustomers, setSelectedCustomers] = useState([])
   const [openDialog, setOpenDialog] = useState(false)
   const [deletePwd, setDeletePwd] = useState('')
@@ -47,20 +38,17 @@ function Results({
     setSelectedCustomers(newSelectedPayment)
   }
 
-
   useEffect(() => {
     if (!merchantPassword.loading) {
-      const deleteCustomerIsUsing = idx(
-        merchantPassword,
-        _ => _.data.merchantPassword.deleteCustomer.isUsing
-      )
+      const deleteCustomerIsUsing = idx(merchantPassword, _ => _.data.merchantPassword.deleteCustomer.isUsing)
       setDeleteCustomerIsUsing(deleteCustomerIsUsing)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantPassword.loading])
 
   const handleSelectOne = id => {
-    const newSelect = [...selectedCustomers], index = newSelect.indexOf(id)
+    const newSelect = [...selectedCustomers],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -123,13 +111,8 @@ function Results({
             <TableHead className={`w-12 ${styles.compactCell}`}>
               <Checkbox
                 aria-label="全選"
-                checked={
-                  selectedCustomers.length === customers.length && customers.length > 0
-                }
-                indeterminate={
-                  selectedCustomers.length > 0 &&
-                  selectedCustomers.length < customers.length
-                }
+                checked={selectedCustomers.length === customers.length && customers.length > 0}
+                indeterminate={selectedCustomers.length > 0 && selectedCustomers.length < customers.length}
                 onChange={handleSelectAll}
                 disabled={customers.length === 0}
               />
@@ -152,7 +135,7 @@ function Results({
               className={data.isUnwelcome ? styles.unWelcome : undefined}
               hover
               key={`customer-${data.id}`}
-              data-state={(selectedCustomers.indexOf(data.id) > -1) ? 'selected' : undefined}
+              data-state={selectedCustomers.indexOf(data.id) > -1 ? 'selected' : undefined}
             >
               <TableCell className={`w-12 ${styles.compactCell}`}>
                 <Checkbox
@@ -163,37 +146,30 @@ function Results({
               </TableCell>
               <TableCell className={styles.compactCell}>
                 <Button asChild variant="ghost" size="icon" className="text-text-secondary">
-                  <RouterLink
-                    aria-label="編輯客戶"
-                    to={`/management/customers/${data.id}/general?backto=customer-filter`}
-                  >
+                  <RouterLink aria-label="編輯客戶" to={`/management/customers/${data.id}/general?backto=customer-filter`}>
                     <Pencil strokeWidth={1.75} />
                   </RouterLink>
                 </Button>
               </TableCell>
               <TableCell className={styles.compactCell}>
                 <div className={styles.nameCell}>
-                  <span aria-hidden="true" className="mr-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-hover text-label text-text-secondary">
+                  <span
+                    aria-hidden="true"
+                    className="mr-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-hover text-label text-text-secondary"
+                  >
                     {data.name.charAt(0).toUpperCase()}
                   </span>
                   <div>
-                    <RouterLink
-                      className="font-medium text-text no-underline"
-                      to={`/management/customers/${data.id}/general?backto=customer-filter`}
-                    >
+                    <RouterLink className="font-medium text-text no-underline" to={`/management/customers/${data.id}/general?backto=customer-filter`}>
                       {data.name}
                     </RouterLink>
-                    <div className="text-caption tabular-nums text-text-secondary">
-                      {data.no ? data.no : ''}
-                    </div>
+                    <div className="text-caption tabular-nums text-text-secondary">{data.no ? data.no : ''}</div>
                   </div>
                 </div>
               </TableCell>
               <TableCell className={styles.compactCell}>{idx(data, _ => _.latestDesigner.name)}</TableCell>
               <TableCell className={styles.compactCell}>{idx(data, _ => _.preferDesigner.name)}</TableCell>
-              <TableCell className={styles.compactCell}>
-                {data.lastTime ? format(data.lastTime, 'yyyy/MM/dd') : ''}
-              </TableCell>
+              <TableCell className={styles.compactCell}>{data.lastTime ? format(data.lastTime, 'yyyy/MM/dd') : ''}</TableCell>
               <TableCell className={styles.compactCell}>{gender[data.gender]}</TableCell>
               <TableCell className={styles.compactCell}>
                 {data.birthday ? `${data.birthday.year}/${data.birthday.month}/${data.birthday.day}` : ''}
@@ -204,10 +180,7 @@ function Results({
           ))}
         </TableBody>
       </ManagementTable>
-      <TableEditBar
-        selected={selectedCustomers}
-        onDeleteCustomer={deleteCustomerIsUsing ? handleOpenDialog : handeleteCustomer}
-      />
+      <TableEditBar selected={selectedCustomers} onDeleteCustomer={deleteCustomerIsUsing ? handleOpenDialog : handeleteCustomer} />
       <Dialog open={openDialog}>
         <DialogContent size="sm" hideClose aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
           <DialogHeader>

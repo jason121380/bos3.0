@@ -4,4 +4,4 @@ const store = createContext()
 
 export const { Provider, Consumer } = store
 
- export default () => useContext(store)
+export default () => useContext(store)

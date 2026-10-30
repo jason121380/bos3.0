@@ -15,7 +15,6 @@ import { useProductPicker } from 'views/OrderShared/useItemPicker'
 import { formatNumber } from 'ui/format'
 import { ROW_ICON_ALIGN } from 'views/OrderShared/rowAlign'
 
-
 export default function MerchantSells({
   sells,
   expanded,
@@ -33,7 +32,7 @@ export default function MerchantSells({
   changeRowFocus,
   focusRow,
   thirdPartTicket,
-  getData
+  getData,
 }) {
   const techingModeContext = useContext(TeachingModeContext)
   const { teachingMode } = techingModeContext
@@ -72,8 +71,9 @@ export default function MerchantSells({
 
   useEffect(() => {
     // 新增列、展開區塊、從上一列按 Enter 移過來時游標跳到服務人員；使用者自己點了這一列的欄位（焦點已在本列欄位上）時不搶焦點
-    const fieldFocused = [employeeRef, productRef, priceRef, countRef, thirdPartyRef]
-      .some(ref => ref.current && ref.current === document.activeElement)
+    const fieldFocused = [employeeRef, productRef, priceRef, countRef, thirdPartyRef].some(
+      ref => ref.current && ref.current === document.activeElement
+    )
     if (expanded && focusFirstField && !fieldFocused) {
       idx(employeeRef, _ => _.current.focus())
       setFocus('employee')
@@ -118,124 +118,124 @@ export default function MerchantSells({
       <div className="mb-6 flex flex-wrap items-start justify-start gap-y-[12px]">
         {/* 必填 *：Footer 送出前 helper/billVerify.js checkProductOrders 要求 sellerId 與 productId；兩者都空的列會被 handleTidyBill 丟掉，所以該列有填任一欄才標必填 */}
         <Field label="服務人員" required={!!sells.sellerId || !!sells.productId}>
-        <EmployeeAutoComplete
-          // 與同列輸入框同高（36px、手機 40px）
-          size="medium"
-          className="!mr-[12px] flex !w-[150px] !min-w-[150px]"
-          placeholder="服務人員姓名/編號"
-          value={sells.sellerId}
-          ref={employeeRef}
-          autoFocus={focus === 'employee'}
-          onFocus={event => handleFocus({ event, field: 'employee' })}
-          onKeyDown={event => handleKeyDown({ event, nextField: 'product' })}
-          onChange={function (value) {
-            onChange({
-              index,
-              key: 'sellerId',
-              value: idx(value, _ => _.userId),
-            })
-          }}
-        />
+          <EmployeeAutoComplete
+            // 與同列輸入框同高（36px、手機 40px）
+            size="medium"
+            className="!mr-[12px] flex !w-[150px] !min-w-[150px]"
+            placeholder="服務人員姓名/編號"
+            value={sells.sellerId}
+            ref={employeeRef}
+            autoFocus={focus === 'employee'}
+            onFocus={event => handleFocus({ event, field: 'employee' })}
+            onKeyDown={event => handleKeyDown({ event, nextField: 'product' })}
+            onChange={function (value) {
+              onChange({
+                index,
+                key: 'sellerId',
+                value: idx(value, _ => _.userId),
+              })
+            }}
+          />
         </Field>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇商品" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇商品" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenProductsModal}>
+            <Copy aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
         <Field label="商品" required={!!sells.sellerId || !!sells.productId}>
-        <ProductAutoComplete
-          setProductAlready={setProductAlready}
-          className="mr-[12px] flex w-[250px] max-w-full"
-          inputProps={{ placeholder: '商品代號/名稱' }}
-          value={sells.productId}
-          ref={productRef}
-          autoFocus={focus === 'product'}
-          onFocus={event => handleFocus({ event, field: 'product' })}
-          onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
-          getData={getData}
-          onChange={function (value) {
-            idx(value, _ => {
-              onProductChange({
-                index,
-                value: {
-                  ...sells,
-                  productId: _.id,
-                  price: _.sellPrice,
-                  count: 1,
-                  isLocked: _.isLocked,
-                },
+          <ProductAutoComplete
+            setProductAlready={setProductAlready}
+            className="mr-[12px] flex w-[250px] max-w-full"
+            inputProps={{ placeholder: '商品代號/名稱' }}
+            value={sells.productId}
+            ref={productRef}
+            autoFocus={focus === 'product'}
+            onFocus={event => handleFocus({ event, field: 'product' })}
+            onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
+            getData={getData}
+            onChange={function (value) {
+              idx(value, _ => {
+                onProductChange({
+                  index,
+                  value: {
+                    ...sells,
+                    productId: _.id,
+                    price: _.sellPrice,
+                    count: 1,
+                    isLocked: _.isLocked,
+                  },
+                })
               })
-            })
-          }}
-        />
+            }}
+          />
         </Field>
         {sells.productId ? (
           <React.Fragment>
             <Field label="價格" className="!mr-[12px] flex w-[65px]">
-            <TextField
-              fullWidth
-              variant="outlined"
-              value={sells.price}
-              inputRef={priceRef}
-              autoFocus={focus === 'price'}
-              onFocus={event => handleFocus({ event, field: 'price' })}
-              onKeyDown={event => handleKeyDown({ event, nextField: 'count' })}
-              onChange={function (value) {
-                onChange({
-                  index,
-                  key: 'price',
-                  value: idx(value, _ => +_.target.value || 0),
-                })
-              }}
-              inputProps={{
-                'data-testid': `merchantSsell-${index}-price`,
-              }}
-              disabled={!!(sells.isLocked === 'TRUE' || sells.isLocked === 'UNSET')}
-            />
+              <TextField
+                fullWidth
+                variant="outlined"
+                value={sells.price}
+                inputRef={priceRef}
+                autoFocus={focus === 'price'}
+                onFocus={event => handleFocus({ event, field: 'price' })}
+                onKeyDown={event => handleKeyDown({ event, nextField: 'count' })}
+                onChange={function (value) {
+                  onChange({
+                    index,
+                    key: 'price',
+                    value: idx(value, _ => +_.target.value || 0),
+                  })
+                }}
+                inputProps={{
+                  'data-testid': `merchantSsell-${index}-price`,
+                }}
+                disabled={!!(sells.isLocked === 'TRUE' || sells.isLocked === 'UNSET')}
+              />
             </Field>
             <Field label="數量" className="!mr-[12px] flex w-[65px]">
-            <TextField
-              fullWidth
-              variant="outlined"
-              value={sells.count}
-              inputRef={countRef}
-              autoFocus={focus === 'count'}
-              onFocus={event => handleFocus({ event, field: 'count' })}
-              onKeyDown={event => handleKeyDown({ event, nextField: 'thirdParty' })}
-              onChange={function (value) {
-                onChange({
-                  index,
-                  key: 'count',
-                  value: idx(value, _ => +_.target.value || 0),
-                })
-              }}
-              inputProps={{
-                'data-testid': `merchantSsell-${index}-count`,
-              }}
-            />
+              <TextField
+                fullWidth
+                variant="outlined"
+                value={sells.count}
+                inputRef={countRef}
+                autoFocus={focus === 'count'}
+                onFocus={event => handleFocus({ event, field: 'count' })}
+                onKeyDown={event => handleKeyDown({ event, nextField: 'thirdParty' })}
+                onChange={function (value) {
+                  onChange({
+                    index,
+                    key: 'count',
+                    value: idx(value, _ => +_.target.value || 0),
+                  })
+                }}
+                inputProps={{
+                  'data-testid': `merchantSsell-${index}-count`,
+                }}
+              />
             </Field>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               {thirdPartTicket && (
                 <Field label="第三方卡券">
-                <ThirdPartyAutoComplete
-                  className="!mr-[12px] flex !w-[150px] !min-w-[150px]"
-                  fieldProps={{ placeholder: '第三方卡券' }}
-                  value={sells.thirdPartyCouponMerchantId}
-                  ref={thirdPartyRef}
-                  autoFocus={focus === 'thirdParty'}
-                  onKeyDown={event => {
-                    if (event.key === 'Enter') {
-                      changeRowFocus(index + 1)
-                    }
-                  }}
-                  name="thirdParty"
-                  onChange={e => selectThirdParty(e)}
-                />
+                  <ThirdPartyAutoComplete
+                    className="!mr-[12px] flex !w-[150px] !min-w-[150px]"
+                    fieldProps={{ placeholder: '第三方卡券' }}
+                    value={sells.thirdPartyCouponMerchantId}
+                    ref={thirdPartyRef}
+                    autoFocus={focus === 'thirdParty'}
+                    onKeyDown={event => {
+                      if (event.key === 'Enter') {
+                        changeRowFocus(index + 1)
+                      }
+                    }}
+                    name="thirdParty"
+                    onChange={e => selectThirdParty(e)}
+                  />
                 </Field>
               )}
-              {teachingMode && (
-                <p className="m-0 text-[0.8125rem] font-bold">勾選將入業績但不收費用**</p>
-              )}
+              {teachingMode && <p className="m-0 text-[0.8125rem] font-bold">勾選將入業績但不收費用**</p>}
               {sells.thirdPartyCouponMerchantId &&
                 thirdPartyCoupons.map(data => {
                   if (data.id === sells.thirdPartyCouponMerchantId) {
@@ -258,7 +258,8 @@ export default function MerchantSells({
         )}
 
         <RowIconButton
-          label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
+          label="清除此列"
+          className={`mr-1.5 ${ROW_ICON_ALIGN}`}
           onClick={function () {
             onClear({ index })
           }}
@@ -268,7 +269,8 @@ export default function MerchantSells({
         </RowIconButton>
         {!first ? (
           <RowIconButton
-            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
+            label="刪除此列"
+            className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               removeSells({ index })
             }}
@@ -291,13 +293,7 @@ export default function MerchantSells({
         ''
       )}
       {productsModalOpen && (
-        <ProductsModal
-          {...pickerModalProps}
-          onProductChange={onProductChange}
-          sells={sellsItem}
-          productLength={productLength}
-          sellsItem={sells}
-        />
+        <ProductsModal {...pickerModalProps} onProductChange={onProductChange} sells={sellsItem} productLength={productLength} sellsItem={sells} />
       )}
     </Fragment>
   )

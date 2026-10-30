@@ -13,12 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 const sticky1 = 'sticky left-0 z-[1] w-[54px] bg-background'
 const sticky2 = 'sticky left-[54px] z-[1] w-[120px] bg-background'
 
-function Results({
-  className,
-  moneyFlows,
-  pageSetting,
-  ...rest
-}) {
+function Results({ className, moneyFlows, pageSetting, ...rest }) {
   const [excelData, setExcelData] = useState([])
 
   useEffect(() => {
@@ -58,9 +53,7 @@ function Results({
         >
           <div className="flex items-baseline gap-3">
             <CardTitle>現金收支登錄</CardTitle>
-            <span className="text-label text-text-secondary tabular-nums">
-              共 {moneyFlows.totalCount} 筆
-            </span>
+            <span className="text-label text-text-secondary tabular-nums">共 {moneyFlows.totalCount} 筆</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -84,27 +77,18 @@ function Results({
                   <TableRow key={index}>
                     <TableCell className={`${sticky1} px-2`}>
                       <Button asChild variant="ghost" size="icon" className="text-accent">
-                        <RouterLink
-                          aria-label="編輯"
-                          to={`/general/accounting/detail/${data.id}`}
-                        >
+                        <RouterLink aria-label="編輯" to={`/general/accounting/detail/${data.id}`}>
                           <Pencil strokeWidth={1.75} />
                         </RouterLink>
                       </Button>
                     </TableCell>
                     <TableCell className={`${sticky2} tabular-nums`}>{format(data.date, 'yyyy/MM/dd')}</TableCell>
-                    <TableCell>
-                      {data.accountingSubject !== null ? data.accountingSubject.name : ''}
-                    </TableCell>
+                    <TableCell>{data.accountingSubject !== null ? data.accountingSubject.name : ''}</TableCell>
                     <TableCell numeric>{formatNumber(data.inoutType === 'REVENUE' ? data.amount : '')}</TableCell>
                     <TableCell numeric>{formatNumber(data.inoutType === 'EXPENDITURE' ? data.amount : '')}</TableCell>
-                    <TableCell>
-                      {data.user ? `${data.user.name}/${data.user.designerNo || ''}` : ''}
-                    </TableCell>
+                    <TableCell>{data.user ? `${data.user.name}/${data.user.designerNo || ''}` : ''}</TableCell>
                     <TableCell>{data.walletType}</TableCell>
-                    <TableCell>
-                      {data.relationUser === null ? '' : data.relationUser.name}
-                    </TableCell>
+                    <TableCell>{data.relationUser === null ? '' : data.relationUser.name}</TableCell>
                     <TableCell className="text-text-secondary">{data.remark}</TableCell>
                   </TableRow>
                 )

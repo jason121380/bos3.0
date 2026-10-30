@@ -28,10 +28,11 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit }) =>
     // 編號自然排序（英數編號也有效）、空編號排最後（原本 a.userNo - b.userNo 對英數編號得 NaN、空編號當 0 排最前；Jason 2026/10/22 fix all）
     const newOptions = [...options].sort((a, b) => compareNo(a.userNo, b.userNo))
     if (keyWord !== '' && keyWord.trim() !== '') {
-      const filterData = newOptions.filter(data =>
-        (data.userNo !== null && data.userNo !== '' && data.userNo.toLowerCase() === keyWord.toLowerCase()) ||
-        (data.userNickName !== null && data.userNickName !== '' && data.userNickName.toLowerCase().includes(keyWord.toLowerCase())) ||
-        (data.userName !== null && data.userName !== '' && data.userName.toLowerCase().includes(keyWord.toLowerCase()))
+      const filterData = newOptions.filter(
+        data =>
+          (data.userNo !== null && data.userNo !== '' && data.userNo.toLowerCase() === keyWord.toLowerCase()) ||
+          (data.userNickName !== null && data.userNickName !== '' && data.userNickName.toLowerCase().includes(keyWord.toLowerCase())) ||
+          (data.userName !== null && data.userName !== '' && data.userName.toLowerCase().includes(keyWord.toLowerCase()))
       )
       return filterData
     } else {
@@ -53,11 +54,7 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit }) =>
       filters={
         <>
           <div className="shrink-0">
-            <FormControl
-              disabled={loading || userOrderableList.loading}
-              fullWidth variant='outlined'
-              style={{ width: 120 }}
-            >
+            <FormControl disabled={loading || userOrderableList.loading} fullWidth variant="outlined" style={{ width: 120 }}>
               <NativeSelect
                 value={inputData.orderType}
                 onChange={e => dataChange(e.target.value, 'orderType')}
@@ -65,10 +62,11 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit }) =>
                 placeholder="請選擇…"
                 disabled={loading || userOrderableList.loading}
                 label="排序依據"
-
               >
                 {accordance.map(({ label, value }) => (
-                  <NativeSelectOption key={value} value={value}>{label}</NativeSelectOption>
+                  <NativeSelectOption key={value} value={value}>
+                    {label}
+                  </NativeSelectOption>
                 ))}
               </NativeSelect>
             </FormControl>
@@ -81,41 +79,30 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit }) =>
               options={!userOrderableList.loading ? idx(userOrderableList, _ => _.data.getUserOrderableList) : []}
               disableCloseOnSelect
               disabled={loading || userOrderableList.loading}
-              getOptionLabel={option =>
-                option.userNickName !== null && option.userNickName.trim() ? option.userNickName : option.userName
+              getOptionLabel={option => (option.userNickName !== null && option.userNickName.trim() ? option.userNickName : option.userName)}
+              onChange={(e, value) =>
+                dataChange(
+                  value.map(({ userId }) => userId),
+                  'designerIds'
+                )
               }
-              onChange={(e, value) => dataChange(value.map(({ userId }) => userId), 'designerIds')}
               filterOptions={filterOptions}
               renderOption={({ key, ...props }, option, { selected }) => (
                 <li key={option.userId} {...props}>
-                  <Checkbox
-                    style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    checked={selected}
-                  />
+                  <Checkbox style={{ color: 'rgb(var(--text))', marginRight: 8 }} icon={icon} checkedIcon={checkedIcon} checked={selected} />
                   {option.userNickName !== null && option.userNickName.trim() ? option.userNickName : option.userName}
                   {option.userNo !== null && option.userNo.trim() ? ` - ${option.userNo}` : ''}
                 </li>
               )}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  label="設計師篩選"
-                  placeholder="選擇設計師"
-                />
-              )}
+              renderInput={params => <TextField {...params} variant="outlined" label="設計師篩選" placeholder="選擇設計師" />}
             />
           </div>
         </>
       }
       actions={
-        <Button
-          variant='primary'
-          onClick={handleSearch}
-          disabled={loading || userOrderableList.loading}
-        >搜尋</Button>
+        <Button variant="primary" onClick={handleSearch} disabled={loading || userOrderableList.loading}>
+          搜尋
+        </Button>
       }
     />
   )

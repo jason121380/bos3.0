@@ -47,40 +47,36 @@ export function EditOrderDetailSection({
           exclusive
         >
           {designate.map((data, idx) => (
-            <ToggleGroupItem
-              key={`${data.label}-${idx}`}
-              value={data.value}
-              data-testid={`assign-designer-${data.value}`}
-            >
+            <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} data-testid={`assign-designer-${data.value}`}>
               {data.label}
             </ToggleGroupItem>
           ))}
         </ToggleGroup>
-        {(modaltype === 'editNdsOrder' && checkinSettings.isBookingCheckinEnabled && editOrder.isCheckin !== null) && (
-          <p style={{ alignSelf: 'center' }}>{`報到狀態: ${editOrder.isCheckin ? '報到成功' : '未報到'}`}</p> 
+        {modaltype === 'editNdsOrder' && checkinSettings.isBookingCheckinEnabled && editOrder.isCheckin !== null && (
+          <p style={{ alignSelf: 'center' }}>{`報到狀態: ${editOrder.isCheckin ? '報到成功' : '未報到'}`}</p>
         )}
       </div>
       <div className={styles.field2}>
         <MobileDatePicker
           value={editOrder.date}
           className={styles.datepicker}
-          label='預約時間'
-          onChange={(value) => {
+          label="預約時間"
+          onChange={value => {
             const data = cloneDeep(editOrder)
             data.date = new Date(value).getTime()
             setEditOrder(data)
           }}
           format="yyyy/MM/dd"
           localeText={{
-            toolbarTitle: '選擇日期'
+            toolbarTitle: '選擇日期',
           }}
           slotProps={{
             toolbar: {
-              toolbarFormat: 'M月d日'
+              toolbarFormat: 'M月d日',
             },
             textField: {
-              variant: 'standard'
-            }
+              variant: 'standard',
+            },
           }}
         />
         <NativeSelect
@@ -120,14 +116,16 @@ export function EditOrderDetailSection({
           }}
         />
       </div>
-      <Field label='服務時長'>
+      <Field label="服務時長">
         <NativeSelect
           className={`ui-root ${styles.field}`}
           value={editOrder.timeCost}
           onChange={event => setEditOrder({ ...editOrder, timeCost: event.target.value })}
         >
           {timeCostArray.map(d => (
-            <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
+            <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>
+              {d.label}
+            </NativeSelectOption>
           ))}
         </NativeSelect>
       </Field>
@@ -150,27 +148,27 @@ export function EditOrderDetailSection({
         fullWidth
         variant="outlined"
         inputProps={{
-          readOnly: true
+          readOnly: true,
         }}
       />
       <TextField
-        type='number'
-        variant='outlined'
+        type="number"
+        variant="outlined"
         fullWidth
-        label='提前通知天數'
+        label="提前通知天數"
         className={styles.field}
         value={editOrder.notificationDayCount || ''}
         InputProps={{ inputProps: { min: 1 } }}
         onFocus={e => e.target.select()}
         onChange={e => {
-          const value = Number(e.target.value) < 1 ? null : Number(e.target.value) 
+          const value = Number(e.target.value) < 1 ? null : Number(e.target.value)
           const data = cloneDeep(editOrder)
           data.notificationDayCount = value
           setEditOrder(data)
         }}
         onWheel={() => document.activeElement.blur()}
       />
-      {modaltype === "editOrderDetail" && (
+      {modaltype === 'editOrderDetail' && (
         <CheckboxField
           className="ui-root py-2"
           label="佔用顧客端預約名額"
@@ -189,21 +187,21 @@ export function EditOrderDetailSection({
           />
         </div>
       )}
-      {(modaltype === 'editNdsOrder' && checkinSettings.isBookingCheckinEnabled && editOrder.isCheckin !== null) && (
-        <button type="button" className={actionRow} disabled={btnDisabled} onClick={() => editOrder.isCheckin ? handleCancelCheckIn() : handleCheckIn()}>
+      {modaltype === 'editNdsOrder' && checkinSettings.isBookingCheckinEnabled && editOrder.isCheckin !== null && (
+        <button
+          type="button"
+          className={actionRow}
+          disabled={btnDisabled}
+          onClick={() => (editOrder.isCheckin ? handleCancelCheckIn() : handleCheckIn())}
+        >
           <Avatar className="bg-accent/8 text-accent">
             <AssignmentTurnedInIcon />
           </Avatar>
           <span className="min-w-0 flex-1">{editOrder.isCheckin ? '取消報到' : '報到'}</span>
-        </button> 
+        </button>
       )}
       <div className="flex justify-end gap-2">
-        <Button
-          variant="primary"
-          type="submit"
-          disabled={btnDisabled}
-          onClick={handleUpdateEditOrder}
-        >
+        <Button variant="primary" type="submit" disabled={btnDisabled} onClick={handleUpdateEditOrder}>
           儲存
         </Button>
         <Button

@@ -55,11 +55,7 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
         <CardTitle>抽成</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
-        <FormControl
-          variant="outlined"
-          fullWidth
-          error={!!errors.commissionWay}
-        >
+        <FormControl variant="outlined" fullWidth error={!!errors.commissionWay}>
           <NativeSelect
             name="commissionWay"
             onChange={event => {
@@ -88,11 +84,7 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
         </FormControl>
         <TextField
           type="number"
-          label={
-            commissionWayValue === 'byCost' || commissionWayValue === 'byPrice'
-              ? '抽成數字%'
-              : '抽成數字'
-          }
+          label={commissionWayValue === 'byCost' || commissionWayValue === 'byPrice' ? '抽成數字%' : '抽成數字'}
           variant="outlined"
           fullWidth
           onFocus={handleSelectAllText}
@@ -105,13 +97,12 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
               valueAsNumber: true,
             }),
           }}
-          onWheel={() => document.activeElement.blur()}              
+          onWheel={() => document.activeElement.blur()}
         />
         {/* <Typography variant="h5" component="h5">
           售價
         </Typography>
         <Divider /> */}
-
       </CardContent>
     </Card>
   )

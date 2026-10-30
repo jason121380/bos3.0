@@ -22,17 +22,23 @@ jest.mock('ui/date-picker', () => ({
 }))
 
 const setup = ({ fixtures = {}, route = '/customer/self-create/merchant-9', delays } = {}) =>
-  renderPage(<><CustomizedSnackbars /><CustomerSelfCreate /></>, {
-    fixtures: {
-      GET_MERCHANT_NAME: { getMerchantName: '信義店' },
-      GET_CUSTOMER_SELF_CREATE_ACTIVE: { getIsCustomerSelfCreateActive: true },
-      CUSTOMER_SELF_CREATE: { customerSelfCreateV2: true },
-      ...fixtures,
-    },
-    path: '/customer/self-create/:id',
-    route,
-    delays,
-  })
+  renderPage(
+    <>
+      <CustomizedSnackbars />
+      <CustomerSelfCreate />
+    </>,
+    {
+      fixtures: {
+        GET_MERCHANT_NAME: { getMerchantName: '信義店' },
+        GET_CUSTOMER_SELF_CREATE_ACTIVE: { getIsCustomerSelfCreateActive: true },
+        CUSTOMER_SELF_CREATE: { customerSelfCreateV2: true },
+        ...fixtures,
+      },
+      path: '/customer/self-create/:id',
+      route,
+      delays,
+    }
+  )
 
 const input = label => screen.getByLabelText(new RegExp(`^${label}`))
 const submit = () => fireEvent.click(screen.getByRole('button', { name: '提交' }))

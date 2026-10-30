@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
@@ -48,10 +48,7 @@ function Results({ report, paymentsName }) {
       {/* 報表匯出：畫到頁首（STYLE §14），匯出資料不變 */}
       <HeaderActionsPortal>
         <Button asChild variant="secondary">
-          <CSVLink
-            data={excelData}
-            filename="每日非現金明細.csv"
-          >
+          <CSVLink data={excelData} filename="每日非現金明細.csv">
             <Download strokeWidth={1.75} />
             報表匯出
           </CSVLink>
@@ -66,7 +63,9 @@ function Results({ report, paymentsName }) {
             <TableRow className="hover:bg-transparent">
               <TableHead>日期</TableHead>
               {paymentsName.map(payment => (
-                <TableHead numeric key={payment}>{payment}</TableHead>
+                <TableHead numeric key={payment}>
+                  {payment}
+                </TableHead>
               ))}
             </TableRow>
           </TableHeader>
@@ -77,7 +76,7 @@ function Results({ report, paymentsName }) {
                   <TableRow key={index}>
                     <TableCell className="whitespace-nowrap tabular-nums">{format(data.date, 'yyyy/MM/dd')}</TableCell>
                     {paymentsName.map(payment => (
-                      <TableCell key={payment}/>
+                      <TableCell key={payment} />
                     ))}
                   </TableRow>
                 )
@@ -103,7 +102,9 @@ function Results({ report, paymentsName }) {
             <TableRow className="bg-surface font-medium">
               <TableCell className="font-bold">合計</TableCell>
               {totalArr.map((sum, index) => (
-                <TableCell numeric className="font-bold" key={`${index}`}>{formatNumber(sum)}</TableCell>
+                <TableCell numeric className="font-bold" key={`${index}`}>
+                  {formatNumber(sum)}
+                </TableCell>
               ))}
             </TableRow>
           </TableBody>

@@ -9,7 +9,7 @@ const SET_PINNED_TABLE = gql`
 export default function useFetchSetPinnedTable() {
   const [setPinnedTable] = useMutation(SET_PINNED_TABLE)
   return {
-    setPinnedTable: ( input ) =>
+    setPinnedTable: input =>
       setPinnedTable({
         variables: {
           input,

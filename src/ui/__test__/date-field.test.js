@@ -205,7 +205,9 @@ describe('DateField 貼上、滑鼠、外部值', () => {
 
   it('外部值改變（從月曆選取）時同步各段；等於自己剛送出的值時保留輸入狀態', () => {
     const onChange = jest.fn()
-    const { rerender } = render(<DateField inputProps={{ 'aria-label': '日期' }} format="yyyy/MM/dd" value={new Date(2026, 9, 22)} onChange={onChange} />)
+    const { rerender } = render(
+      <DateField inputProps={{ 'aria-label': '日期' }} format="yyyy/MM/dd" value={new Date(2026, 9, 22)} onChange={onChange} />
+    )
     const input = screen.getByLabelText('日期')
     expect(input).toHaveValue('2026/10/22')
     rerender(<DateField inputProps={{ 'aria-label': '日期' }} format="yyyy/MM/dd" value={new Date(2026, 0, 5)} onChange={onChange} />)
@@ -218,7 +220,17 @@ describe('DateField 貼上、滑鼠、外部值', () => {
     const fnRef = jest.fn()
     const onFocus = jest.fn()
     const onBlur = jest.fn()
-    const { rerender } = render(<DateField inputProps={{ 'aria-label': '日期' }} format="yyyy/MM/dd" value={null} placeholder="請選擇日期" inputRef={fnRef} onFocus={onFocus} onBlur={onBlur} />)
+    const { rerender } = render(
+      <DateField
+        inputProps={{ 'aria-label': '日期' }}
+        format="yyyy/MM/dd"
+        value={null}
+        placeholder="請選擇日期"
+        inputRef={fnRef}
+        onFocus={onFocus}
+        onBlur={onBlur}
+      />
+    )
     const input = screen.getByLabelText('日期')
     expect(input).toHaveAttribute('placeholder', '請選擇日期')
     expect(fnRef).toHaveBeenCalledWith(input)

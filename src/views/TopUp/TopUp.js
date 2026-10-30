@@ -21,7 +21,6 @@ import { PageHeader } from 'ui/page-header'
 import QueryFailed from 'components/QueryFailed'
 
 function CustomerManagementList() {
-
   const [date, setDate] = React.useState({
     startDate: startOfMonth(new Date()).getTime(),
     endDate: endOfDay(new Date()).getTime(),
@@ -72,45 +71,45 @@ function CustomerManagementList() {
 
   return (
     <Page className="ui-root" title="入金管理">
-        <PageHeader
-          title='入金管理'
-          actions={
-            <>
-              <DateSelector
-                attributes={['lastmonth', 'thismonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-                date={date}
-                dateChange={value => setDate(prev => ({ ...prev, ...value }))}
-                margin={false}
-              />
-              <Button
-                variant="secondary"
-                aria-pressed={!!showFilter}
-                onClick={() => setShowFilter(!showFilter)}
-                className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
-              >
-                <ListFilter strokeWidth={1.75} />
-                篩選
-              </Button>
-              <Button asChild variant="primary">
-                <RouterLink to={'/topup/create'}>{'新增'}</RouterLink>
-              </Button>
-            </>
-          }
-        />
-        {/* 以 hidden 收合（取代 MUI Collapse）：篩選元件保持掛載，收合後內容與舊版一樣保留 */}
-        <div hidden={!showFilter}>
-          <Card className="mb-6 p-4">
-            <MerchantSearchBar
-              values={date}
-              onFilter={value => setDate(value)}
-              outside
-              stopGetQueryString={true}
-              visible={['employee', 'customer', 'payment']}
-              lastInLeaderBoard={true}
+      <PageHeader
+        title="入金管理"
+        actions={
+          <>
+            <DateSelector
+              attributes={['lastmonth', 'thismonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              date={date}
+              dateChange={value => setDate(prev => ({ ...prev, ...value }))}
+              margin={false}
             />
-          </Card>
-        </div>
-        <div className="flex flex-col gap-6">
+            <Button
+              variant="secondary"
+              aria-pressed={!!showFilter}
+              onClick={() => setShowFilter(!showFilter)}
+              className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+            >
+              <ListFilter strokeWidth={1.75} />
+              篩選
+            </Button>
+            <Button asChild variant="primary">
+              <RouterLink to={'/topup/create'}>{'新增'}</RouterLink>
+            </Button>
+          </>
+        }
+      />
+      {/* 以 hidden 收合（取代 MUI Collapse）：篩選元件保持掛載，收合後內容與舊版一樣保留 */}
+      <div hidden={!showFilter}>
+        <Card className="mb-6 p-4">
+          <MerchantSearchBar
+            values={date}
+            onFilter={value => setDate(value)}
+            outside
+            stopGetQueryString={true}
+            visible={['employee', 'customer', 'payment']}
+            lastInLeaderBoard={true}
+          />
+        </Card>
+      </div>
+      <div className="flex flex-col gap-6">
         {(walletDepositRecord.error || walletUseRecord.error) && (
           <QueryFailed
             onRetry={() => {
@@ -135,7 +134,7 @@ function CustomerManagementList() {
           isCustomerDataMarked={isCustomerDataMarked}
           onChange={event => handleChangeResult({ ...event, name: 'usaged' })}
         />
-        </div>
+      </div>
     </Page>
   )
 }

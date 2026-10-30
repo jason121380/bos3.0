@@ -45,12 +45,7 @@ function AboutServiceCategory({ serviceCategory, className, onChange, attributio
             })}
           />
         </Field>
-        <FormControl
-          variant="outlined"
-          fullWidth
-          className="mb-[24px]"
-          error={!!errors.attribution}
-        >
+        <FormControl variant="outlined" fullWidth className="mb-[24px]" error={!!errors.attribution}>
           <NativeSelect
             name="attribution"
             onChange={e => setValue('attribution', e.target.value)}

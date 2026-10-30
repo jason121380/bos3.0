@@ -18,9 +18,7 @@ import AboutCoupon from 'views/CouponShared/AboutCoupon'
 import AboutDeduction from 'views/CouponShared/AboutDeduction'
 
 function ServiceCategoryCreate() {
-  const merchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
+  const merchantId = localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null
   const merchantCommissions = useFetchMerchantCommissionWay()
   const customerCategory = useFetchMerchantCustomerCategory()
   const merchantHelperItemsData = useFetchMerchantHelperItems({ merchantId })
@@ -32,24 +30,25 @@ function ServiceCategoryCreate() {
     if (!merchantCommissions.loading && !customerCategory.loading) {
       setCoupon(
         produce(draft => {
-          draft.ServiceDeductionItems = idx(merchantCommissions.data, _ =>
-            _.merchantCommissionWay.map(data => ({
-              type: data.name,
-              itemSettings: [
-                {
-                  isSpecial: false,
-                  name: '材料費',
-                  type: 'onSales',
-                  deductionWay: '',
-                  price: 0,
-                  designatePrice: 0,
-                  nonDesignatePrice: 0,
-                  deductionOrder: 1,
-                  deductionReference: 0,
-                },
-              ],
-            }))
-          ) || [] // 查詢失敗時沒有扣項卡，不整頁錯誤
+          draft.ServiceDeductionItems =
+            idx(merchantCommissions.data, _ =>
+              _.merchantCommissionWay.map(data => ({
+                type: data.name,
+                itemSettings: [
+                  {
+                    isSpecial: false,
+                    name: '材料費',
+                    type: 'onSales',
+                    deductionWay: '',
+                    price: 0,
+                    designatePrice: 0,
+                    nonDesignatePrice: 0,
+                    deductionOrder: 1,
+                    deductionReference: 0,
+                  },
+                ],
+              }))
+            ) || [] // 查詢失敗時沒有扣項卡，不整頁錯誤
           draft.customerSellSetting = idx(customerCategory.data, _ =>
             _.merchantCustomerCategory.map(data => ({
               category: data.name,
@@ -60,12 +59,7 @@ function ServiceCategoryCreate() {
         })
       )
     }
-  }, [
-    merchantCommissions.loading,
-    merchantCommissions.data,
-    customerCategory.data,
-    customerCategory.loading,
-  ])
+  }, [merchantCommissions.loading, merchantCommissions.data, customerCategory.data, customerCategory.loading])
   const [saveBtn, setSaveBtn] = React.useState(false)
   const [coupon, setCoupon] = React.useState({
     no: '',
@@ -100,7 +94,7 @@ function ServiceCategoryCreate() {
     isLocked: 'UNSET',
     performanceCalculationMode: 'USING',
     handlingFeeDecountMode: 'USING',
-    isLaunched: true
+    isLaunched: true,
   })
 
   const handleOnChange = ({ event, key }) => {
@@ -113,57 +107,46 @@ function ServiceCategoryCreate() {
   }
   const vaild = !(coupon.name && coupon.ServiceCategoryId && coupon.ticketAvailableCount)
   // 停用原因（STYLE.md §6）：依 vaild 的三個欄位，依畫面順序列出目前缺的
-  const missing = [
-    !coupon.name && '名稱',
-    !coupon.ServiceCategoryId && '服務類別',
-    !coupon.ticketAvailableCount && '次數',
-  ].filter(Boolean)
+  const missing = [!coupon.name && '名稱', !coupon.ServiceCategoryId && '服務類別', !coupon.ticketAvailableCount && '次數'].filter(Boolean)
   const handleSubmit = () => {
     setSaveBtn(true)
     const newCoupon = cloneDeep(coupon)
-    const newHelperDeductionSetting = newCoupon.helperDeductionSetting.map(
-      ({ deductionWay, isDesignate, __typename, ...keepProteries }) => {
-        return {
-          ...keepProteries,
-          point: parseFloat(keepProteries.point) || 0,
-          cash: parseFloat(keepProteries.cash) || 0,
-          percent: parseFloat(keepProteries.percent) || 0,
-          designateCash: parseFloat(keepProteries.designateCash) || 0,
-          nonDesignateCash: parseFloat(keepProteries.nonDesignateCash) || 0,
-          designatePercent: parseFloat(keepProteries.designatePercent) || 0,
-          nonDesignatePercent: parseFloat(keepProteries.nonDesignatePercent) || 0,
-          designatePoint: parseFloat(keepProteries.designatePoint) || 0,
-          nonDesignatePoint: parseFloat(keepProteries.nonDesignatePoint) || 0,
-        }
+    const newHelperDeductionSetting = newCoupon.helperDeductionSetting.map(({ deductionWay, isDesignate, __typename, ...keepProteries }) => {
+      return {
+        ...keepProteries,
+        point: parseFloat(keepProteries.point) || 0,
+        cash: parseFloat(keepProteries.cash) || 0,
+        percent: parseFloat(keepProteries.percent) || 0,
+        designateCash: parseFloat(keepProteries.designateCash) || 0,
+        nonDesignateCash: parseFloat(keepProteries.nonDesignateCash) || 0,
+        designatePercent: parseFloat(keepProteries.designatePercent) || 0,
+        nonDesignatePercent: parseFloat(keepProteries.nonDesignatePercent) || 0,
+        designatePoint: parseFloat(keepProteries.designatePoint) || 0,
+        nonDesignatePoint: parseFloat(keepProteries.nonDesignatePoint) || 0,
       }
-    )
+    })
     newCoupon.helperDeductionSetting = newHelperDeductionSetting
 
-    createCoupon({ input: newCoupon }).then(() => {
-      openSnackbar({ variant: 'success', message: '成功新增卡券' })
-      history.push('/coupons')
-    }).catch(error => {
-      setSaveBtn(false)
-    })
+    createCoupon({ input: newCoupon })
+      .then(() => {
+        openSnackbar({ variant: 'success', message: '成功新增卡券' })
+        history.push('/coupons')
+      })
+      .catch(error => {
+        setSaveBtn(false)
+      })
   }
 
   return (
     <Page className="ui-root" title="新增卡券項目">
       {/* 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-4xl（與舊版 Container md 相近） */}
       <div className="mx-auto flex max-w-4xl flex-col gap-6">
-        <PageHeader className="pb-0" title='新增卡券項目' />
+        <PageHeader className="pb-0" title="新增卡券項目" />
         <AboutCoupon coupon={coupon} onChange={handleOnChange} />
 
-        <AboutDeduction
-          ServiceDeductionItems={coupon.ServiceDeductionItems}
-          onChange={handleOnChange}
-        />
+        <AboutDeduction ServiceDeductionItems={coupon.ServiceDeductionItems} onChange={handleOnChange} />
 
-        <AboutAssistantSetting
-          merchantHelperItems={merchantHelperItems}
-          support={coupon.helperDeductionSetting}
-          onChange={handleOnChange}
-        />
+        <AboutAssistantSetting merchantHelperItems={merchantHelperItems} support={coupon.helperDeductionSetting} onChange={handleOnChange} />
 
         <div className="flex flex-wrap items-center gap-3">
           <Button variant="primary" disabled={vaild || saveBtn} aria-describedby={vaild ? 'coupon-create-missing' : undefined} onClick={handleSubmit}>

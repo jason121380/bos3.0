@@ -105,9 +105,7 @@ export const richQueue = (overrides = {}) =>
       { serviceId: SERVICE_DYE.id, price: 2000, thirdPartyCouponMerchantId: 'tp-1', serviceOrderHelpers: [] },
     ],
     productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 2, thirdPartyCouponMerchantId: null }],
-    ticketOrders: [
-      { serviceId: TICKET.id, availableCount: 5, price: 1000, count: 1, remark: '送一次', intoPerformanceWhileBuying: false },
-    ],
+    ticketOrders: [{ serviceId: TICKET.id, availableCount: 5, price: 1000, count: 1, remark: '送一次', intoPerformanceWhileBuying: false }],
     useTicketOrders: [
       {
         customerTicketId: TICKET_RECORD.id,
@@ -136,10 +134,12 @@ export const richQueue = (overrides = {}) =>
   })
 
 // 使用預收卡的 GetTicket：依 ids 查（金額彙總、助理欄位）時只回那幾筆；依顧客查（自動完成）時回顧客名下全部
-export const ticketRecordsFixture = records => ({ input }) => {
-  const data = input.ids ? records.filter(r => input.ids.includes(r.id)) : records
-  return { ticketRecords: { totalCount: data.length, pageOffset: 0, pageLimit: 1000, data } }
-}
+export const ticketRecordsFixture =
+  records =>
+  ({ input }) => {
+    const data = input.ids ? records.filter(r => input.ids.includes(r.id)) : records
+    return { ticketRecords: { totalCount: data.length, pageOffset: 0, pageLimit: 1000, data } }
+  }
 
 export const servicesPage = data => ({ services: { totalCount: data.length, pageOffset: 0, pageLimit: 50, data } })
 
@@ -152,7 +152,12 @@ export const fixtures = ({ queue = baseQueue(), ...overrides } = {}) => ({
     { ...SERVICE, isUsing: true, serviceCategory: { id: 'cat-1', name: '剪髮' } },
     { ...SERVICE_DYE, isUsing: true, serviceCategory: { id: 'cat-2', name: '染燙' } },
   ]),
-  ServiceCategories: { serviceCategories: [{ id: 'cat-1', name: '剪髮' }, { id: 'cat-2', name: '染燙' }] },
+  ServiceCategories: {
+    serviceCategories: [
+      { id: 'cat-1', name: '剪髮' },
+      { id: 'cat-2', name: '染燙' },
+    ],
+  },
   GET_SERVICES_FOR_AUTOCOMPLETE: servicesPage([SERVICE, SERVICE_DYE]),
   service: { service: { helperDeductionSetting: [] } },
   GET_IS_MEMBERSHIP_CARD_ACTIVE: { getIsMemberShipCardActive: true },
@@ -179,7 +184,9 @@ export const fixtures = ({ queue = baseQueue(), ...overrides } = {}) => ({
   // 使用預收卡：依顧客查名下預收卡（自動完成），或依 id 查單筆（金額、助理欄位）
   GetTicket: ticketRecordsFixture([TICKET_RECORD]),
   FETCH_MEMBERSHIPS_FOR_AUTOCOMPLETE: { memberships: { data: [CARD] } },
-  FETCH_MEMBERSHIPS_FOR_MODAL: { memberships: { pageLimit: 50, pageOffset: 0, data: [{ ...CARD, membershipCategory: { id: 'mc-1', uuid: 'mc-1', name: '年卡類' } }] } },
+  FETCH_MEMBERSHIPS_FOR_MODAL: {
+    memberships: { pageLimit: 50, pageOffset: 0, data: [{ ...CARD, membershipCategory: { id: 'mc-1', uuid: 'mc-1', name: '年卡類' } }] },
+  },
   FETCH_MEMBERSHIPS_CATEGORY: { membershipCategories: [{ uuid: 'mc-1', name: '年卡類' }] },
   // 顧客
   // 依 id 查顧客；沒有 id（不留客資、清除顧客）時後端回 null
@@ -240,8 +247,7 @@ export const retry = async calls => {
 export const panelOf = title => screen.getByText(title, { selector: 'p' }).closest('[data-state]')
 export const panel = title => within(panelOf(title))
 // 欄位標籤下方的輸入框（ui/input 的 Field：標籤後接欄位）
-export const fieldInput = (scope, label, n = 0) =>
-  scope.getAllByText(label, { selector: 'label' })[n].parentElement.querySelector('input, textarea')
+export const fieldInput = (scope, label, n = 0) => scope.getAllByText(label, { selector: 'label' })[n].parentElement.querySelector('input, textarea')
 
 if (isMain) {
   describe('queueKit：測試用的佇列帳單', () => {

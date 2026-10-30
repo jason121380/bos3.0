@@ -34,58 +34,25 @@ function Service({ services }) {
                 <TableCell>{data.name}</TableCell>
                 <TableCell numeric>{formatNumber(Math.round(data.analytics.serviceFakeTotal))}</TableCell>
                 <TableCell numeric>
-                  {(isNaN(
-                    data.analytics.serviceFakeTotal /
-                    services.reduce(
-                      (total, item) => (total = total + item.analytics.serviceFakeTotal),
-                      0
-                    )
-                  )
+                  {(isNaN(data.analytics.serviceFakeTotal / services.reduce((total, item) => (total = total + item.analytics.serviceFakeTotal), 0))
                     ? 0
-                    : (data.analytics.serviceFakeTotal /
-                      services.reduce(
-                        (total, item) => (total = total + item.analytics.serviceFakeTotal),
-                        0
-                      )) *
-                    100
+                    : (data.analytics.serviceFakeTotal / services.reduce((total, item) => (total = total + item.analytics.serviceFakeTotal), 0)) * 100
                   ).toFixed(2)}
                   %
                 </TableCell>
                 <TableCell numeric>{formatNumber(data.analytics.useTicketTotal)}</TableCell>
                 <TableCell numeric>
-                  {(isNaN(
-                    data.analytics.useTicketTotal /
-                    services.reduce(
-                      (total, item) => (total = total + item.analytics.useTicketTotal),
-                      0
-                    )
-                  )
+                  {(isNaN(data.analytics.useTicketTotal / services.reduce((total, item) => (total = total + item.analytics.useTicketTotal), 0))
                     ? 0
-                    : (data.analytics.useTicketTotal /
-                      services.reduce(
-                        (total, item) => (total = total + item.analytics.useTicketTotal),
-                        0
-                      )) *
-                    100
+                    : (data.analytics.useTicketTotal / services.reduce((total, item) => (total = total + item.analytics.useTicketTotal), 0)) * 100
                   ).toFixed(2)}
                   %
                 </TableCell>
                 <TableCell numeric>{formatNumber(data.analytics.customerCount)}</TableCell>
                 <TableCell numeric>
-                  {(isNaN(
-                    data.analytics.customerCount /
-                    services.reduce(
-                      (total, item) => (total = total + item.analytics.customerCount),
-                      0
-                    )
-                  )
+                  {(isNaN(data.analytics.customerCount / services.reduce((total, item) => (total = total + item.analytics.customerCount), 0))
                     ? 0
-                    : (data.analytics.customerCount /
-                      services.reduce(
-                        (total, item) => (total = total + item.analytics.customerCount),
-                        0
-                      )) *
-                    100
+                    : (data.analytics.customerCount / services.reduce((total, item) => (total = total + item.analytics.customerCount), 0)) * 100
                   ).toFixed(2)}
                   %
                 </TableCell>
@@ -99,11 +66,13 @@ function Service({ services }) {
                   %
                 </TableCell>
                 <TableCell numeric>
-                  {formatNumber(Math.floor(
-                    isNaN(data.analytics.serviceFakeTotal / data.analytics.customerCount)
-                      ? 0
-                      : Math.round(data.analytics.serviceFakeTotal) / data.analytics.customerCount
-                  ))}
+                  {formatNumber(
+                    Math.floor(
+                      isNaN(data.analytics.serviceFakeTotal / data.analytics.customerCount)
+                        ? 0
+                        : Math.round(data.analytics.serviceFakeTotal) / data.analytics.customerCount
+                    )
+                  )}
                 </TableCell>
               </TableRow>
             ))}

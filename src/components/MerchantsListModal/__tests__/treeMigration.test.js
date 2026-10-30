@@ -8,11 +8,24 @@ const merchant = { id: 'm1', name: '甲店' }
 const merchantList = { allMerchants: [merchant], groups: [], merchants: [] }
 
 test.each(['一般', '管理', '釘選'])('%s 店家樹：鍵盤展開／選取／確認保留回傳值', kind => {
-  const confirm = jest.fn(), close = jest.fn()
+  const confirm = jest.fn(),
+    close = jest.fn()
   function Fixture() {
     const [values, setValues] = React.useState([])
-    if (kind === '釘選') return <PinnedMerchantsListModal open setOpen={close} merchantList={merchantList} values={values} setValues={setValues} onValueChange={confirm} />
-    return <MerchantsListModal open setOpen={close} merchantList={merchantList} values={[]} setValues={confirm} classes={kind === '管理' ? managementTreeClasses : undefined} />
+    if (kind === '釘選')
+      return (
+        <PinnedMerchantsListModal open setOpen={close} merchantList={merchantList} values={values} setValues={setValues} onValueChange={confirm} />
+      )
+    return (
+      <MerchantsListModal
+        open
+        setOpen={close}
+        merchantList={merchantList}
+        values={[]}
+        setValues={confirm}
+        classes={kind === '管理' ? managementTreeClasses : undefined}
+      />
+    )
   }
   render(<Fixture />)
   const dialog = screen.getByRole('dialog', { name: '店家列表' })
@@ -33,7 +46,15 @@ test.each(['一般', '管理', '釘選'])('%s 店家樹：鍵盤展開／選取�
 
 test('多選樹明確宣告 aria-multiselectable，兩個已選葉節點均保持選取', () => {
   const second = { id: 'm2', name: '乙店' }
-  render(<MerchantsListModal open setOpen={jest.fn()} merchantList={{ allMerchants: [merchant, second], groups: [], merchants: [] }} values={[merchant, second]} setValues={jest.fn()} />)
+  render(
+    <MerchantsListModal
+      open
+      setOpen={jest.fn()}
+      merchantList={{ allMerchants: [merchant, second], groups: [], merchants: [] }}
+      values={[merchant, second]}
+      setValues={jest.fn()}
+    />
+  )
   fireEvent.click(screen.getByText('全部(2)'))
   expect(screen.getByRole('tree')).toHaveAttribute('aria-multiselectable', 'true')
   expect(screen.getByRole('treeitem', { name: '甲店' })).toHaveAttribute('aria-selected', 'true')

@@ -4,7 +4,6 @@ import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import produce from 'immer'
 
-
 const passwordArr = [
   { label: '編輯帳單密碼', key: 'reCheckoutOrder' },
   { label: '刪除帳單密碼', key: 'deleteOrder' },

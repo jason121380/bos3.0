@@ -88,12 +88,7 @@ function AboutDeduction({
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {
           if (index === index2) {
-            return (
-              (data2.isSpecial = !data2.isSpecial),
-              (data2.price = 0),
-              (data2.designatePrice = 0),
-              (data2.nonDesignatePrice = 0)
-            )
+            return ((data2.isSpecial = !data2.isSpecial), (data2.price = 0), (data2.designatePrice = 0), (data2.nonDesignatePrice = 0))
           }
         })
       }
@@ -284,9 +279,7 @@ function AboutDeduction({
                           variant="outlined"
                           label={content.deductionWay === '扣固定金額' ? '指定金額' : '指定%'}
                           value={content.designatePrice}
-                          onChange={event =>
-                            handleDeductionNum(data.type, event, index, 'designatePrice')
-                          }
+                          onChange={event => handleDeductionNum(data.type, event, index, 'designatePrice')}
                           onWheel={() => document.activeElement.blur()}
                         />
                         <TextField
@@ -295,9 +288,7 @@ function AboutDeduction({
                           variant="outlined"
                           label={content.deductionWay === '扣固定金額' ? '不指定金額' : '不指定%'}
                           value={content.nonDesignatePrice}
-                          onChange={event =>
-                            handleDeductionNum(data.type, event, index, 'nonDesignatePrice')
-                          }
+                          onChange={event => handleDeductionNum(data.type, event, index, 'nonDesignatePrice')}
                           onWheel={() => document.activeElement.blur()}
                         />
                       </div>
@@ -397,12 +388,11 @@ function AboutDeduction({
               )
             })}
             <div className="flex flex-col items-end gap-1 text-body font-medium tabular-nums text-text">
-              <p>
-                實業績(含扣項):{formatNumber(Math.round(truthPerformPredict[idx]) || 0)}
-              </p>
+              <p>實業績(含扣項):{formatNumber(Math.round(truthPerformPredict[idx]) || 0)}</p>
               <p>
                 實業績(含扣項、扣互助)預估:
-                {formatNumber(Math.round(truthPerformPredict[idx] - helperDeductionNums) || 0)}{helperPoint ? helperPoint < 0 ? ` + ${helperPoint * -1}點` : ` - ${helperPoint}點` : null}
+                {formatNumber(Math.round(truthPerformPredict[idx] - helperDeductionNums) || 0)}
+                {helperPoint ? (helperPoint < 0 ? ` + ${helperPoint * -1}點` : ` - ${helperPoint}點`) : null}
               </p>
             </div>
           </CardContent>

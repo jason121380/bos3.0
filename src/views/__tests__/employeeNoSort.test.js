@@ -42,7 +42,11 @@ describe('報表的設計師篩選：選項依編號自然排序，沒有編號�
     await settle()
     fireEvent.click(designerInput())
     // 只看設計師清單：日期快速選擇（第三波改為 NativeSelect）的隱藏 select 也有 option
-    expect(within(await screen.findByRole('listbox')).getAllByRole('option').map(o => o.textContent)).toEqual(EXPECTED)
+    expect(
+      within(await screen.findByRole('listbox'))
+        .getAllByRole('option')
+        .map(o => o.textContent)
+    ).toEqual(EXPECTED)
   })
 })
 

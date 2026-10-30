@@ -22,23 +22,60 @@ jest.mock('elements/snackbars', () => ({
 
 const BOOKINGS = [
   {
-    id: 'b1', no: 'R001', isDesignate: true, date: new Date(2026, 9, 22, 14, 30).getTime(), status: '已預約', source: 'LINE',
-    isCheckin: true, isCusCheckRequired: true, customer: { name: '陳小姐', cellphone: '0912345678', isAlive: true },
-    designer: { name: '王小美', designerNo: '01' }, isDone: false, createdOrderId: null,
+    id: 'b1',
+    no: 'R001',
+    isDesignate: true,
+    date: new Date(2026, 9, 22, 14, 30).getTime(),
+    status: '已預約',
+    source: 'LINE',
+    isCheckin: true,
+    isCusCheckRequired: true,
+    customer: { name: '陳小姐', cellphone: '0912345678', isAlive: true },
+    designer: { name: '王小美', designerNo: '01' },
+    isDone: false,
+    createdOrderId: null,
   },
   {
-    id: 'b2', no: 'R002', isDesignate: false, date: new Date(2026, 9, 21, 9, 0).getTime(), status: '已完成', source: '現場',
-    isCheckin: false, isCusCheckRequired: false, customer: { name: '林先生', cellphone: '0922000111', isAlive: false },
-    designer: { name: null, designerNo: null }, isDone: true, createdOrderId: 'o-9',
+    id: 'b2',
+    no: 'R002',
+    isDesignate: false,
+    date: new Date(2026, 9, 21, 9, 0).getTime(),
+    status: '已完成',
+    source: '現場',
+    isCheckin: false,
+    isCusCheckRequired: false,
+    customer: { name: '林先生', cellphone: '0922000111', isAlive: false },
+    designer: { name: null, designerNo: null },
+    isDone: true,
+    createdOrderId: 'o-9',
   },
   {
-    id: 'b3', no: 'R003', isDesignate: false, date: new Date(2026, 9, 23, 18, 0).getTime(), status: '已預約', source: '電話',
-    isCheckin: null, isCusCheckRequired: false, customer: null, designer: null, isDone: false, createdOrderId: null,
+    id: 'b3',
+    no: 'R003',
+    isDesignate: false,
+    date: new Date(2026, 9, 23, 18, 0).getTime(),
+    status: '已預約',
+    source: '電話',
+    isCheckin: null,
+    isCusCheckRequired: false,
+    customer: null,
+    designer: null,
+    isDone: false,
+    createdOrderId: null,
   },
   {
-    id: 'b4', no: 'R004', isDesignate: true, date: new Date(2026, 9, 24, 11, 0).getTime(), status: '已預約', source: '網站',
-    isCheckin: null, isCusCheckRequired: false, customer: { name: '張小姐', cellphone: '0933', isAlive: true },
-    designer: { name: '阿明', designerNo: null }, isDone: false, createdOrderId: null,
+    id: 'b4',
+    no: 'R004',
+    isDesignate: true,
+    date: new Date(2026, 9, 24, 11, 0).getTime(),
+    status: '已預約',
+    source: '網站',
+    isCheckin: null,
+    isCusCheckRequired: false,
+    customer: { name: '張小姐', cellphone: '0933', isAlive: true },
+    designer: { name: '阿明', designerNo: null },
+    isDone: false,
+    createdOrderId: null,
   },
 ]
 
@@ -61,7 +98,10 @@ const lastInput = calls => {
   return list[list.length - 1].variables.input
 }
 const rowByTime = (time, day) =>
-  screen.getAllByText(time).map(el => el.closest('tr')).find(tr => within(tr).queryByText(day))
+  screen
+    .getAllByText(time)
+    .map(el => el.closest('tr'))
+    .find(tr => within(tr).queryByText(day))
 const headers = () => [...document.querySelectorAll('thead th')].map(th => th.textContent)
 const exportedCsv = () => decodeURIComponent(screen.getByText('報表匯出').closest('a').getAttribute('href'))
 const checkinSelect = () => screen.getAllByLabelText('報到狀態').find(el => el.tagName === 'SELECT' || el.hasAttribute('data-ui-select'))
@@ -91,15 +131,42 @@ describe('預約管理', () => {
     await settle()
     expect(screen.getByText('共 4 筆')).toBeInTheDocument()
     expect(headers()).toEqual(['', '操作', '訂單狀態', '報到狀態', '預約日期及時間', '客戶資訊', '指定/不指定', '未來預訂(待確認)', '設計師', '來源'])
-    const cells = tr => within(tr).getAllByRole('cell').map(c => c.textContent)
+    const cells = tr =>
+      within(tr)
+        .getAllByRole('cell')
+        .map(c => c.textContent)
     expect(cells(rowByTime('14:30', '2026/10/22')).slice(1)).toEqual([
-      ' 修改 ', '已預約', '報到成功', '14:302026/10/22', '陳小姐0912345678', '指定', '是', '王小美 / 01', 'LINE',
+      ' 修改 ',
+      '已預約',
+      '報到成功',
+      '14:302026/10/22',
+      '陳小姐0912345678',
+      '指定',
+      '是',
+      '王小美 / 01',
+      'LINE',
     ])
     expect(cells(rowByTime('09:00', '2026/10/21')).slice(1)).toEqual([
-      '查看帳單', '已完成', '未報到', '09:002026/10/21', '客資已刪除', '不指定', '', '無設計師', '現場',
+      '查看帳單',
+      '已完成',
+      '未報到',
+      '09:002026/10/21',
+      '客資已刪除',
+      '不指定',
+      '',
+      '無設計師',
+      '現場',
     ])
     expect(cells(rowByTime('18:00', '2026/10/23')).slice(1)).toEqual([
-      ' 修改 ', '已預約', '', '18:002026/10/23', '客資已刪除', '不指定', '', '不指定設計師', '電話',
+      ' 修改 ',
+      '已預約',
+      '',
+      '18:002026/10/23',
+      '客資已刪除',
+      '不指定',
+      '',
+      '不指定設計師',
+      '電話',
     ])
     expect(cells(rowByTime('11:00', '2026/10/24'))[8]).toBe('阿明')
     expect(screen.getByText('查看帳單').closest('a').getAttribute('href')).toBe('/order/o-9')
@@ -235,7 +302,9 @@ describe('預約管理', () => {
     const { settle } = setup({
       GET_BOOKING_MANAGEMENT: {
         bookingManagement: {
-          pageLimit: 1000, pageOffset: 0, totalCount: 2,
+          pageLimit: 1000,
+          pageOffset: 0,
+          totalCount: 2,
           bookings: [
             { ...BOOKINGS[0], id: 'n1', no: 'N1', customer: { name: null, cellphone: null, isAlive: true } },
             { ...BOOKINGS[0], id: 'n2', no: 'N2', customer: { name: '歐陽小明', cellphone: '0911222333', isAlive: true } },

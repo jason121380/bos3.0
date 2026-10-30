@@ -28,14 +28,14 @@ export default function BoughtResults({
     if (pageRef.current) {
       paginationLabel(pageRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（paginationLabel）；只在 [pageRef.current, results] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（paginationLabel）；只在 [pageRef.current, results] 變動時呼叫，補上會每次 render 重跑
   }, [pageRef.current, results])
 
   return (
     <div {...rest} className={className}>
       <p className="mb-2 text-label tabular-nums text-text-secondary">
-        {/* 以後端的總筆數計算（原本用本頁筆數 results.length；Jason 2026/10/22 fix all） */}
-        共 {page.count || 0} 筆, {page.offset + 1} /{Math.ceil((page.count || 0) / page.limit)}
+        {/* 以後端的總筆數計算（原本用本頁筆數 results.length；Jason 2026/10/22 fix all） */}共 {page.count || 0} 筆, {page.offset + 1} /
+        {Math.ceil((page.count || 0) / page.limit)}
       </p>
       <Card>
         <CardHeader className="pb-4">
@@ -58,26 +58,15 @@ export default function BoughtResults({
                 <TableRow key={`${result.id}-${index}`}>
                   <TableCell>
                     <Button asChild size="sm" variant="secondary">
-                      <RouterLink to={`/order/${result.order.id}`}>
-                        帳單詳情
-                      </RouterLink>
+                      <RouterLink to={`/order/${result.order.id}`}>帳單詳情</RouterLink>
                     </Button>
                   </TableCell>
                   <TableCell>
                     <div className="font-medium tabular-nums">{idx(result, _ => _.order.no)}</div>
-                    <div className="text-caption tabular-nums text-text-secondary">
-                      {idx(result, _ => format(_.order.date, 'yyyy/MM/dd'))}
-                    </div>
+                    <div className="text-caption tabular-nums text-text-secondary">{idx(result, _ => format(_.order.date, 'yyyy/MM/dd'))}</div>
                   </TableCell>
-                  <TableCell>
-                    {idx(result, _ => _.order.customer.name + ' ' + _.order.customer.cellphone)}
-                  </TableCell>
-                  <TableCell>
-                    {idx(
-                      result,
-                      _ => _.order.designer.name + ' ' + _.order.designer.designerNo
-                    )}
-                  </TableCell>
+                  <TableCell>{idx(result, _ => _.order.customer.name + ' ' + _.order.customer.cellphone)}</TableCell>
+                  <TableCell>{idx(result, _ => _.order.designer.name + ' ' + _.order.designer.designerNo)}</TableCell>
                   <TableCell>{idx(result, _ => _.service.name)}</TableCell>
                   <TableCell numeric>{formatNumber(roundDecimal(idx(result, _ => _.price)))}</TableCell>
                 </TableRow>
@@ -88,7 +77,7 @@ export default function BoughtResults({
         <div className="flex justify-end px-3 pb-2">
           <TablePagination
             ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
+            labelRowsPerPage="每頁顯示數量"
             count={page.count}
             onPageChange={onChangePage}
             onRowsPerPageChange={onChangeRowsPerPage}

@@ -42,8 +42,9 @@ export default function CouponSells({
     // 新增列、展開區塊、從上一列按 Enter 移過來時游標跳到卡券；使用者自己點了這一列的欄位（焦點已在本列欄位上）時不搶焦點
     // （比照店販／會員卡；原本點另一列的欄位會先被拉到該列的卡券欄）
     const active = document.activeElement
-    const fieldFocused = [couponRef, availableCountRef, priceRef, countRef, remarkRef]
-      .some(ref => ref.current && (ref.current === active || (ref.current.contains && ref.current.contains(active))))
+    const fieldFocused = [couponRef, availableCountRef, priceRef, countRef, remarkRef].some(
+      ref => ref.current && (ref.current === active || (ref.current.contains && ref.current.contains(active)))
+    )
     if (expanded && focusFirstField && !fieldFocused) {
       idx(couponRef, _ => _.current.focus())
       setFocus('coupon')
@@ -89,7 +90,9 @@ export default function CouponSells({
     <Fragment>
       <div className={styles.couponSells}>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇預收卡" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenCouponModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇預收卡" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenCouponModal}>
+            <Copy aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
@@ -104,9 +107,9 @@ export default function CouponSells({
             isLaunched
             onKeyDown={event => {
               if (couponSell.isLocked !== 'FALSE') {
-                handleKeyDown({ event, nextField: "count" })
+                handleKeyDown({ event, nextField: 'count' })
               } else {
-                handleKeyDown({ event, nextField: "availableCount" })
+                handleKeyDown({ event, nextField: 'availableCount' })
               }
             }}
             onChange={function (value) {
@@ -125,9 +128,9 @@ export default function CouponSells({
                 })
               })
               if (value.isLocked !== 'FALSE') {
-                handleKeyDown({ event: { key: 'Enter' }, nextField: "count" })
+                handleKeyDown({ event: { key: 'Enter' }, nextField: 'count' })
               } else {
-                handleKeyDown({ event: { key: 'Enter' }, nextField: "availableCount" })
+                handleKeyDown({ event: { key: 'Enter' }, nextField: 'availableCount' })
               }
             }}
             inputProps={{ placeholder: '卡券名稱/代號' }}
@@ -208,7 +211,8 @@ export default function CouponSells({
           </Fragment>
         )}
         <RowIconButton
-          label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
+          label="清除此列"
+          className={`mr-1.5 ${ROW_ICON_ALIGN}`}
           data-testid={`couponSells-${index}-clear`}
           onClick={() => {
             onClear({ index })
@@ -219,7 +223,8 @@ export default function CouponSells({
         </RowIconButton>
         {!first && (
           <RowIconButton
-            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
+            label="刪除此列"
+            className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             data-testid={`couponSells-${index}-delete`}
             onClick={() => {
               removeCouponSell({

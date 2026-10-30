@@ -1,0 +1,19 @@
+# 非程式碼與產生檔：不格式化
+build/
+coverage/
+node_modules/
+public/
+docs/
+cypress/
+e2e/e2e-results/
+e2e-results/
+package-lock.json
+package.json
+*.md
+*.json
+*.yaml
+*.yml
+*.html
+*.svg
+*.png
+*.otf

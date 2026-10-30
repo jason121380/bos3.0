@@ -11,7 +11,7 @@ export default function useFetchDeleteAttendantRecord() {
 
   return {
     deleteAttendantRecord: clockInScheduleUUId =>
-    deleteAttendantRecord({
+      deleteAttendantRecord({
         variables: {
           clockInScheduleUUId,
         },

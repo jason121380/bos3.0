@@ -9,7 +9,20 @@ import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
 import { loginAs } from '../../../__tests__/testkit.test'
-import { baseFixtures, renderParameter, openTab, save, sent, checkboxByLabel, controlByLabel, controlsByLabel, selectValue, selectedText, typeText, cardOf } from './parameterKit.test'
+import {
+  baseFixtures,
+  renderParameter,
+  openTab,
+  save,
+  sent,
+  checkboxByLabel,
+  controlByLabel,
+  controlsByLabel,
+  selectValue,
+  selectedText,
+  typeText,
+  cardOf,
+} from './parameterKit.test'
 
 jest.setTimeout(30000)
 
@@ -308,7 +321,12 @@ describe('LINE 綁定人員讀取中', () => {
     await utils.settle()
     await wait(() => expect(recipients()).not.toBeDisabled())
     fireEvent.click(recipients())
-    expect(screen.getAllByRole('option').filter(o => o.tagName === 'LI').map(o => o.textContent)).toEqual(['設計師甲', '設計師乙', '設計師丙'])
+    expect(
+      screen
+        .getAllByRole('option')
+        .filter(o => o.tagName === 'LI')
+        .map(o => o.textContent)
+    ).toEqual(['設計師甲', '設計師乙', '設計師丙'])
   })
 })
 

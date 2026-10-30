@@ -25,9 +25,7 @@ function ProfitSharing({ refetch, itemAuthority }) {
   const { fetchSetUserRake } = useFetchSetUserRake()
   const { setUserDeductionWay } = useFetchSetUserDeductionWay()
   const { fetchUpdateUserIdentity } = useFetchUpdateUserIdentity()
-  const merchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
+  const merchantId = localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null
   const merchantJobTitlePointData = useFetchMerchantJobTitlePoint({ merchantId })
   const commissionWay = useFetchMerchantCommissionWay()
   const merchantJobTitlePoints = idx(merchantJobTitlePointData, _ => _.data.merchantJobTitlePoint)
@@ -54,8 +52,7 @@ function ProfitSharing({ refetch, itemAuthority }) {
             designer,
             _ =>
               !!(
-                (_.userRake.nonSegmented.length > 0 &&
-                  _.userRake.nonSegmented[0].rakeData.designate.length > 0) ||
+                (_.userRake.nonSegmented.length > 0 && _.userRake.nonSegmented[0].rakeData.designate.length > 0) ||
                 (_.userRake.segmented.length > 0 && _.userRake.segmented[0].designate.length > 0)
               )
           )
@@ -66,10 +63,8 @@ function ProfitSharing({ refetch, itemAuthority }) {
             _ =>
               !!(
                 (_.userRake.segmented.length > 0 && _.userRake.segmented[0].designate.length > 0) ||
-                (_.userRake.segmented.length > 0 &&
-                  _.userRake.segmented[0].nonDesignate.length > 0) ||
-                (_.userRake.segmented.length > 0 && _.userRake.segmented[0].nonDistinguish.length) >
-                0
+                (_.userRake.segmented.length > 0 && _.userRake.segmented[0].nonDesignate.length > 0) ||
+                (_.userRake.segmented.length > 0 && _.userRake.segmented[0].nonDistinguish.length) > 0
               )
           )
           // 判斷設計師是否有設全段抽成資料
@@ -83,20 +78,20 @@ function ProfitSharing({ refetch, itemAuthority }) {
               _.userRake.nonSegmented.length > 0
                 ? _.userRake.nonSegmented
                 : [
-                  {
-                    attribute: '預設',
-                    rakeData: {
-                      nonDistinguish: [
-                        {
-                          threshold: 0,
-                          rake: 0,
-                        },
-                      ],
-                      designate: [],
-                      nonDesignate: [],
+                    {
+                      attribute: '預設',
+                      rakeData: {
+                        nonDistinguish: [
+                          {
+                            threshold: 0,
+                            rake: 0,
+                          },
+                        ],
+                        designate: [],
+                        nonDesignate: [],
+                      },
                     },
-                  },
-                ]
+                  ]
             )
           }
           // 判斷設計師是否有設分段抽成資料
@@ -105,7 +100,7 @@ function ProfitSharing({ refetch, itemAuthority }) {
         })
       )
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [designer.loading])
 
   useEffect(() => {
@@ -113,7 +108,7 @@ function ProfitSharing({ refetch, itemAuthority }) {
       const data = idx(getAttributionForRake, _ => _.data.getAttributionForRake)
       setAttributions(data)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getAttributionForRake.loading])
 
   useEffect(() => {
@@ -127,15 +122,9 @@ function ProfitSharing({ refetch, itemAuthority }) {
 
   const handleSave = async () => {
     // 判斷抽成設定是判斷抽成設定是全段或分段
-    const nonSegmentedData =
-      profitSharing.nonSegmented.length > 0 && profitSharing.isSegmented === false
-        ? profitSharing.nonSegmented
-        : []
+    const nonSegmentedData = profitSharing.nonSegmented.length > 0 && profitSharing.isSegmented === false ? profitSharing.nonSegmented : []
 
-    const segmentedData =
-      profitSharing.segmented.length > 0 && profitSharing.isSegmented === true
-        ? profitSharing.segmented
-        : []
+    const segmentedData = profitSharing.segmented.length > 0 && profitSharing.isSegmented === true ? profitSharing.segmented : []
 
     const deductionWayInput = {
       userId: profitSharing.userId,
@@ -147,16 +136,16 @@ function ProfitSharing({ refetch, itemAuthority }) {
       MerchantJobTitlePointId: profitSharing.MerchantJobTitlePointId,
     }
     try {
-      if(profitSharing.deductionWay === '無扣項' || !profitSharing.deductionWay) throw new Error('請選擇服務扣項方式')
-      if(!profitSharing.MerchantJobTitlePointId) throw new Error('請選擇互助點數設定依據')
-       await Promise.all([
+      if (profitSharing.deductionWay === '無扣項' || !profitSharing.deductionWay) throw new Error('請選擇服務扣項方式')
+      if (!profitSharing.MerchantJobTitlePointId) throw new Error('請選擇互助點數設定依據')
+      await Promise.all([
         fetchSetUserRake({
           userId: profitSharing.userId,
           nonSegmented: nonSegmentedData,
           segmented: segmentedData,
         }),
         setUserDeductionWay({ input: deductionWayInput }),
-        fetchUpdateUserIdentity(updateUserIdentityData)
+        fetchUpdateUserIdentity(updateUserIdentityData),
       ])
       refetch()
       openSnackbar({ message: '更新成功', variant: 'success' })
@@ -185,7 +174,7 @@ function ProfitSharing({ refetch, itemAuthority }) {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col gap-4">
-                  <Field label='服務扣項方式'>
+                  <Field label="服務扣項方式">
                     <NativeSelect
                       value={profitSharing.deductionWay}
                       onChange={event =>
@@ -207,13 +196,9 @@ function ProfitSharing({ refetch, itemAuthority }) {
                       )}
                     </NativeSelect>
                   </Field>
-                  <Field label='互助點數設定依據'>
+                  <Field label="互助點數設定依據">
                     <NativeSelect
-                      value={
-                        profitSharing.MerchantJobTitlePointId
-                          ? profitSharing.MerchantJobTitlePointId
-                          : ''
-                      }
+                      value={profitSharing.MerchantJobTitlePointId ? profitSharing.MerchantJobTitlePointId : ''}
                       onChange={event =>
                         handleSalesWayChange({
                           value: idx(event, _ => _.target.value),
@@ -238,11 +223,7 @@ function ProfitSharing({ refetch, itemAuthority }) {
         </div>
         <div className="min-w-0">
           {profitSharing.segmented.length > 0 || profitSharing.nonSegmented.length > 0 ? (
-            <AboutPerformance
-              profitSharing={profitSharing}
-              onChange={handleSalesWayChange}
-              attributions={attributions}
-            />
+            <AboutPerformance profitSharing={profitSharing} onChange={handleSalesWayChange} attributions={attributions} />
           ) : (
             ''
           )}

@@ -99,34 +99,34 @@ export default function AccountingRecordDetail(props) {
     switch (focus) {
       case 'type1':
         type1Ref.current.focus()
-        break;
+        break
       case 'type2':
         type2Ref.current.focus()
-        break;
+        break
       case 'account':
         accountRef.current.focus()
-        break;
+        break
       case 'price':
         priceRef.current.focus()
         priceRef.current.select()
-        break;
+        break
       case 'relation':
         relationRef.current.focus()
-        break;
+        break
       case 'designer':
         designerRef.current.focus()
-        break;
+        break
       case 'payType':
         payTypeRef.current.focus()
-        break;
+        break
       case 'remarkItem':
         remarkItemRef.current.focus()
-        break;
+        break
       case 'remark':
         remarkRef.current.focus()
-        break;
+        break
       default:
-        break;
+        break
     }
   }, [focus])
 
@@ -135,45 +135,40 @@ export default function AccountingRecordDetail(props) {
       const accountingType = idx(accountingTypeData, _ =>
         _.data.getAccountingType.length > 0
           ? _.data.getAccountingType.map(data => {
-            return {
-              title: data,
-              value: data,
-            }
-          })
+              return {
+                title: data,
+                value: data,
+              }
+            })
           : [
-            {
-              title: '請至收支科目設定中新增收付方式',
-              value: '請至收支科目設定中新增收付方式',
-            },
-          ]
+              {
+                title: '請至收支科目設定中新增收付方式',
+                value: '請至收支科目設定中新增收付方式',
+              },
+            ]
       )
       setAccountingType(accountingType)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [accountingTypeData.data, accountingTypeData.loading])
   useEffect(() => {
     // 紀錄查詢失敗（或已被刪除）時不帶入，以空表單顯示、不整頁錯誤（Jason 2026/10/22）
     if (!getMoneyFlow.loading && idx(getMoneyFlow, _ => _.data.moneyFlow)) {
       setDate(getMoneyFlow.data.moneyFlow.date)
       setAccountingSubjects({
-        title:
-          getMoneyFlow.data.moneyFlow.accountingSubject !== null ? getMoneyFlow.data.moneyFlow.accountingSubject.name : '',
+        title: getMoneyFlow.data.moneyFlow.accountingSubject !== null ? getMoneyFlow.data.moneyFlow.accountingSubject.name : '',
         value: getMoneyFlow.data.moneyFlow.accountingSubject !== null ? getMoneyFlow.data.moneyFlow.accountingSubject.id : '',
-        number:
-          getMoneyFlow.data.moneyFlow.accountingSubject !== null ? getMoneyFlow.data.moneyFlow.accountingSubject.number : '',
-        inoutType:
-          getMoneyFlow.data.moneyFlow.accountingSubject !== null
-            ? getMoneyFlow.data.moneyFlow.accountingSubject.inoutType
-            : '',
+        number: getMoneyFlow.data.moneyFlow.accountingSubject !== null ? getMoneyFlow.data.moneyFlow.accountingSubject.number : '',
+        inoutType: getMoneyFlow.data.moneyFlow.accountingSubject !== null ? getMoneyFlow.data.moneyFlow.accountingSubject.inoutType : '',
       })
       setAmount(getMoneyFlow.data.moneyFlow.amount)
       setRelationUserId(
         getMoneyFlow.data.moneyFlow.relationUser !== null
           ? {
-            title: getMoneyFlow.data.moneyFlow.relationUser.name,
-            value: getMoneyFlow.data.moneyFlow.relationUser.id,
-            designerNo: getMoneyFlow.data.moneyFlow.relationUser.designerNo,
-          }
+              title: getMoneyFlow.data.moneyFlow.relationUser.name,
+              value: getMoneyFlow.data.moneyFlow.relationUser.id,
+              designerNo: getMoneyFlow.data.moneyFlow.relationUser.designerNo,
+            }
           : null
       )
       setInoutType(getMoneyFlow.data.moneyFlow.inoutType)
@@ -187,7 +182,7 @@ export default function AccountingRecordDetail(props) {
       setRemark(getMoneyFlow.data.moneyFlow.remark)
       setWalletType({ title: getMoneyFlow.data.moneyFlow.walletType, value: getMoneyFlow.data.moneyFlow.walletType })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMoneyFlow.loading])
 
   useEffect(() => {
@@ -219,26 +214,23 @@ export default function AccountingRecordDetail(props) {
       setRevenueSubjects(revenueInit)
       setExpenditureSubjects(expenditureInit)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [accountingSubjects.loading])
   useEffect(() => {
     if (!merchantPassword.loading) {
-      const editPwdIsUsing = idx(
-        merchantPassword,
-        _ => _.data.merchantPassword.editMoneyFlow.isUsing
-      )
+      const editPwdIsUsing = idx(merchantPassword, _ => _.data.merchantPassword.editMoneyFlow.isUsing)
       setEditPwdIsUsing(editPwdIsUsing)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantPassword.loading])
 
   useEffect(() => {
     if (showMessage && accountingSubject) {
       if (accountingSubject.title !== '員工借支' || (accountingSubject.title === '員工借支' && relationUserId)) {
-        setShowMessage(false);
+        setShowMessage(false)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（showMessage）；只在 [accountingSubject, relationUserId] 變動時呼叫，補上會每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（showMessage）；只在 [accountingSubject, relationUserId] 變動時呼叫，補上會每次 render 重跑
   }, [accountingSubject, relationUserId])
 
   if (getMoneyFlow.loading) return ''
@@ -370,17 +362,17 @@ export default function AccountingRecordDetail(props) {
               <div>
                 <MobileDatePicker
                   closeOnSelect
-                  label='開單日期'
+                  label="開單日期"
                   value={date}
                   onChange={value => setDate(new Date(value).getTime())}
                   format="yyyy/MM/dd"
                   localeText={{
-                    toolbarTitle: '選擇日期'
+                    toolbarTitle: '選擇日期',
                   }}
                   slotProps={{
                     toolbar: {
-                      toolbarFormat: 'M月d日'
-                    }
+                      toolbarFormat: 'M月d日',
+                    },
                   }}
                   slots={{
                     field: inputProps => (
@@ -388,7 +380,7 @@ export default function AccountingRecordDetail(props) {
                         <InputLabel htmlFor="date-picker">開單日期</InputLabel>
                         <Input
                           id="date-picker"
-                          type='text'
+                          type="text"
                           onClick={inputProps.onClick}
                           onKeyDown={event => {
                             if (event.key === 'Enter') {
@@ -402,13 +394,15 @@ export default function AccountingRecordDetail(props) {
                             }
                           }}
                           endAdornment={
-                            <InputAdornment position="end"><InsertInvitationIcon /></InputAdornment>
+                            <InputAdornment position="end">
+                              <InsertInvitationIcon />
+                            </InputAdornment>
                           }
                           label="日期"
                           value={format(inputProps.value, inputProps.format)}
                         />
                       </FormControl>
-                    )
+                    ),
                   }}
                 />
               </div>
@@ -449,18 +443,10 @@ export default function AccountingRecordDetail(props) {
                     }
                   }}
                 >
-                  <ToggleGroupItem
-                    ref={type1Ref}
-                    value="REVENUE"
-                    aria-label="left aligned"
-                  >
+                  <ToggleGroupItem ref={type1Ref} value="REVENUE" aria-label="left aligned">
                     收入
                   </ToggleGroupItem>
-                  <ToggleGroupItem
-                    ref={type2Ref}
-                    value="EXPENDITURE"
-                    aria-label="centered"
-                  >
+                  <ToggleGroupItem ref={type2Ref} value="EXPENDITURE" aria-label="centered">
                     支出
                   </ToggleGroupItem>
                 </ToggleGroup>
@@ -507,7 +493,7 @@ export default function AccountingRecordDetail(props) {
                         setAmount(e.target.value)
                       }}
                       onKeyDown={event => {
-                        if (event.key === "Enter") {
+                        if (event.key === 'Enter') {
                           if (accountingSubject !== null && accountingSubject.title === '員工借支') {
                             setFocus('relation')
                           } else {
@@ -535,20 +521,8 @@ export default function AccountingRecordDetail(props) {
                                 }
                               })}
                               value={relationUserId}
-                              getOptionLabel={option =>
-                                option.title +
-                                '-' +
-                                (option.designerNo ? option.designerNo : '(無代號)')
-                              }
-                              renderInput={params => (
-                                <TextField
-                                  {...params}
-                                  label="關係人"
-                                  variant="outlined"
-                                  fullWidth
-                                  inputRef={relationRef}
-                                />
-                              )}
+                              getOptionLabel={option => option.title + '-' + (option.designerNo ? option.designerNo : '(無代號)')}
+                              renderInput={params => <TextField {...params} label="關係人" variant="outlined" fullWidth inputRef={relationRef} />}
                               onFocus={() => setFocus('relation')}
                               onChange={(event, completed) => {
                                 setRelationUserId(completed)
@@ -578,20 +552,8 @@ export default function AccountingRecordDetail(props) {
                               }
                             })}
                             value={userId}
-                            getOptionLabel={option =>
-                              option.title +
-                              '-' +
-                              (option.designerNo ? option.designerNo : '(無代號)')
-                            }
-                            renderInput={params => (
-                              <TextField
-                                {...params}
-                                inputRef={designerRef}
-                                label="登錄者"
-                                variant="outlined"
-                                fullWidth
-                              />
-                            )}
+                            getOptionLabel={option => option.title + '-' + (option.designerNo ? option.designerNo : '(無代號)')}
+                            renderInput={params => <TextField {...params} inputRef={designerRef} label="登錄者" variant="outlined" fullWidth />}
                             onFocus={() => setFocus('designer')}
                             onChange={(event, completed) => {
                               setUserId(completed)
@@ -611,15 +573,7 @@ export default function AccountingRecordDetail(props) {
                       options={accountingType !== undefined ? accountingType : []}
                       getOptionLabel={option => option.value}
                       value={walletType}
-                      renderInput={params => (
-                        <TextField
-                          {...params}
-                          inputRef={payTypeRef}
-                          label="收付方式"
-                          variant="outlined"
-                          fullWidth
-                        />
-                      )}
+                      renderInput={params => <TextField {...params} inputRef={payTypeRef} label="收付方式" variant="outlined" fullWidth />}
                       onFocus={() => setFocus('payType')}
                       onChange={(event, completed) => {
                         selectWalletType(completed)
@@ -662,7 +616,9 @@ export default function AccountingRecordDetail(props) {
                         label="備註快捷鍵"
                       >
                         {remarkItem.map((data, index) => (
-                          <NativeSelectOption key={index} value={data.value}>{data.label}</NativeSelectOption>
+                          <NativeSelectOption key={index} value={data.value}>
+                            {data.label}
+                          </NativeSelectOption>
                         ))}
                       </NativeSelect>
                     </FormControl>
@@ -687,18 +643,10 @@ export default function AccountingRecordDetail(props) {
             </CardContent>
           </Card>
           <div className="flex items-center justify-between gap-4 py-6">
-            <Button
-              disabled={isClick}
-              onClick={editPwdIsUsing ? handleOpenDialog : Submit}
-              variant="primary"
-            >
+            <Button disabled={isClick} onClick={editPwdIsUsing ? handleOpenDialog : Submit} variant="primary">
               儲存
             </Button>
-            <Button
-              disabled={isClick}
-              onClick={() => setOpenDeleteDialog(true)}
-              variant="danger"
-            >
+            <Button disabled={isClick} onClick={() => setOpenDeleteDialog(true)} variant="danger">
               <Trash2 strokeWidth={1.75} />
               刪除
             </Button>
@@ -723,12 +671,7 @@ export default function AccountingRecordDetail(props) {
           </DialogHeader>
           <DialogBody>
             <Field label="儲存密碼" htmlFor="edit-money-flow-password">
-              <UiInput
-                id="edit-money-flow-password"
-                type="password"
-                value={editPwd}
-                onChange={event => setEditPwd(event.target.value)}
-              />
+              <UiInput id="edit-money-flow-password" type="password" value={editPwd} onChange={event => setEditPwd(event.target.value)} />
             </Field>
           </DialogBody>
           <DialogFooter>

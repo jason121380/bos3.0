@@ -23,7 +23,7 @@ export default function TopUpCreate() {
   const onSubmit = async data => {
     setIsClick(true)
     try {
-      const res = await walletDeposit({ input: {...data} })
+      const res = await walletDeposit({ input: { ...data } })
       if (res.data.walletDeposit) {
         openSnackbar({ message: '成功新增入金', variant: 'success' })
         history.push('/topup')

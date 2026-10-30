@@ -10,7 +10,7 @@ export default function useFetchSetMerchantBookingNotificationSetting() {
   const [setMerchantBookingNotificationSetting] = useMutation(SET_MERCHANT_BOOKING_NOTIFICATION_SETTING)
   return {
     setMerchantBookingNotificationSetting: ({ input }) =>
-    setMerchantBookingNotificationSetting({
+      setMerchantBookingNotificationSetting({
         variables: {
           input,
         },

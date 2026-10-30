@@ -1,6 +1,6 @@
 import { Copy, Download, Pencil } from 'lucide-react'
 
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteService from 'hooks/useFetchDeleteService'
@@ -8,7 +8,7 @@ import format from 'date-fns/format'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv'
 import useFetchMerchantHelperItems from 'hooks/useFetchMerchantHelperItems'
 import useFetchSettingBatchSettingForHelper from 'hooks/useFetchBatchSettingForHelper'
 import idx from 'idx'
@@ -48,9 +48,7 @@ const calcModeText = mode => {
 }
 
 function Results({ className, coupons, refetch, ...rest }) {
-  const merchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
+  const merchantId = localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null
 
   const merchantHelperItemsData = useFetchMerchantHelperItems({ merchantId })
   const merchantHelperItems = idx(merchantHelperItemsData, _ => _.data.merchantHelperItems)
@@ -96,24 +94,20 @@ function Results({ className, coupons, refetch, ...rest }) {
 
   useEffect(() => {
     if (!merchantPassword.loading) {
-      const deleteCouponIsUsing = idx(
-        merchantPassword,
-        _ => _.data.merchantPassword.deleteService.isUsing
-      )
+      const deleteCouponIsUsing = idx(merchantPassword, _ => _.data.merchantPassword.deleteService.isUsing)
       setDeleteCouponIsUsing(deleteCouponIsUsing)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantPassword.loading])
   // 只有啟用中的卡券可勾選；全選框以可選取的筆數判斷
   const selectableCount = coupons.filter(coupon => coupon.isUsing).length
   const handleSelectAll = event => {
-    const selectedCoupon = event.target.checked
-      ? coupons.filter(coupon => coupon.isUsing).map(coupon => coupon.id)
-      : []
+    const selectedCoupon = event.target.checked ? coupons.filter(coupon => coupon.isUsing).map(coupon => coupon.id) : []
     setSelectedCoupons(selectedCoupon)
   }
   const handleSelectOne = id => {
-    const newSelect = [...selectedCoupons], index = newSelect.indexOf(id)
+    const newSelect = [...selectedCoupons],
+      index = newSelect.indexOf(id)
     if (index > -1) {
       newSelect.splice(index, 1)
     } else {
@@ -143,15 +137,17 @@ function Results({ className, coupons, refetch, ...rest }) {
     updateLaunched({
       input: {
         ids: selectedCoupons,
-        status: saleStatus
-      }
-    }).then(() => {
-      refetch()
-      setSelectedCoupons([])
-      openSnackbar({ message: '變更上架狀態成功', variant: 'success' })
-    }).catch(err => {
-      openSnackbar({ message: err.message, variant: 'error' })
+        status: saleStatus,
+      },
     })
+      .then(() => {
+        refetch()
+        setSelectedCoupons([])
+        openSnackbar({ message: '變更上架狀態成功', variant: 'success' })
+      })
+      .catch(err => {
+        openSnackbar({ message: err.message, variant: 'error' })
+      })
   }
   useEffect(() => {
     const excelData = []
@@ -207,9 +203,7 @@ function Results({ className, coupons, refetch, ...rest }) {
   }
 
   const handleSubmitHelperDeductionSetting = () => {
-    const newHelperDeductionSetting = helperDeductionSetting.map(
-      ({ deductionWay, isDesignate, ...keepProteries }) => keepProteries
-    )
+    const newHelperDeductionSetting = helperDeductionSetting.map(({ deductionWay, isDesignate, ...keepProteries }) => keepProteries)
 
     const input = {
       ids: selectedCoupons,
@@ -269,7 +263,7 @@ function Results({ className, coupons, refetch, ...rest }) {
         )
       )
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantCommissions.loading])
 
   const handleOpenEditDeductionModal = () => {
@@ -364,9 +358,7 @@ function Results({ className, coupons, refetch, ...rest }) {
         >
           <div className="flex items-baseline gap-3">
             <CardTitle>所有預收卡</CardTitle>
-            <span className="text-label tabular-nums text-text-secondary">
-              共 {coupons !== undefined && coupons.length} 筆
-            </span>
+            <span className="text-label tabular-nums text-text-secondary">共 {coupons !== undefined && coupons.length} 筆</span>
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
@@ -377,9 +369,7 @@ function Results({ className, coupons, refetch, ...rest }) {
                   <Checkbox
                     aria-label="全選"
                     checked={selectableCount > 0 && selectedCoupons.length === selectableCount}
-                    indeterminate={
-                      selectedCoupons.length > 0 && selectedCoupons.length < selectableCount
-                    }
+                    indeterminate={selectedCoupons.length > 0 && selectedCoupons.length < selectableCount}
                     onChange={handleSelectAll}
                     disabled={coupons.filter(d => !d.isUsing).length === coupons.length}
                   />
@@ -388,8 +378,12 @@ function Results({ className, coupons, refetch, ...rest }) {
                 <TableHead className="min-w-[80px]">代號</TableHead>
                 <TableHead className="min-w-[100px]">類別</TableHead>
                 <TableHead className="min-w-[150px]">名稱</TableHead>
-                <TableHead numeric className="min-w-[100px]">參考價格</TableHead>
-                <TableHead numeric className="min-w-[100px]">可使用次數</TableHead>
+                <TableHead numeric className="min-w-[100px]">
+                  參考價格
+                </TableHead>
+                <TableHead numeric className="min-w-[100px]">
+                  可使用次數
+                </TableHead>
                 <TableHead className="min-w-[130px]">業績</TableHead>
                 <TableHead className="min-w-[100px]">變更者</TableHead>
                 <TableHead className="min-w-[120px]">扣項設定數量</TableHead>
@@ -418,19 +412,13 @@ function Results({ className, coupons, refetch, ...rest }) {
                   </TableCell>
                   <TableCell>
                     <Button asChild variant="ghost" size="icon" className="text-text-secondary">
-                      <RouterLink
-                        aria-label="編輯卡券"
-                        to={`/coupon/edit/${data.id}`}
-                        {...linkDisabled(!data.isUsing)}
-                      >
+                      <RouterLink aria-label="編輯卡券" to={`/coupon/edit/${data.id}`} {...linkDisabled(!data.isUsing)}>
                         <Pencil strokeWidth={1.75} />
                       </RouterLink>
                     </Button>
                   </TableCell>
                   <TableCell>{data.no}</TableCell>
-                  <TableCell>
-                    {data.ServiceCategory !== null ? data.ServiceCategory.name : '無類別'}
-                  </TableCell>
+                  <TableCell>{data.ServiceCategory !== null ? data.ServiceCategory.name : '無類別'}</TableCell>
                   <TableCell>{data.name}</TableCell>
                   <TableCell numeric>{formatNumber(data.price)}</TableCell>
                   <TableCell numeric>{formatNumber(data.ticketAvailableCount)}</TableCell>

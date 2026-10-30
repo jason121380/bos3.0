@@ -87,12 +87,14 @@ function useAnchoredMenu(anchorRef, open) {
       if (target === document.body) {
         setStyle(placeAnchoredMenu(rect, { viewport }))
       } else {
-        setStyle(placeAnchoredMenu(rect, {
-          viewport,
-          hostRect: target.getBoundingClientRect(),
-          scrollTop: target.scrollTop,
-          scrollLeft: target.scrollLeft,
-        }))
+        setStyle(
+          placeAnchoredMenu(rect, {
+            viewport,
+            hostRect: target.getBoundingClientRect(),
+            scrollTop: target.scrollTop,
+            scrollLeft: target.scrollLeft,
+          })
+        )
       }
     }
     update()
@@ -197,10 +199,13 @@ const IndexSelect = React.forwardRef(function IndexSelect(
     button.addEventListener('change', onDomChange)
     return () => button.removeEventListener('change', onDomChange)
   }, [])
-  React.useEffect(() => () => {
-    clearTimeout(suppressTimerRef.current)
-    if (swallowClickRef.current) window.removeEventListener('click', swallowClickRef.current, true)
-  }, [])
+  React.useEffect(
+    () => () => {
+      clearTimeout(suppressTimerRef.current)
+      if (swallowClickRef.current) window.removeEventListener('click', swallowClickRef.current, true)
+    },
+    []
+  )
 
   const escape = event => {
     event.preventDefault()
@@ -358,7 +363,9 @@ const IndexSelect = React.forwardRef(function IndexSelect(
             armSuppressClick(i)
             if (!moved) activate(i, event)
           }}
-          onPointerCancel={() => { touchPressRef.current = null }}
+          onPointerCancel={() => {
+            touchPressRef.current = null
+          }}
           onMouseMove={() => {
             if (!option.disabled && active !== i) setActive(i)
           }}

@@ -32,7 +32,7 @@ function General({ info, inventoryData, CSVData }) {
     <Fragment>
       <Card className="mt-[24px] whitespace-nowrap print:!m-0 print:overflow-visible print:rounded-none print:p-0">
         {/* 標題列（noprint）：className 原樣保留，版面以 inline style 重現原卡片標題的內距（上、左右 16px，下 0） */}
-        <div className='noprint' style={{ padding: '16px 16px 0' }}>
+        <div className="noprint" style={{ padding: '16px 16px 0' }}>
           <div className={`${styles.hearderWrap} text-heading text-text`}>
             {info !== null && (
               <div className={styles.infoWrap}>
@@ -42,21 +42,12 @@ function General({ info, inventoryData, CSVData }) {
             )}
             <div className={styles.btnWrap}>
               <Button asChild size="sm" variant="secondary" className="noprint">
-                <CSVLink
-                  data={CSVData}
-                  filename="盤點紀錄.csv"
-                  className="no-underline"
-                >
+                <CSVLink data={CSVData} filename="盤點紀錄.csv" className="no-underline">
                   <Download strokeWidth={1.75} />
                   報表匯出
                 </CSVLink>
               </Button>
-              <Button
-                size="sm"
-                className="noprint"
-                variant="secondary"
-                onClick={() => window.print()}
-              >
+              <Button size="sm" className="noprint" variant="secondary" onClick={() => window.print()}>
                 <Printer strokeWidth={1.75} />
                 列印
               </Button>
@@ -65,7 +56,7 @@ function General({ info, inventoryData, CSVData }) {
         </div>
         <CardContent className="print:p-0">
           {/* 列印：儲存格不套螢幕的固定列高（h-10），避免長清單列印頁數變多 */}
-          <Table wrapperClassName='InventoryWorkReviewTable' className="print:[&_td]:h-auto print:[&_th]:h-auto">
+          <Table wrapperClassName="InventoryWorkReviewTable" className="print:[&_td]:h-auto print:[&_th]:h-auto">
             <TableHeader>
               <TableRow className="hover:bg-transparent">
                 <TableHead>商品名稱</TableHead>
@@ -81,9 +72,7 @@ function General({ info, inventoryData, CSVData }) {
                   <TableCell>{productName}</TableCell>
                   <TableCell>{productNo}</TableCell>
                   <TableCell numeric>{formatNumber(currentCount)}</TableCell>
-                  <TableCell numeric>
-                    {inventoryCount === null ? '' : formatNumber(inventoryCount)}
-                  </TableCell>
+                  <TableCell numeric>{inventoryCount === null ? '' : formatNumber(inventoryCount)}</TableCell>
                   <TableCell numeric>{inventoryCount === null ? '' : handleCheckCount(inventoryCount - currentCount)}</TableCell>
                 </TableRow>
               ))}

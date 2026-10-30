@@ -1,7 +1,7 @@
 import { openSnackbar } from 'elements/snackbars'
 import { useRef, useState, useEffect } from 'react'
 import Page from 'components/Page'
-import ReCAPTCHA from "react-google-recaptcha-enterprise"
+import ReCAPTCHA from 'react-google-recaptcha-enterprise'
 import useFetchGetCustomerCheckTicket from 'hooks/useFetchGetCustomerCheckTicket'
 import produce from 'immer'
 import cloneDeep from 'lodash/cloneDeep'
@@ -19,11 +19,11 @@ const CustomerEventTicketSearch = () => {
   const [submitData, setSubmitData] = useState({
     name: '',
     cellphone: '',
-    recaptchaToken: null
+    recaptchaToken: null,
   })
   const [data, setData] = useState({
     message: '',
-    customerEventTickets: []
+    customerEventTickets: [],
   })
 
   const handleSetInputValue = (value, key) => {
@@ -37,7 +37,7 @@ const CustomerEventTicketSearch = () => {
   const handleSearchData = async () => {
     const { name, cellphone, recaptchaToken } = cloneDeep(submitData)
     try {
-      if (/* !name.trim() ||  */!cellphone.trim()) {
+      if (/* !name.trim() ||  */ !cellphone.trim()) {
         openSnackbar({ message: '電話不得為空', variant: 'warning' })
       } else {
         getCustomerTicket({
@@ -45,9 +45,9 @@ const CustomerEventTicketSearch = () => {
             input: {
               // name,
               cellphone,
-              recaptchaToken
-            }
-          }
+              recaptchaToken,
+            },
+          },
         })
       }
     } catch (error) {
@@ -67,7 +67,7 @@ const CustomerEventTicketSearch = () => {
         })
       )
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [customerTicketData.loading])
 
   return (
@@ -98,10 +98,10 @@ const CustomerEventTicketSearch = () => {
           </Field>
           <div className="flex justify-center">
             <ReCAPTCHA
-              sitekey='6Ld-aOIoAAAAAGbZQp0OxepSjatcmlUIxPuJA8uq'
+              sitekey="6Ld-aOIoAAAAAGbZQp0OxepSjatcmlUIxPuJA8uq"
               onChange={v => handleSetInputValue(v, 'recaptchaToken')}
               ref={reCaptchaRef}
-              type='image'
+              type="image"
             />
           </div>
         </CardContent>
@@ -113,7 +113,9 @@ const CustomerEventTicketSearch = () => {
         disabled={!submitData.recaptchaToken || customerTicketData.loading}
         aria-describedby={!submitData.recaptchaToken ? 'ticket-search-missing' : undefined}
         onClick={handleSearchData}
-      >{customerTicketData.loading ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : '提交'}</Button>
+      >
+        {customerTicketData.loading ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : '提交'}
+      </Button>
       {/* 停用原因（STYLE.md §6）：要先完成上方的 reCAPTCHA 驗證；查詢中不列原因 */}
       {!submitData.recaptchaToken && !customerTicketData.loading && (
         <p id="ticket-search-missing" role="status" className="mt-2 text-center text-caption text-text-secondary">
@@ -121,12 +123,8 @@ const CustomerEventTicketSearch = () => {
         </p>
       )}
       {/* 查詢用的 reCAPTCHA token 只能用一次，失敗時請使用者重新提交，不提供直接重查 */}
-      {!customerTicketData.loading && customerTicketData.error && (
-        <QueryFailed description="請稍後再按一次「提交」。" />
-      )}
-      {!customerTicketData.loading && customerTicketData.data && (
-        <EventTicketsRecord data={data} />
-      )}
+      {!customerTicketData.loading && customerTicketData.error && <QueryFailed description="請稍後再按一次「提交」。" />}
+      {!customerTicketData.loading && customerTicketData.data && <EventTicketsRecord data={data} />}
     </Page>
   )
 }

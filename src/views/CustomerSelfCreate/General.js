@@ -7,10 +7,7 @@ import { Card, CardContent } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { RadioField } from 'ui/radio'
 
-const General = ({
-  data, handleSetInputValue, isClick,
-  handleSubmit, /* reCaptchaRef */
-}) => {
+const General = ({ data, handleSetInputValue, isClick, handleSubmit /* reCaptchaRef */ }) => {
   return (
     <Fragment>
       <div className="flex flex-col gap-4">
@@ -23,7 +20,7 @@ const General = ({
                 className="h-11"
                 value={data.name}
                 maxLength={20}
-                placeholder='字數限制20字'
+                placeholder="字數限制20字"
                 onChange={e => handleSetInputValue(e.target.value, 'name')}
               />
             </Field>
@@ -33,7 +30,7 @@ const General = ({
                 className="h-11"
                 value={data.cellphone}
                 maxLength={10}
-                placeholder='ex:0912345678'
+                placeholder="ex:0912345678"
                 type="tel"
                 onChange={e => {
                   if (e.target.value.match(/^[0-9]+$/) || e.target.value === '') {
@@ -52,8 +49,20 @@ const General = ({
             </Field>
             <Field label="性別" required>
               <div className="flex flex-row gap-4" role="radiogroup" aria-label="性別">
-                <RadioField name="gender" value="MALE" checked={data.gender === 'MALE'} onChange={(e, v) => handleSetInputValue(v, 'gender')} label="男" />
-                <RadioField name="gender" value="FEMALE" checked={data.gender === 'FEMALE'} onChange={(e, v) => handleSetInputValue(v, 'gender')} label="女" />
+                <RadioField
+                  name="gender"
+                  value="MALE"
+                  checked={data.gender === 'MALE'}
+                  onChange={(e, v) => handleSetInputValue(v, 'gender')}
+                  label="男"
+                />
+                <RadioField
+                  name="gender"
+                  value="FEMALE"
+                  checked={data.gender === 'FEMALE'}
+                  onChange={(e, v) => handleSetInputValue(v, 'gender')}
+                  label="女"
+                />
               </div>
             </Field>
             <Field label="Email" htmlFor="self-create-email">
@@ -66,41 +75,31 @@ const General = ({
               />
             </Field>
             <Field label="Line ID" htmlFor="self-create-line-id">
-              <Input
-                id="self-create-line-id"
-                className="h-11"
-                value={data.lineId}
-                onChange={e => handleSetInputValue(e.target.value, 'lineId')}
-              />
+              <Input id="self-create-line-id" className="h-11" value={data.lineId} onChange={e => handleSetInputValue(e.target.value, 'lineId')} />
             </Field>
             <Field label="生日">
               <MobileDatePicker
                 closeOnSelect
                 format="yyyy/MM/dd"
-                openTo='year'
+                openTo="year"
                 value={data.birthday}
                 localeText={{
-                  toolbarTitle: '選擇生日'
+                  toolbarTitle: '選擇生日',
                 }}
                 slotProps={{
                   textField: {
                     placeholder: '',
-                    fullWidth: true
+                    fullWidth: true,
                   },
                   toolbar: {
-                    toolbarFormat: 'yyyy年M月d日'
-                  }
+                    toolbarFormat: 'yyyy年M月d日',
+                  },
                 }}
                 onChange={value => handleSetInputValue(new Date(value).getTime(), 'birthday')}
               />
             </Field>
             <Field label="地址" htmlFor="self-create-address">
-              <Input
-                id="self-create-address"
-                className="h-11"
-                value={data.address}
-                onChange={e => handleSetInputValue(e.target.value, 'address')}
-              />
+              <Input id="self-create-address" className="h-11" value={data.address} onChange={e => handleSetInputValue(e.target.value, 'address')} />
             </Field>
             {/* <Grid container spacing={2} style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
               <ReCAPTCHA
@@ -112,13 +111,9 @@ const General = ({
             </Grid> */}
           </CardContent>
         </Card>
-        <Button
-          variant="primary"
-          size="lg"
-          className="h-11 w-full"
-          disabled={isClick || !data.recaptchaToken}
-          onClick={handleSubmit}
-        >{isClick ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : '提交'}</Button>
+        <Button variant="primary" size="lg" className="h-11 w-full" disabled={isClick || !data.recaptchaToken} onClick={handleSubmit}>
+          {isClick ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : '提交'}
+        </Button>
       </div>
     </Fragment>
   )

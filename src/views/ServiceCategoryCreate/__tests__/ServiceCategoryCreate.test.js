@@ -17,9 +17,7 @@ jest.mock('hooks/useFetchGetAttribution', () => ({
 
 const historyMock = { push: jest.fn(), location: {}, listen: jest.fn() }
 const createWrapper = () => {
-  const merchantId = window.localStorage.getItem('userMerchant')
-    ? JSON.parse(window.localStorage.getItem('userMerchant')).id
-    : null
+  const merchantId = window.localStorage.getItem('userMerchant') ? JSON.parse(window.localStorage.getItem('userMerchant')).id : null
 
   const mocks = [
     {

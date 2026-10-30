@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
-const initialSocketState = { schedule: null };
+const initialSocketState = { schedule: null }
 
 const socketSlice = createSlice({
   name: 'schedule',
@@ -10,8 +10,8 @@ const socketSlice = createSlice({
       state.schedule = action.payload
     },
   },
-});
+})
 
-export const socketActions = socketSlice.actions;
+export const socketActions = socketSlice.actions
 
-export default socketSlice.reducer;
+export default socketSlice.reducer

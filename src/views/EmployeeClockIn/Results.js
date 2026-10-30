@@ -69,47 +69,82 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
   const showBreaktime = (breakTime, recordIndex, length) => {
     return (
       <Fragment>
-        {checkBreakTime(breakTime) && <b style={{ color: 'rgb(var(--text))' }} id='breakTime'>外出時間：</b>}
+        {checkBreakTime(breakTime) && (
+          <b style={{ color: 'rgb(var(--text))' }} id="breakTime">
+            外出時間：
+          </b>
+        )}
         {/* 開始、結束都沒有時間的外出紀錄整筆不顯示（原本會留下「, - 」，Jason 2026/10/22 fix all） */}
-        {breakTime.filter(d => d.start.time !== null || (d.end !== null && d.end.time !== null)).map((d, index) => {
-          if (index === 0) {
-            if (d.end === null) {
-              if (d.start.time !== null) {
+        {breakTime
+          .filter(d => d.start.time !== null || (d.end !== null && d.end.time !== null))
+          .map((d, index) => {
+            if (index === 0) {
+              if (d.end === null) {
+                if (d.start.time !== null) {
+                  return (
+                    <Fragment key={`breakTime=${index}`}>
+                      <span className="time" style={{ color: color(d.start.distanceValue) }}>
+                        {format(d.start.time, 'HH:mm')}
+                        {distanceMark(d.start.distanceValue)}
+                      </span>
+                    </Fragment>
+                  )
+                }
+              } else {
                 return (
                   <Fragment key={`breakTime=${index}`}>
-                    <span className='time' style={{ color: color(d.start.distanceValue) }}>{format(d.start.time, 'HH:mm')}{distanceMark(d.start.distanceValue)}</span>
+                    {d.start.time !== null && (
+                      <span className="time" style={{ color: color(d.start.distanceValue) }}>
+                        {format(d.start.time, 'HH:mm')}
+                        {distanceMark(d.start.distanceValue)}
+                      </span>
+                    )}
+                    {' - '}
+                    {d.end !== null && d.end.time !== null && (
+                      <span className="time" style={{ color: color(d.end.distanceValue) }}>
+                        {format(d.end.time, 'HH:mm')}
+                        {distanceMark(d.end.distanceValue)}
+                      </span>
+                    )}
                   </Fragment>
                 )
               }
             } else {
-              return (
-                <Fragment key={`breakTime=${index}`}>
-                  {d.start.time !== null && <span className='time' style={{ color: color(d.start.distanceValue) }}>{format(d.start.time, 'HH:mm')}{distanceMark(d.start.distanceValue)}</span>}
-                  {' - '}{d.end !== null && d.end.time !== null && <span className='time' style={{ color: color(d.end.distanceValue) }}>{format(d.end.time, 'HH:mm')}{distanceMark(d.end.distanceValue)}</span>}
-                </Fragment>
-              )
-            }
-          } else {
-            if (d.end === null) {
-              if (d.start.time !== null) {
+              if (d.end === null) {
+                if (d.start.time !== null) {
+                  return (
+                    <Fragment key={`breakTime=${index}`}>
+                      {', '}
+                      <span className="time" style={{ color: color(d.start.distanceValue) }}>
+                        {format(d.start.time, 'HH:mm')}
+                        {distanceMark(d.start.distanceValue)}
+                      </span>
+                    </Fragment>
+                  )
+                }
+              } else {
                 return (
                   <Fragment key={`breakTime=${index}`}>
-                    {', '}<span className='time' style={{ color: color(d.start.distanceValue) }}>{format(d.start.time, 'HH:mm')}{distanceMark(d.start.distanceValue)}</span>
+                    {', '}
+                    {d.start.time !== null && (
+                      <span className="time" style={{ color: color(d.start.distanceValue) }}>
+                        {format(d.start.time, 'HH:mm')}
+                        {distanceMark(d.start.distanceValue)}
+                      </span>
+                    )}
+                    {' - '}
+                    {d.end !== null && d.end.time !== null && (
+                      <span className="time" style={{ color: color(d.end.distanceValue) }}>
+                        {format(d.end.time, 'HH:mm')}
+                        {distanceMark(d.end.distanceValue)}
+                      </span>
+                    )}
                   </Fragment>
                 )
               }
-            } else {
-              return (
-                <Fragment key={`breakTime=${index}`}>
-                  {', '}
-                  {d.start.time !== null && <span className='time' style={{ color: color(d.start.distanceValue) }}>{format(d.start.time, 'HH:mm')}{distanceMark(d.start.distanceValue)}</span>}
-                  {' - '}{d.end !== null && d.end.time !== null && <span className='time' style={{ color: color(d.end.distanceValue) }}>{format(d.end.time, 'HH:mm')}{distanceMark(d.end.distanceValue)}</span>}
-                </Fragment>
-              )
             }
-          }
-          return undefined
-        })}
+            return undefined
+          })}
       </Fragment>
     )
   }
@@ -153,49 +188,43 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
     }
   }
   const clockInOutRender = (value, designer) => {
-    return (
-      value.map((time, index) => {
-        if (time.out !== null) {
-          return (
-            <Fragment key={`clockInOutRender-${index}`}>
-              {checkBr(time, index) && <hr className='hrBorderStyleInEmployeeClockin' />}
-              <b style={{ color: 'rgb(var(--success))' }}>上班時間：</b>
-              {(time.in !== null && time.in.time !== null) &&
-                <span style={{ color: color(time.in.distanceValue) }} className={`time${lateOrEarly(value.length - 1,
-                  index,
-                  designer.isLate)}`}>
-                  {format(time.in.time, 'HH:mm')}</span>
-              }
-              {' - '}
-              <span style={{ color: color(time.out.distanceValue) }} className={`time${lateOrEarly(value.length - 1,
-                index,
-                designer.isLeaveEarly)}`}>
-                {format(time.out.time, 'HH:mm')}
+    return value.map((time, index) => {
+      if (time.out !== null) {
+        return (
+          <Fragment key={`clockInOutRender-${index}`}>
+            {checkBr(time, index) && <hr className="hrBorderStyleInEmployeeClockin" />}
+            <b style={{ color: 'rgb(var(--success))' }}>上班時間：</b>
+            {time.in !== null && time.in.time !== null && (
+              <span style={{ color: color(time.in.distanceValue) }} className={`time${lateOrEarly(value.length - 1, index, designer.isLate)}`}>
+                {format(time.in.time, 'HH:mm')}
               </span>
-              <br />
-              {time.breakRecord.length > 0 && showBreaktime(time.breakRecord, index, value.length)}
-            </Fragment>
-          )
-        } else {
-          return (
-            <Fragment key={`clockInOutRender-${index}`}>
-              {checkBr(time, index) && <hr className='hrBorderStyleInEmployeeClockin' />}
-              {time.in.time !== null &&
-                <Fragment>
-                  <b style={{ color: 'rgb(var(--success))' }}>上班時間：</b>
-                  <span style={{ color: color(time.in.distanceValue) }} className={`time${lateOrEarly(value.length - 1,
-                    index,
-                    designer.isLate)}`}>{format(time.in.time, 'HH:mm')}
-                  </span>
-                  <br />
-                </Fragment>
-              }
-              {time.breakRecord.length > 0 && showBreaktime(time.breakRecord, index, value.length)}
-            </Fragment>
-          )
-        }
-      })
-    )
+            )}
+            {' - '}
+            <span style={{ color: color(time.out.distanceValue) }} className={`time${lateOrEarly(value.length - 1, index, designer.isLeaveEarly)}`}>
+              {format(time.out.time, 'HH:mm')}
+            </span>
+            <br />
+            {time.breakRecord.length > 0 && showBreaktime(time.breakRecord, index, value.length)}
+          </Fragment>
+        )
+      } else {
+        return (
+          <Fragment key={`clockInOutRender-${index}`}>
+            {checkBr(time, index) && <hr className="hrBorderStyleInEmployeeClockin" />}
+            {time.in.time !== null && (
+              <Fragment>
+                <b style={{ color: 'rgb(var(--success))' }}>上班時間：</b>
+                <span style={{ color: color(time.in.distanceValue) }} className={`time${lateOrEarly(value.length - 1, index, designer.isLate)}`}>
+                  {format(time.in.time, 'HH:mm')}
+                </span>
+                <br />
+              </Fragment>
+            )}
+            {time.breakRecord.length > 0 && showBreaktime(time.breakRecord, index, value.length)}
+          </Fragment>
+        )
+      }
+    })
   }
   return (
     <div className="EmployeeClockInTableContainer">
@@ -219,36 +248,33 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                   btnStatus[index].clockInRecord.map((d, designerTimeIndex) => {
                     if (designerTimeIndex === designer.clockInRecord.length - 1) {
                       if (d.in !== null && d.out === null && d.breakRecord.length === 0) {
-                        return <Badge key={`designerTimeIndex-${designerTimeIndex}`} variant="success">上班中</Badge>
+                        return (
+                          <Badge key={`designerTimeIndex-${designerTimeIndex}`} variant="success">
+                            上班中
+                          </Badge>
+                        )
                       }
                       if (d.time !== null && d.out !== null) {
                         return (
-                          <Badge
-                            key={`designerTimeIndex-${designerTimeIndex}`}
-                            variant="warning"
-                          >
+                          <Badge key={`designerTimeIndex-${designerTimeIndex}`} variant="warning">
                             已下班
                           </Badge>
                         )
                       }
-                      if (
-                        d.in !== null &&
-                        d.out === null &&
-                        d.breakRecord.length > 0 &&
-                        d.breakRecord[d.breakRecord.length - 1]
-                      ) {
+                      if (d.in !== null && d.out === null && d.breakRecord.length > 0 && d.breakRecord[d.breakRecord.length - 1]) {
                         if (d.breakRecord[d.breakRecord.length - 1].end === null) {
                           return (
-                            <Badge
-                              key={`designerTimeIndex-${designerTimeIndex}`}
-                              variant="accent"
-                            >
+                            <Badge key={`designerTimeIndex-${designerTimeIndex}`} variant="accent">
                               外出中
                             </Badge>
                           )
                         }
                         if (d.breakRecord[d.breakRecord.length - 1].end !== null) {
-                          return <Badge key={`designerTimeIndex-${designerTimeIndex}`} variant="success">上班中</Badge>
+                          return (
+                            <Badge key={`designerTimeIndex-${designerTimeIndex}`} variant="success">
+                              上班中
+                            </Badge>
+                          )
                         }
                       }
                     }
@@ -259,15 +285,9 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                 )}
               </TableCell>
               <TableCell className="tabular-nums">{designer.userNo ? designer.userNo : '無代號'}</TableCell>
-              <TableCell className="max-w-[100px] overflow-hidden text-ellipsis">
-                {designer.userNickName ? designer.userNickName : ''}
-              </TableCell>
-              <TableCell className="min-w-[100px]">
-                {designer.userName}
-              </TableCell>
-              <TableCell className="min-w-[100px]">
-                {designer.clockInSetting !== null && designer.clockInSetting.name}
-              </TableCell>
+              <TableCell className="max-w-[100px] overflow-hidden text-ellipsis">{designer.userNickName ? designer.userNickName : ''}</TableCell>
+              <TableCell className="min-w-[100px]">{designer.userName}</TableCell>
+              <TableCell className="min-w-[100px]">{designer.clockInSetting !== null && designer.clockInSetting.name}</TableCell>
               <TableCell className="min-w-[200px] whitespace-normal py-2 tabular-nums">
                 {designer.clockInRecord.length > 0 && clockInOutRender(designer.clockInRecord, designer)}
               </TableCell>
@@ -298,10 +318,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                     variant="secondary"
                     className={`break ${clockBtn} text-accent`}
                     onClick={() => {
-                      handleClockIn(
-                        btnStatus[index].userId,
-                        buttonStatus(btnStatus[index].clockInRecord) === '外出' ? 'BREAKSTART' : 'BREAKEND'
-                      )
+                      handleClockIn(btnStatus[index].userId, buttonStatus(btnStatus[index].clockInRecord) === '外出' ? 'BREAKSTART' : 'BREAKEND')
                     }}
                   >
                     {buttonStatus(btnStatus[index].clockInRecord)}
