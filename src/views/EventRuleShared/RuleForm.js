@@ -204,7 +204,6 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                   {inputValue.service.type === 'SPECIFIC' && (
                     <BelongAutocomplete
                       optionData={attributions}
-                      isloading={attributions.langth === 0}
                       value={inputValue.service.belong}
                       className="Autocomplete"
                       isReadOnly={isReadOnly}
@@ -249,7 +248,6 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                   {inputValue.ticketSellInPerformance.type === 'SPECIFIC' && (
                     <BelongAutocomplete
                       optionData={attributions}
-                      isloading={attributions.langth === 0}
                       value={inputValue.ticketSellInPerformance.belong}
                       className="Autocomplete"
                       isReadOnly={isReadOnly}
@@ -293,7 +291,6 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                   {inputValue.ticketSellNotInPerformance.type === 'SPECIFIC' && (
                     <BelongAutocomplete
                       optionData={attributions}
-                      isloading={attributions.langth === 0}
                       value={inputValue.ticketSellNotInPerformance.belong}
                       className="Autocomplete"
                       isReadOnly={isReadOnly}
@@ -338,7 +335,6 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                   {inputValue.ticketUsePerformanceEntered.type === 'SPECIFIC' && (
                     <BelongAutocomplete
                       optionData={attributions}
-                      isloading={attributions.langth === 0}
                       value={inputValue.ticketUsePerformanceEntered.belong}
                       className="Autocomplete"
                       onChange={value => handleTypeChange('ticketUsePerformanceEntered', 'belong', value)}
@@ -382,7 +378,6 @@ function RuleForm({ inputValue, attributions, setInputValue, handleSubmit, isCli
                   {inputValue.ticketUsePerformanceNotEntered.type === 'SPECIFIC' && (
                     <BelongAutocomplete
                       optionData={attributions}
-                      isloading={attributions.langth === 0}
                       value={inputValue.ticketUsePerformanceNotEntered.belong}
                       className="Autocomplete"
                       onChange={value => handleTypeChange('ticketUsePerformanceNotEntered', 'belong', value)}

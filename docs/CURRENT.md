@@ -82,7 +82,10 @@
 - eslint-check：69 → 16。剩下 16 則都是 4 個收據列印範本（#printMain／#printThermal）`<img>` 的 `jsx-a11y/alt-text`，依鐵則 2 未動，待 Jason 決定。
 - 程式內部名稱錯字：96 個名稱、608 處、111 檔（Pannel→Panel、Comfirm→Confirm、Detial→Detail…）。GraphQL 名稱與欄位、後端列舉值、CSS class、key／id 字串、網址、與檔名綁定的元件名刻意保留。
 - 刪除死碼：MerchantListAutocomplete 三個元件與 ProductListTreeView 中永遠不會被呼叫的 `isOptionEqualToValue`／`renderOption`。
-- 清理時發現、會改變行為所以未修（待 Jason 決定）：RuleForm 5 處 `attributions.langth === 0` 恆為 false（載入中提示從不顯示）；`profitSharing.designationUsag` 讀不存在的欄位（2 檔）；EHS2Page 的 `vlaue=` 拼錯，輸入框實際是非受控。
+- 清理時發現的三處拼字錯誤（Jason 2026/10/31「照建議改」，`v3.10312238`）：
+  - RuleForm 5 處 `isloading={attributions.langth === 0}`：查證後發現 `BelongAutocomplete` 的 `isloading` 會把欄位停用，若「改正」成 `length`，店家沒有歸屬或查詢失敗時歸屬欄位會永久鎖住、連手動輸入都不行。所以**拿掉這個恆為 false 的 prop，行為不變**，並在 `EventRuleCreate.fixes.test.js` 加防呆測試（若有人改成 length 會失敗，已驗證）。
+  - `profitSharing.designationUsag`（AboutPerformance、EditMultipleDesignersRakeSettingModal）：前一個條件已處理分指定，這個恆為 undefined 的判斷不影響結果；拿掉，寫法與新增／編輯抽成設定一致，行為不變。
+  - EHS2Page（`/ehs2/ehs`）的 `vlaue=`：改正會讓輸入框變受控、改變行為，且頁面用途待確認，**先不動**。
 
 **待辦（未做）**
 
