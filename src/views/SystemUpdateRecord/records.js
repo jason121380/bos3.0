@@ -11,7 +11,7 @@ export function calendarUpdateTime(isoDate) {
 const shippedRecords = [
   {
     title: '2026/10/31 測試覆蓋率',
-    versionNo: 'v3.10311426',
+    versionNo: 'v3.10311600',
     updateTime: '2026-10-31',
     content: '- 內部測試補齊並在每次更新前檢查覆蓋率；使用上沒有變化',
   },

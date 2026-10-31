@@ -219,11 +219,28 @@ describe('消費明細：收據格式與裝飾', () => {
       GET_PRINT_WINDOW_CLOSURE_DELAYED: { getParameterOrderCreateSetting: { isPrintWindowClosureDelayed: true } },
     })
     await openDetail()
-    fireEvent.click(button('結帳並列印'))
-    await wait(() => expect(window.open).toHaveBeenCalledTimes(1))
-    expect(written.join('').startsWith('<html><style>@page {margin: 1mm;}</style><body onload="window.print()">')).toBe(true)
-    await wait(() => expect(printWindow.print).toHaveBeenCalled())
-    expect(printWindow.document.close).not.toHaveBeenCalled()
+    // 延遲關閉的計時器是 10 秒；記下排程的回呼直接執行，不依賴測試行程活得夠久
+    // （CI 上這個回呼常在行程結束前沒跑到，覆蓋率因此忽上忽下，2026/10/31 PR #325）。
+    // 不用 jest.spyOn：testing-library 看到 setTimeout 是 jest mock 會當成假計時器，wait 會卡住。
+    const realSetTimeout = window.setTimeout
+    const closeLater = []
+    window.setTimeout = (fn, delay, ...args) => {
+      if (delay === 10000) closeLater.push(fn)
+      return realSetTimeout(fn, delay, ...args)
+    }
+    try {
+      fireEvent.click(button('結帳並列印'))
+      await wait(() => expect(window.open).toHaveBeenCalledTimes(1))
+      expect(written.join('').startsWith('<html><style>@page {margin: 1mm;}</style><body onload="window.print()">')).toBe(true)
+      await wait(() => expect(printWindow.print).toHaveBeenCalled())
+      expect(printWindow.document.close).not.toHaveBeenCalled()
+      expect(closeLater).toHaveLength(1)
+      expect(printWindow.close).not.toHaveBeenCalled()
+      closeLater[0]()
+      expect(printWindow.close).toHaveBeenCalled()
+    } finally {
+      window.setTimeout = realSetTimeout
+    }
   })
 
   it('收據顯示 Logo、QR code 與訊息（A4 與感熱紙相同）', async () => {
