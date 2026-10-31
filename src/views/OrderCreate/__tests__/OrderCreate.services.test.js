@@ -446,7 +446,9 @@ describe('項目消費：多列與清單', () => {
   })
 
   it('服務清單還在載入時按「從清單選擇服務」不開啟', async () => {
-    await prepare({}, { delays: { GET_SERVICES_FOR_AUTOCOMPLETE: 600 } })
+    // 服務清單要在按下時仍未回來：準備步驟（等頁面、選人員）在機器忙時會超過 0.6 秒，讓清單先到而誤判失敗
+    // （本機與 CI 負載高時曾發生，2026/10/31），所以延遲拉長到 5 秒；測試在按下後立即斷言，不會等這 5 秒
+    await prepare({}, { delays: { GET_SERVICES_FOR_AUTOCOMPLETE: 5000 } })
     fireEvent.click(button('從清單選擇服務'))
     expect(currentDialog()).toBeNull()
   })

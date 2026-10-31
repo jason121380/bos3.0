@@ -95,9 +95,15 @@ function StubMerchantPicker({ selectIds = [], onValueChange, isReadOnly = false,
 export const merchantPickerModule = { __esModule: true, default: StubMerchantPicker }
 
 // components/BelongAutocomplete（歸屬多選）的替身：按「選歸屬（測試）」回傳 ['設計部', '美容部']；選項、目前值、唯讀放在屬性上
-function StubBelongAutocomplete({ value = [], onChange, optionData = [], isReadOnly = false }) {
+function StubBelongAutocomplete({ value = [], onChange, optionData = [], isReadOnly = false, isloading = false }) {
   return (
-    <div data-testid="belong" data-value={JSON.stringify(value)} data-options={JSON.stringify(optionData)} data-readonly={String(isReadOnly)}>
+    <div
+      data-testid="belong"
+      data-value={JSON.stringify(value)}
+      data-options={JSON.stringify(optionData)}
+      data-readonly={String(isReadOnly)}
+      data-loading={String(Boolean(isloading))}
+    >
       <button type="button" onClick={() => onChange(['設計部', '美容部'])}>
         選歸屬（測試）
       </button>

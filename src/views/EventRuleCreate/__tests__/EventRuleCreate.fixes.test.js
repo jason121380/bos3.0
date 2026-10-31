@@ -37,6 +37,9 @@ it('只有歸屬查詢失敗時，自訂歸屬的選項為空', async () => {
   pickOption(fieldByLabel('服務'), '套用')
   pickOption(belongSelectOf('服務'), '自訂')
   expect(belongPickerOf('服務')).toHaveAttribute('data-options', '[]')
+  // 歸屬清單是空的（查詢失敗或店家沒有歸屬）時，歸屬欄位仍要能手動輸入：BelongAutocomplete 的 isloading 會把欄位停用，
+  // 所以 RuleForm 不傳 isloading（原本寫成 attributions.langth === 0，恆為 false；若「修正」成 length 會把欄位永久鎖住，Jason 2026/10/31）
+  expect(belongPickerOf('服務')).toHaveAttribute('data-loading', 'false')
 })
 
 it('規則名稱空白時提示「請輸入規則名稱。」', async () => {

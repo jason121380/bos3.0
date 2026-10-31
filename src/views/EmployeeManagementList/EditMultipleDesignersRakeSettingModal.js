@@ -98,7 +98,8 @@ function EditMultipleDesignersRakeSettingModal({ openEditRakeSettingModal, onClo
             onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
             onChange({ value: !newProfitSharing.designationUsage, key: 'designationUsage' })
           }
-        } else if (d.attribute === value && !profitSharing.designationUsag) {
+        } else if (d.attribute === value) {
+          // 不分指定（上一個條件已處理分指定；原本此處多判斷一個拼錯、恆為 undefined 的 designationUsag，結果相同，與新增／編輯抽成設定一致）
           if (newProfitSharing.nonSegmented[index].rakeData.designate.length === 0) {
             newProfitSharing.nonSegmented[index] = {
               ...d,
