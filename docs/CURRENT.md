@@ -1,12 +1,12 @@
 # 現況（以此檔為準）
 
-更新：2026/10/30 晚間。這是版號、測試總數、CI、前端健康分、後端債的唯一現況。其他 markdown 若衝突，以本檔為準。
+更新：2026/10/31 晚間。這是版號、測試總數、CI、前端健康分、後端債的唯一現況。其他 markdown 若衝突，以本檔為準。
 
-產品版號只看 `src/version.js`（`v3.MMDDHHmm`，台灣時間）。程式碼最新是 PR #322（全站 Prettier）squash-merge 的 commit `9b8a8c6`，版號 `v3.10302235`；本文件同步的 PR 版號為 `v3.10302327`（只改文件）。倉庫是公開的：https://github.com/jason121380/bos3.0。
+產品版號只看 `src/version.js`（`v3.MMDDHHmm`，台灣時間）。程式碼最新是 PR #329（第 6 項清理）squash-merge 的 commit `18ad629`，版號 `v3.10312016`；本文件同步與重新評分的 PR 版號為 `v3.10312117`（只改文件）。倉庫是公開的：https://github.com/jason121380/bos3.0。
 
 **正式站版號已確認**：Jason 2026/10/31 確認正式站左上角為 `v3.10302327`（之後的版號以合併為準，不必再逐次詢問）。
 
-前端可控制的健康分仍是 100（PR #301 的五項指標，見下方）。四面向程式稽核另有一把尺：2026/10/28 稽核 72 → 10/30 下午修正後估計約 83 → **10/30 晚間重新評分 86**，依據見 `docs/redesign/AUDIT_20261028.md` 第 9 節。兩者是不同量尺。
+前端可控制的健康分仍是 100（PR #301 的五項指標，見下方）。四面向程式稽核另有一把尺：2026/10/28 稽核 72 → 10/30 下午修正後估計約 83 → 10/30 晚間 86 → **10/31 晚間重新評分 89**，依據見 `docs/redesign/AUDIT_20261028.md` 第 10 節。兩者是不同量尺。
 
 全套測試的現況數字見下方「CI 與測試」。
 
@@ -87,9 +87,9 @@
 **待辦（未做）**
 
 - 後端：LINE 打卡寫死網址、GraphQL 操作名去重（擱置）；下方「後端債」四項。
-- 錯字只改了檔名與網址；識別字（變數、元件名）仍約 107 處（粗略 grep `Pannel`、`Perforamnce` 等）、GraphQL 名稱與欄位刻意不動。
+- 錯字：檔名、網址（#320）與程式內部名稱（#329，608 處）已改；GraphQL 名稱與欄位、後端列舉值、CSS class、與檔名綁定的元件名刻意不動。
 - 建檔／編輯頁 10 組資料流不同沒有合併（ServiceCategory、MemberCard、MemberCardCategory、TopUp、ProductRestock、EmployeePicking、Product 等）；表單狀態三套（手寫／react-hook-form／validate.js）並存。
-- `react-color`（116 KB）換自製色票、`react-beautiful-dnd`（deprecated）替換、表格列 memo（需先量 Profiler 基線）。
+- `react-color`（116 KB）換自製色票、`react-beautiful-dnd`（deprecated）替換。（表格列 memo 已於 #326 做帳單列表；其餘表格未做。）
 - `window.location.reload()` 剩 7 處，都是刻意保留，不算待辦。
 
 ## PR #302 已出貨的五項（歷史）
@@ -124,13 +124,13 @@ Codex 在 #295、#300、#301 合併後留下五項 P2。PR #302 已 squash-merge
 
 - Workflow 名稱是 Frontend CI。檔案是 `.github/workflows/frontend-ci.yml`。三個 job：
   - **Lint and build**：`npm run format:check`（Prettier，#322 起）→ `npm run lint:build` → `npm run build`。
-  - **Unit tests**：`npm run test:nowatch`。
+  - **Unit tests**：`npm run test:coverage`（#325 起，同一次跑全部測試並檢查覆蓋率門檻，時限 60 分鐘）。
   - **Visual scan**（#317 起）：build 後以 Playwright 跑 `npm run test:e2e`。靜態檔＋假 GraphQL（依 operationName 回應），外部連線一律 abort，不連任何後端。162 個後台路由 × 手機 390／桌機 1366，主要 8 頁另跑深色，每個路由再跑「所有查詢失敗」情境。檢查沒有錯誤邊界、沒有橫向捲動、沒有未捕捉的 console error。失敗時上傳截圖。
-- 全套 Jest 現況：**394 suites／4,582 tests 全數通過**（#322 本機與 CI 結果）。
+- 全套 Jest 現況：**420 suites／4,794 tests 全數通過**，覆蓋率門檻全部達標（#329 本機與 CI 結果）。
 - 畫面掃描現況（2026/10/31）：`npm run test:e2e` 共 **660 則**＝畫面掃描 497 則＋資料晚到掃描 163 則（`e2e/late-arrival.spec.js`：每個路由的開頁查詢輪流晚回 800ms，檢查不進錯誤邊界、不新增 console error；只涵蓋開頁時自動送出的查詢，點了才開的彈窗不在內）。`e2e/known-issues.js` 已清空（原 52 頁假資料不足，改由 `e2e/fake-operations.js` 依操作名稱補形狀）。CI 的 Visual scan job 一併跑兩者，時限 45 分鐘。
-- `npm run lint:build`：0 錯誤、0 警告（`--max-warnings=0`）。warning 級 `scripts/redesign/eslint-check.json` 剩 69 則（`import/first` 19、`jsx-a11y/alt-text` 16、`import/no-anonymous-default-export` 14、`no-useless-concat` 13 等），`react-hooks/exhaustive-deps` 0 則——其中約 684 處是逐一判斷後加原因註解的 `eslint-disable-next-line`，不是補依賴。
+- `npm run lint:build`：0 錯誤、0 警告（`--max-warnings=0`）。warning 級 `scripts/redesign/eslint-check.json` 剩 16 則（#329 起；全是四個收據列印範本 `<img>` 的 `jsx-a11y/alt-text`，鐵則 2 未動），`react-hooks/exhaustive-deps` 0 則——其中約 684 處是逐一判斷後加原因註解的 `eslint-disable-next-line`，不是補依賴。
 - **覆蓋率已達門檻**（`v3.10311600`，2026/10/31）：新增 26 個測試檔、補強 5 個，`npm run test:coverage` exit 0。CI 的 Unit tests job 改跑 `test:coverage`（同一次跑完全部測試並檢查門檻，時限 60 分鐘），門檻未達即擋。ui（分支 99.13／門檻 99）與 components（98.05／98）餘裕很小，新程式要一起補測試。10 個檔有逐處註明理由的 `istanbul ignore`（走不到的防禦碼）。補測試時發現的產品問題：教學模式 `TeachingModeState` 寫死關閉（Jason 2026/10/31 決定移除，`v3.10311752` 已刪除 3 個 context 檔、14 個帳單畫面的教學提示與 `.teachingMode` 樣式，畫面不變）；`CustomerAutoComplete` 未選未打字時仍列出查詢結果；掛單結帳卸載時序的極短時間窗；`MerchantsListModal` 群組缺 `groups` 欄位會拋錯；店家選單有兩個不會被呼叫的函式。
-- GitHub CI 的結果以 PR 頁為準。#315–#321 合併前三個 job（#317 之前是兩個）都通過，Codex review 無待處理 finding。
+- GitHub CI 的結果以 PR 頁為準。#315–#329 合併前三個 job（#317 之前是兩個）都通過，Codex review 無待處理 finding。
 - `main` 分支保護仍是關的。自動化 token 讀寫分支保護會 403，沒有代為打開。不要為此關掉 Railway 對 `main` 的自動部署。
 - 合併前在本機跑 `npm run format:check`、`npm run lint`、全套 Jest、`npm run build`（動到畫面再跑 `npm run test:e2e`）。不要連正式或測試後端，不要寫真實資料。
 
