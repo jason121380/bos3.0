@@ -2,8 +2,11 @@ import { TextField } from 'ui/text-field'
 import { useFetchTHirdPartys } from 'hooks/useFetchMerchant'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
-import React, { useEffect, Fragment, useState } from 'react'
+import React, { useEffect, Fragment, useState, memo } from 'react'
 import { Autocomplete } from 'ui/combobox'
+
+// 標籤函式放在模組層（身分固定），ui/combobox 才能沿用篩選結果（效能修正 B，內容不變）
+const getOptionLabel = option => (!!option ? option.name : '')
 
 function ThirdPartyAutoComplete(
   {
@@ -62,7 +65,7 @@ function ThirdPartyAutoComplete(
       value={!!selectedValue ? selectedValue : null}
       options={options}
       autoHighlight
-      getOptionLabel={option => (!!option ? option.name : '')}
+      getOptionLabel={getOptionLabel}
       inputValue={!!selectedValue ? selectedValue.name : ''}
       loading={designers.loading}
       onChange={(_event, value) => onChange(idx(value, _ => value))}
@@ -98,4 +101,5 @@ function ThirdPartyAutoComplete(
   )
 }
 
-export default React.forwardRef(ThirdPartyAutoComplete)
+// memo：打帳單整頁重畫時，props 沒變的第三方卡券下拉不重畫（效能修正 B）
+export default memo(React.forwardRef(ThirdPartyAutoComplete))

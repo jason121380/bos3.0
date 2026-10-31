@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { CSVLink } from 'react-csv'
+import LazyCSVLink from 'components/LazyCSVLink'
 import { ChevronsDownUp, ChevronsUpDown, Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
@@ -14,7 +14,7 @@ import { STICKY_ACTION_HEAD, STICKY_NO_HEAD } from './orderListHelpers'
 export default function OrderListTable({
   allExtend,
   setAllExtend,
-  excelData,
+  getExcelData,
   totalCount,
   selectedOrders,
   noCloseOrder,
@@ -28,13 +28,11 @@ export default function OrderListTable({
   isExtended,
   orderStaticDetailLoading,
   handleOrderExtend,
-  getOrderLazy,
-  setPrintOrderId,
-  setIsPrint,
+  handlePrintOrder,
   disabled,
-  orderDataLazy,
+  printLoading,
   printOrderId,
-  location,
+  locationSearch,
   serialNumberUsing,
 }) {
   return (
@@ -49,10 +47,11 @@ export default function OrderListTable({
               {allExtend ? '全部收合' : '全部展開'}
             </Button>
             <Button asChild size="sm" variant="secondary">
-              <CSVLink data={excelData} filename="帳單列表.csv">
+              {/* 按下才產生 CSV（效能修正 A）；內容與原本 react-csv CSVLink 逐字相同 */}
+              <LazyCSVLink getData={getExcelData} filename="帳單列表.csv">
                 <Download strokeWidth={1.75} />
                 報表匯出
-              </CSVLink>
+              </LazyCSVLink>
             </Button>
           </Fragment>
         }
@@ -108,18 +107,16 @@ export default function OrderListTable({
                   key={order.id}
                   order={order}
                   index={index}
-                  selectedOrderSet={selectedOrderSet}
+                  // 列元件 memo（效能修正 A）：只傳這一列用得到的值（布林／字串）與固定身分的 handler，其他列的狀態變動不會重畫這一列
+                  selected={selectedOrderSet.has(order.id)}
                   handleSelectOne={handleSelectOne}
-                  isExtended={isExtended}
+                  extended={isExtended(order.id)}
                   orderStaticDetailLoading={orderStaticDetailLoading}
                   handleOrderExtend={handleOrderExtend}
-                  getOrderLazy={getOrderLazy}
-                  setPrintOrderId={setPrintOrderId}
-                  setIsPrint={setIsPrint}
+                  handlePrintOrder={handlePrintOrder}
                   disabled={disabled}
-                  orderDataLazy={orderDataLazy}
-                  printOrderId={printOrderId}
-                  location={location}
+                  printing={printLoading && printOrderId === order.id}
+                  locationSearch={locationSearch}
                   serialNumberUsing={serialNumberUsing}
                   raffleDisplay={raffleDisplay}
                   membershipDisplay={membershipDisplay}

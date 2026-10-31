@@ -2,9 +2,12 @@ import { TextField } from 'ui/text-field'
 import useFetchMerchantPayWays from 'hooks/useFetchMerchantPayWays'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
-import { forwardRef, memo, Fragment, useEffect } from 'react'
+import { forwardRef, memo, Fragment, useEffect, useMemo } from 'react'
 import compose from 'utils/compose'
 import { Autocomplete } from 'ui/combobox'
+
+// 標籤函式放在模組層（身分固定），ui/combobox 才能沿用篩選結果（效能修正 B，內容不變）
+const getOptionLabel = option => option.name
 
 function PaymentAutoComplete(
   { className = '', onChange = () => {}, label = '', value, name, autoFocus, onFocus, onKeyDown, inputProps = {}, setPaymentAlready },
@@ -20,15 +23,20 @@ function PaymentAutoComplete(
   }, [payment.loading, setPaymentAlready])
   const selectedValue = idx(payment, _ => _.data.merchantPayWays.find(d => d.name === value)) || null
 
-  const options =
-    idx(payment, _ =>
-      _.data.merchantPayWays.map(({ fee, id, name, type }) => ({
-        fee,
-        id,
-        name,
-        type,
-      }))
-    ) || []
+  // 只在查詢結果改變時重新整理選項（內容不變），選項身分固定，ui/combobox 才能沿用篩選結果（效能修正 B）
+  const options = useMemo(
+    () =>
+      idx(payment, _ =>
+        _.data.merchantPayWays.map(({ fee, id, name, type }) => ({
+          fee,
+          id,
+          name,
+          type,
+        }))
+      ) || [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 選項只由查詢結果決定；payment 物件每次 render 都是新的
+    [payment.data]
+  )
   const handleChange = (_e, option) => {
     onChange(option)
   }
@@ -44,7 +52,7 @@ function PaymentAutoComplete(
       options={options}
       autoHighlight
       clearOnBlur={true}
-      getOptionLabel={option => option.name}
+      getOptionLabel={getOptionLabel}
       loading={payment.loading}
       renderOption={(props, option) => (
         <span {...props} data-testid={`${inputProps['data-testid'] ?? ''}-${option.name}`}>

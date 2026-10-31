@@ -1,5 +1,5 @@
 import { format } from 'date-fns'
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { ChevronDown, ChevronUp, Eye, LoaderCircle, Printer } from 'lucide-react'
 import truncateDecimal from 'helper/truncateDecimal'
@@ -11,22 +11,21 @@ import { TableCell, TableRow } from 'ui/table'
 import { cn } from 'ui/utils'
 import { STICKY_ACTION_CELL, STICKY_NO_CELL, linkDisabled, renderTpName, weekDisplay } from './orderListHelpers'
 
-// 帳單列表的一列（含展開明細列）；自 ResultsV2.js 原樣搬出，state 與 handler 仍在 ResultsV2，由 props 傳入
-export default function OrderListRow({
+// 帳單列表的一列（含展開明細列）；自 ResultsV2.js 原樣搬出，state 與 handler 仍在 ResultsV2，由 props 傳入。
+// 以 memo 包起來（效能修正 A，Jason 2026/10/31）：props 只有這一列的資料、布林／字串與固定身分的 handler，
+// 其他列勾選／展開、設定查詢逐支回來時不重畫整張表（原本 80 列開頁要畫 7 輪）
+function OrderListRow({
   order,
   index,
-  selectedOrderSet,
+  selected,
   handleSelectOne,
-  isExtended,
+  extended,
   orderStaticDetailLoading,
   handleOrderExtend,
-  getOrderLazy,
-  setPrintOrderId,
-  setIsPrint,
+  handlePrintOrder,
   disabled,
-  orderDataLazy,
-  printOrderId,
-  location,
+  printing,
+  locationSearch,
   serialNumberUsing,
   raffleDisplay,
   membershipDisplay,
@@ -34,12 +33,12 @@ export default function OrderListRow({
 }) {
   return (
     <Fragment>
-      <TableRow data-testid={`order-row`} data-state={selectedOrderSet.has(order.id) ? 'selected' : undefined} className="group">
+      <TableRow data-testid={`order-row`} data-state={selected ? 'selected' : undefined} className="group">
         <TableCell className={cn('whitespace-nowrap px-3', STICKY_ACTION_CELL)}>
           <div className="flex items-center gap-1">
             <Checkbox
               aria-label={`選取 #${order.orderNo}`}
-              checked={selectedOrderSet.has(order.id)}
+              checked={selected}
               onChange={() => handleSelectOne(order.id)}
               data-testid={`order-checkbox-${index}`}
               disabled={order.isCloseAccount || order.status === '建立中'}
@@ -49,41 +48,29 @@ export default function OrderListRow({
               variant="ghost"
               size="icon"
               className="text-text-secondary"
-              aria-label={isExtended(order.id) ? '收合明細' : '展開明細'}
-              aria-expanded={isExtended(order.id)}
+              aria-label={extended ? '收合明細' : '展開明細'}
+              aria-expanded={extended}
               disabled={orderStaticDetailLoading || order.status === '建立中'}
               onClick={() => handleOrderExtend(order.id)}
             >
-              {isExtended(order.id) ? <ChevronUp strokeWidth={1.75} /> : <ChevronDown strokeWidth={1.75} />}
+              {extended ? <ChevronUp strokeWidth={1.75} /> : <ChevronDown strokeWidth={1.75} />}
             </Button>
             <Button
               variant="ghost"
               size="icon"
               className="text-text-secondary"
               aria-label="列印帳單"
-              onClick={() => {
-                getOrderLazy({
-                  variables: {
-                    orderId: order.id,
-                  },
-                })
-                setPrintOrderId(order.id)
-                setIsPrint(true)
-              }}
+              onClick={() => handlePrintOrder(order.id)}
               disabled={disabled || order.status === '建立中'}
             >
-              {orderDataLazy.loading && printOrderId === order.id ? (
-                <LoaderCircle className="animate-spin" strokeWidth={1.75} />
-              ) : (
-                <Printer strokeWidth={1.75} />
-              )}
+              {printing ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : <Printer strokeWidth={1.75} />}
             </Button>
             <Button asChild variant="ghost" size="icon" className="text-text-secondary">
               <RouterLink
                 aria-label="查看帳單"
                 to={`/order/${
-                  location.search.length > 0
-                    ? `${order.id}?startDate=${location.search.split('=')[1].substring(0, 13)}&endDate=${location.search.split('=')[2]}`
+                  locationSearch.length > 0
+                    ? `${order.id}?startDate=${locationSearch.split('=')[1].substring(0, 13)}&endDate=${locationSearch.split('=')[2]}`
                     : order.id
                 }`}
                 data-testid={`order-${index}`}
@@ -163,7 +150,7 @@ export default function OrderListRow({
           </>
         )}
       </TableRow>
-      {isExtended(order.id) && (
+      {extended && (
         <TableRow className="hover:bg-transparent">
           <TableCell colSpan={24} className="bg-surface px-4 py-3">
             {/* 明細：設計師 / 項目 / 價格 / 數量 / 互助人 */}
@@ -196,3 +183,5 @@ export default function OrderListRow({
     </Fragment>
   )
 }
+
+export default memo(OrderListRow)

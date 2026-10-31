@@ -13,6 +13,7 @@ import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import useFetchCustomer from 'hooks/useFetchCustomer'
 import { LoaderCircle, UserCog, UserPlus } from 'lucide-react'
 import { RowIconButton } from './RowAction'
+import useStableCallback from 'hooks/useStableCallback'
 import { Card } from 'ui/card'
 import { CheckboxField } from 'ui/checkbox'
 import { Field } from 'ui/input'
@@ -376,10 +377,23 @@ export default function Head() {
     setCustomer(emptyCustomerForm())
   }
 
-  const handleFocus = event => {
+  // 傳給 memo 過的服務人員下拉的 handler 以 useStableCallback 包成固定身分（效能修正 B）；內容不變，呼叫時讀最新的 state
+  const handleFocus = useStableCallback(event => {
     setFocus(event.target.name)
     event.target.focus()
-  }
+  })
+  // 服務人員下拉（原本寫在 JSX 內，內容不變）
+  const handleDesignerOptions = useStableCallback(values => setCustomerInModal(values))
+  const handleDesignerChange = useStableCallback(value => handleBillChange({ value: idx(value, _ => _.userId), key: 'designerId' }))
+  const handleDesignerKeyDown = useStableCallback(e => {
+    if (e.keyCode === 13) {
+      if (designationSettingForOrderCreate) {
+        designateRef.current.focus()
+      } else {
+        nonDesignateRef.current.focus()
+      }
+    }
+  })
 
   const handleDesignateBtnKeyDown = e => {
     switch (e.keyCode) {
@@ -632,22 +646,14 @@ export default function Head() {
               <Field label="服務人員" required className="min-w-[180px] flex-1">
                 <EmployeeAutoComplete
                   className={styles.employeeInput}
-                  getCustomerData={values => setCustomerInModal(values)}
+                  getCustomerData={handleDesignerOptions}
                   placeholder="服務人員姓名/編號"
                   value={bill.designerId}
                   ref={designerRef}
                   onFocus={handleFocus}
                   name="designer"
-                  onChange={value => handleBillChange({ value: idx(value, _ => _.userId), key: 'designerId' })}
-                  onKeyDown={e => {
-                    if (e.keyCode === 13) {
-                      if (designationSettingForOrderCreate) {
-                        designateRef.current.focus()
-                      } else {
-                        nonDesignateRef.current.focus()
-                      }
-                    }
-                  }}
+                  onChange={handleDesignerChange}
+                  onKeyDown={handleDesignerKeyDown}
                 />
               </Field>
 

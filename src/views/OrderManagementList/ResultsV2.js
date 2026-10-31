@@ -11,6 +11,7 @@ import { useLocation } from 'react-router'
 import designerNameType from 'helper/designerNameType'
 import truncateDecimal from 'helper/truncateDecimal'
 import { useFetchOrderForPrint } from 'hooks/useFetchOrder'
+import useStableCallback from 'hooks/useStableCallback'
 import OrderListTable from './OrderListTable'
 import DeleteOrderDialog from './DeleteOrderDialog'
 import { weekDisplay } from './orderListHelpers'
@@ -45,7 +46,6 @@ function Results({
   const [selectedOrders, setSelectedOrders] = useState([])
   // 勾選狀態查詢用 Set（每列查兩次，避免 indexOf 逐筆掃描）；只換查詢方式，selectedOrders 的結構與 handler 不變
   const selectedOrderSet = useMemo(() => new Set(selectedOrders), [selectedOrders])
-  const [excelData, setExcelData] = useState([])
   const [allExtend, setAllExtend] = useState(false)
   const [orderExtendArr, setOrderExtendArr] = useState([])
 
@@ -80,7 +80,8 @@ function Results({
       setSelectedOrders(noCloseOrder)
     }
   }
-  const handleSelectOne = id => {
+  // 列元件 memo（效能修正 A）：傳給每一列的 handler 以 useStableCallback 包成固定身分，內容不變
+  const handleSelectOne = useStableCallback(id => {
     const newSelect = [...selectedOrders],
       index = newSelect.indexOf(id)
     if (index > -1) {
@@ -89,8 +90,8 @@ function Results({
       newSelect.push(id)
     }
     setSelectedOrders(newSelect)
-  }
-  const handleOrderExtend = id => {
+  })
+  const handleOrderExtend = useStableCallback(id => {
     const newSelect = [...orderExtendArr],
       index = newSelect.indexOf(id)
     if (index > -1) {
@@ -99,7 +100,17 @@ function Results({
       newSelect.push(id)
     }
     setOrderExtendArr(newSelect)
-  }
+  })
+  // 列印按鈕：原本寫在每一列的 onClick 內，內容不變
+  const handlePrintOrder = useStableCallback(id => {
+    getOrderLazy({
+      variables: {
+        orderId: id,
+      },
+    })
+    setPrintOrderId(id)
+    setIsPrint(true)
+  })
 
   const [deleteOrderPwd, setDeleteOrderPwd] = useState('')
   const handleCancel = () => {
@@ -150,7 +161,10 @@ function Results({
     setIcClick(false)
   }
 
-  useEffect(() => {
+  // 報表匯出的資料：原本每次 orders／設定變動就在 effect 組好放進 state，連帶 CSVLink 每次 render 都重轉整份 CSV；
+  // 改為按下「報表匯出」時才組（效能修正 A，Jason 2026/10/31）。欄位、遮罩規則與內容逐字不變，按下時讀到的是當下最新的帳單與設定，
+  // 因此遮罩設定、活動券欄比帳單晚到的情況（B2 疑似 bug #1、#10）自然取得最新值
+  const buildExcelData = () => {
     const excelData = []
     orders.forEach(order => {
       const currentOrder = {
@@ -184,9 +198,8 @@ function Results({
       excelData.push(currentOrder)
     })
 
-    setExcelData(excelData)
-    // 遮罩設定、活動券欄是否顯示比帳單晚到時要重算：否則匯出檔用到未遮罩的姓名電話、或「活動券」欄落後一批（B2 疑似 bug #1、#10）
-  }, [orders, membershipDisplay, bonusDisplay, serialNumberUsing, isCustomerDataMarked, raffleDisplay])
+    return excelData
+  }
 
   function printDiv() {
     var printMain = document.getElementById('printMain')
@@ -322,7 +335,7 @@ function Results({
       <OrderListTable
         allExtend={allExtend}
         setAllExtend={setAllExtend}
-        excelData={excelData}
+        getExcelData={buildExcelData}
         totalCount={totalCount}
         selectedOrders={selectedOrders}
         noCloseOrder={noCloseOrder}
@@ -336,13 +349,11 @@ function Results({
         isExtended={isExtended}
         orderStaticDetailLoading={orderStaticDetailLoading}
         handleOrderExtend={handleOrderExtend}
-        getOrderLazy={getOrderLazy}
-        setPrintOrderId={setPrintOrderId}
-        setIsPrint={setIsPrint}
+        handlePrintOrder={handlePrintOrder}
         disabled={disabled}
-        orderDataLazy={orderDataLazy}
+        printLoading={orderDataLazy.loading}
         printOrderId={printOrderId}
-        location={location}
+        locationSearch={location.search}
         serialNumberUsing={serialNumberUsing}
       />
       <TableEditBar editBarOnClick={editBarOnClick} selected={selectedOrders} onCancel={disableDeleteOrders ? handleCancel : handleConfirmCancel} />

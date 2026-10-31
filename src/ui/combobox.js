@@ -161,7 +161,14 @@ const Autocomplete = React.forwardRef(function Autocomplete(
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [selectedLabel] 變動時執行；dirty、inputValueProp、multiple 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [selectedLabel])
 
-  const filtered = filterOptions(options, { inputValue: dirty ? inputText : '', getOptionLabel: o => labelOf(getOptionLabel, o) })
+  // 篩選結果快取（效能修正 B，Jason 2026/10/31）：選項、篩選函式、標籤函式與搜尋字都沒變時沿用上次結果，
+  // 打帳單頁上其他下拉跟著整頁重畫時不再每次重跑篩選（呼叫端的篩選函式多半會先排序整份選項）。
+  // 篩選函式須為純函式（只依參數決定結果），與 MUI Autocomplete 的約定相同
+  const filterInput = dirty ? inputText : ''
+  const filtered = React.useMemo(
+    () => filterOptions(options, { inputValue: filterInput, getOptionLabel: o => labelOf(getOptionLabel, o) }),
+    [filterOptions, options, filterInput, getOptionLabel]
+  )
   const [innerOpen, setInnerOpen] = React.useState(false)
   const isOpen = openProp !== undefined ? !!openProp : innerOpen
   const showPopup = isOpen && !readOnly && !disabled && (filtered.length > 0 || loading || !freeSolo)

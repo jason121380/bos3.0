@@ -16,6 +16,18 @@ import { renderPage, loginAs, callsOf, PAGE_CRASH_TEXT, networkRequests } from '
 import OrderManagementList from '..'
 import { weekDisplay, renderTpName, linkDisabled } from '../orderListHelpers'
 
+// 按下匯出連結並回傳產生的 CSV 文字。點擊後 LazyCSVLink 把 data URI 寫回 href；後面接一個擋下預設動作的監聽，避免 jsdom 試著導覽（未實作）
+const clickExportCsv = link => {
+  const stop = event => event.preventDefault()
+  window.addEventListener('click', stop)
+  try {
+    fireEvent.click(link)
+  } finally {
+    window.removeEventListener('click', stop)
+  }
+  return decodeURIComponent(link.getAttribute('href'))
+}
+
 jest.setTimeout(30000)
 
 jest.mock('elements/snackbars', () => ({
@@ -221,7 +233,8 @@ const lastInput = calls => {
   return list[list.length - 1].variables.input
 }
 const rowOf = no => screen.getByText(new RegExp(`^#${no}`)).closest('tr')
-const exportedCsv = () => decodeURIComponent(screen.getByText('報表匯出').closest('a').getAttribute('href'))
+// 匯出檔內容：按下「報表匯出」才產生（效能修正 A），網址在 jsdom 以 data URI 寫回連結上；擋下 jsdom 的導覽
+const exportedCsv = () => clickExportCsv(screen.getByText('報表匯出').closest('a'))
 const quickOptions = () => {
   fireEvent.click(screen.getByRole('combobox', { name: '快速選擇日期區間' }))
   const list = within(screen.getByRole('listbox'))

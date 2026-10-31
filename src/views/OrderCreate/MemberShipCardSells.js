@@ -17,6 +17,7 @@ import MemberShipCardSellsModal from 'views/OrderShared/MemberShipCardSellsModal
 import { useMembershipPicker } from 'views/OrderShared/useItemPicker'
 import { formatNumber } from 'ui/format'
 import { ROW_ICON_ALIGN } from 'views/OrderShared/rowAlign'
+import useStableCallback from 'hooks/useStableCallback'
 
 const styles = {
   merchantSells: 'flex items-start justify-start flex-wrap gap-y-[12px] mb-[24px]',
@@ -124,6 +125,23 @@ const MemberShipCardSells = ({
         return ''
     }
   }
+  // 傳給 memo 過的服務人員下拉的 handler 以 useStableCallback 包成固定身分（效能修正 B）；
+  // 原本寫在 JSX 內，內容不變，呼叫時讀最新的 state／props
+  const handleSellerChange = useStableCallback(value => {
+    onChange({
+      index,
+      key: 'sellerId',
+      value: idx(value, _ => _.userId),
+    })
+  })
+  const handleSellerFocus = useStableCallback(event => handleFocus({ event, field: 'employee' }))
+  const handleSellerKeyDown = useStableCallback(event => {
+    if (event.key === 'Enter') {
+      setTimeout(() => {
+        handleKeyDown({ event, nextField: 'product' })
+      }, 1)
+    }
+  })
   return (
     <Fragment>
       <div className={styles.merchantSells}>
@@ -136,22 +154,10 @@ const MemberShipCardSells = ({
             className={styles.field}
             value={sellsItem.sellerId}
             ref={employeeRef}
-            onChange={value => {
-              onChange({
-                index,
-                key: 'sellerId',
-                value: idx(value, _ => _.userId),
-              })
-            }}
+            onChange={handleSellerChange}
             autoFocus={focus === 'employee'}
-            onFocus={event => handleFocus({ event, field: 'employee' })}
-            onKeyDown={event => {
-              if (event.key === 'Enter') {
-                setTimeout(() => {
-                  handleKeyDown({ event, nextField: 'product' })
-                }, 1)
-              }
-            }}
+            onFocus={handleSellerFocus}
+            onKeyDown={handleSellerKeyDown}
           />
         </Field>
         {index === 0 ? (

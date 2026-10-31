@@ -6,6 +6,24 @@ import React, { useState, useEffect } from 'react'
 import { Autocomplete } from 'ui/combobox'
 import compareNo from 'utils/compareNo'
 
+// 篩選不依賴元件內任何值：放在模組層，函式身分固定，ui/combobox 才能沿用篩選結果（效能修正 B，內容不變）
+const filterOptions = (options, state) => {
+  const keyWord = state.inputValue.toLowerCase()
+  // 代號自然排序（英數代號也有效）、空代號排最後（原本 a.no - b.no 對英數代號得 NaN、空代號當 0 排最前；Jason 2026/10/22 fix all）
+  const filterOptions = [...options]
+    .sort((a, b) => compareNo(a.no, b.no))
+    .filter(d => {
+      if (d.no && d.name) {
+        const no = d.no.toLowerCase()
+        const name = d.name.toLowerCase()
+        return no.includes(keyWord) || name.includes(keyWord)
+      }
+      return false
+    })
+  return filterOptions
+}
+const getOptionLabel = option => (option.name ? option.name : option.no)
+
 function ProductAutoComplete(
   {
     className = '',
@@ -54,21 +72,6 @@ function ProductAutoComplete(
     }
   }, [value, selectedValue])
 
-  const filterOptions = (options, state) => {
-    const keyWord = state.inputValue.toLowerCase()
-    // 代號自然排序（英數代號也有效）、空代號排最後（原本 a.no - b.no 對英數代號得 NaN、空代號當 0 排最前；Jason 2026/10/22 fix all）
-    const filterOptions = [...options]
-      .sort((a, b) => compareNo(a.no, b.no))
-      .filter(d => {
-        if (d.no && d.name) {
-          const no = d.no.toLowerCase()
-          const name = d.name.toLowerCase()
-          return no.includes(keyWord) || name.includes(keyWord)
-        }
-        return false
-      })
-    return filterOptions
-  }
   return (
     <Autocomplete
       freeSolo
@@ -82,7 +85,7 @@ function ProductAutoComplete(
       options={options}
       autoHighlight
       filterOptions={filterOptions}
-      getOptionLabel={option => (option.name ? option.name : option.no)}
+      getOptionLabel={getOptionLabel}
       loading={products.loading}
       onChange={(_event, value) => onChange(idx(value, _ => value || { id: '' }))}
       renderOption={(props, option) => (
@@ -118,4 +121,5 @@ function ProductAutoComplete(
   )
 }
 
-export default React.forwardRef(ProductAutoComplete)
+// memo：打帳單整頁重畫時，props 沒變的商品下拉不重畫（呼叫端以固定身分的 handler 傳入；效能修正 B）
+export default React.memo(React.forwardRef(ProductAutoComplete))

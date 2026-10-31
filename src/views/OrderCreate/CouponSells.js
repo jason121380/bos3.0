@@ -6,6 +6,10 @@ import idx from 'idx'
 import cloneDeep from 'lodash/cloneDeep'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { ROW_ICON_ALIGN } from 'views/OrderShared/rowAlign'
+import useStableCallback from 'hooks/useStableCallback'
+
+// 下拉的固定 props 放在模組層（身分固定），memo 過的卡券下拉才不會因此重畫（效能修正 B）
+const TICKET_INPUT_PROPS = { placeholder: '卡券名稱/代號' }
 
 const styles = {
   couponSells: 'flex items-start justify-start flex-wrap gap-y-[12px] mb-[24px]',
@@ -86,6 +90,36 @@ export default function CouponSells({
       setFocus(nextField)
     }
   }
+  // 傳給 memo 過的卡券下拉的 handler 以 useStableCallback 包成固定身分（效能修正 B）；
+  // 原本寫在 JSX 內，內容不變，呼叫時讀最新的 state／props
+  const handleTicketKeyDown = useStableCallback(event => {
+    if (couponSell.isLocked !== 'FALSE') {
+      handleKeyDown({ event, nextField: 'count' })
+    } else {
+      handleKeyDown({ event, nextField: 'availableCount' })
+    }
+  })
+  const handleTicketSelect = useStableCallback(function (value) {
+    const newCouponSell = cloneDeep(couponSell)
+    idx(value, _ => {
+      onChange({
+        index,
+        value: {
+          ...newCouponSell,
+          serviceId: _.id,
+          availableCount: _.ticketAvailableCount,
+          price: _.price,
+          remark: _.remark,
+          isLocked: _.isLocked,
+        },
+      })
+    })
+    if (value.isLocked !== 'FALSE') {
+      handleKeyDown({ event: { key: 'Enter' }, nextField: 'count' })
+    } else {
+      handleKeyDown({ event: { key: 'Enter' }, nextField: 'availableCount' })
+    }
+  })
   return (
     <Fragment>
       <div className={styles.couponSells}>
@@ -105,35 +139,9 @@ export default function CouponSells({
             autoFocus={focus === 'coupon'}
             onFocus={handleFocus}
             isLaunched
-            onKeyDown={event => {
-              if (couponSell.isLocked !== 'FALSE') {
-                handleKeyDown({ event, nextField: 'count' })
-              } else {
-                handleKeyDown({ event, nextField: 'availableCount' })
-              }
-            }}
-            onChange={function (value) {
-              const newCouponSell = cloneDeep(couponSell)
-              idx(value, _ => {
-                onChange({
-                  index,
-                  value: {
-                    ...newCouponSell,
-                    serviceId: _.id,
-                    availableCount: _.ticketAvailableCount,
-                    price: _.price,
-                    remark: _.remark,
-                    isLocked: _.isLocked,
-                  },
-                })
-              })
-              if (value.isLocked !== 'FALSE') {
-                handleKeyDown({ event: { key: 'Enter' }, nextField: 'count' })
-              } else {
-                handleKeyDown({ event: { key: 'Enter' }, nextField: 'availableCount' })
-              }
-            }}
-            inputProps={{ placeholder: '卡券名稱/代號' }}
+            onKeyDown={handleTicketKeyDown}
+            onChange={handleTicketSelect}
+            inputProps={TICKET_INPUT_PROPS}
           />
         </Field>
         {couponSell.serviceId && (

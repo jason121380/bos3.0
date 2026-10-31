@@ -6,6 +6,45 @@ import React, { useEffect } from 'react'
 import { Autocomplete } from 'ui/combobox'
 import compareNo from 'utils/compareNo'
 
+// 篩選不依賴元件內任何值：放在模組層，函式身分固定，ui/combobox 才能沿用篩選結果（效能修正 B，內容不變）
+const filterOptions = (options, state) => {
+  const keyWord = state.inputValue
+  // 編號自然排序（英數編號也有效）、空編號排最後（原本 a.userNo - b.userNo 對英數編號得 NaN、空編號當 0 排最前；Jason 2026/10/22 fix all）
+  const newOptions = [...options].sort((a, b) => compareNo(a.userNo, b.userNo))
+  let userNo = []
+  let userNickName = []
+  let userName = []
+  if (keyWord !== '' && keyWord.trim() !== '') {
+    userNo = newOptions.filter((data, index) => {
+      if (data.userNo !== '' && data.userNo !== null && data.userNo.toLowerCase() === keyWord.toLowerCase()) {
+        return data.userNo.toLowerCase() === keyWord.toLowerCase()
+      }
+      return false
+    })
+    userNickName = newOptions.filter((data, index) => {
+      if (data.userNickName !== '' && data.userNickName !== null && data.userNickName.toLowerCase().includes(keyWord.toLowerCase())) {
+        return data.userNickName.toLowerCase().includes(keyWord.toLowerCase())
+      }
+      return false
+    })
+    userName = newOptions.filter((data, index) => {
+      if (data.userName !== '' && data.userName !== null && data.userName.toLowerCase().includes(keyWord.toLowerCase())) {
+        return data.userName.toLowerCase().includes(keyWord.toLowerCase())
+      }
+      return false
+    })
+
+    const filterOptions = [...userNo, ...userNickName, ...userName]
+    // 挑出重複的選項
+    const filteredArray = filterOptions.filter((data, index) => {
+      return filterOptions.indexOf(data) === index
+    })
+    return filteredArray
+  } else {
+    return newOptions
+  }
+}
+
 function EmployeeAutoComplete(
   {
     // 跨組契約：className／assistField 為 Tailwind 字串，直通到 ui/combobox 根節點（其內以 cn 合併預設 class）
@@ -61,43 +100,6 @@ function EmployeeAutoComplete(
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（getCustomerData）；只在 [options] 變動時呼叫，補上會每次 render 重跑
   }, [options])
 
-  const filterOptions = (options, state) => {
-    const keyWord = state.inputValue
-    // 編號自然排序（英數編號也有效）、空編號排最後（原本 a.userNo - b.userNo 對英數編號得 NaN、空編號當 0 排最前；Jason 2026/10/22 fix all）
-    const newOptions = [...options].sort((a, b) => compareNo(a.userNo, b.userNo))
-    let userNo = []
-    let userNickName = []
-    let userName = []
-    if (keyWord !== '' && keyWord.trim() !== '') {
-      userNo = newOptions.filter((data, index) => {
-        if (data.userNo !== '' && data.userNo !== null && data.userNo.toLowerCase() === keyWord.toLowerCase()) {
-          return data.userNo.toLowerCase() === keyWord.toLowerCase()
-        }
-        return false
-      })
-      userNickName = newOptions.filter((data, index) => {
-        if (data.userNickName !== '' && data.userNickName !== null && data.userNickName.toLowerCase().includes(keyWord.toLowerCase())) {
-          return data.userNickName.toLowerCase().includes(keyWord.toLowerCase())
-        }
-        return false
-      })
-      userName = newOptions.filter((data, index) => {
-        if (data.userName !== '' && data.userName !== null && data.userName.toLowerCase().includes(keyWord.toLowerCase())) {
-          return data.userName.toLowerCase().includes(keyWord.toLowerCase())
-        }
-        return false
-      })
-
-      const filterOptions = [...userNo, ...userNickName, ...userName]
-      // 挑出重複的選項
-      const filteredArray = filterOptions.filter((data, index) => {
-        return filterOptions.indexOf(data) === index
-      })
-      return filteredArray
-    } else {
-      return newOptions
-    }
-  }
   /*   const filteredOption = options
     .sort((a, b) => {
       return a.userNo - b.userNo
@@ -131,6 +133,17 @@ function EmployeeAutoComplete(
   //     onChange(selectedValue)
   //   }
   // }, [selectedValue])
+  // 只隨搜尋字與已選人員改變（內容不變），下拉沒變時不必重跑篩選（效能修正 B）
+  const getOptionLabel = React.useCallback(
+    option =>
+      (option.userNo !== null && option.userNo !== '' && option.userNo.toLowerCase().includes(designerKeyword.toLowerCase())) ||
+      selectedValue !== null
+        ? `${
+            option.userNickName !== null && option.userNickName !== '' ? option.userNickName : option.userName
+          }${option.userNo !== '' && option.userNo !== null ? `-${option.userNo}` : '(無代號)'}`
+        : option.userName,
+    [designerKeyword, selectedValue]
+  )
   return (
     <form style={{ display: 'flex' }} onSubmit={event => event.preventDefault()}>
       <Autocomplete
@@ -149,14 +162,7 @@ function EmployeeAutoComplete(
         filterOptions={filterOptions}
         autoHighlight
         onFocus={onFocus}
-        getOptionLabel={option =>
-          (option.userNo !== null && option.userNo !== '' && option.userNo.toLowerCase().includes(designerKeyword.toLowerCase())) ||
-          selectedValue !== null
-            ? `${
-                option.userNickName !== null && option.userNickName !== '' ? option.userNickName : option.userName
-              }${option.userNo !== '' && option.userNo !== null ? `-${option.userNo}` : '(無代號)'}`
-            : option.userName
-        }
+        getOptionLabel={getOptionLabel}
         loading={userOrderableList.loading}
         onChange={(_event, value) =>
           onChange(
@@ -208,4 +214,5 @@ function EmployeeAutoComplete(
   )
 }
 
-export default React.forwardRef(EmployeeAutoComplete)
+// memo：打帳單整頁重畫時，props 沒變的人員下拉不重畫（呼叫端以固定身分的 handler 傳入；效能修正 B）
+export default React.memo(React.forwardRef(EmployeeAutoComplete))

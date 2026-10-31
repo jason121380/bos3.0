@@ -10,6 +10,15 @@ export function calendarUpdateTime(isoDate) {
 
 const shippedRecords = [
   {
+    title: '2026/10/31 帳單列表與打帳單更順',
+    versionNo: 'v3.10311624',
+    updateTime: '2026-10-31',
+    content: [
+      '- 帳單列表：開頁、換日期、勾選時重畫次數減少約一半；報表匯出改成按下時才產生檔案',
+      '- 打帳單：選服務、商品、卡券等下拉選單時更順',
+    ].join('\n'),
+  },
+  {
     title: '2026/10/31 測試覆蓋率',
     versionNo: 'v3.10311600',
     updateTime: '2026-10-31',
