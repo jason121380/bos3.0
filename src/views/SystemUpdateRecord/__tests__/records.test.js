@@ -11,13 +11,14 @@ const displayDate = record => format(record.updateTime, 'yyyy/MM/dd')
 
 describe('靜態清單', () => {
   it('新紀錄在最前面，接著是匯出的 18 筆，日期不改寫到 2026', () => {
-    expect(systemUpdateRecordSource).toHaveLength(42)
-    expect(systemUpdateRecords).toHaveLength(42)
+    expect(systemUpdateRecordSource).toHaveLength(43)
+    expect(systemUpdateRecords).toHaveLength(43)
 
-    const head = systemUpdateRecordSource.slice(0, 25).map(record => [record.title, record.versionNo, record.updateTime])
+    const head = systemUpdateRecordSource.slice(0, 26).map(record => [record.title, record.versionNo, record.updateTime])
     expect(systemUpdateRecordSource[0].versionNo).toBe(APP_VERSION)
     expect(head).toEqual([
-      ['2026/10/31 程式清理', APP_VERSION, '2026-10-31'],
+      ['2026/10/31 文件同步與重新評分', APP_VERSION, '2026-10-31'],
+      ['2026/10/31 程式清理', 'v3.10312016', '2026-10-31'],
       ['2026/10/31 標籤與文字對比', 'v3.10311917', '2026-10-31'],
       ['2026/10/31 移除教學模式', 'v3.10311752', '2026-10-31'],
       ['2026/10/31 帳單列表與打帳單更順', 'v3.10311624', '2026-10-31'],
@@ -44,7 +45,7 @@ describe('靜態清單', () => {
       ['更新統整', '23.053~23.061', '2023-06-07'],
     ])
 
-    expect(systemUpdateRecordSource.slice(24)).toEqual(historicalRecords)
+    expect(systemUpdateRecordSource.slice(25)).toEqual(historicalRecords)
     expect(historicalRecords.map(record => record.updateTime)).toEqual([
       '2023-06-07',
       '2023-04-21',
@@ -68,7 +69,8 @@ describe('靜態清單', () => {
     expect(historicalRecords.find(record => record.versionNo === '22.399').title).toBe('10/04 - 10/21 更新')
     expect(historicalRecords.find(record => record.versionNo === '22.386').content).toContain('```mermaid')
 
-    expect(systemUpdateRecords.slice(0, 25).map(record => [record.title, displayDate(record)])).toEqual([
+    expect(systemUpdateRecords.slice(0, 26).map(record => [record.title, displayDate(record)])).toEqual([
+      ['2026/10/31 文件同步與重新評分', '2026/10/31'],
       ['2026/10/31 程式清理', '2026/10/31'],
       ['2026/10/31 標籤與文字對比', '2026/10/31'],
       ['2026/10/31 移除教學模式', '2026/10/31'],
@@ -112,8 +114,9 @@ describe('清單頁', () => {
 
     expect(screen.getByRole('heading', { name: '版本更新紀錄' })).toBeInTheDocument()
     const titles = Array.from(container.querySelectorAll('h2')).map(node => node.textContent)
-    expect(titles).toHaveLength(42)
-    expect(titles.slice(0, 25)).toEqual([
+    expect(titles).toHaveLength(43)
+    expect(titles.slice(0, 26)).toEqual([
+      '2026/10/31 文件同步與重新評分',
       '2026/10/31 程式清理',
       '2026/10/31 標籤與文字對比',
       '2026/10/31 移除教學模式',
