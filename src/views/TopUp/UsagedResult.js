@@ -28,7 +28,7 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
               ? `${maskCustomerName(data.Customer.name)}/${maskCellphone(data.Customer.cellphone)}`
               : `${data.Customer.name}/${data.Customer.cellphone}`,
           // 設計師代號讀 Designer.designerNo（原本讀不存在的 data.designerNo 匯出 undefined；Jason 2026/10/22 fix all）
-          設計師: `${data.Designer.name}` + `${data.Designer.designerNo ? ' / ' + data.Designer.designerNo : ''}`,
+          設計師: `${data.Designer.name}${data.Designer.designerNo ? ' / ' + data.Designer.designerNo : ''}`,
           使用金額: data.money,
         })
       })

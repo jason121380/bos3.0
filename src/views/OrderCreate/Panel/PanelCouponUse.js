@@ -107,7 +107,7 @@ export default function PanelCouponUse({ expanded, onPanelClick, display, reset 
         })),
     })
   }
-  function handleFildChange({ index, value, key, price }) {
+  function handleFieldChange({ index, value, key, price }) {
     const newCouponUsage = cloneDeep(couponUsage)
     newCouponUsage[index][key] = value
     newCouponUsage[index]['price'] = price
@@ -184,7 +184,7 @@ export default function PanelCouponUse({ expanded, onPanelClick, display, reset 
                 removeCouponUse={handleRemoveCouponUse}
                 first={index === 0}
                 last={index + 1 === couponUsage.length}
-                onChange={handleFildChange}
+                onChange={handleFieldChange}
                 onClear={handleClear}
                 helper={helper}
                 setHelper={setHelper}

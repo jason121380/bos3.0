@@ -101,7 +101,7 @@ const FETCH_MONTHLY_CLOSE_STATUS = gql`
   }
 `
 
-export const useFethcMonthlyCloseStatus = date =>
+export const useFetchMonthlyCloseStatus = date =>
   useQuery(FETCH_MONTHLY_CLOSE_STATUS, {
     variables: {
       date,

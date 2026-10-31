@@ -13,7 +13,11 @@ const CardHeader = ({ className, action, children, ...props }) => (
     {action && <div className="flex shrink-0 items-center gap-2">{action}</div>}
   </div>
 )
-const CardTitle = ({ className, ...props }) => <h3 className={cn('text-heading text-text', className)} {...props} />
+const CardTitle = ({ className, children, ...props }) => (
+  <h3 className={cn('text-heading text-text', className)} {...props}>
+    {children}
+  </h3>
+)
 const CardDescription = ({ className, ...props }) => <p className={cn('text-body text-text-secondary', className)} {...props} />
 const CardContent = ({ className, ...props }) => <div className={cn('p-4', className)} {...props} />
 const CardFooter = ({ className, ...props }) => <div className={cn('flex items-center justify-end gap-2 px-4 pb-4 pt-2', className)} {...props} />

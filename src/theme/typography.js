@@ -1,6 +1,6 @@
 import palette from './palette'
 
-export default {
+const typography = {
   fontFamily: [
     '-apple-system',
     'BlinkMacSystemFont',
@@ -102,3 +102,5 @@ export default {
     textTransform: 'uppercase',
   },
 }
+
+export default typography

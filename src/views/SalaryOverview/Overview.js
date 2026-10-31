@@ -24,7 +24,7 @@ function Overview({ usersSalary, date }) {
     }
   }, [merchantMonthlyCheckoutRemarkData.loading, merchantMonthlyCheckoutRemarkData])
 
-  const handelTitleRemarkOnChange = e => {
+  const handleTitleRemarkOnChange = e => {
     setTitleRemark(e.target.value)
     setMerchantMerchantMonthlyCheckoutRemark({ date: date, remark: e.target.value })
   }
@@ -48,7 +48,7 @@ function Overview({ usersSalary, date }) {
           aria-label="月結備註"
           placeholder="請輸入本次月結備註..."
           className="flex-1 resize-none"
-          onChange={handelTitleRemarkOnChange}
+          onChange={handleTitleRemarkOnChange}
           value={titleRemark}
           rows={3}
         />

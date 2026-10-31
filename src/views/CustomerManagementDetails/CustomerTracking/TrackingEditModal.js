@@ -55,7 +55,7 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
     setSubmitValue(newData)
   }
 
-  const handleComfirm = async () => {
+  const handleConfirm = async () => {
     const value = cloneDeep({ ...submitValue, customerId: customerId })
     submitRef.current.disabled = true
     try {
@@ -92,7 +92,7 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
     setOpenOption(true)
   }
 
-  const handleComfirmSelect = () => {
+  const handleConfirmSelect = () => {
     const newSubmitValue = cloneDeep(submitValue)
     newSubmitValue[selectCondition.key] = selectOption
     setSubmitValue(newSubmitValue)
@@ -162,7 +162,7 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
             <UiButton variant="secondary" onClick={handleOnClose}>
               關閉
             </UiButton>
-            <UiButton variant="primary" ref={submitRef} disabled={isLoading} onClick={handleComfirm}>
+            <UiButton variant="primary" ref={submitRef} disabled={isLoading} onClick={handleConfirm}>
               確認
             </UiButton>
           </DialogFooter>
@@ -197,7 +197,7 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
               <UiButton variant="secondary" onClick={handleOptionOnClose}>
                 關閉
               </UiButton>
-              <UiButton variant="primary" onClick={handleComfirmSelect}>
+              <UiButton variant="primary" onClick={handleConfirmSelect}>
                 確認
               </UiButton>
             </DialogFooter>

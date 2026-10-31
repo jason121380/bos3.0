@@ -28,7 +28,7 @@ function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetc
     }
     setSelectedPayment(newSelect)
   }
-  const handleSeletedDelete = () => {
+  const handleSelectedDelete = () => {
     if (selectedPayment.length > 0) {
       selectedPayment.forEach(d => {
         deleteThirdPartyCoupon({ id: d })
@@ -99,7 +99,7 @@ function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetc
           </Table>
         </div>
       </Card>
-      <TableEditBar selected={selectedPayment} onDelete={handleSeletedDelete} confirmDelete />
+      <TableEditBar selected={selectedPayment} onDelete={handleSelectedDelete} confirmDelete />
     </div>
   )
 }

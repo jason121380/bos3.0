@@ -12,7 +12,7 @@ const FIELD_IDS = {
   edit: { no: 'merchantVendorNo', name: 'merchantVendorName', nickname: 'merchantVendorNickname', remark: 'merchantVendorRemark' },
 }
 
-function AboutMerchantVendor({ className, vendorOption, isLodaing, submitData, setSubmitData, isEdit = false }) {
+function AboutMerchantVendor({ className, vendorOption, isLoading, submitData, setSubmitData, isEdit = false }) {
   const ids = isEdit ? FIELD_IDS.edit : FIELD_IDS.create
   const handleInputChange = (key, value) => {
     const newData = cloneDeep(submitData)
@@ -28,7 +28,7 @@ function AboutMerchantVendor({ className, vendorOption, isLodaing, submitData, s
       <CardContent className="flex flex-col gap-4">
         <Field label="選擇廠商">
           <Autocomplete
-            disabled={isLodaing}
+            disabled={isLoading}
             options={vendorOption}
             value={submitData.vendorUUId}
             autoHighlight

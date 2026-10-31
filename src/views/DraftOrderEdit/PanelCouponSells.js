@@ -13,13 +13,13 @@ import CouponSells from './CouponSells'
 import CouponSellModal from 'views/OrderShared/EditCouponSellModal'
 
 export default function PanelCouponSells() {
-  const { handleBillChange, orderId, pannelEditable } = React.useContext(billContext)
+  const { handleBillChange, orderId, panelEditable } = React.useContext(billContext)
   const [couponSells, setCouponSells] = React.useState([])
   const order = useFetchOrder({ id: orderId })
   const useHandleBillChangeRef = React.useRef(handleBillChange)
   const [expanded, setExpanded] = React.useState(false)
   const [couponModalOpen, setCouponModalOpen] = React.useState(false)
-  const [conpunInModal, setConpunInModal] = React.useState([])
+  const [couponInModal, setCouponInModal] = React.useState([])
 
   const [couponCategories, setCouponCategories] = React.useState([])
   const [selectedCategorie, setSelectedCategorie] = React.useState([])
@@ -42,9 +42,9 @@ export default function PanelCouponSells() {
 
   React.useEffect(() => {
     if (!tickets.loading && !serviceCategoriesData.loading) {
-      const conponInModal = idx(tickets, _ => _.data.tickets)
+      const couponInModalData = idx(tickets, _ => _.data.tickets)
       const couponCategories = idx(serviceCategoriesData, _ => _.data.serviceCategories)
-      setConpunInModal(conponInModal)
+      setCouponInModal(couponInModalData)
       setCouponCategories(couponCategories)
     } else {
     }
@@ -119,7 +119,7 @@ export default function PanelCouponSells() {
     setCouponSells(newCouponSells)
   }
 
-  function handleFildChange({ index, value }) {
+  function handleFieldChange({ index, value }) {
     const newCouponSells = cloneDeep(couponSells)
     newCouponSells[index] = value
     handleBillChange({
@@ -219,9 +219,9 @@ export default function PanelCouponSells() {
             <CouponSellModal
               couponModalOpen={couponModalOpen}
               closeModal={handleCloseCouponModal}
-              coupons={conpunInModal}
-              onChange={handleFildChange}
-              couponsOnPannel={couponSells}
+              coupons={couponInModal}
+              onChange={handleFieldChange}
+              couponsOnPanel={couponSells}
               couponsLength={couponSells.length}
               setCouponModalOpen={setCouponModalOpen}
               couponCategories={couponCategories}
@@ -245,9 +245,9 @@ export default function PanelCouponSells() {
               removeCouponSell={handleRemoveCouponSell}
               first={index === 0}
               last={index + 1 === couponSells.length}
-              onChange={handleFildChange}
+              onChange={handleFieldChange}
               onClear={handleClear}
-              isTicketSellingEditable={pannelEditable.isTicketSellingEditable}
+              isTicketSellingEditable={panelEditable.isTicketSellingEditable}
               handleOpenCouponModal={handleOpenCouponModal}
               setFocusRow={setFocusRow}
             />

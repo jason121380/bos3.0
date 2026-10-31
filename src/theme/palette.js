@@ -2,7 +2,7 @@ import { colors } from 'ui/colors'
 
 const white = 'rgb(255, 255, 255)'
 
-export default {
+const palette = {
   primary: {
     contrastText: white,
     dark: '#174EA6',
@@ -34,3 +34,5 @@ export default {
   },
   divider: '#C6C6C8',
 }
+
+export default palette

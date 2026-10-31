@@ -404,7 +404,7 @@ function Results({
         // useToggleRef.current()
       })
   }
-  const handleComfirmCheckoutOrder = () => {
+  const handleConfirmCheckoutOrder = () => {
     setIsClick(true)
     const Order = cloneDeep(orders[orderIndex])
     const orderForInput = {
@@ -571,7 +571,7 @@ function Results({
         password={password}
         setPassword={setPassword}
         handleConfirmCancel={handleConfirmCancel}
-        handleComfirmCheckoutOrder={handleComfirmCheckoutOrder}
+        handleConfirmCheckoutOrder={handleConfirmCheckoutOrder}
         editBarOnClick={editBarOnClick}
         isClick={isClick}
       />

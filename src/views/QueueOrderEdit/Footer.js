@@ -102,7 +102,7 @@ export default function Footer({ enable }) {
   const serviceTotalPriceWithoutThirdPartyCoupon = serviceTotalPriceArray.reduce((total, item) => (total = total + item), 0)
   const productTotalPriceWithoutThirdPartyCoupon = productTotalPriceArray.reduce((total, item) => (total = total + item), 0)
   // 沒有第三方卡券會員卡的價格合計
-  const merberShipCardTotalPriceWithoutThirdPartyCoupon = memberShipCardWithIntoPerformPriceArray.reduce((total, item) => (total = total + item), 0)
+  const memberShipCardTotalPriceWithoutThirdPartyCoupon = memberShipCardWithIntoPerformPriceArray.reduce((total, item) => (total = total + item), 0)
   const serviceTotalPrice = bill.serviceOrders.length > 0 ? bill.serviceOrders.reduce((a, b) => a + b.price, 0) : 0
 
   const merchantSellTotalPrice =
@@ -127,7 +127,7 @@ export default function Footer({ enable }) {
           ? _.data.ticketRecords.data[0].price
           : 0
     ) ?? 0
-  const merberShipCardTotalPrice = bill.membershipOrders.reduce((total, item) => (total = total + item.price), 0)
+  const memberShipCardTotalPrice = bill.membershipOrders.reduce((total, item) => (total = total + item.price), 0)
 
   const vaild = !(
     (bill.date && // 有訂單日期
@@ -141,7 +141,7 @@ export default function Footer({ enable }) {
     (serviceTotalPrice + // 如果訂單總金額=0 但有消費資料也可以重新結帳
       merchantSellTotalPrice +
       couponSellPrice +
-      merberShipCardTotalPrice ===
+      memberShipCardTotalPrice ===
       0 &&
       (bill.serviceOrders.length > 0 ||
         bill.productOrders.length > 0 ||
@@ -155,7 +155,7 @@ export default function Footer({ enable }) {
       serviceTotalPriceWithoutThirdPartyCoupon +
         productTotalPriceWithoutThirdPartyCoupon +
         couponSellPrice +
-        merberShipCardTotalPriceWithoutThirdPartyCoupon -
+        memberShipCardTotalPriceWithoutThirdPartyCoupon -
         bill.walletPay -
         bill.amountByOtherPay -
         bill.bonusDecount <
@@ -173,7 +173,7 @@ export default function Footer({ enable }) {
     serviceTotalPriceWithoutThirdPartyCoupon,
     productTotalPriceWithoutThirdPartyCoupon,
     couponSellPrice,
-    merberShipCardTotalPriceWithoutThirdPartyCoupon,
+    memberShipCardTotalPriceWithoutThirdPartyCoupon,
     bill.walletPay,
     bill.amountByOtherPay,
     bill.bonusDecount,
@@ -189,7 +189,7 @@ export default function Footer({ enable }) {
           serviceTotalPriceWithoutThirdPartyCoupon +
           productTotalPriceWithoutThirdPartyCoupon +
           couponSellPrice +
-          merberShipCardTotalPriceWithoutThirdPartyCoupon -
+          memberShipCardTotalPriceWithoutThirdPartyCoupon -
           bill.walletPay -
           bill.amountByOtherPay -
           bill.bonusDecount
@@ -207,7 +207,7 @@ export default function Footer({ enable }) {
     serviceTotalPriceWithoutThirdPartyCoupon,
     productTotalPriceWithoutThirdPartyCoupon,
     couponSellPrice,
-    merberShipCardTotalPriceWithoutThirdPartyCoupon,
+    memberShipCardTotalPriceWithoutThirdPartyCoupon,
     bill.walletPay,
     bill.amountByOtherPay,
     bill.bonusDecount,
@@ -225,7 +225,7 @@ export default function Footer({ enable }) {
   // - 現金應收：與打帳單共用 billPaymentSummary——扣掉紅利點數折抵（原本漏扣）。
   //   （另一個寫法差異：原式排除「未選商品」的店販列，但這種列價格一律是 0，結果相同）
   // 上方「付款超過應付時歸零」與紅利給點的 effect 用的是各自的運算式（含紅利折抵），不受影響
-  const performanceTotal = Math.round(serviceTotalPrice + merchantSellTotalPrice + couponUsageTotalPrice + merberShipCardTotalPrice)
+  const performanceTotal = Math.round(serviceTotalPrice + merchantSellTotalPrice + couponUsageTotalPrice + memberShipCardTotalPrice)
   const { cashDue } = billPaymentSummary(bill)
 
   // 「重試」停用時說明原因（STYLE §6「按鈕停用要說明原因」）：只用於顯示，不參與任何啟用／停用判斷。
@@ -258,7 +258,7 @@ export default function Footer({ enable }) {
         { label: '店販消費', value: merchantSellTotalPrice },
         { label: '預收卡販賣', value: couponSellPrice },
         { label: '使用預收卡', value: Math.round(couponUsageTotalPrice) },
-        { label: '會員卡販賣', value: merberShipCardTotalPrice },
+        { label: '會員卡販賣', value: memberShipCardTotalPrice },
       ]}
       payments={[
         { label: '扣入金', value: bill.walletPay },

@@ -369,7 +369,7 @@ describe('EditServicesModal：帳單詳細／掛單詳細／重新開單選服�
           serviceCategories={[{ id: 'sc-1', name: '剪髮' }]}
           selectedCategorie={[]}
           selectedCategorieName={[]}
-          servicesOnPannel={[{ serviceId: '', designerId: 'd1', price: 0 }]}
+          servicesOnPanel={[{ serviceId: '', designerId: 'd1', price: 0 }]}
           helperFromModal={[]}
           setPageSetting={setters.setSetting}
           setSelectedCategorie={setters.setSelectedCategorie}
@@ -411,7 +411,7 @@ describe('EditServicesModal：帳單詳細／掛單詳細／重新開單選服�
   it('綁定第三方卡券的服務：帶入卡券 id 與鎖定設定；已有服務時新增在最後，沿用最後一列的其他欄位', async () => {
     const { handlers } = renderServices({
       servicesLength: 2,
-      servicesOnPannel: [
+      servicesOnPanel: [
         { serviceId: 's9', designerId: 'd1' },
         { serviceId: 's8', designerId: 'd2' },
       ],
@@ -461,7 +461,7 @@ describe('EditCouponSellModal：帳單詳細／掛單詳細／重新開單選卡
         couponModalOpen
         coupons={coupons}
         couponsLength={1}
-        couponsOnPannel={[{ serviceId: '', designerId: 'd1' }]}
+        couponsOnPanel={[{ serviceId: '', designerId: 'd1' }]}
         couponCategories={[{ id: 'cc-1', name: '剪髮' }]}
         selectedCategorie={[]}
         selectedCategorieName={[]}
@@ -496,7 +496,7 @@ describe('EditCouponSellModal：帳單詳細／掛單詳細／重新開單選卡
   })
 
   it('已有卡券：新增在最後', () => {
-    const { handlers } = renderCoupons({ couponsLength: 1, couponsOnPannel: [{ serviceId: 't9' }] })
+    const { handlers } = renderCoupons({ couponsLength: 1, couponsOnPanel: [{ serviceId: 't9' }] })
     fireEvent.click(within(dialog()).getAllByRole('button', { name: '加入' })[1])
     expect(handlers.onChange.mock.calls[0][0].index).toBe(1)
   })

@@ -82,7 +82,7 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
     monthlyCheckoutInput,
     salaryCheckoutDate,
     userSalayItemDataRefetch,
-    isSalaryChackedDataRefetch,
+    isSalaryCheckedDataRefetch,
     salaryItemLockDataRefetch,
     settingDate,
     dailyCheckoutProgress,
@@ -153,7 +153,7 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
         checkoutProcessing: false,
       })
       userSalayItemDataRefetch()
-      isSalaryChackedDataRefetch()
+      isSalaryCheckedDataRefetch()
       window.location.reload()
     }
     closeMonthlyFunc(newMonthlyCheckoutInput)
@@ -375,7 +375,7 @@ export function openSnackbar({
   monthlyCheckoutInput,
   salaryCheckoutDate,
   userSalayItemDataRefetch,
-  isSalaryChackedDataRefetch,
+  isSalaryCheckedDataRefetch,
   salaryItemLockDataRefetch,
   settingDate,
   dailyCheckoutProgress,
@@ -411,7 +411,7 @@ export function openSnackbar({
     monthlyCheckoutInput,
     salaryCheckoutDate,
     userSalayItemDataRefetch,
-    isSalaryChackedDataRefetch,
+    isSalaryCheckedDataRefetch,
     salaryItemLockDataRefetch,
     settingDate,
     dailyCheckoutProgress,
@@ -450,7 +450,7 @@ export default function CustomizedSnackbars() {
     monthlyCheckoutInput,
     salaryCheckoutDate,
     userSalayItemDataRefetch,
-    isSalaryChackedDataRefetch,
+    isSalaryCheckedDataRefetch,
     salaryItemLockDataRefetch,
     settingDate,
     dailyCheckoutProgress,
@@ -487,7 +487,7 @@ export default function CustomizedSnackbars() {
       monthlyCheckoutInput,
       salaryCheckoutDate,
       userSalayItemDataRefetch,
-      isSalaryChackedDataRefetch,
+      isSalaryCheckedDataRefetch,
       salaryItemLockDataRefetch,
       settingDate,
       dailyCheckoutProgress,
@@ -562,7 +562,7 @@ export default function CustomizedSnackbars() {
     monthlyCheckoutInput,
     salaryCheckoutDate,
     userSalayItemDataRefetch,
-    isSalaryChackedDataRefetch,
+    isSalaryCheckedDataRefetch,
     salaryItemLockDataRefetch,
     settingDate,
     dailyCheckoutProgress,
@@ -637,7 +637,7 @@ export default function CustomizedSnackbars() {
           monthlyCheckoutInput={monthlyCheckoutInput}
           salaryCheckoutDate={salaryCheckoutDate}
           userSalayItemDataRefetch={userSalayItemDataRefetch}
-          isSalaryChackedDataRefetch={isSalaryChackedDataRefetch}
+          isSalaryCheckedDataRefetch={isSalaryCheckedDataRefetch}
           salaryItemLockDataRefetch={salaryItemLockDataRefetch}
           settingDate={settingDate}
           dailyCheckoutProgress={dailyCheckoutProgress}

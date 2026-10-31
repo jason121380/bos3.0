@@ -45,7 +45,7 @@ function Services({
   focusFirstField,
   changeRowFocus,
   helperFromModal,
-  servicesOnPannel,
+  servicesOnPanel,
   handleOpenServicesModal,
   servicesModalOpen,
   isHelperDesignation,
@@ -102,10 +102,10 @@ function Services({
   }, [serviceDetail.data, serviceDetail.loading, reset])
 
   useEffect(() => {
-    if (helperFromModal.length !== 0 && index === servicesOnPannel.length - 1 && !servicesModalOpen) {
+    if (helperFromModal.length !== 0 && index === servicesOnPanel.length - 1 && !servicesModalOpen) {
       setHelper(helperFromModal)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [helperFromModal, servicesModalOpen] 變動時執行；index、servicesOnPannel.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [helperFromModal, servicesModalOpen] 變動時執行；index、servicesOnPanel.length 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [helperFromModal, servicesModalOpen])
 
   useEffect(() => {
@@ -276,7 +276,7 @@ function Services({
 
   // 服務下拉按 Enter 移到下一個欄位（原本寫在 JSX 內，內容不變）
   const handleServiceKeyDown = useStableCallback(event => {
-    if (event.key === 'Enter' && servicesOnPannel[index].serviceId !== '') {
+    if (event.key === 'Enter' && servicesOnPanel[index].serviceId !== '') {
       if (!(service.isLocked === 'TRUE' || service.isLocked === 'UNSET')) {
         setFocus('price')
       } else if (helper.length > 0) {

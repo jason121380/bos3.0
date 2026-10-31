@@ -15,7 +15,7 @@ import reference from './reference'
 
 const designerLabel = designer => designer.nickName || designer.name
 
-export default function ({ asignDesigner, onChange, onAssignChange, onDesignerChange }) {
+export default function ReservationBasic({ assignDesigner, onChange, onAssignChange, onDesignerChange }) {
   const { merchantId, values } = React.useContext(ReservationContext)
   const selectRef = React.useRef()
   const serviceTimeRef = React.useRef()
@@ -95,7 +95,7 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
           }}
         />
 
-        <ToggleGroup fullWidth value={asignDesigner} exclusive onChange={onAssignChange} aria-label="指定不指定設計師">
+        <ToggleGroup fullWidth value={assignDesigner} exclusive onChange={onAssignChange} aria-label="指定不指定設計師">
           <ToggleGroupItem className="h-10" value={true} aria-label="assign" data-testid="designer-assigned">
             指定
           </ToggleGroupItem>
@@ -107,7 +107,7 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
           designers,
           _ =>
             _.data.viewer.anonymous.designers.data &&
-            asignDesigner && (
+            assignDesigner && (
               // 服務設計師可打字搜尋（Jason 2026/10/30）：StaffCombobox 選取時交給原 handler { target: { value: 設計師 id } }，
               // 按清除鈕為 ''（與原本選回空白相同）；清單與欄位文字維持「有暱稱用暱稱，沒有用本名」。
               <div ref={selectRef} className="min-w-0">
@@ -127,7 +127,7 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
                   inputProps={{
                     'data-testid': 'designer-name',
                   }}
-                  label={<>服務設計師{asignDesigner && <span className="text-danger"> *</span>}</>}
+                  label={<>服務設計師{assignDesigner && <span className="text-danger"> *</span>}</>}
                 />
               </div>
             )
@@ -157,7 +157,7 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
             {idx(designerBookingTimesResponse, _ =>
               _.data.getBookingTimes.map(data => {
                 return (
-                  asignDesigner && (
+                  assignDesigner && (
                     <NativeSelectOption value={data.time} key={data.time} disabled={data.status === '不可預約'}>
                       {format(new Date(data.time), 'HH:mm')}
                     </NativeSelectOption>
@@ -169,7 +169,7 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
             {idx(unspecifiedBookingTimesResponse, _ =>
               _.data.unspecifiedBookingTimes.map(data => {
                 return (
-                  !asignDesigner && (
+                  !assignDesigner && (
                     <NativeSelectOption value={data.time} key={data.time} disabled={data.status === '不可預約'}>
                       {format(new Date(data.time), 'HH:mm')}
                     </NativeSelectOption>

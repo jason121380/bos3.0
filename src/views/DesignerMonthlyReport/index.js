@@ -35,7 +35,7 @@ export default function Employees() {
   const [performReference, setPerformReference] = useState('FAKE')
   const [sort, setSort] = useState('performance')
 
-  const designerMontlyListData = useFetchDesignerMonthlyReport({
+  const designerMonthlyListData = useFetchDesignerMonthlyReport({
     dateRange: {
       startDate: date.startDate,
       endDate: date.endDate,
@@ -88,13 +88,13 @@ export default function Employees() {
           actions={
             <>
               <CSVLink className="noprint" data={excelData} filename="設計師業績月報表.csv">
-                <Button disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading} variant="secondary">
+                <Button disabled={designerMonthlyListData.loading || isMemberShipCardActiveData.loading} variant="secondary">
                   <Download strokeWidth={1.75} />
                   報表匯出
                 </Button>
               </CSVLink>
               <Button
-                disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading}
+                disabled={designerMonthlyListData.loading || isMemberShipCardActiveData.loading}
                 onClick={() => window.print()}
                 variant="secondary"
               >
@@ -135,14 +135,14 @@ export default function Employees() {
             </>
           }
         />
-        {designerMontlyListData.error ? (
-          <QueryFailed onRetry={() => designerMontlyListData.refetch()} />
-        ) : !designerMontlyListData.loading && !isMemberShipCardActiveData.loading ? (
-          idx(designerMontlyListData, _ => (
+        {designerMonthlyListData.error ? (
+          <QueryFailed onRetry={() => designerMonthlyListData.refetch()} />
+        ) : !designerMonthlyListData.loading && !isMemberShipCardActiveData.loading ? (
+          idx(designerMonthlyListData, _ => (
             <Results
               setExcelData={setExcelData}
               performReference={performReference}
-              designerMontlyListData={designerMontlyListData.data.designerMonthlyReport}
+              designerMonthlyListData={designerMonthlyListData.data.designerMonthlyReport}
               sort={sort}
               isMemberShipCardActive={isMemberShipCardActive}
             />

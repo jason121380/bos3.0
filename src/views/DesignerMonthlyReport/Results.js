@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import cloneDeep from 'lodash/cloneDeep'
 
-export default function Results({ designerMontlyListData, performReference, sort, isMemberShipCardActive, setExcelData }) {
+export default function Results({ designerMonthlyListData, performReference, sort, isMemberShipCardActive, setExcelData }) {
   const [membershipDisplay, setMembershipDisplay] = useState(false)
   const [reportData, setReportData] = useState([])
 
@@ -14,7 +14,7 @@ export default function Results({ designerMontlyListData, performReference, sort
     const filterRawData = []
     const perforBool = performReference === 'TRUTH'
     const sortBool = sort === 'performance'
-    designerMontlyListData.forEach(data => {
+    designerMonthlyListData.forEach(data => {
       if (
         data.truthPerformance > 0 ||
         data.fakePerformance > 0 ||
@@ -118,7 +118,7 @@ export default function Results({ designerMontlyListData, performReference, sort
     const excelData = []
     const performanceKey = perforBool ? '服務卡券業績(實)' : '服務卡券業績(虛)'
     renderExcelData.forEach(d => {
-      const mamberShipObj = memberDisplay ? { 會員卡業績: Math.round(d.membershipFakePerformance) } : {}
+      const memberShipObj = memberDisplay ? { 會員卡業績: Math.round(d.membershipFakePerformance) } : {}
       excelData.push({
         ...{
           月份: d.date ? format(d.date, 'yyyy/MM') : '',
@@ -131,11 +131,11 @@ export default function Results({ designerMontlyListData, performReference, sort
           不指定: d.orderNonDesignateCount,
           店販金額: Math.round(d.productFakePerformance),
         },
-        ...mamberShipObj,
+        ...memberShipObj,
       })
     })
 
-    const mamberShipSum = memberDisplay
+    const memberShipSum = memberDisplay
       ? { 會員卡業績: Math.round(renderExcelData.reduce((a, b) => a + (b.designerName === '小計' ? 0 : b.membershipFakePerformance), 0)) }
       : {}
 
@@ -154,11 +154,11 @@ export default function Results({ designerMontlyListData, performReference, sort
         不指定: renderExcelData.reduce((a, b) => a + (b.designerName === '小計' ? 0 : b.orderNonDesignateCount), 0),
         店販金額: Math.round(renderExcelData.reduce((a, b) => a + (b.designerName === '小計' ? 0 : b.productFakePerformance), 0)),
       },
-      ...mamberShipSum,
+      ...memberShipSum,
     })
 
     setExcelData(excelData)
-  }, [designerMontlyListData, performReference, sort, isMemberShipCardActive, setExcelData])
+  }, [designerMonthlyListData, performReference, sort, isMemberShipCardActive, setExcelData])
   return (
     <Table dense wrapperClassName="DesignerMonthlyReportTableContainer mt-[10px]" className="DesignerMonthlyReportTable" aria-label="a dense table">
       <TableHeader>

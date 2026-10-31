@@ -83,7 +83,7 @@ function MerchantVendorCreate() {
         <AboutMerchantVendor
           className="mt-6"
           vendorOption={vendorOption}
-          isLodaing={vendorList.loading}
+          isLoading={vendorList.loading}
           submitData={submitData}
           setSubmitData={setSubmitData}
         />

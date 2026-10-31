@@ -45,7 +45,7 @@ function Permission({ designerId, className = '', ...rest }) {
   })
 
   const [permissions, setPermissions] = useState([])
-  const [userPermisions, setUserPermissions] = useState([])
+  const [userPermissions, setUserPermissions] = useState([])
   useEffect(() => {
     if (apiResp.data) {
       setPermissions(apiResp.data.merchant.permissions)
@@ -70,7 +70,7 @@ function Permission({ designerId, className = '', ...rest }) {
                 <div key={permission.id} className="flex flex-col">
                   <h4 className="mb-1 text-heading text-text">{permission.name}</h4>
                   {permission.actions.map(action => {
-                    const isChecked = !!userPermisions.find(d => d === action.id)
+                    const isChecked = !!userPermissions.find(d => d === action.id)
                     return <CheckBoxCus key={`${action.id}_${isChecked}`} designerId={designerId} action={action} defaultChecked={isChecked} />
                   })}
                 </div>

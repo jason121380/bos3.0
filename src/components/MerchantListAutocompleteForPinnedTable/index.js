@@ -52,7 +52,6 @@ const MerchantListAutocompleteForPinnedTable = ({ onValueChange = () => {}, sele
           disabled={getUserGroupsWOCS.loading || isClick}
           open={false}
           style={{ cursor: 'pointer' }}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
           // 全選：ui Button 以 asChild 落在 div（避免巢狀 button）；div 沒有 disabled，比照 MUI 以 aria-disabled＋pointer-events-none 擋點擊
           popupIcon={
             <Button
@@ -73,7 +72,6 @@ const MerchantListAutocompleteForPinnedTable = ({ onValueChange = () => {}, sele
           options={merchantList.allMerchants}
           disableCloseOnSelect
           getOptionLabel={option => option.name}
-          renderOption={(props, option) => <li {...props}>{option.name}</li>}
           renderInput={params => (
             <TextField
               onClick={event => handleOnClick(event)}

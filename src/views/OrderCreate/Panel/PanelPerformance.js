@@ -18,14 +18,14 @@ function PanelPerformance() {
 
   const merchantSellTotalPrice = bill.productOrders.reduce((total, item) => (total = total + item.price * item.count), 0)
   const couponSellPrice = bill.ticketOrders.reduce((total, item) => (total = total + item.price * item.count), 0)
-  const merberShipCardTotalPrice = bill.membershipOrders.reduce((total, item) => (total = total + item.price), 0)
+  const memberShipCardTotalPrice = bill.membershipOrders.reduce((total, item) => (total = total + item.price), 0)
   const couponUsageTotalPrice =
     idx(customerTicketRecords, _ => _.data.ticketRecords.data.reduce((total, item) => (total = total + item.price), 0)) ?? 0
 
   // 業績合計、現金應收：運算式與舊版相同，只是算一次，下方彙總卡與底部固定列共用同一個值。
   // 原本另加「賣卡券先入業績」（intoPerformanceWhileBuying）的金額：打帳單沒有任何地方把它設為 true
   // （新列、清除、從清單選擇都帶 false），這一項永遠是 0，已移除
-  const performanceTotal = Math.round(serviceTotalPrice + merchantSellTotalPrice + couponUsageTotalPrice + merberShipCardTotalPrice)
+  const performanceTotal = Math.round(serviceTotalPrice + merchantSellTotalPrice + couponUsageTotalPrice + memberShipCardTotalPrice)
   // 現金應收：與明細彈窗、收據共用 billPaymentSummary（同一公式）
   const { cashDue } = billPaymentSummary(bill)
 
@@ -37,7 +37,7 @@ function PanelPerformance() {
         { label: '店販消費', value: merchantSellTotalPrice },
         { label: '預收卡販賣', value: couponSellPrice },
         { label: '使用預收卡', value: Math.round(couponUsageTotalPrice) },
-        { label: '會員卡販賣', value: merberShipCardTotalPrice },
+        { label: '會員卡販賣', value: memberShipCardTotalPrice },
       ]}
       payments={[
         { label: '扣入金', value: bill.walletPay },

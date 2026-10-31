@@ -71,7 +71,7 @@ function OrderManagementList() {
   const [progress, setProgress] = useState(0)
   // 匯出客資遮罩：設定確定是「不遮罩」(false) 才匯出完整姓名電話；載入中或查詢失敗一律遮罩（個資寧可多遮，Codex review PR #254）
   const [isCustomerDataMarked, setIsCustomerDataMarked] = useState(true)
-  const [orderIds, setOrtderIds] = useState([])
+  const [orderIds, setOrderIds] = useState([])
   const [orderList, setOrderList] = useState([])
   const getOrderList = useFetchGetOrderList({
     dateRange: date,
@@ -187,7 +187,7 @@ function OrderManagementList() {
         pageSetting.pageLimit * pageSetting.pageOffset + pageSetting.pageLimit
       )
       setOrderList(pageData)
-      setOrtderIds([...ids])
+      setOrderIds([...ids])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getOrderList.loading, pageSetting.pageLimit, pageSetting.pageOffset])

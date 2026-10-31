@@ -40,7 +40,7 @@ const Shortcut = () => {
       const data = idx(shortcuts, _ => _.data.shortcuts) || []
       const tidyData = []
       data.forEach(({ services, products, memberships, tickets, ...d }) => {
-        const collapesRow = Math.max(services.length, products.length, memberships.length, tickets.length)
+        const collapseRow = Math.max(services.length, products.length, memberships.length, tickets.length)
         const rowData = {
           id: d.id,
           name: d.name,
@@ -49,10 +49,10 @@ const Shortcut = () => {
           updatedAt: d.updatedAt,
           creator: d.creator,
           editor: d.editor,
-          collapesData: [],
+          collapseData: [],
         }
 
-        for (let i = 0; i < collapesRow; i++) {
+        for (let i = 0; i < collapseRow; i++) {
           const service = services[i]
             ? {
                 no: services[i].no,
@@ -85,7 +85,7 @@ const Shortcut = () => {
               }
             : null
 
-          rowData.collapesData.push({
+          rowData.collapseData.push({
             service,
             product,
             ticket,

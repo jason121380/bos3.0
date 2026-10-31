@@ -25,7 +25,7 @@ function DeductionResults({ className, deductionData, deduction, ...rest }) {
     }
     setSelected(newSelect)
   }
-  const handleSeletedDelete = () => {
+  const handleSelectedDelete = () => {
     deleteDeductionSetting(selected)
       .then(() => {
         setSelected([])
@@ -80,7 +80,7 @@ function DeductionResults({ className, deductionData, deduction, ...rest }) {
           ))}
         </TableBody>
       </Table>
-      <TableEditBar selected={selected} onDelete={handleSeletedDelete} />
+      <TableEditBar selected={selected} onDelete={handleSelectedDelete} />
     </div>
   )
 }

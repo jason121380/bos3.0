@@ -24,7 +24,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
   const [ordersFastCheckLazy, ordersFastCheckLazyData] = useFetchOrdersFastCheckLazy()
   const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
   const customerBonusActive = useFetchGetIsCustomerBonusActive()
-  const [summery, setSummery] = useState({
+  const [summary, setSummary] = useState({
     service: 0,
     product: 0,
     usedTicket: 0,
@@ -169,7 +169,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
       setBonusDisplay(bonusActive || bonus !== 0)
       setMembershipDisplay(isMemberShipCardActive || membership !== 0)
       setOrderData(data)
-      setSummery(data2)
+      setSummary(data2)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [ordersFastCheckLazyData.loading, isMemberShipCardActiveData.loading, customerBonusActive.loading])
@@ -363,19 +363,19 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                     style={{ minWidth: '100px', left: '192px' }}
                   ></TableCell>
                   <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
-                  <TableCell className="cellHighlight">{formatNumber(summery.businessCash || 0)}</TableCell>
-                  <TableCell>{formatNumber(summery.service || 0)}</TableCell>
-                  <TableCell>{formatNumber(summery.product || 0)}</TableCell>
-                  {membershipDisplay && <TableCell>{formatNumber(summery.membership || 0)}</TableCell>}
-                  <TableCell>{formatNumber(summery.usedTicket || 0)}</TableCell>
-                  <TableCell>{formatNumber(summery.ticketSellIntoPerformance || 0)}</TableCell>
-                  <TableCell>{formatNumber(summery.performanceIncome || 0)}</TableCell>
-                  <TableCell>{formatNumber(summery.ticketSellNotIntoPerformance || 0)}</TableCell>
-                  <TableCell>{formatNumber(summery.usedTicketForDecount || 0)}</TableCell>
-                  <TableCell>{formatNumber(summery.thirdPartTicketForDecount || 0)}</TableCell>
-                  <TableCell>{formatNumber(summery.otherPayWayForDecount || 0)}</TableCell>
-                  <TableCell>{formatNumber(summery.walletUsedForDecount || 0)}</TableCell>
-                  {bonusDisplay && <TableCell>{formatNumber(summery.bonusDecountForReport)}</TableCell>}
+                  <TableCell className="cellHighlight">{formatNumber(summary.businessCash || 0)}</TableCell>
+                  <TableCell>{formatNumber(summary.service || 0)}</TableCell>
+                  <TableCell>{formatNumber(summary.product || 0)}</TableCell>
+                  {membershipDisplay && <TableCell>{formatNumber(summary.membership || 0)}</TableCell>}
+                  <TableCell>{formatNumber(summary.usedTicket || 0)}</TableCell>
+                  <TableCell>{formatNumber(summary.ticketSellIntoPerformance || 0)}</TableCell>
+                  <TableCell>{formatNumber(summary.performanceIncome || 0)}</TableCell>
+                  <TableCell>{formatNumber(summary.ticketSellNotIntoPerformance || 0)}</TableCell>
+                  <TableCell>{formatNumber(summary.usedTicketForDecount || 0)}</TableCell>
+                  <TableCell>{formatNumber(summary.thirdPartTicketForDecount || 0)}</TableCell>
+                  <TableCell>{formatNumber(summary.otherPayWayForDecount || 0)}</TableCell>
+                  <TableCell>{formatNumber(summary.walletUsedForDecount || 0)}</TableCell>
+                  {bonusDisplay && <TableCell>{formatNumber(summary.bonusDecountForReport)}</TableCell>}
                   <TableCell></TableCell>
                 </TableRow>
               </TableBody>

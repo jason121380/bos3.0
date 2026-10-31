@@ -10,22 +10,22 @@ import { formatNumber } from 'ui/format'
 
 // 新增盤點／編輯盤點共用（2026/10/30 自兩頁合併，畫面與 handler 逐字保留）。
 // info：編輯頁才傳（建立時間、建立者），新增頁不傳＝null，不顯示這一行。
-function General({ info = null, isClick, inventoryData, setInventoryData, categoriesData, handleCreateIventory, sort, setSort }) {
-  const [categorys, setCategorys] = useState([])
+function General({ info = null, isClick, inventoryData, setInventoryData, categoriesData, handleCreateInventory, sort, setSort }) {
+  const [categories, setCategories] = useState([])
 
-  const handleSecectVariant = id => {
-    return categorys.includes(id) ? 'contained' : 'outlined'
+  const handleSelectVariant = id => {
+    return categories.includes(id) ? 'contained' : 'outlined'
   }
 
   const handleClickCategory = id => {
-    const index = categorys.indexOf(id)
-    const cloneData = cloneDeep(categorys)
+    const index = categories.indexOf(id)
+    const cloneData = cloneDeep(categories)
     if (index === -1) {
       cloneData.push(id)
     } else {
       cloneData.splice(index, 1)
     }
-    setCategorys(cloneData)
+    setCategories(cloneData)
   }
 
   const handleCheckCount = count => {
@@ -38,9 +38,9 @@ function General({ info = null, isClick, inventoryData, setInventoryData, catego
     }
   }
 
-  const handleCheckRenderItrm = categoryId => {
-    if (!categorys.length) return true
-    return categorys.includes(categoryId)
+  const handleCheckRenderItem = categoryId => {
+    if (!categories.length) return true
+    return categories.includes(categoryId)
   }
 
   const Buttons = ({ sortDisplay = false }) => (
@@ -55,10 +55,10 @@ function General({ info = null, isClick, inventoryData, setInventoryData, catego
           </ToggleGroup>
         </div>
       )}
-      <Button disabled={isClick} onClick={() => handleCreateIventory()} variant="secondary">
+      <Button disabled={isClick} onClick={() => handleCreateInventory()} variant="secondary">
         儲存盤點
       </Button>
-      <Button disabled={isClick} onClick={() => handleCreateIventory(false)} variant="primary">
+      <Button disabled={isClick} onClick={() => handleCreateInventory(false)} variant="primary">
         完成盤點
       </Button>
     </Fragment>
@@ -96,15 +96,15 @@ function General({ info = null, isClick, inventoryData, setInventoryData, catego
                   size="sm"
                   onClick={() => handleClickCategory(id)}
                   variant="secondary"
-                  aria-pressed={handleSecectVariant(id) === 'contained'}
-                  className={handleSecectVariant(id) === 'contained' ? 'bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+                  aria-pressed={handleSelectVariant(id) === 'contained'}
+                  className={handleSelectVariant(id) === 'contained' ? 'bg-accent/8 text-accent hover:bg-accent/8' : undefined}
                 >
                   {name}
                 </Button>
               ))}
             </div>
             <div>
-              <Button size="sm" onClick={() => setCategorys([])} variant="ghost">
+              <Button size="sm" onClick={() => setCategories([])} variant="ghost">
                 清除篩選
               </Button>
             </div>
@@ -121,7 +121,7 @@ function General({ info = null, isClick, inventoryData, setInventoryData, catego
             </TableHeader>
             <TableBody>
               {inventoryData.map(({ productId, productName, productNo, currentCount, inventoryCount, productCategoryId }, index) => {
-                if (handleCheckRenderItrm(productCategoryId)) {
+                if (handleCheckRenderItem(productCategoryId)) {
                   return (
                     <TableRow key={productId}>
                       <TableCell>{productName}</TableCell>

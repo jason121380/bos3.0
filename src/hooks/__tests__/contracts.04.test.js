@@ -437,8 +437,8 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchMerchant.useFethcMonthlyCloseStatus',
-    hook: useFetchMerchant.useFethcMonthlyCloseStatus,
+    id: 'useFetchMerchant.useFetchMonthlyCloseStatus',
+    hook: useFetchMerchant.useFetchMonthlyCloseStatus,
     args: ['date-v'],
     expect: {
       initial: [{ operationName: 'FETCH_MONTHLY_CLOSE_STATUS', variables: { date: 'date-v' } }],

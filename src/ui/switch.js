@@ -32,7 +32,6 @@ const Switch = React.forwardRef(
           }}
           type="checkbox"
           role="switch"
-          id={id}
           name={name}
           aria-labelledby={fieldLabelledBy}
           checked={checked}

@@ -20,7 +20,7 @@ const styles = {
   rightColumn: 'flex flex-col gap-[12px] min-w-0',
 }
 
-const pannelByCode = {
+const panelByCode = {
   F1: 'service',
   F2: 'merchantSells',
   F3: 'couponSells',
@@ -35,45 +35,45 @@ function Panel() {
   const thirdPartTicketData = useFetchGetThirdPartTicketSetting()
   const [thirdPartTicket, setthirdPartTicketData] = useState(false)
 
-  const [pannel, setPannel] = React.useState({
+  const [panel, setPanel] = React.useState({
     service: {
-      expaned: true,
+      expanded: true,
       code: 'F1',
     },
     merchantSells: {
-      expaned: false,
+      expanded: false,
       code: 'F2',
     },
     couponSells: {
-      expaned: false,
+      expanded: false,
       code: 'F3',
     },
     couponUse: {
-      expaned: false,
+      expanded: false,
       code: 'F4',
     },
     memberShipCardSells: {
-      expaned: false,
+      expanded: false,
       code: 'F5',
     },
     payment: {
-      expaned: true,
+      expanded: true,
       code: 'F6',
     },
     remark: {
-      expaned: true,
+      expanded: true,
       code: 'F7',
     },
-    otherPament: {
-      expaned: false,
+    otherPayment: {
+      expanded: false,
       code: 'F8',
     },
     bonus: {
-      expaned: false,
+      expanded: false,
       code: '',
     },
     performance: {
-      expaned: true,
+      expanded: true,
       code: '',
     },
   })
@@ -88,58 +88,58 @@ function Panel() {
 
   useEffect(() => {
     if (reset === 'reset') {
-      setPannel({
+      setPanel({
         service: {
-          expaned: true,
+          expanded: true,
           code: 'F1',
         },
         merchantSells: {
-          expaned: false,
+          expanded: false,
           code: 'F2',
         },
         couponSells: {
-          expaned: false,
+          expanded: false,
           code: 'F3',
         },
         couponUse: {
-          expaned: false,
+          expanded: false,
           code: 'F4',
         },
         memberShipCardSells: {
-          expaned: false,
+          expanded: false,
           code: 'F5',
         },
         payment: {
-          expaned: true,
+          expanded: true,
           code: 'F6',
         },
         remark: {
-          expaned: true,
+          expanded: true,
           code: 'F7',
         },
-        otherPament: {
-          expaned: false,
+        otherPayment: {
+          expanded: false,
           code: 'F8',
         },
         bonus: {
-          expaned: false,
+          expanded: false,
           code: '',
         },
         performance: {
-          expaned: true,
+          expanded: true,
           code: '',
         },
       })
     }
   }, [reset])
 
-  const handlePannelClick = panelName => {
-    setPannel(prevPannel =>
-      Object.keys(prevPannel)
+  const handlePanelClick = panelName => {
+    setPanel(prevPanel =>
+      Object.keys(prevPanel)
         .map(key => ({
           [key]: {
-            code: pannel[key].code,
-            expaned: key === panelName ? !pannel[key].expaned : pannel[key].expaned,
+            code: panel[key].code,
+            expanded: key === panelName ? !panel[key].expanded : panel[key].expanded,
           },
         }))
         .reduce(
@@ -154,17 +154,17 @@ function Panel() {
 
   React.useEffect(() => {
     const listener = event => {
-      if (pannelByCode[event.key]) {
-        setPannel(prevPannel =>
-          Object.values(prevPannel)
-            .map(pannel => ({
-              ...pannel,
-              expaned: pannel.code === event.key,
+      if (panelByCode[event.key]) {
+        setPanel(prevPanel =>
+          Object.values(prevPanel)
+            .map(panel => ({
+              ...panel,
+              expanded: panel.code === event.key,
             }))
             .reduce(
               (acc, cur) => ({
                 ...acc,
-                [pannelByCode[cur.code]]: cur,
+                [panelByCode[cur.code]]: cur,
               }),
               {}
             )
@@ -180,30 +180,30 @@ function Panel() {
   return (
     <div className={styles.root} id="panel">
       <PanelService
-        expanded={pannel.service.expaned}
-        onPanelClick={() => handlePannelClick('service')}
+        expanded={panel.service.expanded}
+        onPanelClick={() => handlePanelClick('service')}
         thirdPartTicket={thirdPartTicket}
         reset={reset}
       />
       <PanelMerchantSells
-        expanded={pannel.merchantSells.expaned}
-        onPanelClick={() => handlePannelClick('merchantSells')}
+        expanded={panel.merchantSells.expanded}
+        onPanelClick={() => handlePanelClick('merchantSells')}
         thirdPartTicket={thirdPartTicket}
         reset={reset}
       />
-      <PanelCouponSells expanded={pannel.couponSells.expaned} onPanelClick={() => handlePannelClick('couponSells')} reset={reset} />
+      <PanelCouponSells expanded={panel.couponSells.expanded} onPanelClick={() => handlePanelClick('couponSells')} reset={reset} />
       {!bill.withoutCustomerData && (
         <PanelCouponUse
-          expanded={pannel.couponUse.expaned}
-          onPanelClick={() => handlePannelClick('couponUse')}
+          expanded={panel.couponUse.expanded}
+          onPanelClick={() => handlePanelClick('couponUse')}
           display={bill.customerId}
           reset={reset}
         />
       )}
       {memberShipCardActive && (
         <PanelMemberShipCardSells
-          expanded={pannel.memberShipCardSells.expaned}
-          onPanelClick={() => handlePannelClick('memberShipCardSells')}
+          expanded={panel.memberShipCardSells.expanded}
+          onPanelClick={() => handlePanelClick('memberShipCardSells')}
           thirdPartTicket={thirdPartTicket}
           reset={reset}
         />
@@ -211,7 +211,7 @@ function Panel() {
       <div className={styles.container}>
         <div className={styles.leftColumn}>
           {bonusActive && !bill.withoutCustomerData && (
-            <PanelBonus expanded={pannel.bonus.expaned} bonusActive={bonusActive} onPanelClick={() => handlePannelClick('bonus')} reset={reset} />
+            <PanelBonus expanded={panel.bonus.expanded} bonusActive={bonusActive} onPanelClick={() => handlePanelClick('bonus')} reset={reset} />
           )}
           <PanelPayment />
           <PanelRemark />
@@ -223,8 +223,8 @@ function Panel() {
       {/* 讓出底部固定合計列的高度，最後一張卡不會被蓋住 */}
       <div aria-hidden="true" className="h-12" />
       {/* <PanelOtherPayment
-        expanded={pannel.otherPament.expaned}
-        onPanelClick={() => handlePannelClick('otherPament')}
+        expanded={panel.otherPayment.expanded}
+        onPanelClick={() => handlePanelClick('otherPayment')}
       /> */}
     </div>
   )

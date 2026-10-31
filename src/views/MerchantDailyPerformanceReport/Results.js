@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 // 固定首欄（原 styles.sticky 寫死白底，改用 tokens）
 const STICKY_COL = 'sticky left-0 top-0 z-[99] min-w-[100px] max-w-[100px] break-all bg-background'
 
-function Results({ className, results, excelData, attributeSwitchs, membershipDisplay, ...rest }) {
+function Results({ className, results, excelData, attributeSwitches, membershipDisplay, ...rest }) {
   return (
     <div {...rest} className={className}>
       <Table dense aria-label="a dense table">
@@ -19,7 +19,7 @@ function Results({ className, results, excelData, attributeSwitchs, membershipDi
             <TableHead numeric>指定/不指定 (人次)</TableHead>
             <TableHead numeric>男/女/未知 (不重複)</TableHead>
             {results[0].performance.categoryData.map((data, index) => {
-              if (attributeSwitchs[index]) {
+              if (attributeSwitches[index]) {
                 return <TableHead numeric key={index}>{`${data.categoryName}/人次/單均價`}</TableHead>
               }
               return undefined
@@ -74,7 +74,7 @@ function Results({ className, results, excelData, attributeSwitchs, membershipDi
                   {formatNumber(Math.round(customerMaleCount))}/{formatNumber(customerFemaleCount)}/{formatNumber(Math.round(customerUnknownCount))}
                 </TableCell>
                 {categoryData.map(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
-                  if (attributeSwitchs[index]) {
+                  if (attributeSwitches[index]) {
                     return (
                       <TableCell numeric key={`${categoryName}-${index}`}>
                         {`${formatNumber(Math.round(fakePerformance))}/${formatNumber(orderCount)}/${formatNumber(Math.round(averagePerformance))}`}

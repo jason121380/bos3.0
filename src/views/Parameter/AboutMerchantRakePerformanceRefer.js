@@ -19,9 +19,9 @@ const options = {
   ],
 }
 
-function AboutMerchantRakePerformanceRefer({ className, merchantRakeReferemce, setMerchantRakeReferemce, inputEnable }) {
+function AboutMerchantRakePerformanceRefer({ className, merchantRakeReference, setMerchantRakeReference, inputEnable }) {
   const handleValueChange = (e, key) => {
-    setMerchantRakeReferemce(
+    setMerchantRakeReference(
       produce(draft => {
         draft[key] = e.target.value
       })
@@ -40,7 +40,7 @@ function AboutMerchantRakePerformanceRefer({ className, merchantRakeReferemce, s
                 disabled={!inputEnable}
                 fullWidth={false}
                 className="w-[150px] flex !ml-0"
-                value={merchantRakeReferemce.designate}
+                value={merchantRakeReference.designate}
                 onChange={e => handleValueChange(e, 'designate')}
               >
                 {options.des.map((data, idx) => (
@@ -55,7 +55,7 @@ function AboutMerchantRakePerformanceRefer({ className, merchantRakeReferemce, s
                 disabled={!inputEnable}
                 fullWidth={false}
                 className="w-[150px] flex !ml-0"
-                value={merchantRakeReferemce.nonDesignate}
+                value={merchantRakeReference.nonDesignate}
                 onChange={e => handleValueChange(e, 'nonDesignate')}
               >
                 {options.nonDes.map((data, idx) => (

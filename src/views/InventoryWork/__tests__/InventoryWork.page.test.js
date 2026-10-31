@@ -4,16 +4,16 @@
 import 'lib/install-business-timezone'
 import React from 'react'
 import CustomizedSnackbars, { openSnackbar } from 'elements/snackbars'
-jest.mock('elements/snackbars', () => {
-  const actual = jest.requireActual('elements/snackbars')
-  return { __esModule: true, ...actual, openSnackbar: jest.fn(actual.openSnackbar) }
-})
-beforeEach(() => openSnackbar.mockImplementation(jest.requireActual('elements/snackbars').openSnackbar))
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { endOfMonth, startOfMonth, subMonths } from 'date-fns'
 import { callsOf, loginAs, renderPage, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import { USERS, clearCombo, inputsByLabel, pickOption, pickQuickDate } from '../../__tests__/stockKit.test'
 import InventoryWork from '..'
+jest.mock('elements/snackbars', () => {
+  const actual = jest.requireActual('elements/snackbars')
+  return { __esModule: true, ...actual, openSnackbar: jest.fn(actual.openSnackbar) }
+})
+beforeEach(() => openSnackbar.mockImplementation(jest.requireActual('elements/snackbars').openSnackbar))
 
 jest.setTimeout(30000)
 

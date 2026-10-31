@@ -32,7 +32,7 @@ const styles = {
   formGroup: 'w-[170px] m-[10px]',
 }
 
-const selecter = [
+const selector = [
   {
     label: '之前',
     value: 'LESSTHAN',
@@ -43,7 +43,7 @@ const selecter = [
   },
 ]
 
-const selecterCustomer = [
+const selectorCustomer = [
   {
     label: '有',
     value: true,
@@ -368,7 +368,7 @@ function CustomerFilterExport() {
                       placeholder="請選擇…"
                       label="來店之顧客"
                     >
-                      {selecterCustomer.map((data, index) => (
+                      {selectorCustomer.map((data, index) => (
                         <NativeSelectOption key={index} value={data.value}>
                           {data.label}
                         </NativeSelectOption>
@@ -437,7 +437,7 @@ function CustomerFilterExport() {
                         placeholder="請選擇…"
                         label="之前/之後"
                       >
-                        {selecter.map((data, index) => (
+                        {selector.map((data, index) => (
                           <NativeSelectOption key={index} value={data.value}>
                             {data.label}
                           </NativeSelectOption>

@@ -13,7 +13,7 @@ import { Button } from 'ui/button'
 import Basic from './Basic'
 import Customer from './Customer'
 
-export default function () {
+export default function ReservationForm() {
   const history = useHistory()
   const { merchantId, values, setValues, location } = React.useContext(ReservationContext)
   const [selectedDesigner, setSelectedDesigner] = React.useState('')
@@ -117,9 +117,9 @@ export default function () {
               ? (bookingCategoryNames.find(data => data.type === 'main')?.name ?? '')
               : []
 
-          const messaes = []
+          const messages = []
           if (data.nonDesignationBooking.status === '待審核') {
-            messaes.push({
+            messages.push({
               type: 'text',
               text: `
 預約正在審核中...
@@ -133,7 +133,7 @@ export default function () {
           `,
             })
           } else if (data.nonDesignationBooking.status === '預約成功') {
-            messaes.push({
+            messages.push({
               type: 'text',
               text: `
 恭喜您！您已經預約成功囉！
@@ -148,7 +148,7 @@ export default function () {
           }
           if (getQueryString({ key: 'usingLineLogin', location }) === '1' || !getQueryString({ key: 'usingLineLogin', location })) {
             window.liff.closeWindow()
-            window.liff.sendMessages(messaes)
+            window.liff.sendMessages(messages)
           }
           history.push('/management/reservation/calendar')
           openSnackbar({
@@ -200,9 +200,9 @@ export default function () {
               ? (bookingCategoryNames.find(data => data.type === 'main')?.name ?? '')
               : []
 
-          const messaes = []
+          const messages = []
           if (data.bookingV2.status === '待審核') {
-            messaes.push({
+            messages.push({
               type: 'text',
               text: `
 預約正在審核中...
@@ -215,7 +215,7 @@ export default function () {
 服務: ${service}`,
             })
           } else if (data.bookingV2.status === '預約成功') {
-            messaes.push({
+            messages.push({
               type: 'text',
               text: `
 恭喜您！您已經預約成功囉！
@@ -230,7 +230,7 @@ export default function () {
           }
           if (getQueryString({ key: 'usingLineLogin', location }) === '1' || !getQueryString({ key: 'usingLineLogin', location })) {
             window.liff.closeWindow()
-            window.liff.sendMessages(messaes)
+            window.liff.sendMessages(messages)
           }
           history.push('/management/reservation/calendar')
           openSnackbar({
@@ -281,7 +281,7 @@ export default function () {
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-      <Basic asignDesigner={isAssign} onChange={handleChange} onAssignChange={handleAssignChange} onDesignerChange={handleDesignerChange} />
+      <Basic assignDesigner={isAssign} onChange={handleChange} onAssignChange={handleAssignChange} onDesignerChange={handleDesignerChange} />
 
       {Object.keys(values.customers).map((customer, index) => (
         <Customer

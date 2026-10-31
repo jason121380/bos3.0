@@ -32,11 +32,11 @@ function Results({
   userSalayItemData,
   handleOnChangePage,
   handleOnChangeRowsPerPage,
-  isThisMonthSalaryChacked,
+  isThisMonthSalaryChecked,
   editBtnStatus,
   usersIsSalaryChecked,
   isSalaryItemsLock,
-  isSalaryChackedData,
+  isSalaryCheckedData,
   borrowDisplay,
   onDataChanged,
   ...rest
@@ -99,7 +99,7 @@ function Results({
       monthlyCheckoutInput: num === 1 ? monthlyCheckoutInput : monthlyCheckoutInputFalse,
       salaryCheckoutDate: calendarDate,
       userSalayItemDataRefetch: salaryUserList.refetch,
-      isSalaryChackedDataRefetch: isSalaryChackedData.refetch,
+      isSalaryCheckedDataRefetch: isSalaryCheckedData.refetch,
       progressCount: 0,
     })
     setDisabledBtn(true)
@@ -331,13 +331,13 @@ function Results({
               <div className="flex flex-wrap justify-center gap-3 py-2">
                 <Button variant="primary" onClick={() => handleCloseAccount(1)} disabled={disabledBtn}>
                   <FactCheckIcon />
-                  {isThisMonthSalaryChacked ? '重新月結' : '月結帳單'}
+                  {isThisMonthSalaryChecked ? '重新月結' : '月結帳單'}
                 </Button>
               </div>
               <div className="flex flex-wrap justify-center gap-3 py-2">
                 <Button variant="secondary" onClick={() => handleCloseAccount(2)} disabled={disabledBtn}>
                   <FactCheckIcon />
-                  {isThisMonthSalaryChacked ? '重新月結不帶入加扣項' : '月結帳單不帶入加扣項'}
+                  {isThisMonthSalaryChecked ? '重新月結不帶入加扣項' : '月結帳單不帶入加扣項'}
                 </Button>
               </div>
             </Fragment>

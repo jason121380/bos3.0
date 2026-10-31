@@ -19,7 +19,6 @@ test('測試環境下 produce 的結果是凍結的：直接修改會拋錯（�
   expect(Object.isFrozen(next)).toBe(true)
   expect(Object.isFrozen(next.list[0])).toBe(true)
   expect(() => {
-    'use strict'
     next.list[0].n = 9
   }).toThrow()
 })

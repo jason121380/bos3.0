@@ -55,8 +55,8 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
       return (
         <div key={`${title}-${index}`} style={{ display: 'flex', alignItems: 'flex-start' }}>
           <Checkbox
-            checked={isCheckedOrIndeterminat(data, 'checked?')}
-            indeterminate={isCheckedOrIndeterminat(data, 'indeterminate?')}
+            checked={isCheckedOrIndeterminate(data, 'checked?')}
+            indeterminate={isCheckedOrIndeterminate(data, 'indeterminate?')}
             onChange={(e, v) => handleSelectGroup(v, data)}
             style={{ marginTop: -9 }}
             disabled={isClick}
@@ -152,7 +152,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
     handleSetValue('pages', newValue)
   }
 
-  const isCheckedOrIndeterminat = (data, type) => {
+  const isCheckedOrIndeterminate = (data, type) => {
     const groupPages = data.pageAuthority
     const inModalValues = []
     const notInModalValues = []
@@ -167,7 +167,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
     }
   }
 
-  const handleExpanedAll = () => {
+  const handleExpandedAll = () => {
     if (expandedArr.length === allNodeIds.length) {
       setExpandedArr([])
     } else {
@@ -311,7 +311,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
                   <Button size="sm" variant="secondary" disabled={isClick} onClick={() => handleSetValue('pages', [])}>
                     清除選取
                   </Button>
-                  <Button size="sm" variant="secondary" disabled={isClick} onClick={handleExpanedAll}>
+                  <Button size="sm" variant="secondary" disabled={isClick} onClick={handleExpandedAll}>
                     展開全部
                   </Button>
                 </div>

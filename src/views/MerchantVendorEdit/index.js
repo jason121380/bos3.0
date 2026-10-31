@@ -108,7 +108,7 @@ function MerchantVendorEdit({ match }) {
             <AboutMerchantVendor
               isEdit
               vendorOption={vendorOption}
-              isLodaing={vendorList.loading}
+              isLoading={vendorList.loading}
               submitData={submitData}
               setSubmitData={setSubmitData}
             />

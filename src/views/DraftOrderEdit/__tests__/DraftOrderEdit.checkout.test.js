@@ -529,8 +529,9 @@ describe('掛單詳細：結帳結果不確定時的日期與確認中鎖定', (
     const key = Object.keys(button).find(name => name.startsWith('__reactFiber') || name.startsWith('__reactInternalInstance'))
     let fiber = key ? button[key] : null
     while (fiber) {
-      if (fiber.memoizedProps && typeof fiber.memoizedProps.onClick === 'function') {
-        act(() => fiber.memoizedProps.onClick({ preventDefault() {}, stopPropagation() {} }))
+      const props = fiber.memoizedProps
+      if (props && typeof props.onClick === 'function') {
+        act(() => props.onClick({ preventDefault() {}, stopPropagation() {} }))
         return
       }
       fiber = fiber.return

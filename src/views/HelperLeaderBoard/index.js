@@ -31,7 +31,7 @@ const HelperLeaderBoard = () => {
     orderBy: 'POINT',
   })
   const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
-  const helperLeaboardData = useFetchHelperLeaderboard(inputValue)
+  const helperLeaderboardData = useFetchHelperLeaderboard(inputValue)
   // 隱藏虛實業績切換按鈕 --------------------------------------------------------------------------------
   const isDisplayTogglePerformanceButtonData = useFetchGetIsDisplayTogglePerformanceButton()
   const [isDisplayTogglePerformanceButton, setIsDisplayTogglePerformanceButton] = useState(true)
@@ -46,8 +46,8 @@ const HelperLeaderBoard = () => {
   // ---------------------------------------------------------------------------------------------------
 
   useEffect(() => {
-    if (!helperLeaboardData.loading && !isMemberShipCardActiveData.loading) {
-      const usersReport = idx(helperLeaboardData, _ => _.data.helperLeaderboard)
+    if (!helperLeaderboardData.loading && !isMemberShipCardActiveData.loading) {
+      const usersReport = idx(helperLeaderboardData, _ => _.data.helperLeaderboard)
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       if (usersReport) {
         const excelData = []
@@ -94,8 +94,8 @@ const HelperLeaderBoard = () => {
         setExcelData(excelData)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [helperLeaboardData.loading, isMemberShipCardActiveData.l…] 變動時執行；helperLeaboardData、inputValue.reference、isMemberShipCardActiveData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
-  }, [helperLeaboardData.loading, isMemberShipCardActiveData.loading])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [helperLeaderboardData.loading, isMemberShipCardActiveData.l…] 變動時執行；helperLeaderboardData、inputValue.reference、isMemberShipCardActiveData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
+  }, [helperLeaderboardData.loading, isMemberShipCardActiveData.loading])
 
   const handleSearchReport = () => {
     handleValueChange('merchantId', sort)
@@ -200,9 +200,9 @@ const HelperLeaderBoard = () => {
           }
         />
 
-        {helperLeaboardData.error ? (
-          <QueryFailed onRetry={() => helperLeaboardData.refetch()} />
-        ) : helperLeaboardData.loading ? (
+        {helperLeaderboardData.error ? (
+          <QueryFailed onRetry={() => helperLeaderboardData.refetch()} />
+        ) : helperLeaderboardData.loading ? (
           // 載入中：與舊版 CircularProgress 相同時機顯示
           <div className="noprint mt-3" aria-busy="true" aria-label="載入中">
             <Skeleton className="h-[320px] w-full rounded-lg" />

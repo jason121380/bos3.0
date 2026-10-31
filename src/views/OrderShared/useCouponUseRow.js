@@ -39,12 +39,12 @@ export default function useCouponUseRow({ index, couponUsage, onChange, onClear 
       })
     }
   }, [ticketRecord.response.loading, ticketRecord.response.data])
-  const useFetchTicketRecodRef = React.useRef(ticketRecord.fetchTicketRecod)
+  const fetchTicketRecordRef = React.useRef(ticketRecord.fetchTicketRecord)
 
   React.useEffect(() => {
     setPrice(couponUsage.price)
     if (couponUsage.customerTicketId)
-      useFetchTicketRecodRef.current({
+      fetchTicketRecordRef.current({
         ids: [couponUsage.customerTicketId],
       })
     // setTicketOrderHelpers(couponUsage.useTicketOrderHelpers)

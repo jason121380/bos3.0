@@ -23,7 +23,7 @@ export default function Coupon({ customer, paginationLabel }) {
     },
   })
   const boughtTicketRecords = useFetchTicketRecords(resultSetting.boughtRecords)
-  const usagedTicketRecoeds = useFetchTicketRecords(resultSetting.usagedResults)
+  const usedTicketRecords = useFetchTicketRecords(resultSetting.usagedResults)
 
   const handlePageSettingChange = ({ key, value, name }) => {
     setResultSetting(
@@ -35,7 +35,7 @@ export default function Coupon({ customer, paginationLabel }) {
   }
   return (
     <Fragment>
-      {!boughtTicketRecords.loading && !usagedTicketRecoeds.loading ? (
+      {!boughtTicketRecords.loading && !usedTicketRecords.loading ? (
         <div className="flex flex-col gap-6">
           {idx(
             boughtTicketRecords,
@@ -62,7 +62,7 @@ export default function Coupon({ customer, paginationLabel }) {
               )
           )}
           {idx(
-            usagedTicketRecoeds,
+            usedTicketRecords,
             _ =>
               _.data.ticketRecords.data && (
                 <UsagedResults

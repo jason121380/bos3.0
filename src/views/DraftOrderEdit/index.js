@@ -74,7 +74,7 @@ export default function KeyIn({ match }) {
     isCloseAccount: false,
   })
   const [orderNo, setOrderNo] = useState('')
-  const [pannelEditable, setPannelEditable] = useState({})
+  const [panelEditable, setPanelEditable] = useState({})
   const getBonusRewardRule = useFetchGetBonusRewardRule()
   const [bonusSetting, setBonusSetting] = useState({
     isUsing: false,
@@ -223,7 +223,7 @@ export default function KeyIn({ match }) {
           draft.serialNumber = order.data.order.serialNumber ?? null
         })
       )
-      setPannelEditable({
+      setPanelEditable({
         isServiceEditable: order.data.order.isServiceEditable,
         isProductEditable: order.data.order.isProductEditable,
         isTicketSellingEditable: order.data.order.isTicketSellingEditable,
@@ -282,7 +282,7 @@ export default function KeyIn({ match }) {
             orderSetting,
             orderStatus,
             orderNo,
-            pannelEditable,
+            panelEditable,
             thirdPartyCoupons,
             focus,
             setFocus,

@@ -11,7 +11,7 @@ function CouponSellModal({
   closeModal,
   coupons,
   onChange,
-  couponsOnPannel,
+  couponsOnPanel,
   couponsLength,
   setCouponModalOpen,
   couponCategories,
@@ -24,9 +24,9 @@ function CouponSellModal({
   const handleSelectCoupon = coupon => {
     idx(coupon, _ => {
       onChange({
-        index: couponsLength === 1 && couponsOnPannel[0].serviceId === '' ? 0 : couponsLength,
+        index: couponsLength === 1 && couponsOnPanel[0].serviceId === '' ? 0 : couponsLength,
         value: {
-          ...couponsOnPannel[couponsLength - 1],
+          ...couponsOnPanel[couponsLength - 1],
           serviceId: _.id,
           availableCount: _.ticketAvailableCount,
           price: _.price,

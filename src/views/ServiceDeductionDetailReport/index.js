@@ -9,7 +9,7 @@ import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { endOfMonth } from 'date-fns'
 import idx from 'idx'
 import { CSVLink } from 'react-csv'
-import useFetchServiceDedcutionDetailMultiple from 'hooks/useFetchGetUserServiceDeductionDetailMultiple'
+import useFetchServiceDeductionDetailMultiple from 'hooks/useFetchGetUserServiceDeductionDetailMultiple'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
@@ -33,7 +33,7 @@ const ServiceDeductionDetailReport = () => {
     rakeWays: [],
   })
   const [excelData, setExcelData] = useState([])
-  const serviceDedcutionDetailData = useFetchServiceDedcutionDetailMultiple({
+  const serviceDeductionDetailData = useFetchServiceDeductionDetailMultiple({
     input: {
       dateRange: {
         startDate: inputData.startDate,
@@ -44,7 +44,7 @@ const ServiceDeductionDetailReport = () => {
       rakeWays: inputData.rakeWays,
     },
   })
-  const hanldeOnChange = event => {
+  const handleOnChange = event => {
     if (event.target.value === null) {
       setInputData({ ...inputData, rakeWays: [] })
     } else {
@@ -104,7 +104,7 @@ const ServiceDeductionDetailReport = () => {
                 }}
               />
               <NativeSelect
-                onChange={event => hanldeOnChange(event)}
+                onChange={event => handleOnChange(event)}
                 displayEmpty={false}
                 placeholder="請選擇…"
                 label="抽成類別"
@@ -121,13 +121,13 @@ const ServiceDeductionDetailReport = () => {
             </div>
           }
         />
-        {serviceDedcutionDetailData.error ? (
-          <QueryFailed onRetry={() => serviceDedcutionDetailData.refetch()} />
-        ) : !serviceDedcutionDetailData.loading ? (
-          idx(serviceDedcutionDetailData, _ =>
+        {serviceDeductionDetailData.error ? (
+          <QueryFailed onRetry={() => serviceDeductionDetailData.refetch()} />
+        ) : !serviceDeductionDetailData.loading ? (
+          idx(serviceDeductionDetailData, _ =>
             _.data.getUserServiceDeductionDetialMultiple !== null ? (
               _.data.getUserServiceDeductionDetialMultiple.length > 0 ? (
-                <Results userServiceDeductionDetial={_.data.getUserServiceDeductionDetialMultiple} setExcelData={setExcelData} />
+                <Results userServiceDeductionDetail={_.data.getUserServiceDeductionDetialMultiple} setExcelData={setExcelData} />
               ) : (
                 <Card className="mt-3">
                   <EmptyState title="無資料" />

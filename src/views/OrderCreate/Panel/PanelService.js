@@ -96,9 +96,9 @@ function PanelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
     setFocusRow(newServices.length - 1)
   }
   useEffect(() => {
-    const defalutRows = 1
+    const defaultRows = 1
     setServices(
-      Array(defalutRows)
+      Array(defaultRows)
         .fill()
         .map(_ => ({
           serviceId: '',
@@ -271,7 +271,7 @@ function PanelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
               setSelectedCategorie={setSelectedCategorie}
               selectedCategorieName={selectedCategorieName}
               setSelectedCategorieName={setSelectedCategorieName}
-              servicesOnPannel={services}
+              servicesOnPanel={services}
               setHelperFromModal={setHelperFromModal}
               onPageChange={handlePageChange}
               setServicesModalOpen={setServicesModalOpen}
@@ -281,7 +281,7 @@ function PanelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
             <Fragment key={index}>
               <Services
                 servicesModalOpen={servicesModalOpen}
-                servicesOnPannel={services}
+                servicesOnPanel={services}
                 changeRowFocus={handleChangeFocusRow}
                 focusFirstField={index === focusRow}
                 focusRow={focusRow}

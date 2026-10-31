@@ -173,7 +173,7 @@ function Results({ className, coupons, refetch, ...rest }) {
     setOpenDialog(false)
   }
 
-  const handleOpenMutipleEditModal = () => {
+  const handleOpenMultipleEditModal = () => {
     setOpenEditAssistantModal(true)
   }
 
@@ -450,7 +450,7 @@ function Results({ className, coupons, refetch, ...rest }) {
       <TableEditBar
         selected={selectedCoupons}
         onDelete={deleteCouponIsUsing ? handleCancel : handleConfirmCancel}
-        onEdit={handleOpenMutipleEditModal}
+        onEdit={handleOpenMultipleEditModal}
         onEditDeduction={handleOpenEditDeductionModal}
         onEditSaleStatus={handleOpenEditSaleStatusModal}
       />

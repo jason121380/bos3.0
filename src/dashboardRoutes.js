@@ -10,7 +10,7 @@ const redirectGeneralAccountingDetail = ({ match }) => <Redirect to={`/general/a
 // 舊路徑拼字 perforamnce 仍留著，書籤與外部連結導向正確的 performance（2026/10/30）
 const redirectDesignerPerformanceAnalyzeReport = () => <Redirect to="/designer-performance-analyze-report" />
 
-export default [
+const dashboardRoutes = [
   {
     path: '/management/reservation/designers/calendar',
     exact: true,
@@ -830,3 +830,5 @@ export default [
     component: () => <Redirect to="/errors/error-404" />,
   },
 ]
+
+export default dashboardRoutes

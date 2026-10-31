@@ -7,8 +7,8 @@ const FETCH_DESIGNER_PERFORMANCE_ANALYZE_EXCEL = gql`
 `
 
 export function useFetchDesignerPerformanceAnalyzeExcelLazy() {
-  const [designerPerforamnceAnalyzeExcelLazy, designerPerforamnceAnalyzeExcelLazyData] = useLazyQuery(FETCH_DESIGNER_PERFORMANCE_ANALYZE_EXCEL, {
+  const [designerPerformanceAnalyzeExcelLazy, designerPerformanceAnalyzeExcelLazyData] = useLazyQuery(FETCH_DESIGNER_PERFORMANCE_ANALYZE_EXCEL, {
     fetchPolicy: 'cache-and-network',
   })
-  return [designerPerforamnceAnalyzeExcelLazy, designerPerforamnceAnalyzeExcelLazyData]
+  return [designerPerformanceAnalyzeExcelLazy, designerPerformanceAnalyzeExcelLazyData]
 }

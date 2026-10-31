@@ -110,8 +110,8 @@ function DraftOrderManagementList() {
     if (!isMemberShipCardActiveData.loading && !orders.loading) {
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       // 查詢失敗時以空列表計算，不整頁錯誤（Jason 2026/10/22）
-      const allOrers = idx(orders, _ => _.data.pendingOrders.orders) || []
-      const memberRecord = allOrers.map(d => d.membershipOrders).flat()
+      const allOrders = idx(orders, _ => _.data.pendingOrders.orders) || []
+      const memberRecord = allOrders.map(d => d.membershipOrders).flat()
       const membership = memberRecord.some(({ price }) => price !== 0)
       // membership 是布林：未啟用會員卡且沒有會員卡金額時不顯示會員卡欄（原本比較 membership !== 0 永遠為 true，Jason 2026/10/22）
       setMembershipDisplay(Boolean(isMemberShipCardActive || membership))
@@ -121,8 +121,8 @@ function DraftOrderManagementList() {
   React.useEffect(() => {
     if (!customerBonusActive.loading && !orders.loading) {
       const bonusActive = idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive)
-      const allOrers = idx(orders, _ => _.data.pendingOrders.orders) || []
-      const bonus = allOrers.some(({ bonusDecount }) => bonusDecount !== 0)
+      const allOrders = idx(orders, _ => _.data.pendingOrders.orders) || []
+      const bonus = allOrders.some(({ bonusDecount }) => bonusDecount !== 0)
       setBonusDisplay(bonusActive || bonus)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新

@@ -30,7 +30,7 @@ function ProfitSharing({ refetch, itemAuthority }) {
   const commissionWay = useFetchMerchantCommissionWay()
   const merchantJobTitlePoints = idx(merchantJobTitlePointData, _ => _.data.merchantJobTitlePoint)
   const getAttributionForRake = useFetchGetAttributionForRake()
-  const [settingVisble, setSettingVisble] = useState(false)
+  const [settingVisible, setSettingVisible] = useState(false)
   const [attributions, setAttributions] = useState([])
   const [profitSharing, setProfitSharing] = useState({
     userId: designer.id,
@@ -115,7 +115,7 @@ function ProfitSharing({ refetch, itemAuthority }) {
     if (itemAuthority.length > 0) {
       const index = itemAuthority.findIndex(d => d.pageName === '人員設定')
       if (index > -1) {
-        setSettingVisble(itemAuthority[index].authority)
+        setSettingVisible(itemAuthority[index].authority)
       }
     }
   }, [itemAuthority])
@@ -167,7 +167,7 @@ function ProfitSharing({ refetch, itemAuthority }) {
     <div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_3fr]">
         <div>
-          {settingVisble && (
+          {settingVisible && (
             <Card>
               <CardHeader>
                 <CardTitle>人員設定</CardTitle>

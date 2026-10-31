@@ -3,14 +3,14 @@
 // 沒有券時顯示後端訊息。GraphQL 全由 testkit 的模擬 link 回應；reCAPTCHA 以假元件代替，不連 Google。
 import React from 'react'
 import CustomizedSnackbars, { openSnackbar } from 'elements/snackbars'
+import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
+import { renderPage, callsOf } from '../../../__tests__/testkit.test'
+import CustomerEventTicketSearch from '..'
 jest.mock('elements/snackbars', () => {
   const actual = jest.requireActual('elements/snackbars')
   return { __esModule: true, ...actual, openSnackbar: jest.fn(actual.openSnackbar) }
 })
 beforeEach(() => openSnackbar.mockImplementation(jest.requireActual('elements/snackbars').openSnackbar))
-import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
-import { renderPage, callsOf } from '../../../__tests__/testkit.test'
-import CustomerEventTicketSearch from '..'
 
 jest.setTimeout(20000)
 

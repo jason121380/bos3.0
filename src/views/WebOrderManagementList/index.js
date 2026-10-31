@@ -24,7 +24,7 @@ import { ListFilter } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-function WebOrderMangagementList() {
+function WebOrderManagementList() {
   // 從本地存儲獲取商戶 ID
   const merchantid = localStorage.getItem('userMerchant')
     ? localStorage.getItem('userMerchant')
@@ -46,7 +46,7 @@ function WebOrderMangagementList() {
 
   // UI 狀態：切換過濾器、報到功能顯示、未來預約確認邏輯
   const [showFilter, setShowFilter] = useState(false)
-  const [checkInDisplay, setCheclInDisplay] = useState(false)
+  const [checkInDisplay, setCheckInDisplay] = useState(false)
   const [bookingCusCheck, setBookingCusCheck] = useState(false)
 
   // 獲取後端數據
@@ -72,7 +72,7 @@ function WebOrderMangagementList() {
   useEffect(() => {
     if (!getCheckinSettings.loading) {
       const res = Boolean(idx(getCheckinSettings, _ => _.data.getMerchantCheckinSettings.isBookingCheckinEnabled))
-      setCheclInDisplay(res)
+      setCheckInDisplay(res)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getCheckinSettings.loading])
@@ -179,4 +179,4 @@ function WebOrderMangagementList() {
   )
 }
 
-export default WebOrderMangagementList
+export default WebOrderManagementList

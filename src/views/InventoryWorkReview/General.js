@@ -11,7 +11,7 @@ import { formatNumber } from 'ui/format'
 
 // 原 emotion styles 逐值轉 Tailwind；root 的 '& .MuiCardHeader-content > span' 在 ui/card（不輸出 Mui class）內不命中，死碼不轉
 const styles = {
-  hearderWrap: 'flex justify-between items-center w-full flex-wrap gap-[10px]',
+  headerWrap: 'flex justify-between items-center w-full flex-wrap gap-[10px]',
   plus: 'font-bold text-[#3b3bff]',
   minus: 'font-bold text-danger',
   infoWrap: 'flex items-center gap-[10px_10px] flex-wrap',
@@ -33,7 +33,7 @@ function General({ info, inventoryData, CSVData }) {
       <Card className="mt-[24px] whitespace-nowrap print:!m-0 print:overflow-visible print:rounded-none print:p-0">
         {/* 標題列（noprint）：className 原樣保留，版面以 inline style 重現原卡片標題的內距（上、左右 16px，下 0） */}
         <div className="noprint" style={{ padding: '16px 16px 0' }}>
-          <div className={`${styles.hearderWrap} text-heading text-text`}>
+          <div className={`${styles.headerWrap} text-heading text-text`}>
             {info !== null && (
               <div className={styles.infoWrap}>
                 <span>{`建立時間:${format(info.date, 'yyyy/MM/dd HH:mm')}`}</span>

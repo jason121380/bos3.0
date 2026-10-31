@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 const sticky = 'sticky left-0 z-[99] min-w-[50px] max-w-[50px] break-all'
 const sticky2 = 'sticky left-[50px] z-[99] pr-5'
 
-function Results({ className, results, excelData, attributeSwitchs, membershipDisplay, ...rest }) {
+function Results({ className, results, excelData, attributeSwitches, membershipDisplay, ...rest }) {
   return (
     <div {...rest} className={cn('mt-2', className)}>
       {/* 舊版 maxHeight 為 'calc(100vh - 280px'（少右括號，瀏覽器不採用），故不加高度限制以維持相同捲動行為 */}
@@ -22,7 +22,7 @@ function Results({ className, results, excelData, attributeSwitchs, membershipDi
             <TableHead numeric>指定/不指定 (人次)</TableHead>
             <TableHead numeric>男/女/未知 (不重複)</TableHead>
             {results.users[0].categoryData.map((data, index) => {
-              if (attributeSwitchs[index]) {
+              if (attributeSwitches[index]) {
                 return <TableHead numeric key={index}>{`${data.categoryName}/人次/單均價`}</TableHead>
               }
               return undefined
@@ -77,7 +77,7 @@ function Results({ className, results, excelData, attributeSwitchs, membershipDi
                     {formatNumber(Math.round(user.customerUnknownCount))}
                   </TableCell>
                   {user.categoryData.map(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
-                    if (attributeSwitchs[index]) {
+                    if (attributeSwitches[index]) {
                       return (
                         <TableCell numeric key={`${categoryName}-${index}`}>
                           {`${formatNumber(Math.round(fakePerformance))}/${formatNumber(orderCount)}/${formatNumber(Math.round(averagePerformance))}`}
@@ -120,7 +120,7 @@ function Results({ className, results, excelData, attributeSwitchs, membershipDi
               {formatNumber(Math.round(results.wholeStore.customerUnknownCount))}
             </TableCell>
             {results.wholeStore.categoryData.map(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
-              if (attributeSwitchs[index]) {
+              if (attributeSwitches[index]) {
                 return (
                   <TableCell numeric key={`${categoryName}-${index}`}>
                     {`${formatNumber(Math.round(fakePerformance))}/${formatNumber(orderCount)}/${formatNumber(Math.round(averagePerformance))}`}

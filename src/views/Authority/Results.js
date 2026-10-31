@@ -39,7 +39,7 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
     }
     setSelected(newSelect)
   }
-  const handleSeletedDelete = () => {
+  const handleSelectedDelete = () => {
     selected.forEach(d => {
       deleteAuthority({ authorityId: d })
         .then(() => {
@@ -53,7 +53,7 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
     })
   }
 
-  const handleSetDefaltAuth = authId => {
+  const handleSetDefaultAuth = authId => {
     setUpdateDefaultAuthority({ authorityId: authId }).then(() => {
       merchantAuthDataRefetch()
       openSnackbar({ message: '預設權限設定成功', variant: 'success' })
@@ -150,7 +150,7 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
                     <TableCell>{data.authorityName}</TableCell>
                     <TableCell numeric>{formatNumber(data.usingDesignerCount)}</TableCell>
                     <TableCell>
-                      <Switch size="small" checked={data.isDefault} onClick={() => handleSetDefaltAuth(data.id)} />
+                      <Switch size="small" checked={data.isDefault} onClick={() => handleSetDefaultAuth(data.id)} />
                     </TableCell>
                     <TableCell>{authStatus[index] && <Badge variant={authStatusVariant(authStatus[index])}>{authStatus[index]}</Badge>}</TableCell>
                   </TableRow>
@@ -159,7 +159,7 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
           </Table>
         </div>
       </Card>
-      <TableEditBar selected={selected} onDelete={handleSeletedDelete} confirmDelete />
+      <TableEditBar selected={selected} onDelete={handleSelectedDelete} confirmDelete />
     </div>
   )
 }

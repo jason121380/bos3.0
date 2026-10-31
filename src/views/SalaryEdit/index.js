@@ -53,7 +53,7 @@ export default React.memo(function SalaryEdit(props) {
     input: userInput,
   })
 
-  const designerMonthlyCheckoutRedordData = useFetchUserSalaryMonthlyCheckoutRecordV2({
+  const designerMonthlyCheckoutRecordData = useFetchUserSalaryMonthlyCheckoutRecordV2({
     date: date,
     userId: match.params.id,
   })
@@ -123,9 +123,9 @@ export default React.memo(function SalaryEdit(props) {
   React.useEffect(() => {
     if (!usersMonthCheckoutData.loading) {
       // 查詢失敗時當成沒有已結算資料（原本讀 undefined.filter 整頁錯誤；2026/10/28）
-      const isUsersSalaryChacked = idx(usersMonthCheckoutData, _ => _.data.users.users) || []
+      const isUsersSalaryChecked = idx(usersMonthCheckoutData, _ => _.data.users.users) || []
       // 篩選出已結算的資料
-      const correctData = isUsersSalaryChacked.filter(el => {
+      const correctData = isUsersSalaryChecked.filter(el => {
         return el.isSalaryChecked === true
       })
       setUsersIsSalaryChecked(correctData)
@@ -167,7 +167,7 @@ export default React.memo(function SalaryEdit(props) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [usersSalayItemData.loading, designerMonthlyCheckoutRedor…] 變動時執行；match.params.id、usersSalayItemData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
-  }, [usersSalayItemData.loading, designerMonthlyCheckoutRedordData.loading])
+  }, [usersSalayItemData.loading, designerMonthlyCheckoutRecordData.loading])
   React.useEffect(() => {
     if (
       !userSalayItemData.loading &&
@@ -175,7 +175,7 @@ export default React.memo(function SalaryEdit(props) {
       !merchantSalaryDecreaseItems.loading &&
       increaseReformatted !== undefined &&
       decreaseReformatted !== undefined &&
-      !designerMonthlyCheckoutRedordData.loading &&
+      !designerMonthlyCheckoutRecordData.loading &&
       !usersSalayItemData.loading &&
       !isMemberShipCardActiveData.loading &&
       // 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
@@ -286,7 +286,7 @@ export default React.memo(function SalaryEdit(props) {
     userSalayItemData.loading,
     merchantSalaryIncreaseItems.loading,
     merchantSalaryDecreaseItems.loading,
-    designerMonthlyCheckoutRedordData.loading,
+    designerMonthlyCheckoutRecordData.loading,
     isMemberShipCardActiveData.loading,
     usersSalayItemData.loading,
     userIndex,
@@ -491,7 +491,7 @@ export default React.memo(function SalaryEdit(props) {
         )}
       </div>
       <div className="flex flex-col gap-4">
-        {!designerMonthlyCheckoutRedordData.loading &&
+        {!designerMonthlyCheckoutRecordData.loading &&
         !isMemberShipCardActiveData.loading &&
         increaseCombined !== undefined &&
         increaseSecondContent !== undefined &&
@@ -500,7 +500,7 @@ export default React.memo(function SalaryEdit(props) {
           <div>
             <DesignerSalaryReportV2
               userSalary={userSalary}
-              designer={designerMonthlyCheckoutRedordData.data.getUserSalaryMonthlyCheckoutRecordV2}
+              designer={designerMonthlyCheckoutRecordData.data.getUserSalaryMonthlyCheckoutRecordV2}
               memberActive={isMemberShipCardActiveData.data.getIsMemberShipCardActive}
               actualTransferFun={
                 increaseCombined.reduce((accu, curVal) => accu + curVal.price, 0) +
