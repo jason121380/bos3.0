@@ -5,6 +5,7 @@ import { useCombobox } from 'downshift'
 import { ChevronDown, X } from 'lucide-react'
 import { cn, focusRing, phoneIconHit } from './utils'
 import { useLayerRef } from './layer-stack'
+import { useFieldControl, useFieldLabelledBy } from './input'
 
 // 自家搜尋下拉（取代 MUI Autocomplete，Jason 2026/10/20 拍版「Autocomplete 自己做」）。
 // 行為（鍵盤、無障礙）交給 headless 的 downshift，外觀全部依 STYLE.md。
@@ -501,6 +502,14 @@ const Autocomplete = React.forwardRef(function Autocomplete(
   })
 
   const label = fp.label
+  // 沒有自己的 label 時，aria-labelledby 原本指向不存在的 `${id}-label`（輸入框沒有名稱）：
+  // 改指外層 Field 的標籤；也沒有就拿掉，讓呼叫端的 aria-label／placeholder 生效
+  const fieldLabelledBy = useFieldLabelledBy({})
+  if (!label && finalInputProps['aria-labelledby'] === `${id}-label`) {
+    finalInputProps['aria-labelledby'] = finalInputProps['aria-label'] ? undefined : fieldLabelledBy
+  }
+  // 外層 Field 的標籤點擊時只聚焦輸入框、不展開選單
+  useFieldControl(finalInputProps.id, true)
   const error = !!fp.error
   const helperText = fp.helperText
   const small = (fp.size || size) === 'small'

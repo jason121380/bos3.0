@@ -70,6 +70,13 @@
 - 未做：C（Apollo 快取合併，Jason 決定不做）；打帳單每打一字整頁重畫、帳單列表剩 3 輪，根因在資料流，要改 state 結構。
 - 顧客搜尋欄（`CustomerAutoComplete`）未選未打字時列出查詢結果：Jason 2026/10/31 決定維持現狀，不是 bug。
 
+**無障礙（Jason 2026/10/31 選 B，`v3.10311917`）**
+
+- 只做一般使用者也受益的兩項，不加 axe 自動掃描、不加套件：
+  - 對比：新增 token `--accent-text`（淺色 #1967D2），用在品牌藍文字放在淡藍底／surface 上的地方；五個報表 `text-[red]` 改 `text-danger`。
+  - 標籤：`ui/input` 的 Field 標籤以 `htmlFor`／`aria-labelledby` 綁定子欄位，點標籤文字游標跳進欄位（Input、Textarea、Switch、NativeSelect、Combobox）。下拉只聚焦不展開；Switch 點標籤切換一次。子欄位既有 id 不改，原本沒有 id 的才補 `field-control-N`。
+- 既有 aria 值一律沒有改寫。
+
 **待辦（未做）**
 
 - 後端：LINE 打卡寫死網址、GraphQL 操作名去重（擱置）；下方「後端債」四項。

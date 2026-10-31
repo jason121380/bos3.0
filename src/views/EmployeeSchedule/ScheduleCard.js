@@ -471,7 +471,12 @@ export default function ScheduleCard({
           </div>
         )}
         <div className="p-3">
-          <Button variant="ghost" className="w-full justify-start text-accent" disabled={disableButton} onClick={() => handleOpenModal(cardIndex)}>
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-accent-text"
+            disabled={disableButton}
+            onClick={() => handleOpenModal(cardIndex)}
+          >
             <UserPlus strokeWidth={1.75} />
             新增人員
           </Button>

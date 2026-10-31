@@ -15,7 +15,7 @@ const TabsTrigger = React.forwardRef(({ className, ...props }, ref) => (
     ref={ref}
     className={cn(
       'inline-flex h-8 items-center whitespace-nowrap rounded-full border-0 bg-transparent px-4 text-body text-text-secondary transition-colors duration-150 ease-out',
-      'hover:text-text data-[state=active]:bg-accent/10 data-[state=active]:font-medium data-[state=active]:text-accent',
+      'hover:text-text data-[state=active]:bg-accent/10 data-[state=active]:font-medium data-[state=active]:text-accent-text',
       'disabled:pointer-events-none disabled:text-text-tertiary',
       focusRing,
       // 焦點框畫在膠囊內側：分頁列是橫向捲動容器（overflow-x:auto 會連帶裁掉上下溢出），外側 3px 的框在手機上會被切掉上下緣

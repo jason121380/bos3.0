@@ -1,6 +1,7 @@
 import React from 'react'
 import { cn, phoneIconHit } from './utils'
 import { checkboxHitArea } from './checkbox'
+import { useFieldControl, useFieldLabelledBy } from './input'
 
 const assignRef = (ref, node) => {
   if (!ref) return
@@ -17,6 +18,11 @@ const Switch = React.forwardRef(
     { checked, defaultChecked, onChange, disabled, name, id, label, labelPlacement = 'end', className, inputProps, inputRef, color, size, ...props },
     ref
   ) => {
+    // 沒有自己的 label 時，以外層 Field 的標籤命名（aria-labelledby；呼叫端的 aria-* 仍優先）
+    const fieldLabelledBy = useFieldLabelledBy(label ? { 'aria-label': true } : { ...inputProps, ...props })
+    // 外層 Field 的標籤以 htmlFor 指向開關（點標籤切換一次，與點開關相同）；既有 id（inputProps.id 優先於 id，同原本的覆寫順序）不改
+    const ownId = inputProps && inputProps.id !== undefined ? inputProps.id : id
+    const controlId = useFieldControl(ownId)
     const control = (
       <span className="relative inline-flex h-5 w-9 shrink-0 items-center">
         <input
@@ -28,6 +34,7 @@ const Switch = React.forwardRef(
           role="switch"
           id={id}
           name={name}
+          aria-labelledby={fieldLabelledBy}
           checked={checked}
           defaultChecked={defaultChecked}
           disabled={disabled}
@@ -35,6 +42,7 @@ const Switch = React.forwardRef(
           className="peer absolute inset-0 z-[1] m-0 h-full w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
           {...inputProps}
           {...props}
+          id={controlId}
         />
         <span
           aria-hidden="true"

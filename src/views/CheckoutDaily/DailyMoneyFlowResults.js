@@ -16,7 +16,7 @@ import { Field, Input } from 'ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 // 現金結存／營業現金應收欄位強調（舊版 .cashSaving）
-const cash = 'bg-accent/8 font-medium text-accent'
+const cash = 'bg-accent/8 font-medium text-accent-text'
 
 function Results({
   className,
@@ -162,7 +162,7 @@ function Results({
               <TableRow className="hover:bg-transparent">
                 <TableHead>解除日結</TableHead>
                 <TableHead>營業日期</TableHead>
-                <TableHead numeric className="text-accent">
+                <TableHead numeric className="text-accent-text">
                   現金結存
                 </TableHead>
                 <TableHead numeric>服務消費</TableHead>
@@ -178,7 +178,7 @@ function Results({
                 <TableHead numeric>其他付款方式(-)</TableHead>
                 <TableHead numeric>入金使用(-)</TableHead>
                 {bonusDisplay && <TableHead numeric>點數折抵金額(-)</TableHead>}
-                <TableHead numeric className="text-accent">
+                <TableHead numeric className="text-accent-text">
                   營業現金應收
                 </TableHead>
                 <TableHead numeric>現金收支收入</TableHead>
@@ -195,7 +195,7 @@ function Results({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="text-accent"
+                      className="text-accent-text"
                       onClick={() => (disableRestoreCheckout ? handleOpenDialog(result.date) : handleRestoreDailyAccount(result.date))}
                       title="解除日結"
                       aria-label="解除日結"

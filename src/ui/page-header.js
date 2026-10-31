@@ -103,7 +103,7 @@ function ReportToolbar({ date, filters, actions, className }) {
             size="md"
             aria-pressed={open}
             aria-expanded={open}
-            className={open ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+            className={open ? 'border-accent bg-accent/8 text-accent-text hover:bg-accent/8' : undefined}
             onClick={() => setOpen(!open)}
           >
             <ListFilter strokeWidth={1.75} />

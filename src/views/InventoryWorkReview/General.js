@@ -13,7 +13,7 @@ import { formatNumber } from 'ui/format'
 const styles = {
   hearderWrap: 'flex justify-between items-center w-full flex-wrap gap-[10px]',
   plus: 'font-bold text-[#3b3bff]',
-  minus: 'font-bold text-[red]',
+  minus: 'font-bold text-danger',
   infoWrap: 'flex items-center gap-[10px_10px] flex-wrap',
   btnWrap: 'flex gap-[10px] flex-wrap',
 }

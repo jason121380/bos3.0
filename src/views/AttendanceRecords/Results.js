@@ -459,7 +459,7 @@ export default function Results({
           <TableHeader className="sticky top-0 z-[100]">
             <TableRow className="hover:bg-transparent">
               <TableHead className="sticky left-0 z-[99] bg-surface px-2 outline outline-1 outline-border">{year}年</TableHead>
-              <TableHead className="bg-accent/8 px-2 font-bold text-accent">總打卡天數</TableHead>
+              <TableHead className="bg-accent/8 px-2 font-bold text-accent-text">總打卡天數</TableHead>
               <TableHead className="px-2">曠職天數</TableHead>
               <TableHead className="px-2">總遲到分鐘數</TableHead>
               {displayDate.map((date, index) => (
