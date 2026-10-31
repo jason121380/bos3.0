@@ -70,9 +70,13 @@ afterEach(cleanup)
 
 describe('新增入金', () => {
   it('預設日期為現在；付款方式為現金＋店家支付方式，選現金時不顯示手續費負擔方', async () => {
+    // 頁面在 render 時取「現在」，斷言在 settle 之後；兩者跨過整分時會差一分鐘（CI 曾在 06:57/06:58 失敗），
+    // 所以記下前後兩個時間點，預設值必須落在其中之一
+    const before = format(new Date(), 'yyyy/MM/dd HH:mm')
     const utils = setup()
     await utils.settle()
-    expect(screen.getByLabelText('日期').value).toBe(format(new Date(), 'yyyy/MM/dd HH:mm'))
+    const after = format(new Date(), 'yyyy/MM/dd HH:mm')
+    expect([before, after]).toContain(screen.getByLabelText('日期').value)
     const options = Array.from(payType().querySelectorAll('option'))
       .map(o => o.textContent)
       .filter(Boolean)

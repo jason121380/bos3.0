@@ -87,6 +87,8 @@ const NativeSelect = React.forwardRef(
     const selectId = id || autoId
 
     const handleChange = event => {
+      // 防禦：唯讀時 IndexSelect 已在點選、鍵盤與原生 change 三條路徑先擋下，不會呼叫到這裡，測不到
+      /* istanbul ignore if */
       if (readOnly) return
       const picked = options[Number(event.target.value)]
       const next = picked ? picked.value : ''

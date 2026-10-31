@@ -94,7 +94,7 @@ describe('備註與帳單來源欄位', () => {
 })
 
 describe('收據 QR code', () => {
-  const renderDecorations = qrcode => {
+  const renderDecorations = (qrcode, logo = { isDisplay: false, imageUrl: null }) => {
     const latest = {}
     function Probe() {
       Object.assign(latest, useInvoiceDecorations())
@@ -102,7 +102,7 @@ describe('收據 QR code', () => {
     }
     const page = renderPage(<Probe />, {
       fixtures: {
-        GET_LOGO_DISPLAY_INVOICE: { getLogoDisplayOnInvoice: { isDisplay: false, imageUrl: null } },
+        GET_LOGO_DISPLAY_INVOICE: { getLogoDisplayOnInvoice: logo },
         GET_QRCODE_DISPLAY_ON_INVOICE: { getQrcodeDisplayOnInvoice: qrcode },
         GET_MESSAGE_DISPLAY_ON_INVOICE: { getMessageDisplayOnInvoice: { isDisplay: false, message: null } },
       },
@@ -129,5 +129,28 @@ describe('收據 QR code', () => {
     await wait(() => expect(latest.detailInfo.qrcode).toEqual(expect.objectContaining({ isDisplay: true, url: '' })))
     await new Promise(resolve => setTimeout(resolve, 20))
     expect(latest.qrcodeUrl).toBe('')
+  })
+
+  it('有 logo 網址：下載後轉成 data URL 供列印（列印視窗不能再連網抓圖）', async () => {
+    const before = networkRequests.length
+    const { latest, settle } = renderDecorations(
+      { isDisplay: false, url: null, imageUrl: null },
+      { isDisplay: true, imageUrl: 'https://cdn.example.com/logo.png' }
+    )
+    await settle()
+    await wait(() => expect(latest.imgUrl).toMatch(/^data:/))
+    expect(networkRequests.slice(before)).toContain('https://cdn.example.com/logo.png')
+  })
+
+  it('logo 下載失敗：不拋錯、不顯示壞圖（imgUrl 維持空字串）', async () => {
+    const page = renderDecorations({ isDisplay: false, url: null, imageUrl: null }, { isDisplay: true, imageUrl: 'https://cdn.example.com/logo.png' })
+    // renderPage 已裝上不連網的 fetch；換成失敗版本，模擬圖檔網址失效
+    const failed = jest.fn(() => Promise.reject(new TypeError('Failed to fetch')))
+    window.fetch = failed
+    global.fetch = failed
+    await page.settle()
+    await wait(() => expect(failed).toHaveBeenCalledWith('https://cdn.example.com/logo.png'))
+    await new Promise(resolve => setTimeout(resolve, 20))
+    expect(page.latest.imgUrl).toBe('')
   })
 })

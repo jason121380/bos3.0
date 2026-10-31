@@ -44,7 +44,8 @@ jobs:
   test:
     name: Unit tests
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    # 覆蓋率收集比 test:nowatch 慢（插樁）；main 上 test:nowatch 約 15 分鐘，留足餘裕
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -53,8 +54,10 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
-      - name: Test
-        run: npm run test:nowatch
+      # 全套單元測試＋覆蓋率門檻（package.json 的 coverageThreshold）。
+      # 取代原本的 test:nowatch：同一次執行就跑完全部測試，未達門檻時以 exit 1 擋下，不必再跑第二遍。
+      - name: Test with coverage thresholds
+        run: npm run test:coverage
         env:
           CI: true
 

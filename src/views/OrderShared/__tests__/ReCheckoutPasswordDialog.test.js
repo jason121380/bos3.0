@@ -157,3 +157,9 @@ test('Esc 沿用關閉回呼且不新增關閉圖示', () => {
   expect(onClose).toHaveBeenCalledTimes(1)
   expect(screen.queryByRole('button', { name: '關閉' })).toBeNull()
 })
+
+test('沒有關閉回呼時（必須輸入密碼才能繼續的流程）Esc 不關閉對話框', () => {
+  render(<ReCheckoutPasswordDialog open title="重新結帳" reCheckoutPwd="" setReCheckoutPwd={() => {}} confirmDisabled={false} onConfirm={() => {}} />)
+  fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' })
+  expect(screen.getByRole('dialog')).toBeInTheDocument()
+})

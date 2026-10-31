@@ -78,6 +78,8 @@ function useAnchoredMenu(anchorRef, open) {
   React.useLayoutEffect(() => {
     if (!open) return undefined
     const anchor = anchorRef.current
+    // 防禦：anchorRef 是本元件根節點，開啟時一定已掛載；document 在瀏覽器一定存在，測不到
+    /* istanbul ignore if */
     if (!anchor || typeof document === 'undefined') return undefined
     const target = findPortalHost(anchor)
     setHost(target)
@@ -167,7 +169,8 @@ const IndexSelect = React.forwardRef(function IndexSelect(
 
   // React 的 onChange 只發給 input／textarea／select，按鈕收不到。
   // 既有測試與頁面用 fireEvent.change 打在標籤所連的按鈕上，所以改聽原生 change。
-  const changeRef = React.useRef(() => {})
+  // 初始值只是佔位：每次 render 都會在下一行換成真正的處理，DOM 監聽在 effect 才掛上，這個空函式永遠不會被呼叫
+  const changeRef = React.useRef(/* istanbul ignore next */ () => {})
   changeRef.current = event => {
     if (readOnly || !onChange) return
     // 原生 Event 的 target 是檢查 this 的 getter，Object.create(event) 會讀不到。
@@ -176,7 +179,11 @@ const IndexSelect = React.forwardRef(function IndexSelect(
       onChange(event)
       return
     }
-    const read = node => ({ value: node ? node.value : '', name: node ? node.name : undefined })
+    // 原生 change 事件一定有 target 與 currentTarget（按鈕本身）；node 為空的後備值測不到
+    const read = node => ({
+      value: node ? node.value : /* istanbul ignore next */ '',
+      name: node ? node.name : /* istanbul ignore next */ undefined,
+    })
     onChange({
       target: read(event.target),
       currentTarget: read(event.currentTarget),
@@ -194,6 +201,8 @@ const IndexSelect = React.forwardRef(function IndexSelect(
   }
   React.useEffect(() => {
     const button = buttonRef.current
+    // 防禦：按鈕永遠渲染，effect 執行時 ref 一定已指向它，測不到
+    /* istanbul ignore if */
     if (!button) return undefined
     const onDomChange = event => changeRef.current(event)
     button.addEventListener('change', onDomChange)
@@ -210,6 +219,8 @@ const IndexSelect = React.forwardRef(function IndexSelect(
   const escape = event => {
     event.preventDefault()
     setOpen(false)
+    // 按鈕永遠渲染，清單開著時 ref 一定有值；else 測不到
+    /* istanbul ignore else */
     if (buttonRef.current) buttonRef.current.focus()
   }
   const { ref: layerRef, zIndex } = useLayerRef(null, open, escape)
@@ -246,7 +257,8 @@ const IndexSelect = React.forwardRef(function IndexSelect(
   const isEnabled = i => i >= 0 && i < options.length && !options[i].disabled
   const moveEnabled = (from, delta) => {
     const count = options.length
-    if (!count || !delta) return isEnabled(from) ? from : -1
+    // 呼叫端的 delta 只有 ±1，這行只在沒有選項時走到，此時 isEnabled 必為 false；前一個分支測不到
+    if (!count || !delta) return isEnabled(from) ? /* istanbul ignore next */ from : -1
     let cursor = from
     for (let n = 0; n < count; n += 1) {
       cursor += delta
@@ -266,9 +278,13 @@ const IndexSelect = React.forwardRef(function IndexSelect(
 
   const closeAndFocus = () => {
     setOpen(false)
+    // 同上：按鈕永遠渲染，else 測不到
+    /* istanbul ignore else */
     if (buttonRef.current) buttonRef.current.focus()
   }
   const activate = (next, event) => {
+    // 防禦：所有呼叫端（鍵盤 Enter、觸控 pointerup、選項 keydown／click）都先排除停用或越界的項目，測不到
+    /* istanbul ignore if */
     if (!isEnabled(next)) return
     emit(next, event)
     closeAndFocus()

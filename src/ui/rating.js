@@ -28,6 +28,8 @@ const Rating = React.forwardRef(function Rating(
   const value = valueProp === undefined ? innerValue : valueProp
   const locked = readOnly || disabled
   const pick = (event, next) => {
+    // 防禦：點擊與鍵盤兩個呼叫端都先檢查 locked，鎖定時不會呼叫到這裡，測不到
+    /* istanbul ignore if */
     if (locked) return
     if (valueProp === undefined) setValue(next)
     if (onChange) onChange(event, next)

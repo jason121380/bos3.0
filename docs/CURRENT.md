@@ -66,7 +66,6 @@
 **待辦（未做）**
 
 - 後端：LINE 打卡寫死網址、GraphQL 操作名去重（擱置）；下方「後端債」四項。
-- 覆蓋率：`npm run test:coverage` 在本環境以 exit 1 結束，見「CI 與測試」。
 - 錯字只改了檔名與網址；識別字（變數、元件名）仍約 107 處（粗略 grep `Pannel`、`Perforamnce` 等）、GraphQL 名稱與欄位刻意不動。
 - 建檔／編輯頁 10 組資料流不同沒有合併（ServiceCategory、MemberCard、MemberCardCategory、TopUp、ProductRestock、EmployeePicking、Product 等）；表單狀態三套（手寫／react-hook-form／validate.js）並存。
 - `react-color`（116 KB）換自製色票、`react-beautiful-dnd`（deprecated）替換、表格列 memo（需先量 Profiler 基線）。
@@ -109,7 +108,7 @@ Codex 在 #295、#300、#301 合併後留下五項 P2。PR #302 已 squash-merge
 - 全套 Jest 現況：**394 suites／4,582 tests 全數通過**（#322 本機與 CI 結果）。
 - 畫面掃描現況（2026/10/31）：`npm run test:e2e` 共 **660 則**＝畫面掃描 497 則＋資料晚到掃描 163 則（`e2e/late-arrival.spec.js`：每個路由的開頁查詢輪流晚回 800ms，檢查不進錯誤邊界、不新增 console error；只涵蓋開頁時自動送出的查詢，點了才開的彈窗不在內）。`e2e/known-issues.js` 已清空（原 52 頁假資料不足，改由 `e2e/fake-operations.js` 依操作名稱補形狀）。CI 的 Visual scan job 一併跑兩者，時限 45 分鐘。
 - `npm run lint:build`：0 錯誤、0 警告（`--max-warnings=0`）。warning 級 `scripts/redesign/eslint-check.json` 剩 69 則（`import/first` 19、`jsx-a11y/alt-text` 16、`import/no-anonymous-default-export` 14、`no-useless-concat` 13 等），`react-hooks/exhaustive-deps` 0 則——其中約 684 處是逐一判斷後加原因註解的 `eslint-disable-next-line`，不是補依賴。
-- **覆蓋率未達門檻**：`npm run test:coverage` 在本環境以 exit 1 結束。未達 `package.json` 門檻的範圍：`src/components/`、`src/ui/`、`src/layouts/`、`src/elements/`、`src/views/OrderCreate/`、`src/views/DraftOrderEdit/`、engineeringMode、`lib/api-base.js`、`lib/lazy-with-retry.js`、`OrderShared` 兩檔。CI 不跑覆蓋率，所以 CI 綠燈不代表覆蓋率達標。
+- **覆蓋率已達門檻**（`v3.10311600`，2026/10/31）：新增 26 個測試檔、補強 5 個，`npm run test:coverage` exit 0。CI 的 Unit tests job 改跑 `test:coverage`（同一次跑完全部測試並檢查門檻，時限 60 分鐘），門檻未達即擋。ui（分支 99.13／門檻 99）與 components（98.05／98）餘裕很小，新程式要一起補測試。10 個檔有逐處註明理由的 `istanbul ignore`（走不到的防禦碼）。補測試時發現、未修的產品問題：教學模式 `TeachingModeState` 寫死關閉；`CustomerAutoComplete` 未選未打字時仍列出查詢結果；掛單結帳卸載時序的極短時間窗；`MerchantsListModal` 群組缺 `groups` 欄位會拋錯；店家選單有兩個不會被呼叫的函式。
 - GitHub CI 的結果以 PR 頁為準。#315–#321 合併前三個 job（#317 之前是兩個）都通過，Codex review 無待處理 finding。
 - `main` 分支保護仍是關的。自動化 token 讀寫分支保護會 403，沒有代為打開。不要為此關掉 Railway 對 `main` 的自動部署。
 - 合併前在本機跑 `npm run format:check`、`npm run lint`、全套 Jest、`npm run build`（動到畫面再跑 `npm run test:e2e`）。不要連正式或測試後端，不要寫真實資料。

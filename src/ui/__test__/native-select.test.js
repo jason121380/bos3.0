@@ -166,6 +166,18 @@ describe('NativeSelect 唯讀與其他轉傳', () => {
     expect(document.activeElement).toBe(trigger())
   })
 
+  it('inputRef 是函式（callback ref）時也拿到按鈕；卸載時收到 null', () => {
+    const inputRef = jest.fn()
+    const { unmount } = render(
+      <NativeSelect label="狀態" value="A" inputRef={inputRef} onChange={() => {}}>
+        {options}
+      </NativeSelect>
+    )
+    expect(inputRef).toHaveBeenCalledWith(trigger())
+    unmount()
+    expect(inputRef).toHaveBeenLastCalledWith(null)
+  })
+
   it('size="small" 用較矮的高度；labelId 連到外部標籤', () => {
     render(
       <>
