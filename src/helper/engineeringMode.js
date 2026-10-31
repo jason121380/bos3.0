@@ -208,7 +208,9 @@ export const buildEngineeringChecks = ({
       status: diagnosticsOk ? 'pass' : 'fail',
       detail: diagnosticsOk
         ? `${storageText}。視窗 ${viewportText}。${userAgent}`
-        : [storageText, viewportText ? `視窗 ${viewportText}` : '', userAgent].filter(Boolean).join('。') || '無法讀取本機診斷',
+        : [storageText, viewportText ? `視窗 ${viewportText}` : '', userAgent].filter(Boolean).join('。') ||
+          // 防禦用後備文字：storageText 一定有內容（讀得到是鍵數量、讀不到是「無法讀取 localStorage」），join 不會是空字串，測不到
+          /* istanbul ignore next */ '無法讀取本機診斷',
     },
   ]
 }

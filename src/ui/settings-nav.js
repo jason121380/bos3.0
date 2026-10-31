@@ -66,6 +66,8 @@ const SettingsTabsList = React.forwardRef(({ className, style, ...props }, ref) 
       observer = new ResizeObserver(update)
       const main = document.getElementById('main-content')
       if (main) observer.observe(main)
+      // effect 在掛載後執行，欄位節點一定已掛上；else 測不到
+      /* istanbul ignore else */
       if (slotRef.current) observer.observe(slotRef.current)
     }
     return () => {

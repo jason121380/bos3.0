@@ -53,6 +53,9 @@ const DialogContent = React.forwardRef(
   ) => {
     const state = React.useContext(DialogState)
     const { ref, zIndex, isLaterLayerEvent, isTop } = useLayerRef(forwardedRef, true, event => {
+      // 防禦：layer-stack 只把 Esc 交給 data-state 不是 closed 的頂層，而 DialogContent 只在 Dialog 開啟時掛載
+      // （沒有 Dialog 時 Radix 會先因缺 context 拋錯），jsdom 與瀏覽器都走不到這裡
+      /* istanbul ignore if */
       if (!state || !state.open) return
       if (onEscapeKeyDown) onEscapeKeyDown(event)
       if (!event.defaultPrevented) state.change(false)

@@ -196,7 +196,8 @@ function flyoutEntries(children) {
 }
 
 function readSidebarEdge(el) {
-  const aside = el && typeof el.closest === 'function' ? el.closest('aside') : null
+  // 呼叫端已確認 el 是掛上的 DOM 元素（一定有 closest）；後備的 null 測不到
+  const aside = el && typeof el.closest === 'function' ? el.closest('aside') : /* istanbul ignore next */ null
   return (aside || el).getBoundingClientRect().right
 }
 

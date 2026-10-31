@@ -580,6 +580,8 @@ export default function CustomizedSnackbars() {
     deleteInventoryWorkFunc,
   } = snackbarState
   const handleClose = (event, reason) => {
+    // 舊 MUI Snackbar 的點外面關閉理由；改用 Toaster 後沒有任何呼叫端會傳 'clickaway'，測不到（保留不改行為）
+    /* istanbul ignore if */
     if (reason === 'clickaway') {
       return
     }

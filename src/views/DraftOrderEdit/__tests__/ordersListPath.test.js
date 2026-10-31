@@ -29,3 +29,18 @@ test('沒有查詢、查詢沒有等號、或日期不是數字時回到不帶�
   expect(ordersListPath('?startDate=abc&endDate=1')).toBe('/management/orders')
   expect(ordersListPath(null)).toBe('/management/orders')
 })
+
+test('瀏覽器沒有 URLSearchParams（舊版內嵌瀏覽器）時退回不帶參數的帳單列表，不拋錯', () => {
+  const original = window.URLSearchParams
+  window.URLSearchParams = undefined
+  try {
+    expect(ordersListPath('?startDate=1760976000000&endDate=1761062399999')).toBe('/management/orders')
+  } finally {
+    window.URLSearchParams = original
+  }
+})
+
+test('日期在 JavaScript 可表示範圍的邊緣、算不出當天起訖時不帶參數', () => {
+  // 最大可表示時間（275760/9/13）的「當天結束」超出範圍而變成 Invalid Date（任何時區都一樣）
+  expect(ordersListPathForOrderDate(8.64e15)).toBe('/management/orders')
+})

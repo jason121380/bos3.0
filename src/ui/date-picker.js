@@ -403,9 +403,13 @@ function createPicker({ displayName, withTime, mobileOnly }) {
       overlay = (
         <Popover
           open
-          onOpenChange={next => {
-            if (!next) dismiss()
-          }}
+          // 防禦：Radix 只在「點外面／Esc」時要求關閉，而這兩條路徑下方都已 preventDefault 並自行 dismiss，
+          // 這個回呼實際不會被呼叫，測不到；保留是為了 Radix 日後新增其他關閉途徑時仍能正確收起
+          onOpenChange={
+            /* istanbul ignore next */ next => {
+              if (!next) dismiss()
+            }
+          }
         >
           <PopoverAnchor virtualRef={rootRef} />
           <PopoverContent

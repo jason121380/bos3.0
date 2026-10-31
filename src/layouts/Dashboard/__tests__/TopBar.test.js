@@ -264,6 +264,16 @@ describe('WebSocket 推播', () => {
   })
 })
 
+describe('推播連線：載入前就離開', () => {
+  it('推播套件載入完成前版面已卸載（例如立刻登出）：不建立連線、不留下監聽', async () => {
+    const { unmount } = setup()
+    act(() => unmount())
+    await act(() => new Promise(resolve => setTimeout(resolve, 20)))
+    expect(mockSocket.handlers).toEqual({})
+    expect(mockSocket.emitted).toEqual([])
+  })
+})
+
 describe('角色權限防呆', () => {
   it('「櫃檯作業」第一個頁面有權限時 Logo 連到首頁，否則連到個人頁', async () => {
     const { settle } = setup()

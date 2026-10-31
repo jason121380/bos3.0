@@ -90,6 +90,8 @@ export default function ReCheckoutPasswordDialog({ open, onClose, title, reCheck
       onOpenChange={
         onClose
           ? value => {
+              // Radix 只會以 false 要求關閉（沒有 DialogTrigger），value 為 true 的分支測不到
+              /* istanbul ignore else */
               if (!value) onClose()
             }
           : undefined
