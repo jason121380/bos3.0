@@ -2,6 +2,7 @@
 // 再用 FIXTURES 依「根欄位」覆蓋少數需要真資料才能畫出主要畫面的查詢。
 // 補齊規則移植自 src/__tests__/testkit.test.js：名稱像清單的欄位回 []，其餘回物件，純量回 null。
 const { parse } = require('graphql')
+const OPERATION_FIXTURES = require('./fake-operations')
 
 const LIST_NAME = /(^data$|s$|sV\d+$|List|list$|Records|records$|Record$|Data$|NotCash$|Flow$)/
 const PAGINATION_FIELDS = ['totalCount', 'pageLimit', 'pageOffset']
@@ -81,7 +82,23 @@ const FIXTURES = {
   checkPageAuthority: true,
   getUserPinnedTableSettings: null,
   me: { id: 'user-1', name: '測試店長', status: 'active', theme: null, merchantIdentity: { authorityId: 'au-1', authorityName: '高階主管' } },
-  user: { id: 'user-1', name: '測試店長' },
+  user: {
+    id: 'user-1',
+    name: '測試店長',
+    // 報表總覽（/dashboard-list-detail）依這份頁面權限決定顯示哪些報表
+    pageAuthority: {
+      authorityName: '高階主管',
+      pageAuthority: [
+        {
+          pageTitle: '報表及分析',
+          authority: true,
+          pageAuthority: ['店家日報表', '設計師日報表', '店家區間累計表', '設計師排行榜'].map(pageName => ({ pageName, authority: true })),
+        },
+      ],
+    },
+  },
+  // 預約週曆以營業時間字串切時段
+  merchant: { id: 'merchant-1', name: '測試店', openingHours: '10:00:00', closingHours: '20:00:00' },
   merchantPayWays: [
     { id: 'pw-1', type: 'CASH', name: '現金', fee: 0, amountType: 'NUMBER' },
     { id: 'pw-2', type: 'CREDIT', name: '信用卡', fee: 2, amountType: 'PERCENT' },
@@ -153,6 +170,9 @@ function respondGraphql(body, { failRoots = new Set(), failAll = false } = {}) {
     roots.forEach(r => {
       if (r in FIXTURES) fixture[r] = FIXTURES[r]
     })
+    // 依操作名稱的假資料優先（同名欄位在不同查詢形狀不同時用，見 e2e/fake-operations.js）
+    const opFixture = op.name && OPERATION_FIXTURES[op.name.value]
+    if (opFixture) Object.assign(fixture, opFixture)
     return { data: fill(op.selectionSet, fixture, fr) }
   }
   return Array.isArray(body) ? body.map(one) : one(body)

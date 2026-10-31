@@ -4,7 +4,7 @@
 
 產品版號只看 `src/version.js`（`v3.MMDDHHmm`，台灣時間）。程式碼最新是 PR #322（全站 Prettier）squash-merge 的 commit `9b8a8c6`，版號 `v3.10302235`；本文件同步的 PR 版號為 `v3.10302327`（只改文件）。倉庫是公開的：https://github.com/jason121380/bos3.0。
 
-**正式站版號尚未確認。** 這幾批的工作環境連不到 `bos.lure.com.tw`。請看正式站左上角版號是否為 `v3.10302327`（或至少 `v3.10302235`）。
+**正式站版號已確認**：Jason 2026/10/31 確認正式站左上角為 `v3.10302327`（之後的版號以合併為準，不必再逐次詢問）。
 
 前端可控制的健康分仍是 100（PR #301 的五項指標，見下方）。四面向程式稽核另有一把尺：2026/10/28 稽核 72 → 10/30 下午修正後估計約 83 → **10/30 晚間重新評分 86**，依據見 `docs/redesign/AUDIT_20261028.md` 第 9 節。兩者是不同量尺。
 
@@ -27,7 +27,7 @@
 ## 產品現在是什麼
 
 - 純前端 SPA：Vite 5、React 17、Apollo Client 3、Tailwind + `src/ui/`。單元測試仍是 react-scripts 的 Jest；畫面掃描是 Playwright（`e2e/`）。
-- `main` 程式碼最新版號是 `v3.10302235`（PR #322）；文件同步 PR 為 `v3.10302327`。正式站是否已是這個版號待確認。
+- `main` 程式碼最新版號是 `v3.10302235`（PR #322）；文件同步 PR 為 `v3.10302327`。正式站已確認為 `v3.10302327`（Jason 2026/10/31）。
 - 畫面習慣維持：提示在右下、約 3 秒；標籤在欄位上方。
 - **下拉只有兩種**（2026/10/30，#319、#321）：固定選項用 `ui/native-select` 的 `NativeSelect`（內部是自家清單 `ui/index-select`，不是系統選單）；要打字搜尋或多選用 `ui/combobox`（選員工用 `StaffCombobox`，同時比對本名與暱稱）。`ui/select`（Radix）與 `ui/form-control` 的 `Select`／`MultipleSelect`／`MenuItem` 已刪除，`@radix-ui/react-select` 已移除；`ui/form-control` 只剩 `FormControl`／`InputLabel`／`FormHelperText`。
 - 頁首一律用 `ui/page-header` 的 `PageHeader`。`AdminPageHeader`、`PageTitle` 已於 2026/10/28 刪除。
@@ -59,15 +59,14 @@
 
 **決定不做**：Sentry 延後初始化（lazy-load）——會漏掉首屏前的錯誤，首屏約 52 KB gzip 的成本保留。
 
-**待 Jason 決定**
+**已修（Jason 2026/10/31 同意）**
 
-- 線上預約頁從網址帶入設計師、顧客沒有重選時，傳回 LINE 的「設計師:」是空的。改版前就是這樣，屬 state 邏輯（不是畫面），沒有改。
+- 線上預約頁從網址帶入設計師、顧客沒有重選時，傳回 LINE 的「設計師:」原本是空的（改版前既有）。`v3.10311136` 起設計師清單載入後依帶入的 id 補上名稱，有測試。
 
 **待辦（未做）**
 
 - 後端：LINE 打卡寫死網址、GraphQL 操作名去重（擱置）；下方「後端債」四項。
 - 覆蓋率：`npm run test:coverage` 在本環境以 exit 1 結束，見「CI 與測試」。
-- 畫面掃描 `e2e/known-issues.js` 有 52 頁因假資料不足只驗「所有查詢失敗」情境，有資料的畫面沒有被掃到。
 - 錯字只改了檔名與網址；識別字（變數、元件名）仍約 107 處（粗略 grep `Pannel`、`Perforamnce` 等）、GraphQL 名稱與欄位刻意不動。
 - 建檔／編輯頁 10 組資料流不同沒有合併（ServiceCategory、MemberCard、MemberCardCategory、TopUp、ProductRestock、EmployeePicking、Product 等）；表單狀態三套（手寫／react-hook-form／validate.js）並存。
 - `react-color`（116 KB）換自製色票、`react-beautiful-dnd`（deprecated）替換、表格列 memo（需先量 Profiler 基線）。
@@ -108,7 +107,7 @@ Codex 在 #295、#300、#301 合併後留下五項 P2。PR #302 已 squash-merge
   - **Unit tests**：`npm run test:nowatch`。
   - **Visual scan**（#317 起）：build 後以 Playwright 跑 `npm run test:e2e`。靜態檔＋假 GraphQL（依 operationName 回應），外部連線一律 abort，不連任何後端。162 個後台路由 × 手機 390／桌機 1366，主要 8 頁另跑深色，每個路由再跑「所有查詢失敗」情境。檢查沒有錯誤邊界、沒有橫向捲動、沒有未捕捉的 console error。失敗時上傳截圖。
 - 全套 Jest 現況：**394 suites／4,582 tests 全數通過**（#322 本機與 CI 結果）。
-- 畫面掃描現況：**497 則全數通過**。`e2e/known-issues.js` 列 52 頁「假資料不足」，這些頁只驗「所有查詢失敗」情境；清單應逐步清空。
+- 畫面掃描現況（2026/10/31）：`npm run test:e2e` 共 **660 則**＝畫面掃描 497 則＋資料晚到掃描 163 則（`e2e/late-arrival.spec.js`：每個路由的開頁查詢輪流晚回 800ms，檢查不進錯誤邊界、不新增 console error；只涵蓋開頁時自動送出的查詢，點了才開的彈窗不在內）。`e2e/known-issues.js` 已清空（原 52 頁假資料不足，改由 `e2e/fake-operations.js` 依操作名稱補形狀）。CI 的 Visual scan job 一併跑兩者，時限 45 分鐘。
 - `npm run lint:build`：0 錯誤、0 警告（`--max-warnings=0`）。warning 級 `scripts/redesign/eslint-check.json` 剩 69 則（`import/first` 19、`jsx-a11y/alt-text` 16、`import/no-anonymous-default-export` 14、`no-useless-concat` 13 等），`react-hooks/exhaustive-deps` 0 則——其中約 684 處是逐一判斷後加原因註解的 `eslint-disable-next-line`，不是補依賴。
 - **覆蓋率未達門檻**：`npm run test:coverage` 在本環境以 exit 1 結束。未達 `package.json` 門檻的範圍：`src/components/`、`src/ui/`、`src/layouts/`、`src/elements/`、`src/views/OrderCreate/`、`src/views/DraftOrderEdit/`、engineeringMode、`lib/api-base.js`、`lib/lazy-with-retry.js`、`OrderShared` 兩檔。CI 不跑覆蓋率，所以 CI 綠燈不代表覆蓋率達標。
 - GitHub CI 的結果以 PR 頁為準。#315–#321 合併前三個 job（#317 之前是兩個）都通過，Codex review 無待處理 finding。

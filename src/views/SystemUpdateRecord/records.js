@@ -10,6 +10,16 @@ export function calendarUpdateTime(isoDate) {
 
 const shippedRecords = [
   {
+    title: '2026/10/31 線上預約 LINE 訊息',
+    versionNo: 'v3.10311322',
+    updateTime: '2026-10-31',
+    content: [
+      '- 線上預約：從預約連結直接帶入設計師、沒有重新選擇時，傳回 LINE 的預約訊息會顯示設計師名稱（原本是空白）',
+      '- 設計師排行榜：月平均設定讀取失敗時不再出現「這個頁面發生錯誤」',
+      '- 每次更新前會自動檢查「資料晚一步才到」時各頁不會整頁錯誤',
+    ].join('\n'),
+  },
+  {
     title: '2026/10/30 文件同步與重新評分',
     versionNo: 'v3.10302327',
     updateTime: '2026-10-30',
