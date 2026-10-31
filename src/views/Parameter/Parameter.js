@@ -140,8 +140,6 @@ function Parameter() {
   const [UESUsing, setUESUsing] = useState(false)
   const [CBRDStylist, setCBRDStylist] = useState(false)
 
-  // const [teachingModeDisplay, setTeachingModeDisplay] = useState(false)
-
   // Get
   const merchantDeductionItems = useFetchMerchantDeductionItems()
   const merchantSalaryIncreaseItems = useFetchMerchantSalaryIncreaseItems()
@@ -177,8 +175,6 @@ function Parameter() {
   const getUESUsingSetting = useFetchGetUESUsingSetting()
   const getIsCBRDStylist = useFetchGetIsCBRDStylist()
 
-  // const merchantTeachingModeSettingData = useFetchMerchantTeachingModeSetting()
-
   // Set
   const { setDeductionitems } = useFetchSettingDeductionItems()
   const { setSalaryIncreaseItem } = useFetchSettingMerchantSalaryIncreaseItem()
@@ -211,8 +207,6 @@ function Parameter() {
   const { setTypeForSocket } = useFetchSetBookingTypeForSocket()
   const { setUESUsingSetting } = useFetchSetUESUsingSetting()
   const { setCBRDStylistData } = useFetchSetIsCBRDStylist()
-
-  // const { setMerchantTeachingModeSettings } = useFetchSetMerchantTeachingModeSettings()
 
   // loading value
   useEffect(() => {
@@ -576,16 +570,6 @@ function Parameter() {
     getUESUsingSetting.loading,
     getIsCBRDStylist.loading,
   ])
-
-  // useEffect(() => {
-  //   if (!merchantTeachingModeSettingData.loading && merchantTeachingModeSettingData.data) {
-  //     const teachingModeDisplay = idx(
-  //       merchantTeachingModeSettingData,
-  //       _ => _.data.getMerchantTeachingModeSetting
-  //     )
-  //     setTeachingModeDisplay(teachingModeDisplay)
-  //   }
-  // }, [merchantTeachingModeSettingData.loading])
 
   // handle onchange or onclick
   const handleServiceChange = ({ changedData, key }) => {

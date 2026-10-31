@@ -7,7 +7,6 @@ import MemberShipCardAutoComplete from 'components/MemberShipCardAutoComplete'
 import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
 import idx from 'idx'
 import React, { Fragment, useState, useEffect, useContext } from 'react'
-import TeachingModeContext from 'context/teachingModeContext'
 import { useFetchThirdPartysForCreateOrder } from 'hooks/useFetchMerchant'
 import { addDays, addYears, format, startOfDay } from 'date-fns'
 import { MobileDatePicker } from 'ui/date-picker'
@@ -46,8 +45,6 @@ const MemberShipCardSells = ({
   productLength,
   thirdPartTicket,
 }) => {
-  const techingModeContext = useContext(TeachingModeContext)
-  const { teachingMode } = techingModeContext
   const { bill } = React.useContext(billContext)
 
   const thirdPartyCouponsData = useFetchThirdPartysForCreateOrder()
@@ -317,7 +314,6 @@ const MemberShipCardSells = ({
                   />
                 </Field>
               )}
-              {teachingMode && <p className={`m-0 ${styles.heading2}`}>勾選將入業績但不收費用**</p>}
               {!thirdPartyCouponsData.loading &&
                 sellsItem.thirdPartyCouponMerchantId &&
                 idx(thirdPartyCouponsData, _ =>

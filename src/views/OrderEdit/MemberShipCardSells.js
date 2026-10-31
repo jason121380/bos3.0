@@ -8,7 +8,6 @@ import MemberShipCardAutoComplete from 'components/MemberShipCardAutoComplete'
 import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
 import idx from 'idx'
 import React, { Fragment, useState, useEffect, useContext } from 'react'
-import TeachingModeContext from 'context/teachingModeContext'
 import billContext from 'context/keyInContext'
 import { addDays, addYears, format, startOfDay } from 'date-fns'
 import { MobileDatePicker } from 'ui/date-picker'
@@ -37,8 +36,6 @@ const MemberShipCardSells = ({
   thirdPartTicket,
   getData,
 }) => {
-  const techingModeContext = useContext(TeachingModeContext)
-  const { teachingMode } = techingModeContext
   const { thirdPartyCoupons, setMembershipAlready, bill } = useContext(billContext)
 
   const employeeRef = React.useRef()
@@ -317,7 +314,6 @@ const MemberShipCardSells = ({
                   />
                 </Field>
               )}
-              {teachingMode && <p className="m-0 text-[0.8125rem] font-bold">勾選將入業績但不收費用**</p>}
               {sells.thirdPartyCouponMerchantId &&
                 thirdPartyCoupons.map(data => {
                   if (data.id === sells.thirdPartyCouponMerchantId) {

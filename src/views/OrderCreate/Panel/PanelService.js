@@ -9,21 +9,17 @@ import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import useFetchGetIsHelperDesignationSetting from 'hooks/useFetchGetIsHelperDesignationSetting'
 import idx from 'idx'
 import produce from 'immer'
-import TeachingModeContext from 'context/teachingModeContext'
 
 import ServicesModal from '../ServicesModal'
 
 const styles = {
   heading: '!text-[16px] font-bold text-[rgb(var(--text))] flex items-center',
-  heading2: 'text-label ml-[10px] font-bold',
   details: 'overflow-x-auto flex justify-start items-center',
   fieldOutter: 'flex justify-start items-start flex-col',
 }
 
 function PanelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
   const { handleBillChange, bindedThirdPart, bill, services, setServices } = useContext(billContext)
-  const techingModeContext = useContext(TeachingModeContext)
-  const { teachingMode } = techingModeContext
 
   const [focusRow, setFocusRow] = useState(0)
 
@@ -258,7 +254,6 @@ function PanelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
         data-testid="panelService"
       >
         <p className={`m-0 ${styles.heading}`}>項目消費</p>
-        {teachingMode && <p className={`m-0 ${styles.heading2}`}>服務項目必須設定好助理才能輸入助理**</p>}
       </AccordionSummary>
       <AccordionDetails className={styles.details}>
         <div className={styles.fieldOutter}>

@@ -11,10 +11,9 @@ import billContext from 'context/keyInContext'
 import idx from 'idx'
 import cloneDeep from 'lodash/cloneDeep'
 import { Fragment, createRef, memo, useEffect, useRef, useState, useContext } from 'react'
-import TeachingModeContext from 'context/teachingModeContext'
 import { useFetchThirdPartysForCreateOrder } from 'hooks/useFetchMerchant'
 import { formatNumber } from 'ui/format'
-import { ROW_ICON_ALIGN, ROW_INLINE_ALIGN } from 'views/OrderShared/rowAlign'
+import { ROW_ICON_ALIGN } from 'views/OrderShared/rowAlign'
 import useStableCallback from 'hooks/useStableCallback'
 
 const styles = {
@@ -54,8 +53,6 @@ function Services({
   bindedThirdPart,
   reset,
 }) {
-  const techingModeContext = useContext(TeachingModeContext)
-  const { teachingMode } = techingModeContext
   const [helper, setHelper] = useState([])
   const [isHelperChange, setIsHelperChange] = useState(false)
   const [getService, serviceDetail] = useLazyFetchServiceNew()
@@ -513,7 +510,6 @@ function Services({
                   )}
               </div>
             )}
-            {teachingMode && <p className={`m-0 ${styles.heading2} ${ROW_INLINE_ALIGN}`}>勾選將入業績但不收費用**</p>}
           </Fragment>
         )}
         <RowIconButton label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`} onClick={handleClear} data-testid={`service-${index}-clear`}>

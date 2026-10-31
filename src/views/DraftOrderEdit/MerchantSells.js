@@ -6,7 +6,6 @@ import ProductAutoComplete from 'components/ProductAutoComplete'
 import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
 import idx from 'idx'
 import React, { Fragment, useState, useEffect, useContext, useRef } from 'react'
-import TeachingModeContext from 'context/teachingModeContext'
 import billContext from 'context/keyInContext'
 
 import ProductsModal from 'views/OrderShared/ProductsModal'
@@ -44,8 +43,6 @@ export default function MerchantSells({
   setFocusRow,
   thirdPartTicket,
 }) {
-  const techingModeContext = useContext(TeachingModeContext)
-  const { teachingMode } = techingModeContext
   const { thirdPartyCoupons } = useContext(billContext)
 
   // 「從清單選擇」彈窗的狀態與清單查詢（OrderShared/useItemPicker，四頁共用）
@@ -238,7 +235,6 @@ export default function MerchantSells({
                   />
                 </Field>
               )}
-              {teachingMode && <p className={`m-0 ${styles.heading2}`}>勾選將入業績但不收費用**</p>}
               {sells.thirdPartyCouponMerchantId &&
                 thirdPartyCoupons.map(data => {
                   if (data.id === sells.thirdPartyCouponMerchantId) {

@@ -18,7 +18,6 @@ import { Card } from 'ui/card'
 import { CheckboxField } from 'ui/checkbox'
 import { Field } from 'ui/input'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
-import TeachingModeContext from 'context/teachingModeContext'
 import useFetchOrderWithoutCustomerSetting from 'hooks/useFetchOrderWithoutCustomerDefault'
 import useFetchGetIsLockDateSetting from 'hooks/useFetchGetIsLockDateSetting'
 import useFetchGetIsLockDateDisplaySetting from 'hooks/useFetchGetIsLockDateDisplaySetting'
@@ -72,8 +71,6 @@ export default function Head() {
   const designerRef = useRef()
   const designateRef = useRef()
   const nonDesignateRef = useRef()
-  const techingModeContext = useContext(TeachingModeContext)
-  const { teachingMode } = techingModeContext
   const filter = createFilterOptions()
   // customer autocomplete value
   const [value, setValue] = useState('')

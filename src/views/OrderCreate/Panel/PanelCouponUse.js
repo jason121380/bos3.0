@@ -7,19 +7,15 @@ import uuid from 'lib/uuid'
 import CouponUse from 'views/OrderCreate/CouponUse'
 import { panelSummary } from './summary'
 import useFetchGetTicketRecordsForOrderV2 from 'hooks/useFetchGetTicketRecordsForOrderV2'
-import TeachingModeContext from 'context/teachingModeContext'
 
 const styles = {
   details: 'overflow-x-auto',
   heading: '!text-[16px] font-bold text-[rgb(var(--text))] flex items-center',
   fieldOutter: 'flex justify-start items-start flex-col',
-  couponTeachTitle: 'text-[0.8125rem] ml-[34px] font-bold',
 }
 
 export default function PanelCouponUse({ expanded, onPanelClick, display, reset }) {
   const { handleBillChange, bill } = useContext(billContext)
-  const techingModeContext = useContext(TeachingModeContext)
-  const { teachingMode } = techingModeContext
   const [couponUsage, setCouponUsage] = React.useState([])
   const [totalCoupons, setTotalCoupons] = React.useState(0)
   const [ticketRecordsForOrderLazyV2, ticketRecordsForOrderLazyDataV2] = useFetchGetTicketRecordsForOrderV2()
@@ -166,7 +162,6 @@ export default function PanelCouponUse({ expanded, onPanelClick, display, reset 
         style={{ width: '100%' }}
       >
         <p className={`m-0 ${styles.heading}`}>使用預收卡</p>
-        {teachingMode && <p className={`m-0 ${styles.couponTeachTitle}`}>使用卡券必須設定好助理才能輸入助理**</p>}
         {totalCoupons !== 0 && (
           <Fragment>
             <p className={`m-0 ${styles.heading}`}>

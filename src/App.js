@@ -16,7 +16,6 @@ import ApiEnvBanner from './components/ApiEnvBanner'
 import GoogleAnalytics from './components/GoogleAnalytics'
 import ScrollReset from './components/ScrollReset'
 import routes from './routes'
-import TeachingModeState from './context/TeachingModeState'
 import { getApiEnvironment } from './lib/api-base'
 import { APP_VERSION } from './version'
 
@@ -39,15 +38,13 @@ Sentry.init({
 function App() {
   return (
     <ApolloProvider client={client()}>
-      <TeachingModeState>
-        <Router history={history}>
-          <ApiEnvBanner />
-          <ScrollReset />
-          <GoogleAnalytics />
-          {renderRoutes(routes)}
-          <div id="modal" />
-        </Router>
-      </TeachingModeState>
+      <Router history={history}>
+        <ApiEnvBanner />
+        <ScrollReset />
+        <GoogleAnalytics />
+        {renderRoutes(routes)}
+        <div id="modal" />
+      </Router>
     </ApolloProvider>
   )
 }

@@ -9,7 +9,6 @@ import { MockedProvider } from '@apollo/client/testing'
 import { Provider } from 'react-redux'
 import { MemoryRouter, Route } from 'react-router-dom'
 import { act, fireEvent, render, wait } from '@testing-library/react'
-import TeachingModeState from 'context/TeachingModeState'
 import PageErrorBoundary from 'components/PageErrorBoundary'
 import { settingsCacheLink, bindSettingsCache } from 'lib/settings-cache'
 import { createAutoMockLink, createTestStore, blockNetwork, typeLikeBrowser } from '../../../__tests__/testkit.test'
@@ -145,16 +144,14 @@ export function renderWithSettingsCache(ui, { fixtures = {}, route = '/page' } =
     <Provider store={createTestStore()}>
       <MockedProvider link={settingsCacheLink.concat(mockLink)} cache={cache} addTypename={false}>
         <MemoryRouter initialEntries={[route]}>
-          <TeachingModeState>
-            <PageErrorBoundary resetKey="test">{ui}</PageErrorBoundary>
-            <Route
-              render={({ location }) => (
-                <div hidden data-testid="testkit-location">
-                  {location.pathname + location.search}
-                </div>
-              )}
-            />
-          </TeachingModeState>
+          <PageErrorBoundary resetKey="test">{ui}</PageErrorBoundary>
+          <Route
+            render={({ location }) => (
+              <div hidden data-testid="testkit-location">
+                {location.pathname + location.search}
+              </div>
+            )}
+          />
         </MemoryRouter>
       </MockedProvider>
     </Provider>
