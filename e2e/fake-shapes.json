@@ -12,13 +12,16 @@
     "point",
     "productConsumeSummary",
     "record",
+    "requiredColumnForNewCustomer",
     "reserveCheckSummary",
     "thirdPartTicketUsing",
     "title"
   ],
   "scalarLists": [
     "authorityName",
+    "bookingNotificationPhone",
     "otherPayUsing",
+    "requiredColumnForNewCustomer",
     "thirdPartTicketUsing"
   ],
   "timestamps": []

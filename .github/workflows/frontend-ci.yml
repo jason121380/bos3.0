@@ -60,11 +60,12 @@ jobs:
 
   # 全站畫面掃描：每個後台路由在手機（390×844）與桌機（1366×800）各開一次，主要頁面另跑深色模式；
   # 檢查沒有錯誤邊界「這個頁面發生錯誤」、沒有橫向捲動、沒有未捕捉的 console error（e2e/visual.spec.js）。
+  # 另跑資料晚到掃描（e2e/late-arrival.spec.js）：每個路由讓頁面的每個查詢輪流晚回，檢查不會進錯誤邊界。
   # 用 vite build 的靜態檔＋假 GraphQL，外部連線一律 abort，不連任何後端（CLAUDE.md 鐵則 5）。
   visual:
     name: Visual scan
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -79,7 +80,7 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Visual scan
+      - name: Visual scan and late-arrival scan
         run: npm run test:e2e
         env:
           CI: true

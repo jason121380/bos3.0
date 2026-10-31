@@ -32,6 +32,16 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
     }
   }, [])
 
+  // 網址帶入設計師（?designerId=）、顧客沒有重選時，也要記下設計師名稱給傳回 LINE 的訊息用
+  // （原本只在從選單選取時才記，訊息的「設計師:」會是空白；Jason 2026/10/31 同意修正）
+  const designerList = idx(designers, _ => _.data.viewer.anonymous.designers.data)
+  React.useEffect(() => {
+    if (!values.designerId || !designerList) return
+    const preset = designerList.find(designer => designer.id === values.designerId)
+    if (preset) onDesignerChange(designerLabel(preset))
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- onDesignerChange 是父層每次 render 重建的函式，只在帶入的設計師或清單變動時補名稱
+  }, [values.designerId, designerList])
+
   const { fetchUnspecifiedBookingTimes, unspecifiedBookingTimesResponse } = useLazyFetchUnspecifiedBookingTimes({
     storeId: merchantId,
     date: values.date,

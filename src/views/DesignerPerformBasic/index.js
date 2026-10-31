@@ -390,7 +390,7 @@ const DesignerPerformBasic = () => {
         />
         {designersLeaboardData.error ? (
           <QueryFailed onRetry={() => designersLeaboardData.refetch()} />
-        ) : !designersLeaboardData.loading && !monthlyAverageDisplayForDesignerLeaderBoard.loading ? (
+        ) : !designersLeaboardData.loading && !monthlyAverageDisplayForDesignerLeaderBoardData.loading ? (
           <Results
             report={idx(designersLeaboardData, _ => _.data.designerLeaderboard.designerLeaderBoard)}
             performReference={performReference}

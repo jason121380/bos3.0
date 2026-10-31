@@ -281,6 +281,20 @@ describe('從 LINE 進來', () => {
     expect(text).toContain('設計師: Amy')
   })
 
+  // Jason 2026/10/31 同意修正：網址帶入設計師（?designerId=）、顧客沒有重選時，傳回 LINE 的「設計師:」原本是空白——
+  // 名稱只在顧客從選單選取時才記下。改為設計師清單載入後依帶入的 id 補上名稱（與選單一致：有暱稱用暱稱）。
+  it('網址帶入設計師、沒有重選：傳回 LINE 的設計師仍有名稱', async () => {
+    const utils = setup({ search: '?usingLineLogin=1&designerId=d-1', extra: { bookingV2: { bookingV2: { id: 'b-1', status: '待審核' } } } })
+    await utils.settle()
+    expect(screen.getByTestId('designer-name')).toHaveValue('Amy')
+    choose(screen.getByTestId('service-time'), '10:00')
+    fillCustomer('吳小姐', '0912345678')
+    fireEvent.click(submit())
+    await wait(() => expect(liff.sendMessages).toHaveBeenCalled())
+    expect(callsOf(utils.calls, 'bookingV2')[0].variables.BookingV2Input.designerId).toBe('d-1')
+    expect(liff.sendMessages.mock.calls[0][0][0].text).toContain('設計師: Amy')
+  })
+
   it('沒有暱稱的設計師傳回本名；選回空白不拋錯', async () => {
     const again = setup({ search: '?usingLineLogin=1&designerId=d-2', extra: { bookingV2: { bookingV2: { id: 'b-2', status: '待審核' } } } })
     await again.settle()
