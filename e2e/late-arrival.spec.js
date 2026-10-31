@@ -10,6 +10,7 @@
 // 資料全是假的（e2e/fake-graphql.js），外部連線一律 abort，不連任何後端（CLAUDE.md 鐵則 5）。
 // 只跑這支：npx playwright test -c e2e/playwright.config.js late-arrival
 const { test, expect } = require('@playwright/test')
+const crypto = require('crypto')
 const { respondGraphql } = require('./fake-graphql')
 const { dashboardRoutes } = require('./routes')
 const KNOWN_ISSUES = require('./known-issues')
@@ -38,6 +39,16 @@ const REVERSE = '(頁面查詢倒序)'
 // 假資料不足的頁面（known-issues 的 crash）一般情境就會錯，晚到掃描沒有意義，略過
 const skipRoute = route => KNOWN_ISSUES.some(k => k.route === route && k.viewports === 'all' && k.skip.includes('crash'))
 
+// 查詢的識別：有 operationName 用它；匿名查詢（例如 useFetchProducts）用查詢內容的雜湊，
+// 才不會被排除在晚到情境之外（Codex，PR #324）
+function opId(body) {
+  if (body.operationName) return body.operationName
+  const text = (body.query || '').replace(/\s+/g, ' ').trim()
+  if (!text) return ''
+  const root = (text.match(/\{\s*([A-Za-z_]\w*)/) || [])[1] || 'query'
+  return `anon:${root}:${crypto.createHash('sha1').update(text).digest('hex').slice(0, 8)}`
+}
+
 async function setup(page) {
   const state = { late: null, ops: [], errors: [], pendingLate: 0, pageOpCount: 0 }
   page.on('console', m => {
@@ -65,7 +76,7 @@ async function setup(page) {
       } catch (e) {
         body = {}
       }
-      const name = body.operationName || ''
+      const name = opId(body)
       const isQuery = /^\s*(query\b|\{)/.test(body.query || '')
       if (isQuery) state.ops.push(name)
       let wait = 0

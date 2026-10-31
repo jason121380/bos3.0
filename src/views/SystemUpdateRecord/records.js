@@ -11,7 +11,7 @@ export function calendarUpdateTime(isoDate) {
 const shippedRecords = [
   {
     title: '2026/10/31 線上預約 LINE 訊息',
-    versionNo: 'v3.10311136',
+    versionNo: 'v3.10311322',
     updateTime: '2026-10-31',
     content: [
       '- 線上預約：從預約連結直接帶入設計師、沒有重新選擇時，傳回 LINE 的預約訊息會顯示設計師名稱（原本是空白）',
