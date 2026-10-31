@@ -13,6 +13,7 @@ import ProductsModal from 'views/OrderShared/ProductsModal'
 import { useProductPicker } from 'views/OrderShared/useItemPicker'
 import { formatNumber } from 'ui/format'
 import { ROW_ICON_ALIGN } from 'views/OrderShared/rowAlign'
+import useStableCallback from 'hooks/useStableCallback'
 
 const styles = {
   merchantSells: 'flex items-start justify-start flex-wrap gap-y-[12px] mb-[24px]',
@@ -21,6 +22,8 @@ const styles = {
   priceField: 'w-[65px] flex !mr-[12px]',
   heading2: 'text-label font-bold',
 }
+// 下拉的固定 props 放在模組層（身分固定），memo 過的下拉才不會因此重畫（效能修正 B）
+const PRODUCT_INPUT_PROPS = { placeholder: '商品代號/名稱' }
 
 function MerchantSells({
   sellsItem,
@@ -97,6 +100,33 @@ function MerchantSells({
     }
   }, [focus])
 
+  // 傳給 memo 過的下拉（服務人員、商品）的 handler 以 useStableCallback 包成固定身分（效能修正 B）；
+  // 原本寫在 JSX 內，內容不變，呼叫時讀最新的 state／props
+  const handleSellerChange = useStableCallback(value => {
+    onChange({
+      index,
+      key: 'sellerId',
+      value: idx(value, _ => _.userId),
+    })
+  })
+  const handleSellerFocus = useStableCallback(event => handleFocus({ event, field: 'employee' }))
+  const handleSellerKeyDown = useStableCallback(event => handleKeyDown({ event, nextField: 'product' }))
+  const handleProductFocus = useStableCallback(event => handleFocus({ event, field: 'product' }))
+  const handleProductKeyDown = useStableCallback(event => handleKeyDown({ event, nextField: 'price' }))
+  const handleProductSelect = useStableCallback(value => {
+    idx(value, _ => {
+      onProductChange({
+        index,
+        value: {
+          ...sellsItem,
+          productId: _.id,
+          price: _.sellPrice,
+          count: 1,
+          isLocked: _.isLocked,
+        },
+      })
+    })
+  })
   return (
     <Fragment>
       <div className={styles.merchantSells}>
@@ -109,16 +139,10 @@ function MerchantSells({
             className={styles.field}
             value={sellsItem.sellerId}
             ref={employeeRef}
-            onChange={value => {
-              onChange({
-                index,
-                key: 'sellerId',
-                value: idx(value, _ => _.userId),
-              })
-            }}
+            onChange={handleSellerChange}
             autoFocus={focus === 'employee'}
-            onFocus={event => handleFocus({ event, field: 'employee' })}
-            onKeyDown={event => handleKeyDown({ event, nextField: 'product' })}
+            onFocus={handleSellerFocus}
+            onKeyDown={handleSellerKeyDown}
           />
         </Field>
         {index === 0 ? (
@@ -134,24 +158,11 @@ function MerchantSells({
             value={sellsItem.productId}
             ref={productRef}
             autoFocus={focus === 'product'}
-            onFocus={event => handleFocus({ event, field: 'product' })}
-            onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
+            onFocus={handleProductFocus}
+            onKeyDown={handleProductKeyDown}
             isPublished
-            onChange={value => {
-              idx(value, _ => {
-                onProductChange({
-                  index,
-                  value: {
-                    ...sellsItem,
-                    productId: _.id,
-                    price: _.sellPrice,
-                    count: 1,
-                    isLocked: _.isLocked,
-                  },
-                })
-              })
-            }}
-            inputProps={{ placeholder: '商品代號/名稱' }}
+            onChange={handleProductSelect}
+            inputProps={PRODUCT_INPUT_PROPS}
           />
         </Field>
         {sellsItem.productId && (

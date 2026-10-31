@@ -2,9 +2,41 @@ import { TextField } from 'ui/text-field'
 import { useFetchServicesForAutoComplete } from 'hooks/useFetchServices'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
-import { Fragment, forwardRef, useState, useEffect } from 'react'
+import { Fragment, forwardRef, memo, useCallback, useState, useEffect } from 'react'
 import { Autocomplete } from 'ui/combobox'
 import compareNo from 'utils/compareNo'
+
+// 篩選不依賴元件內任何值：放在模組層，函式身分固定，ui/combobox 才能沿用篩選結果（效能修正 B，內容不變）
+const filterOptions = (options, state) => {
+  const keyWord = state.inputValue
+  // 代號自然排序（英數代號也有效）、空代號排最後（原本 a.no - b.no 對英數代號得 NaN、空代號當 0 排最前；Jason 2026/10/22 fix all）
+  const newOptions = [...options].sort((a, b) => compareNo(a.no, b.no))
+  let filterByNo = []
+  let filterByName = []
+  if (keyWord !== '' && keyWord.trim() !== '') {
+    filterByNo = newOptions.filter((data, index) => {
+      if (data.no !== '' && data.no !== null && data.no.toLowerCase() === keyWord.toLowerCase()) {
+        return data.no.toLowerCase() === keyWord.toLowerCase()
+      }
+      return false
+    })
+    filterByName = newOptions.filter((data, index) => {
+      if (data.name !== '' && data.name !== null && data.name.toLowerCase().includes(keyWord.toLowerCase())) {
+        return data.name.toLowerCase().includes(keyWord.toLowerCase())
+      }
+      return false
+    })
+
+    const filterOptions = [...filterByNo, ...filterByName]
+    // 挑出重複的選項
+    const filteredArray = filterOptions.filter((data, index) => {
+      return filterOptions.indexOf(data) === index
+    })
+    return filteredArray
+  } else {
+    return newOptions
+  }
+}
 
 function ServicesAutoComplete(
   {
@@ -65,36 +97,16 @@ function ServicesAutoComplete(
     }
   }, [value])
 
-  const filterOptions = (options, state) => {
-    const keyWord = state.inputValue
-    // 代號自然排序（英數代號也有效）、空代號排最後（原本 a.no - b.no 對英數代號得 NaN、空代號當 0 排最前；Jason 2026/10/22 fix all）
-    const newOptions = [...options].sort((a, b) => compareNo(a.no, b.no))
-    let filterByNo = []
-    let filterByName = []
-    if (keyWord !== '' && keyWord.trim() !== '') {
-      filterByNo = newOptions.filter((data, index) => {
-        if (data.no !== '' && data.no !== null && data.no.toLowerCase() === keyWord.toLowerCase()) {
-          return data.no.toLowerCase() === keyWord.toLowerCase()
-        }
-        return false
-      })
-      filterByName = newOptions.filter((data, index) => {
-        if (data.name !== '' && data.name !== null && data.name.toLowerCase().includes(keyWord.toLowerCase())) {
-          return data.name.toLowerCase().includes(keyWord.toLowerCase())
-        }
-        return false
-      })
-
-      const filterOptions = [...filterByNo, ...filterByName]
-      // 挑出重複的選項
-      const filteredArray = filterOptions.filter((data, index) => {
-        return filterOptions.indexOf(data) === index
-      })
-      return filteredArray
-    } else {
-      return newOptions
-    }
-  }
+  // 只隨搜尋字改變（內容不變），下拉沒變時不必重跑篩選（效能修正 B）
+  const getOptionLabel = useCallback(
+    option =>
+      servicesKeyword === option.no
+        ? option.no === ''
+          ? `${option.name}${option.no ? `(${option.no})` : ''}`
+          : option.no
+        : `${option.name}${option.no ? `(${option.no})` : ''}`,
+    [servicesKeyword]
+  )
   return (
     <Autocomplete
       open={servicesToggle.open}
@@ -106,13 +118,7 @@ function ServicesAutoComplete(
       autoHighlight
       filterOptions={filterOptions}
       // 沒有代號（空字串或 null）時只顯示名稱（原本只排除空字串，null 顯示成「護髮(null)」；Jason 2026/10/22 fix all）
-      getOptionLabel={option =>
-        servicesKeyword === option.no
-          ? option.no === ''
-            ? `${option.name}${option.no ? `(${option.no})` : ''}`
-            : option.no
-          : `${option.name}${option.no ? `(${option.no})` : ''}`
-      }
+      getOptionLabel={getOptionLabel}
       loading={services.loading}
       onChange={(_event, value) => onChange(idx(value, _ => value))}
       // 顯示代號讓同名同價的服務分得出來；key 用 id，避免同名服務以標籤作 key 時出現重複 key
@@ -145,4 +151,5 @@ function ServicesAutoComplete(
     />
   )
 }
-export default forwardRef(ServicesAutoComplete)
+// memo：打帳單整頁重畫時，props 沒變的服務下拉不重畫（呼叫端以固定身分的 handler 傳入；效能修正 B）
+export default memo(forwardRef(ServicesAutoComplete))

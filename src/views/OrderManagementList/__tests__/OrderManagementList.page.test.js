@@ -1,11 +1,23 @@
 // 保護「帳單列表」：預設查詢今天整天（以裝置時區的當日 00:00～23:59:59.999）、區間彙總與每張帳單的金額正確顯示（千分位）、
 // 建立中的帳單不顯示金額只標示「帳單建立中」、空資料顯示 0 筆。GraphQL 全由 MockedProvider（testkit 的模擬 link）回應。
 import React from 'react'
-import { cleanup, screen, wait, within } from '@testing-library/react'
+import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import startOfDay from 'date-fns/startOfDay'
 import endOfDay from 'date-fns/endOfDay'
 import { renderPage, loginAs, callsOf, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import OrderManagementList from '..'
+
+// 按下匯出連結並回傳產生的 CSV 文字。點擊後 LazyCSVLink 把 data URI 寫回 href；後面接一個擋下預設動作的監聽，避免 jsdom 試著導覽（未實作）
+const clickExportCsv = link => {
+  const stop = event => event.preventDefault()
+  window.addEventListener('click', stop)
+  try {
+    fireEvent.click(link)
+  } finally {
+    window.removeEventListener('click', stop)
+  }
+  return decodeURIComponent(link.getAttribute('href'))
+}
 
 jest.setTimeout(20000)
 
@@ -133,8 +145,8 @@ describe('帳單列表', () => {
 })
 
 describe('帳單列表：報表匯出', () => {
-  // 匯出檔內容（react-csv 在 jsdom 以 data URI 放在連結上）
-  const exportedCsv = () => decodeURIComponent(screen.getByText('報表匯出').closest('a').getAttribute('href'))
+  // 匯出檔內容：按下「報表匯出」才產生（效能修正 A），網址在 jsdom 以 data URI 寫回連結上；擋下 jsdom 的導覽
+  const exportedCsv = () => clickExportCsv(screen.getByText('報表匯出').closest('a'))
 
   it('店家設定遮罩客資時，即使遮罩設定比帳單晚回來，匯出檔的姓名電話也要遮罩', async () => {
     // 為什麼重要：匯出檔會被下載、轉寄；設定晚到時原本匯出的是完整姓名與手機（個資外洩）

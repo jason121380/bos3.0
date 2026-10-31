@@ -6,6 +6,7 @@ import React, { createRef, useContext, useEffect, useRef, useState, memo, Fragme
 import { useLazyFetchCustomerWallet } from 'hooks/useFetchCustomerWallet'
 
 import PaymentCustomerWallet from './PaymentCustomerWallet'
+import useStableCallback from 'hooks/useStableCallback'
 
 const styles = {
   payment: 'items-center justify-start',
@@ -13,6 +14,8 @@ const styles = {
   fieldWidth: 'w-[250px] flex mr-[12px] justify-start',
   otherPaymentDiv: 'flex',
 }
+// 下拉的固定 props 放在模組層（身分固定），memo 過的付款方式下拉才不會因此重畫（效能修正 B）
+const PAY_TYPE_INPUT_PROPS = { placeholder: '選擇付款方式' }
 
 function Payment() {
   const { bill, handleBillChange } = useContext(billContext)
@@ -51,17 +54,32 @@ function Payment() {
     bill.membershipOrders.reduce((total, item) => (total = total + item.price), 0) -
     bill.walletPay
 
-  const handlePayTypeKeydown = event => {
+  // 傳給 memo 過的付款方式下拉的 handler 以 useStableCallback 包成固定身分（效能修正 B）；內容不變，呼叫時讀最新的 state
+  const handlePayTypeKeydown = useStableCallback(event => {
     if (event.key === 'Enter') {
       idx(priceRefs, _ => _[0].current.focus())
       setFocus(bill.payType[0])
     }
-  }
+  })
 
-  const handlePayFocus = event => {
+  const handlePayFocus = useStableCallback(event => {
     event.target.focus()
     setFocus(event.target.name)
-  }
+  })
+  // 付款方式下拉選取（原本寫在 JSX 內，內容不變）
+  const handlePayTypeChange = useStableCallback(value => {
+    if (value === null) {
+      handleBillChange({
+        key: 'amountByOtherPay',
+        value: 0,
+      })
+    }
+    handleBillChange({
+      key: 'payType',
+      value: value === null ? [] : [value.name],
+    })
+    setFocus(value === null ? '' : value.name)
+  })
 
   const servicesWithThirdPartyCount = []
   const productsWithThirdPartyCount = []
@@ -141,20 +159,8 @@ function Payment() {
               onKeyDown={handlePayTypeKeydown}
               onFocus={handlePayFocus}
               totalShouldPay={totalShouldPay}
-              onChange={value => {
-                if (value === null) {
-                  handleBillChange({
-                    key: 'amountByOtherPay',
-                    value: 0,
-                  })
-                }
-                handleBillChange({
-                  key: 'payType',
-                  value: value === null ? [] : [value.name],
-                })
-                setFocus(value === null ? '' : value.name)
-              }}
-              inputProps={{ placeholder: '選擇付款方式' }}
+              onChange={handlePayTypeChange}
+              inputProps={PAY_TYPE_INPUT_PROPS}
             />
           </Field>
           {bill.payType.map((payment, index) => (

@@ -15,6 +15,7 @@ import TeachingModeContext from 'context/teachingModeContext'
 import { useFetchThirdPartysForCreateOrder } from 'hooks/useFetchMerchant'
 import { formatNumber } from 'ui/format'
 import { ROW_ICON_ALIGN, ROW_INLINE_ALIGN } from 'views/OrderShared/rowAlign'
+import useStableCallback from 'hooks/useStableCallback'
 
 const styles = {
   service: 'flex items-start justify-start flex-wrap gap-y-[12px] mb-[24px]',
@@ -25,6 +26,9 @@ const styles = {
   checkbox: 'w-[100px] flex mr-[12px] last:mr-0',
   heading2: 'text-label font-bold',
 }
+// 下拉的固定 props 放在模組層（身分固定），memo 過的下拉才不會因此重畫（效能修正 B）
+const SERVICE_INPUT_PROPS = { placeholder: '服務名稱/代號' }
+const THIRD_PARTY_FIELD_PROPS = { placeholder: '第三方卡券' }
 
 function Services({
   index,
@@ -139,7 +143,8 @@ function Services({
     setFocus('service')
     idx(serviceRef, _ => _.current.focus())
   }
-  const handleServiceChange = value => {
+  // 傳給 memo 過的下拉的 handler 以 useStableCallback 包成固定身分（效能修正 B）；內容不變，呼叫時讀最新的 state／props
+  const handleServiceChange = useStableCallback(value => {
     idx(value, _ => {
       onServiceChange({
         index,
@@ -154,7 +159,7 @@ function Services({
         },
       })
     })
-  }
+  })
 
   useEffect(() => {
     if (service.serviceId) {
@@ -221,7 +226,7 @@ function Services({
       value: Helper,
     })
   }
-  const handleServiceFieldChange = () => {
+  const handleServiceFieldChange = useStableCallback(() => {
     onServiceChange({
       index,
       value: {
@@ -231,7 +236,7 @@ function Services({
         serviceOrderHelpers: [],
       },
     })
-  }
+  })
   const handleThirdPartyChange = event => {
     serviceOnChange({
       index,
@@ -263,14 +268,45 @@ function Services({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [focus] 變動時執行；helper.length、helperRefs、service.isLocked 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [focus])
 
-  const handleFocus = event => {
+  const handleFocus = useStableCallback(event => {
     setFocus(event.target.name)
     event.target.focus()
     if (event.target.name === 'price') {
       event.target.select()
     }
     changeRowFocus(index)
-  }
+  })
+
+  // 服務下拉按 Enter 移到下一個欄位（原本寫在 JSX 內，內容不變）
+  const handleServiceKeyDown = useStableCallback(event => {
+    if (event.key === 'Enter' && servicesOnPannel[index].serviceId !== '') {
+      if (!(service.isLocked === 'TRUE' || service.isLocked === 'UNSET')) {
+        setFocus('price')
+      } else if (helper.length > 0) {
+        setFocus(helper[0].type)
+        idx(helperRefs, _ => _[0].current.focus())
+      } else {
+        if (ticketDisabled || !thirdPartTicket) {
+          changeRowFocus(index + 1)
+          setFocus('service')
+        } else {
+          setFocus('thirdParty')
+          thirdPartyRef.current.focus()
+        }
+      }
+    }
+  })
+  // 第三方卡券下拉的選取與 Enter（原本寫在 JSX 內，內容不變）
+  const handleThirdPartySelect = useStableCallback(e => {
+    setFocus('thirdParty')
+    handleThirdPartyChange(e === null ? '' : e.id)
+  })
+  const handleThirdPartyKeyDown = useStableCallback(event => {
+    if (event.key === 'Enter') {
+      changeRowFocus(index + 1)
+      setFocus('service')
+    }
+  })
 
   useEffect(() => {
     if (reset === 'reset') {
@@ -313,29 +349,12 @@ function Services({
             className={styles.servicesField}
             value={service.serviceId}
             onFieldChange={handleServiceFieldChange}
-            onKeyDown={event => {
-              if (event.key === 'Enter' && servicesOnPannel[index].serviceId !== '') {
-                if (!(service.isLocked === 'TRUE' || service.isLocked === 'UNSET')) {
-                  setFocus('price')
-                } else if (helper.length > 0) {
-                  setFocus(helper[0].type)
-                  idx(helperRefs, _ => _[0].current.focus())
-                } else {
-                  if (ticketDisabled || !thirdPartTicket) {
-                    changeRowFocus(index + 1)
-                    setFocus('service')
-                  } else {
-                    setFocus('thirdParty')
-                    thirdPartyRef.current.focus()
-                  }
-                }
-              }
-            }}
+            onKeyDown={handleServiceKeyDown}
             name="service"
             ref={serviceRef}
             autoFocus={focus === 'service'}
             onFocus={handleFocus}
-            inputProps={{ placeholder: '服務名稱/代號' }}
+            inputProps={SERVICE_INPUT_PROPS}
           />
         </Field>
         {service.serviceId && (
@@ -458,24 +477,16 @@ function Services({
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                 <Field label="第三方卡券">
                   <ThirdPartyAutoComplete
-                    fieldProps={{ placeholder: '第三方卡券' }}
+                    fieldProps={THIRD_PARTY_FIELD_PROPS}
                     className={styles.field}
                     value={service.thirdPartyCouponMerchantId}
                     ref={thirdPartyRef}
                     autoFocus={focus === 'thirdParty'}
                     name="thirdParty"
                     disabled={ticketDisabled}
-                    onChange={e => {
-                      setFocus('thirdParty')
-                      handleThirdPartyChange(e === null ? '' : e.id)
-                    }}
+                    onChange={handleThirdPartySelect}
                     onFocus={handleFocus}
-                    onKeyDown={event => {
-                      if (event.key === 'Enter') {
-                        changeRowFocus(index + 1)
-                        setFocus('service')
-                      }
-                    }}
+                    onKeyDown={handleThirdPartyKeyDown}
                   />
                 </Field>
                 {!thirdPartyCouponsData.loading &&

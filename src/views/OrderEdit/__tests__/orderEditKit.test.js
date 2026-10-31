@@ -321,7 +321,9 @@ export const findDialog = async () => {
   await wait(() => expect(queryDialog()).not.toBeNull())
   return queryDialog()
 }
-export const statusEl = () => document.querySelector('[role="status"]')
+// 排除 downshift（下拉）掛在 body 的螢幕閱讀器播報區 #a11y-status-message：它也是 role="status"，前一個測試留下來時會被誤抓。
+// 下拉篩選結果快取後（效能修正 B），選項清單身分固定，downshift 的播報不再每次重畫被重設，較常真的寫出這個區塊
+export const statusEl = () => document.querySelector('[role="status"]:not(#a11y-status-message)')
 
 // 主要動作（重新結帳／結帳）可按後按下，回傳送出的 orderInput
 export const checkoutAndGetInput = async calls => {
