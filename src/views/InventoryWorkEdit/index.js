@@ -94,7 +94,7 @@ function InventoryWorkEdit({ match }) {
     }
   }
 
-  const handleCreateIventory = async (isDraft = true) => {
+  const handleCreateInventory = async (isDraft = true) => {
     setIsClick(true)
     const data = cloneDeep(inventoryData)
     const inventoryDetails = []
@@ -186,7 +186,7 @@ function InventoryWorkEdit({ match }) {
             isClick={isClick}
             inventoryData={inventoryData}
             setInventoryData={setInventoryData}
-            handleCreateIventory={handleCreateIventory}
+            handleCreateInventory={handleCreateInventory}
             categoriesData={idx(productCategories, _ => _.data.productCategories) || []}
           />
         )}

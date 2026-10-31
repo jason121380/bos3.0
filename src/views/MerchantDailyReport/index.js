@@ -22,7 +22,7 @@ const MerchantDailyReport = () => {
     endDate: new Date().getTime(),
   })
 
-  const [curentDayData, setCurentDayData] = useState(null)
+  const [currentDayData, setCurrentDayData] = useState(null)
   const [isServiceTicketMerged, setIsServiceTicketMerged] = useState(false)
   const [membershipDisplay, setMembershipDisplay] = useState(false)
   const [isMemberShipCardActive, setIsMemberShipCardActive] = useState(false)
@@ -107,7 +107,7 @@ const MerchantDailyReport = () => {
     if (!merchantDailyReportCurrentDayData.loading && !merchantDailyReportDataV3.loading) {
       const merchantDailyReportCurrentDay = idx(merchantDailyReportCurrentDayData, _ => _.data.merchantDailyReportV2)
       const merchantDailyReportData = idx(merchantDailyReportDataV3, _ => _.data.merchantDailyReportV2)
-      setCurentDayData(merchantDailyReportCurrentDay)
+      setCurrentDayData(merchantDailyReportCurrentDay)
 
       // 如果會員卡的數字不是0就要顯示
       // 查詢失敗時兩份資料都是 undefined，不在這裡拋錯（畫面另有 QueryFailed）
@@ -157,7 +157,7 @@ const MerchantDailyReport = () => {
         !isServiceTicketMergedData.loading &&
         !merchantDailyReportCurrentDayData.loading &&
         !merchantDashboardData.loading &&
-        curentDayData !== null ? (
+        currentDayData !== null ? (
         idx(
           merchantDailyReportDataV3,
           _ =>
@@ -165,7 +165,7 @@ const MerchantDailyReport = () => {
               <Results
                 merchantDailyReport={_.data.merchantDailyReportV2}
                 isServiceTicketMerged={isServiceTicketMerged}
-                curentDayData={curentDayData}
+                currentDayData={currentDayData}
                 displayDate={date}
                 results={merchantDashboard}
                 membershipDisplay={membershipDisplay}

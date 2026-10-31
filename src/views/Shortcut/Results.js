@@ -73,7 +73,7 @@ export default function Results({ reportData, open, openCollapse, onToggleAll })
                   <TableCell className="h-auto p-0" colSpan={8}>
                     {open.indexOf(d.id) > -1 && (
                       <div className="my-2 ml-6 border-0 border-l-4 border-solid border-accent pl-4">
-                        {d.collapesData.length ? (
+                        {d.collapseData.length ? (
                           <Table>
                             <TableHeader>
                               <TableRow className="hover:bg-transparent">
@@ -84,7 +84,7 @@ export default function Results({ reportData, open, openCollapse, onToggleAll })
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              {d.collapesData.map(({ service, product, ticket, membership }, i) => (
+                              {d.collapseData.map(({ service, product, ticket, membership }, i) => (
                                 <TableRow key={`${d.id}-${i}-collapesData`}>
                                   <TableCell>{service && getLabel(service)}</TableCell>
                                   <TableCell>{product && getLabel(product)}</TableCell>

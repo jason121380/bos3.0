@@ -24,7 +24,7 @@ function Results({ className = '', customers, pageLimit, pageOffset, refetch, to
   const [openDialog, setOpenDialog] = useState(false)
   const [deletePwd, setDeletePwd] = useState('')
   const [deleteCustomerIsUsing, setDeleteCustomerIsUsing] = useState(false)
-  const [clickComfirmBtn, setClickComfirmBtn] = useState(false)
+  const [clickConfirmBtn, setClickConfirmBtn] = useState(false)
 
   const merchantPassword = useFetchMerchantPassword()
   const { deleteCustomers } = useFetchDeleteCustomer()
@@ -63,8 +63,8 @@ function Results({ className = '', customers, pageLimit, pageOffset, refetch, to
     refetch()
   }
 
-  const handeleteCustomer = () => {
-    setClickComfirmBtn(true)
+  const handleDeleteCustomer = () => {
+    setClickConfirmBtn(true)
     openSnackbar({ message: '刪除客戶中', variant: 'warning' })
     deleteCustomers({ customerIds: selectedCustomers, password: deletePwd })
       .then(() => {
@@ -76,7 +76,7 @@ function Results({ className = '', customers, pageLimit, pageOffset, refetch, to
       })
       .catch(error => {
         openSnackbar({ message: error.message, variant: 'error' })
-        setClickComfirmBtn(false)
+        setClickConfirmBtn(false)
       })
   }
 
@@ -197,7 +197,7 @@ function Results({ className = '', customers, pageLimit, pageOffset, refetch, to
         </TableBody>
       </ManagementTable>
 
-      <TableEditBar selected={selectedCustomers} onDeleteCustomer={deleteCustomerIsUsing ? handleOpenDialog : handeleteCustomer} />
+      <TableEditBar selected={selectedCustomers} onDeleteCustomer={deleteCustomerIsUsing ? handleOpenDialog : handleDeleteCustomer} />
 
       <Dialog open={openDialog}>
         <DialogContent size="sm" hideClose aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
@@ -217,10 +217,10 @@ function Results({ className = '', customers, pageLimit, pageOffset, refetch, to
             </Field>
           </DialogBody>
           <DialogFooter>
-            <Button variant="secondary" onClick={handleCloseDialog} disabled={clickComfirmBtn}>
+            <Button variant="secondary" onClick={handleCloseDialog} disabled={clickConfirmBtn}>
               取消
             </Button>
-            <Button variant="danger" autoFocus onClick={handeleteCustomer} disabled={clickComfirmBtn}>
+            <Button variant="danger" autoFocus onClick={handleDeleteCustomer} disabled={clickConfirmBtn}>
               確認
             </Button>
           </DialogFooter>

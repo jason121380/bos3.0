@@ -9,7 +9,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-function ComodityCategories() {
+function CommodityCategories() {
   // 拿到會員卡全部類別
   const membershipCategories = useFetchGetMembershipCategories({
     paranoid: true,
@@ -45,4 +45,4 @@ function ComodityCategories() {
   )
 }
 
-export default ComodityCategories
+export default CommodityCategories

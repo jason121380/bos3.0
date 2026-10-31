@@ -31,7 +31,7 @@ const CustomerRating = lazy(() => import('views/CustomerRating'))
 
 const UiPreview = lazy(() => import('views/UiPreview'))
 
-export default [
+const routes = [
   {
     path: '/',
     exact: true,
@@ -253,3 +253,5 @@ export default [
     routes: dashboardRoutes,
   },
 ]
+
+export default routes

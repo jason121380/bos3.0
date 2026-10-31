@@ -429,7 +429,7 @@ function ServiceCategoryEdit({ match }) {
     const servicePrice = newService.price
 
     const truthPerformPredict = []
-    let totalNumDecution = 0
+    let totalNumDeduction = 0
 
     const serviceWithDeductionSetting = newService.serviceDeductionItems.map(data =>
       data.itemSettings.filter(item => item.type === 'onSales' || item.type === 'onSalary')
@@ -448,7 +448,7 @@ function ServiceCategoryEdit({ match }) {
                 afterDeductionPrice = A[data2.deductionReference] - A[data2.deductionReference] * (data2.price * 0.01)
                 A.push(afterDeductionPrice)
                 X.push(A[data2.deductionReference] * (data2.price * 0.01))
-                totalNumDecution = X.reduce((accu, curVal) => (accu += curVal), 0)
+                totalNumDeduction = X.reduce((accu, curVal) => (accu += curVal), 0)
               } else {
                 afterDeductionPrice = A[data2.deductionReference] - A[data2.deductionReference] * (data2.price * 0.01)
                 A.push(afterDeductionPrice)
@@ -461,7 +461,7 @@ function ServiceCategoryEdit({ match }) {
                 afterDeductionPrice = A[data2.deductionReference] - A[data2.deductionReference] * (numForDeduction * 0.01)
                 A.push(afterDeductionPrice)
                 X.push(A[data2.deductionReference] * (numForDeduction * 0.01))
-                totalNumDecution = X.reduce((accu, curVal) => (accu += curVal), 0)
+                totalNumDeduction = X.reduce((accu, curVal) => (accu += curVal), 0)
               } else {
                 const numForDeduction = data2.designatePrice < data2.nonDesignatePrice ? data2.designatePrice : data2.nonDesignatePrice
 
@@ -476,7 +476,7 @@ function ServiceCategoryEdit({ match }) {
               if (data2.type === 'onSales') {
                 A.push(afterDeductionPrice)
                 X.push(data2.price)
-                totalNumDecution = X.reduce((accu, curVal) => (accu += curVal), 0)
+                totalNumDeduction = X.reduce((accu, curVal) => (accu += curVal), 0)
               } else {
                 A.push(afterDeductionPrice)
                 Y.push(data2.price)
@@ -487,7 +487,7 @@ function ServiceCategoryEdit({ match }) {
                 afterDeductionPrice = A[data2.deductionReference] - numForDeduction
                 A.push(afterDeductionPrice)
                 X.push(numForDeduction)
-                totalNumDecution = X.reduce((accu, curVal) => (accu += curVal), 0)
+                totalNumDeduction = X.reduce((accu, curVal) => (accu += curVal), 0)
               } else {
                 const numForDeduction = data2.designatePrice < data2.nonDesignatePrice ? data2.designatePrice : data2.nonDesignatePrice
                 afterDeductionPrice = A[data2.deductionReference] - numForDeduction
@@ -497,7 +497,7 @@ function ServiceCategoryEdit({ match }) {
             }
           }
         })
-        truthPerformPredict.push(servicePrice - totalNumDecution)
+        truthPerformPredict.push(servicePrice - totalNumDeduction)
       } else {
         truthPerformPredict.push(servicePrice)
       }

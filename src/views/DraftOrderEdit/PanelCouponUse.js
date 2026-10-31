@@ -59,7 +59,7 @@ export default function PanelCouponUse() {
     }
   }, [order.loading, order.data])
 
-  function handleFildChange({ index, value, key }) {
+  function handleFieldChange({ index, value, key }) {
     const newCouponUsage = cloneDeep(couponUsage)
     newCouponUsage[index][key] = value
     setCouponUsage(newCouponUsage)
@@ -86,7 +86,7 @@ export default function PanelCouponUse() {
         <div className="flex flex-col items-start justify-start">
           {bill.customerId &&
             couponUsage.map((data, index) => (
-              <CouponUse couponUsage={data} couponUsages={couponUsage} key={`pannel-couponuse-${index}`} index={index} onChange={handleFildChange} />
+              <CouponUse couponUsage={data} couponUsages={couponUsage} key={`pannel-couponuse-${index}`} index={index} onChange={handleFieldChange} />
             ))}
         </div>
       </AccordionDetails>

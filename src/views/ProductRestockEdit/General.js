@@ -130,7 +130,7 @@ export default function General({ className, purchaseRecord, setPurchaseRecord, 
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading])
 
-  const hadnleSelectProduct = (product, index) => {
+  const handleSelectProduct = (product, index) => {
     const newData = cloneDeep(purchaseRecord)
     if (product === null) {
       // 清除商品：進貨價與數量一併歸零（原本整列只剩 id／名稱，合計變成 NaN）
@@ -277,7 +277,7 @@ export default function General({ className, purchaseRecord, setPurchaseRecord, 
                   filterOptions={productFilter}
                   getOptionLabel={() => data.productName}
                   value={data.productName}
-                  onChange={(_event, value) => hadnleSelectProduct(value, index)}
+                  onChange={(_event, value) => handleSelectProduct(value, index)}
                   renderOption={(props, option) => {
                     return (
                       <li {...props} key={option.id}>

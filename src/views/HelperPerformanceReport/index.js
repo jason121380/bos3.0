@@ -91,10 +91,10 @@ export default function HelperPerformance() {
         item.helperPerformance.forEach((item2, index) => {
           attributeSwitch[index] = true
           if (attributeSwitch[index]) {
-            obj[`${item2.typeName}` + '人數'] = Math.round(item2.count)
-            obj[`${item2.typeName}` + '抽成元'] = Math.round(item2.priceNoPoint)
-            obj[`${item2.typeName}` + '指定'] = Math.round(item2.designateCount)
-            obj[`${item2.typeName}` + '抽成點'] = Math.round(item2.point)
+            obj[`${item2.typeName}人數`] = Math.round(item2.count)
+            obj[`${item2.typeName}抽成元`] = Math.round(item2.priceNoPoint)
+            obj[`${item2.typeName}指定`] = Math.round(item2.designateCount)
+            obj[`${item2.typeName}抽成點`] = Math.round(item2.point)
           }
         })
         excelData.push(obj)

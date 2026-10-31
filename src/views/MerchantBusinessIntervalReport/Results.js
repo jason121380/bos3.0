@@ -7,7 +7,7 @@ import { formatNumber } from 'ui/format'
 import averageOf from 'helper/averageOf'
 
 function Results({ merchantDailyReport, isServiceTicketMerged, membershipDisplay, isMemberShipCardActive, results, mergeData, nonCashDisplay }) {
-  const totalSummury = key => {
+  const totalSummary = key => {
     return mergeData.reduce((a, b) => a + b.otherPayment[key] + b.thirdParty[key], 0)
   }
   return (
@@ -330,7 +330,7 @@ function Results({ merchantDailyReport, isServiceTicketMerged, membershipDisplay
                   <TableRow>
                     <TableCell colSpan={2} />
                     <TableCell className="font-bold text-danger">合計</TableCell>
-                    <TableCell className="font-bold text-danger">{`${totalSummury('usedPrice')} / ${totalSummury('usedPriceWithNoCash')}`}</TableCell>
+                    <TableCell className="font-bold text-danger">{`${totalSummary('usedPrice')} / ${totalSummary('usedPriceWithNoCash')}`}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

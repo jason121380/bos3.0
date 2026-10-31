@@ -17,7 +17,7 @@ export default function PanelCouponSells() {
   const useHandleBillChangeRef = useRef(handleBillChange)
   const [expanded, setExpanded] = useState(false)
   const [couponModalOpen, setCouponModalOpen] = useState(false)
-  const [conpunInModal, setConpunInModal] = useState([])
+  const [couponInModal, setCouponInModal] = useState([])
   const [couponCategories, setCouponCategories] = useState([])
   const [selectedCategorie, setSelectedCategorie] = useState([])
   const [selectedCategorieName, setSelectedCategorieName] = useState([])
@@ -32,9 +32,9 @@ export default function PanelCouponSells() {
 
   useEffect(() => {
     if (!tickets.loading && !serviceCategoriesData.loading) {
-      const conponInModal = idx(tickets, _ => _.data.tickets)
+      const couponInModalData = idx(tickets, _ => _.data.tickets)
       const couponCategories = idx(serviceCategoriesData, _ => _.data.serviceCategories)
-      setConpunInModal(conponInModal)
+      setCouponInModal(couponInModalData)
       setCouponCategories(couponCategories)
     } else {
     }
@@ -112,7 +112,7 @@ export default function PanelCouponSells() {
     setCouponSells(newCouponSells)
   }
 
-  function handleFildChange({ index, value }) {
+  function handleFieldChange({ index, value }) {
     const newCouponSells = cloneDeep(couponSells)
     newCouponSells[index] = value
     handleBillChange({
@@ -205,9 +205,9 @@ export default function PanelCouponSells() {
             <CouponSellModal
               couponModalOpen={couponModalOpen}
               closeModal={handleCloseCouponModal}
-              coupons={conpunInModal}
-              onChange={handleFildChange}
-              couponsOnPannel={couponSells}
+              coupons={couponInModal}
+              onChange={handleFieldChange}
+              couponsOnPanel={couponSells}
               couponsLength={couponSells.length}
               setCouponModalOpen={setCouponModalOpen}
               couponCategories={couponCategories}
@@ -227,7 +227,7 @@ export default function PanelCouponSells() {
               removeCouponSell={handleRemoveCouponSell}
               first={index === 0}
               last={index + 1 === couponSells.length}
-              onChange={handleFildChange}
+              onChange={handleFieldChange}
               onClear={handleClear}
               isTicketSellingEditable={true}
               handleOpenCouponModal={handleOpenCouponModal}

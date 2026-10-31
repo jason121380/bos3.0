@@ -53,8 +53,8 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, on
       return (
         <div key={`${data.name}-${index}`} style={{ display: 'flex', alignItems: 'flex-start' }}>
           <Checkbox
-            checked={isCheckedOrIndeterminat(data, 'checked?')}
-            indeterminate={isCheckedOrIndeterminat(data, 'indeterminate?')}
+            checked={isCheckedOrIndeterminate(data, 'checked?')}
+            indeterminate={isCheckedOrIndeterminate(data, 'indeterminate?')}
             onChange={e => handleSelectGroup(e.target.checked, data)}
             style={{ flexShrink: 0, margin: '11px 4px 0 8px' }}
           />
@@ -120,7 +120,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, on
     return findData ? 'onSelect' : ''
   }
 
-  const handleComfirm = () => {
+  const handleConfirm = () => {
     onValueChange(values)
     setOpen(false)
     setValues([])
@@ -171,7 +171,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, on
     setValues([...newValue])
   }
 
-  const isCheckedOrIndeterminat = (data, type) => {
+  const isCheckedOrIndeterminate = (data, type) => {
     const groupMerchants = loopGroupData(data)
     const inModalValues = []
     const notInModalValues = []
@@ -186,7 +186,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, on
     }
   }
 
-  const handleExpanedAll = () => {
+  const handleExpandedAll = () => {
     if (expandedArr.length === allNodeIds.length) {
       setExpandedArr([])
     } else {
@@ -254,7 +254,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, on
             <Button size="sm" variant="ghost" className="border border-solid border-border-strong" onClick={() => setValues([])}>
               清除選取
             </Button>
-            <Button size="sm" variant="ghost" className="border border-solid border-border-strong" onClick={handleExpanedAll}>
+            <Button size="sm" variant="ghost" className="border border-solid border-border-strong" onClick={handleExpandedAll}>
               展開全部
             </Button>
           </div>
@@ -299,7 +299,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, on
           <Button variant="secondary" onClick={handleOnClose}>
             關閉
           </Button>
-          <Button variant="primary" onClick={handleComfirm}>
+          <Button variant="primary" onClick={handleConfirm}>
             確認
           </Button>
         </DialogFooter>

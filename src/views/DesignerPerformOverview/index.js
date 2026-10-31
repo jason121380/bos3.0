@@ -18,7 +18,7 @@ import PerformResultsV2 from './PerformResultsV2'
 
 function DesignerPerformOverview() {
   const [performReference, setPerformReference] = useState('FAKE')
-  const [attributeSwitchs, setAttributeSwitchs] = useState([])
+  const [attributeSwitches, setAttributeSwitches] = useState([])
   const [membershipDisplay, setMembershipDisplay] = useState(false)
 
   const [date, setDate] = useState({
@@ -128,7 +128,7 @@ function DesignerPerformOverview() {
 
             categoryData.forEach(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
               if (attributeSwitch[index]) {
-                obj[`${categoryName}` + '/人次/單均價'] = `${Math.round(fakePerformance)} / ${orderCount} / ${Math.round(averagePerformance)}`
+                obj[`${categoryName}/人次/單均價`] = `${Math.round(fakePerformance)} / ${orderCount} / ${Math.round(averagePerformance)}`
               }
             })
             excelData.push(obj)
@@ -169,13 +169,13 @@ function DesignerPerformOverview() {
 
         categoryData.forEach(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
           if (attributeSwitch[index]) {
-            obj2[`${categoryName}` + '/人次/單均價'] = `${Math.round(fakePerformance)} / ${orderCount} / ${Math.round(averagePerformance)}`
+            obj2[`${categoryName}/人次/單均價`] = `${Math.round(fakePerformance)} / ${orderCount} / ${Math.round(averagePerformance)}`
           }
         })
         excelData.push(obj2)
       }
       setExcelData(excelData)
-      setAttributeSwitchs(attributeSwitch)
+      setAttributeSwitches(attributeSwitch)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantImmediatePerformReportData.loading, isMemberShipCardActiveData.loading])
@@ -220,7 +220,7 @@ function DesignerPerformOverview() {
         {merchantImmediatePerformReportData.error ? (
           <QueryFailed onRetry={() => merchantImmediatePerformReportData.refetch()} />
         ) : !merchantImmediatePerformReportData.loading && merchantImmediatePerformReport !== null ? (
-          <PerformResultsV2 results={merchantImmediatePerformReport} membershipDisplay={membershipDisplay} attributeSwitchs={attributeSwitchs} />
+          <PerformResultsV2 results={merchantImmediatePerformReport} membershipDisplay={membershipDisplay} attributeSwitches={attributeSwitches} />
         ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示
           <div className="mt-2" aria-busy="true" aria-label="載入中">

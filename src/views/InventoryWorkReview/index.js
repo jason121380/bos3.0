@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-concat -- 字串相接在列印標頭（merchantNamePrint）內，依鐵則 2 不動列印範本；輸出不受影響 */
 import Page from 'components/Page'
 import { PageHeader } from 'ui/page-header'
 import { useFetchGetInventory } from 'hooks/useFetchGetInventorys'

@@ -152,6 +152,7 @@ const TreeItem = React.forwardRef(function TreeItem(
         data-tree-content=""
         className={cn(
           'flex min-h-10 cursor-pointer items-center gap-1 rounded-md px-2 py-1 transition-colors',
+          // eslint-disable-next-line no-useless-escape -- Tailwind 從原始碼掃描 class 名稱，`\/` 是 group/treeitem 的寫法，改掉會讓產生的 CSS 不同
           '[.group\/treeitem:focus-visible>&]:ring-2 [.group\/treeitem:focus-visible>&]:ring-accent',
           selected ? 'bg-accent/[0.12] font-medium text-accent-text hover:bg-accent/[0.12]' : 'hover:bg-surface-hover',
           disabled && 'cursor-default opacity-50',

@@ -104,7 +104,7 @@ const PaymentReport = () => {
           excelData = excelData.map(({ 會員卡消費, ...rest }) => rest)
         }
         if (!bonusDisplay) {
-          excelData = excelData.map(({ ['點數折抵金額(-)']: value, ...rest }) => rest)
+          excelData = excelData.map(({ '點數折抵金額(-)': value, ...rest }) => rest)
         }
         setExcelData(excelData)
       }

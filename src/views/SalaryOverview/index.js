@@ -3,7 +3,7 @@ import { FormControl } from 'ui/form-control'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
-import { useFethcMonthlyCloseStatus } from 'hooks/useFetchMerchant'
+import { useFetchMonthlyCloseStatus } from 'hooks/useFetchMerchant'
 import { useFetchUsersSalaryItems, useFetchUsersMonthCheckout } from 'hooks/useFetchUsers'
 import useFetchIsSalaryChecked from 'hooks/useFetchIsSalaryChecked'
 import useFetchSettingUserSalaryItemUnlock from 'hooks/useFetchSetUnlockUserSalaryItem'
@@ -40,7 +40,7 @@ export default function SalaryOverview() {
   const history = useHistory()
 
   const { setUserSalaryItemUnlock } = useFetchSettingUserSalaryItemUnlock()
-  const [isThisMonthSalaryChacked, setIsThisMonthSalaryChacked] = React.useState(false)
+  const [isThisMonthSalaryChecked, setIsThisMonthSalaryChecked] = React.useState(false)
   const [isSalaryItemsLock, setIsSalaryItemsLock] = React.useState(false)
   const [editBtnStatus, setEditBtnStatus] = React.useState(false)
   const [usersIsSalaryChecked, setUsersIsSalaryChecked] = React.useState([])
@@ -51,7 +51,7 @@ export default function SalaryOverview() {
   const urlDate = getQueryString('startDate') || getQueryString('date')
   const defaultDate = JSON.parse(localStorage.getItem('currentTime'))
 
-  const monthlyCloseStatus = useFethcMonthlyCloseStatus(urlDate === '' ? defaultDate : Number(urlDate))
+  const monthlyCloseStatus = useFetchMonthlyCloseStatus(urlDate === '' ? defaultDate : Number(urlDate))
   const MerchantId = JSON.parse(localStorage.getItem('userMerchant')).id
   const userInput = { usagelimit: 'SALARY', MerchantId }
   const [setting, setSetting] = React.useState({
@@ -96,8 +96,8 @@ export default function SalaryOverview() {
   })
   React.useEffect(() => {
     if (!users.loading) {
-      const isUsersSalaryChacked = idx(users, _ => _.data.users.users)
-      setUsersIsSalaryChecked(isUsersSalaryChacked)
+      const isUsersSalaryChecked = idx(users, _ => _.data.users.users)
+      setUsersIsSalaryChecked(isUsersSalaryChecked)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [users.loading, users.data])
@@ -106,7 +106,7 @@ export default function SalaryOverview() {
     date: setting.date,
     input: userInput,
   })
-  const isSalaryChackedData = useFetchIsSalaryChecked({
+  const isSalaryCheckedData = useFetchIsSalaryChecked({
     date: setting.date,
   })
   // 列表input----------------------------------------------------
@@ -117,12 +117,12 @@ export default function SalaryOverview() {
   // -------------------------------------------------------------
 
   React.useEffect(() => {
-    if (!isSalaryChackedData.loading) {
-      const isSalaryChacked = idx(isSalaryChackedData, _ => _.data.isSalaryChacked)
-      setIsThisMonthSalaryChacked(isSalaryChacked)
+    if (!isSalaryCheckedData.loading) {
+      const isSalaryChacked = idx(isSalaryCheckedData, _ => _.data.isSalaryChacked)
+      setIsThisMonthSalaryChecked(isSalaryChacked)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-  }, [isSalaryChackedData.loading, isSalaryChackedData.data])
+  }, [isSalaryCheckedData.loading, isSalaryCheckedData.data])
 
   const handleOnChangePage = (event, page) => {
     setSetting(
@@ -161,7 +161,7 @@ export default function SalaryOverview() {
     salaryItemLockData.refetch()
     latestMonthlyCheckoutTime.refetch()
     users.refetch()
-    isSalaryChackedData.refetch()
+    isSalaryCheckedData.refetch()
     userSalayItemData.refetch()
     salaryUserList.refetch()
   }
@@ -292,13 +292,13 @@ export default function SalaryOverview() {
                   status={idx(monthlyCloseStatus, _ => _.data.merchant.monthlyCloseStatus)}
                   calendarDate={setting.date}
                   pageSetting={setting.input}
-                  isSalaryChackedData={isSalaryChackedData}
+                  isSalaryCheckedData={isSalaryCheckedData}
                   salaryUserList={salaryUserList}
                   userSalayItemData={userSalayItemData}
                   usersSalary={_.data.getSalaryUserList}
                   handleOnChangePage={handleOnChangePage}
                   handleOnChangeRowsPerPage={handleOnChangeRowsPerPage}
-                  isThisMonthSalaryChacked={isThisMonthSalaryChacked}
+                  isThisMonthSalaryChecked={isThisMonthSalaryChecked}
                   editBtnStatus={editBtnStatus}
                   usersIsSalaryChecked={usersIsSalaryChecked}
                   isSalaryItemsLock={isSalaryItemsLock}

@@ -44,7 +44,6 @@ const MerchantListAutocomplete = ({ onValueChange = () => {} }) => {
           fullWidth
           disabled={!merchantList}
           open={false}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
           popupIcon={
             // 全選：ui Button primary sm（h-8，放在 36px 輸入框內不撐高）；
             // Autocomplete popupIndicator 本身是 <button>，故以 asChild 落在 div 上避免巢狀 button（原 MuiButton component='div' 的等效作法），onClick 原樣
@@ -59,7 +58,6 @@ const MerchantListAutocomplete = ({ onValueChange = () => {} }) => {
           options={merchantList.allMerchants || []}
           disableCloseOnSelect
           getOptionLabel={option => option.name}
-          renderOption={(props, option) => <li {...props}>{option.name}</li>}
           renderInput={params => (
             <TextField
               onClick={handleOnClick}

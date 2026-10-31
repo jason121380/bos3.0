@@ -23,7 +23,7 @@ export default function Reservation({ location }) {
 
   const customerBookingResults = useFetchCustomerBookingResults({ isReserved: true })
   const { cancelOrder } = useFetchCustomerCancelOrder()
-  const handleCancleOrder = orderId => {
+  const handleCancelOrder = orderId => {
     cancelOrder(orderId).then(() => {
       openSnackbar({
         message: '取消預約成功',
@@ -67,12 +67,12 @@ export default function Reservation({ location }) {
                   </Badge>
                 </div>
                 {data.status === '待審核' && (
-                  <Button variant="secondary" size="lg" className="h-11 w-full" onClick={() => handleCancleOrder(data.id)}>
+                  <Button variant="secondary" size="lg" className="h-11 w-full" onClick={() => handleCancelOrder(data.id)}>
                     取消預約
                   </Button>
                 )}
                 {data.status === '預約成功' && (
-                  <Button variant="secondary" size="lg" className="h-11 w-full" onClick={() => handleCancleOrder(data.id)}>
+                  <Button variant="secondary" size="lg" className="h-11 w-full" onClick={() => handleCancelOrder(data.id)}>
                     取消預約
                   </Button>
                 )}

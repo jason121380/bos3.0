@@ -144,7 +144,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
     setOpenDialog(false)
   }
 
-  const handleOpenMutipleEditModal = () => {
+  const handleOpenMultipleEditModal = () => {
     setOpenEditAssistantModal(true)
   }
 
@@ -413,7 +413,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
       <TableEditBar
         selected={selectedService}
         onDelete={disableDeleteService ? handleCancel : handleConfirmCancel}
-        onEdit={handleOpenMutipleEditModal}
+        onEdit={handleOpenMultipleEditModal}
         onEditDeduction={handleOpenEditDeductionModal}
       />
       <Dialog open={openDialog} onOpenChange={o => !o && handleCloseDialog()}>

@@ -73,7 +73,7 @@ function Results({ className, customers, pageLimit, pageOffset, refetch, totalCo
     refetch()
   }
 
-  const handeleteCustomer = () => {
+  const handleDeleteCustomer = () => {
     deleteCustomers({ customerIds: selectedCustomers, password: deletePwd }).then(() => {
       setOpenDialog(false)
       setDeletePwd('')
@@ -180,7 +180,7 @@ function Results({ className, customers, pageLimit, pageOffset, refetch, totalCo
           ))}
         </TableBody>
       </ManagementTable>
-      <TableEditBar selected={selectedCustomers} onDeleteCustomer={deleteCustomerIsUsing ? handleOpenDialog : handeleteCustomer} />
+      <TableEditBar selected={selectedCustomers} onDeleteCustomer={deleteCustomerIsUsing ? handleOpenDialog : handleDeleteCustomer} />
       <Dialog open={openDialog}>
         <DialogContent size="sm" hideClose aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
           <DialogHeader>
@@ -202,7 +202,7 @@ function Results({ className, customers, pageLimit, pageOffset, refetch, totalCo
             <Button variant="secondary" onClick={handleCloseDialog}>
               取消
             </Button>
-            <Button variant="danger" autoFocus data-testid="confirm" onClick={handeleteCustomer}>
+            <Button variant="danger" autoFocus data-testid="confirm" onClick={handleDeleteCustomer}>
               確認
             </Button>
           </DialogFooter>

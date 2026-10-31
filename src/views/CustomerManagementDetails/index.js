@@ -48,7 +48,7 @@ function CustomerManagementDetails({ match, history }) {
     pageOffset: 0,
     totalCount: 0,
   })
-  const [orderIds, setOrtderIds] = useState([])
+  const [orderIds, setOrderIds] = useState([])
   const [orderList, setOrderList] = useState([])
   const [eventTickets, setEventTickets] = useState([])
   // null＝尚未算出；原本預設 false 會讓下方分頁計算永遠等不到條件（未開會員卡的店家看不到紅利分頁）
@@ -118,7 +118,7 @@ function CustomerManagementDetails({ match, history }) {
         pageOffset,
       })
       setOrderList(orderList)
-      setOrtderIds([...ids])
+      setOrderIds([...ids])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getCustomerOrders.loading])

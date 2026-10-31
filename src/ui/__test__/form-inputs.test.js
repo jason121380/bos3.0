@@ -2,6 +2,9 @@ import { act, cleanup, fireEvent, render, screen, within } from '@testing-librar
 import React from 'react'
 
 import { NativeSelect, NativeSelectOption } from '../native-select'
+import TextField, { InputBase } from '../text-field'
+import { Slider } from '../slider'
+import { ToggleGroup, ToggleGroupItem } from '../toggle-group'
 
 const installedPointerEvent = typeof window.PointerEvent !== 'function'
 if (installedPointerEvent) {
@@ -17,10 +20,6 @@ if (installedPointerEvent) {
 afterAll(() => {
   if (installedPointerEvent) delete window.PointerEvent
 })
-import TextField, { InputBase } from '../text-field'
-
-import { Slider } from '../slider'
-import { ToggleGroup, ToggleGroupItem } from '../toggle-group'
 
 // 保護什麼：表單輸入元件的「值」與「事件」契約。
 // - NativeSelect 以索引對應任何型別的選項值，onChange 拿回原始值；選項文字從巢狀節點取出。

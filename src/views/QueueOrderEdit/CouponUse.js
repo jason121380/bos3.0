@@ -46,11 +46,11 @@ export default function CouponUse({ index, couponUsages, couponUsage, onChange }
       setPrice(ticketRecord.response.data.ticketRecords.data.map(data => data.service.price).reduce((a, b) => a.concat(b), []))
     }
   }, [ticketRecord.response.loading, ticketRecord.response.data, couponUsage])
-  const useFetchTicketRecodRef = useRef(ticketRecord.fetchTicketRecod)
+  const fetchTicketRecordRef = useRef(ticketRecord.fetchTicketRecord)
 
   useEffect(() => {
     if (couponUsage.customerTicketId)
-      useFetchTicketRecodRef.current({
+      fetchTicketRecordRef.current({
         ids: [couponUsage.customerTicketId],
       })
   }, [couponUsage])

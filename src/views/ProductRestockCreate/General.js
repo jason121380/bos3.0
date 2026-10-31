@@ -170,7 +170,7 @@ export default function General({ className, picking, setPageLoading, purchaseRe
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [products.loading, picking, setting])
 
-  const hadnleSelectProduct = (product, index) => {
+  const handleSelectProduct = (product, index) => {
     const newData = cloneDeep(purchaseRecords)
     if (product === null) {
       newData.productList[index] = {
@@ -315,7 +315,7 @@ export default function General({ className, picking, setPageLoading, purchaseRe
                       </li>
                     )
                   }}
-                  onChange={(_event, value) => hadnleSelectProduct(value, index)}
+                  onChange={(_event, value) => handleSelectProduct(value, index)}
                   filterOptions={productFilter}
                   renderInput={params => (
                     <TextField

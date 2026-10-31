@@ -11,7 +11,7 @@ export default function DraftOrderPasswordDialog({
   password,
   setPassword,
   handleConfirmCancel,
-  handleComfirmCheckoutOrder,
+  handleConfirmCheckoutOrder,
   editBarOnClick,
   isClick,
 }) {
@@ -39,7 +39,7 @@ export default function DraftOrderPasswordDialog({
           <Button
             variant={dialogType === 'delete' ? 'danger' : 'primary'}
             onClick={() => {
-              dialogType === 'delete' ? handleConfirmCancel() : handleComfirmCheckoutOrder()
+              dialogType === 'delete' ? handleConfirmCancel() : handleConfirmCheckoutOrder()
             }}
             autoFocus
             data-testid="confirm"

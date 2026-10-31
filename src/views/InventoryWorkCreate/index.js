@@ -67,7 +67,7 @@ function InventoryWorkCreate() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 刻意只在 [productInventoryData.loading] 變動時執行；inventoryData、productInventoryData 只取觸發當下的值，補上會改變觸發時機或每次 render 重跑
   }, [productInventoryData.loading])
 
-  const handleCreateIventory = async (isDraft = true) => {
+  const handleCreateInventory = async (isDraft = true) => {
     setIsClick(true)
     const data = cloneDeep(inventoryData)
     const inventoryDetails = []
@@ -143,7 +143,7 @@ function InventoryWorkCreate() {
             isClick={isClick}
             inventoryData={inventoryData}
             setInventoryData={setInventoryData}
-            handleCreateIventory={handleCreateIventory}
+            handleCreateInventory={handleCreateInventory}
             categoriesData={idx(productCategories, _ => _.data.productCategories) || []}
           />
         )}

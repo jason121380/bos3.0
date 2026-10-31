@@ -134,7 +134,7 @@ export default function General({ className, picking, setPicking, setPageLoading
     }
   }
 
-  const hadnleSelectProduct = (product, index) => {
+  const handleSelectProduct = (product, index) => {
     const newPicking = cloneDeep(picking)
     if (product === null) {
       newPicking.productList.forEach((data, index1) => {
@@ -342,7 +342,7 @@ export default function General({ className, picking, setPicking, setPageLoading
                     setFocus('price')
                   }
                 }}
-                onChange={(_event, value) => hadnleSelectProduct(value, index)}
+                onChange={(_event, value) => handleSelectProduct(value, index)}
                 renderInput={params => (
                   <TextField
                     {...params}

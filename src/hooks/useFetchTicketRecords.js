@@ -66,12 +66,12 @@ export default function useFetchTicketRecords(input) {
 
 export const useFetchLazyTicketRecords = () => {
   // fetchPolicy 要放在 useLazyQuery 的選項：@apollo/client 3.4 執行時只合併 variables／context，放在執行參數不會生效
-  const [fetchTicketRecod, response] = useLazyQuery(FETCH_TICKET_RECORDS, {
+  const [fetchTicketRecord, response] = useLazyQuery(FETCH_TICKET_RECORDS, {
     fetchPolicy: 'cache-and-network',
   })
   return {
-    fetchTicketRecod: input =>
-      fetchTicketRecod({
+    fetchTicketRecord: input =>
+      fetchTicketRecord({
         variables: {
           input,
         },

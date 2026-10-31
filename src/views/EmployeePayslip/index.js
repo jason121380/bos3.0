@@ -29,7 +29,7 @@ export default function Payroll() {
     startDate: subMonths(new Date(), 1).getTime(),
   })
   const [showFilter, setShowFilter] = useState(false)
-  const usersDalaryData = useFetchUserSalaryReport({ date: date.startDate })
+  const usersSalaryData = useFetchUserSalaryReport({ date: date.startDate })
   const [searchId, setSearchId] = useState()
   const employeePayslipPrintStyle = useFetchGetEmployeePayslipPrintStyle()
   const [getUserSalaryExcelLazy, getUserSalaryExcelLazyData] = useFetchGetUserSalaryExcelLazy()
@@ -109,13 +109,13 @@ export default function Payroll() {
           </Card>
         )}
 
-        {usersDalaryData.error ? (
-          <QueryFailed onRetry={() => usersDalaryData.refetch()} />
-        ) : !usersDalaryData.loading &&
+        {usersSalaryData.error ? (
+          <QueryFailed onRetry={() => usersSalaryData.refetch()} />
+        ) : !usersSalaryData.loading &&
           !isDisplayFakePerformance.loading &&
           !getIsPrintDetailDisplayOnSalaryReport.loading &&
           !EPWDDisplay.loading ? (
-          idx(usersDalaryData, _ =>
+          idx(usersSalaryData, _ =>
             _.data.userSalaryReport.length > 0 ? (
               <div className={'EmployeePayslipTableContainer flex w-full flex-wrap'}>
                 <Results

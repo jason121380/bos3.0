@@ -59,7 +59,6 @@ const ProductListTreeView = ({ onValueChange = () => {} }) => {
           disabled={!products.all.length}
           open={false}
           style={{ cursor: 'pointer' }}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
           popupIcon={
             // 全選：比照店家挑選（MerchantListAutocomplete）用 ui Button；popupIcon 外層可點，故以 asChild 落在 div 上避免巢狀 button，onClick 原樣
             <Button asChild variant="primary" size="sm" onClick={handleSelectAll}>
@@ -73,7 +72,6 @@ const ProductListTreeView = ({ onValueChange = () => {} }) => {
           options={products.all}
           disableCloseOnSelect
           getOptionLabel={option => option.name}
-          renderOption={(props, option) => <li {...props}>{option.name}</li>}
           renderInput={params => (
             <TextField
               onClick={handleOnClick}

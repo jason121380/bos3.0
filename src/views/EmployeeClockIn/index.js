@@ -39,7 +39,7 @@ const EmployeeClockIn = () => {
   const [isToday, setIsToday] = useState(false)
   const [btnStatus, setBtnStatus] = useState([])
   const [dailyClockInRecordLazy, dailyClockInRecordLazyData] = useFetchDailyClockInRecordLazy()
-  const [filterDisplay, setFilterDiaply] = useState(false)
+  const [filterDisplay, setFilterDisplay] = useState(false)
   const [showFilter, setShowFilter] = useState(false)
   const clockInDataForBtnStatus = useFetchDailyClockInRecord({ date: date.startDate })
   const getEmployeeClockInDisplay = useFetchGetEmployeeClockInDisplay()
@@ -63,7 +63,7 @@ const EmployeeClockIn = () => {
   useEffect(() => {
     if (!getEmployeeClockInDisplay.loading) {
       const data = idx(getEmployeeClockInDisplay, _ => _.data.getParameterReportSetting.isEDCIFilterDisplay)
-      setFilterDiaply(data)
+      setFilterDisplay(data)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getEmployeeClockInDisplay.loading])

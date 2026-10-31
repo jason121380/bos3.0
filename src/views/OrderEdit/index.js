@@ -37,7 +37,7 @@ export default function KeyIn({ match }) {
     isCloseAccount: false,
   })
   const [orderNo, setOrderNo] = useState('')
-  const [pannelEditable, setPannelEditable] = useState({})
+  const [panelEditable, setPanelEditable] = useState({})
   const [bill, setBill] = useState({
     isDesignate: false,
     date: new Date().getTime(),
@@ -225,7 +225,7 @@ export default function KeyIn({ match }) {
           draft.raffleRecord = order.data.order.raffleRecord
         })
       )
-      setPannelEditable({
+      setPanelEditable({
         isServiceEditable: order.data.order.isServiceEditable,
         isProductEditable: order.data.order.isProductEditable,
         isTicketSellingEditable: order.data.order.isTicketSellingEditable,
@@ -457,7 +457,7 @@ export default function KeyIn({ match }) {
             setBill,
             orderStatus,
             orderNo,
-            pannelEditable,
+            panelEditable,
             thirdPartyCoupons,
             focus,
             setFocus,

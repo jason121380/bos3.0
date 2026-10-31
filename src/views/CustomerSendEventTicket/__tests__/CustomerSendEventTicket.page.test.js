@@ -4,16 +4,16 @@
 // 以 res.ok 判斷成功：後端 400 顯示其訊息、其他非 2xx 顯示發券失敗，成功顯示發券成功並清空表單（店名保留）；「資料建立中」提示不可被點掉。fetch 以假函式代替，不連後端、不發真實抽獎券。
 import React from 'react'
 import CustomizedSnackbars, { openSnackbar } from 'elements/snackbars'
-jest.mock('elements/snackbars', () => {
-  const actual = jest.requireActual('elements/snackbars')
-  return { __esModule: true, ...actual, openSnackbar: jest.fn(actual.openSnackbar) }
-})
-beforeEach(() => openSnackbar.mockImplementation(jest.requireActual('elements/snackbars').openSnackbar))
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { getApiOrigin } from 'lib/api-base'
 import { httpStatusMessage } from 'lib/friendly-error'
 import { renderPage, callsOf, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import CustomerSendEventTicket from '..'
+jest.mock('elements/snackbars', () => {
+  const actual = jest.requireActual('elements/snackbars')
+  return { __esModule: true, ...actual, openSnackbar: jest.fn(actual.openSnackbar) }
+})
+beforeEach(() => openSnackbar.mockImplementation(jest.requireActual('elements/snackbars').openSnackbar))
 
 jest.setTimeout(20000)
 

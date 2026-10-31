@@ -12,7 +12,7 @@ const GET_MERCHANT_SALARY_DECREASE_ITEMS = settingsQuery(gql`
   }
 `)
 
-export default function useFetchMerchantSalaryDncreaseItems() {
+export default function useFetchMerchantSalaryDecreaseItems() {
   return useQuery(GET_MERCHANT_SALARY_DECREASE_ITEMS, {
     fetchPolicy: SETTINGS_FETCH_POLICY,
   })

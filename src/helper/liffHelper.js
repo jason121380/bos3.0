@@ -90,4 +90,6 @@ class LiffHelper {
     })
   }
 }
-export default new LiffHelper()
+const liffHelper = new LiffHelper()
+
+export default liffHelper

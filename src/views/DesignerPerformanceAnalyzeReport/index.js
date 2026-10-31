@@ -60,7 +60,7 @@ const DesignerPerformanceAnalyzeReport = () => {
   const [getAnalyzeReport, analyzeReport] = useFetchDesignerPerformanceAnalyzeReport()
   const [getAnalyzeCompareReport, analyzeCompareReport] = useFetchDesignerPerformanceAnalyzeCompareReport()
   const [compareDisplay, setCompareDisplay] = useState(false)
-  const [designerPerforamnceAnalyzeExcelLazy, designerPerforamnceAnalyzeExcelLazyData] = useFetchDesignerPerformanceAnalyzeExcelLazy()
+  const [designerPerformanceAnalyzeExcelLazy, designerPerformanceAnalyzeExcelLazyData] = useFetchDesignerPerformanceAnalyzeExcelLazy()
   const [isDisplayTogglePerformanceButton, setIsDisplayTogglePerformanceButton] = useState(true)
   const [isMemberShipCardActive, setIsMemberShipCardActive] = useState(false)
   const [userList, setUserList] = useState([])
@@ -68,7 +68,7 @@ const DesignerPerformanceAnalyzeReport = () => {
   const [compareData, setCompareData] = useState([])
 
   const handleExcel = () => {
-    designerPerforamnceAnalyzeExcelLazy({
+    designerPerformanceAnalyzeExcelLazy({
       variables: {
         input: inputData.dateRange,
         designerIds: inputData.designerIds,
@@ -187,24 +187,24 @@ const DesignerPerformanceAnalyzeReport = () => {
       const report = idx(analyzeReport, _ => _.data.designerPerforamnceAnalyzeReport)
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const isMembershipIsZero = report.some(result => result.membershipPerformance !== 0)
-      const filrterData = report.filter(data => {
+      const filterData = report.filter(data => {
         return checkArray.some(key => (key === 'serviceTypeAnalyze' ? data[key].length !== 0 : data[key] !== 0))
       })
       setIsMemberShipCardActive(isMemberShipCardActive || isMembershipIsZero)
-      setReportForDisplay(filrterData)
+      setReportForDisplay(filterData)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [analyzeReport.loading, isMemberShipCardActiveData.loading, compareDisplay])
 
   useEffect(() => {
-    if (!designerPerforamnceAnalyzeExcelLazyData.loading && designerPerforamnceAnalyzeExcelLazyData.data !== undefined) {
-      const url = idx(designerPerforamnceAnalyzeExcelLazyData, _ => _.data.designerPerforamnceAnalyzeExcel)
+    if (!designerPerformanceAnalyzeExcelLazyData.loading && designerPerformanceAnalyzeExcelLazyData.data !== undefined) {
+      const url = idx(designerPerformanceAnalyzeExcelLazyData, _ => _.data.designerPerforamnceAnalyzeExcel)
       const link = document.createElement('a')
       link.href = url
       link.click()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
-  }, [designerPerforamnceAnalyzeExcelLazyData.loading])
+  }, [designerPerformanceAnalyzeExcelLazyData.loading])
 
   useEffect(() => {
     handleSearch()
@@ -238,7 +238,7 @@ const DesignerPerformanceAnalyzeReport = () => {
             {/* 報表版型（STYLE §14）：匯出／列印固定在頁首右側；比較模式下原本整區隱藏，維持不顯示 */}
             {!compareDisplay && (
               <>
-                <Button variant="secondary" onClick={handleExcel} disabled={designerPerforamnceAnalyzeExcelLazyData.loading}>
+                <Button variant="secondary" onClick={handleExcel} disabled={designerPerformanceAnalyzeExcelLazyData.loading}>
                   <Download strokeWidth={1.75} />
                   報表匯出
                 </Button>

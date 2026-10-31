@@ -77,6 +77,13 @@
   - 標籤：`ui/input` 的 Field 標籤以 `htmlFor`／`aria-labelledby` 綁定子欄位，點標籤文字游標跳進欄位（Input、Textarea、Switch、NativeSelect、Combobox）。下拉只聚焦不展開；Switch 點標籤切換一次。子欄位既有 id 不改，原本沒有 id 的才補 `field-control-N`。
 - 既有 aria 值一律沒有改寫。
 
+**清理警告與錯字（第 6 項，`v3.10312016`）**
+
+- eslint-check：69 → 16。剩下 16 則都是 4 個收據列印範本（#printMain／#printThermal）`<img>` 的 `jsx-a11y/alt-text`，依鐵則 2 未動，待 Jason 決定。
+- 程式內部名稱錯字：96 個名稱、608 處、111 檔（Pannel→Panel、Comfirm→Confirm、Detial→Detail…）。GraphQL 名稱與欄位、後端列舉值、CSS class、key／id 字串、網址、與檔名綁定的元件名刻意保留。
+- 刪除死碼：MerchantListAutocomplete 三個元件與 ProductListTreeView 中永遠不會被呼叫的 `isOptionEqualToValue`／`renderOption`。
+- 清理時發現、會改變行為所以未修（待 Jason 決定）：RuleForm 5 處 `attributions.langth === 0` 恆為 false（載入中提示從不顯示）；`profitSharing.designationUsag` 讀不存在的欄位（2 檔）；EHS2Page 的 `vlaue=` 拼錯，輸入框實際是非受控。
+
 **待辦（未做）**
 
 - 後端：LINE 打卡寫死網址、GraphQL 操作名去重（擱置）；下方「後端債」四項。

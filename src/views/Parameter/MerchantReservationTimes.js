@@ -87,7 +87,7 @@ function MerchantReservationTimes({ className, merchantReservation, setMerchantR
     setMerchantReservation([...newData])
   }
 
-  const handleCheckDisbaled = (day, dataIndex) => {
+  const handleCheckDisabled = (day, dataIndex) => {
     const allUsedDay = []
     merchantReservation.forEach(({ useDay }, index) => {
       if (dataIndex !== index) {
@@ -202,7 +202,7 @@ function MerchantReservationTimes({ className, merchantReservation, setMerchantR
                       key={label}
                       selected={isInclude}
                       onClick={() => handleAddDay(value, index)}
-                      disabled={!inputEnable || (isInclude ? false : handleCheckDisbaled(value, index))}
+                      disabled={!inputEnable || (isInclude ? false : handleCheckDisabled(value, index))}
                       className="h-10 w-10 px-0"
                     >
                       {label}

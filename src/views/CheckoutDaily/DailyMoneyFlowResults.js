@@ -97,7 +97,7 @@ function Results({
       excelData = excelData.map(({ 會員卡消費, ...rest }) => rest)
     }
     if (!bonusDisplay) {
-      excelData = excelData.map(({ ['點數折抵金額(-)']: value, ...rest }) => rest)
+      excelData = excelData.map(({ '點數折抵金額(-)': value, ...rest }) => rest)
     }
     setExcelData(excelData)
     // 點數設定晚到時也要重算，否則表格有點數欄、匯出檔沒有（Jason 2026/10/22）

@@ -130,9 +130,9 @@ describe('<Results />', () => {
       },
     ]
     const { getAllByTestId } = createWrapper(mocks)
-    const produstList = getAllByTestId('product-row')
+    const productList = getAllByTestId('product-row')
 
-    expect(produstList.length).toEqual(5)
+    expect(productList.length).toEqual(5)
   })
 
   it('should calls delete API', async () => {

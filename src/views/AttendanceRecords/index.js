@@ -49,7 +49,7 @@ export default function Employees() {
   const [userId, setUserId] = useState('')
   const [displayDate, setDisplayDate] = useState([])
   const [openDateModal, setOpenDateModal] = useState(false)
-  const [userOptions, setUserOptioons] = useState([])
+  const [userOptions, setUserOptions] = useState([])
   const [selectItem, setSelectItem] = useState(clockInFilter)
   const [showFilter, setShowFilter] = useState(false)
   const [onClick, setOnClick] = useState(false)
@@ -122,7 +122,7 @@ export default function Employees() {
   useEffect(() => {
     if (!user.loading) {
       const data = idx(user, _ => _.data.users.users)
-      setUserOptioons(data)
+      setUserOptions(data)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [user.loading])

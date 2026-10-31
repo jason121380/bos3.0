@@ -43,7 +43,7 @@ const checkin = [
   { label: '未報到', color: RESERVATION_COLORS.notCheckedIn, display: true },
 ]
 
-export default function ({ eventDisplay = false, bookingCusCheck = false, checkinMode = false, bookingHistoryDisplay = false }) {
+export default function CalendarColorClip({ eventDisplay = false, bookingCusCheck = false, checkinMode = false, bookingHistoryDisplay = false }) {
   const [statusArray, setStatusArray] = useState([
     { label: '不可預約', color: RESERVATION_COLORS.unavailable, display: true },
     { label: '待審核', color: RESERVATION_COLORS.pending, display: true },

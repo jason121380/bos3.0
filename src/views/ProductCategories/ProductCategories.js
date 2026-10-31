@@ -9,7 +9,7 @@ import { Skeleton } from 'ui/skeleton'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
-function ComodityCategories() {
+function CommodityCategories() {
   const productCategories = useFetchProductCategories()
   const categories = idx(productCategories, _ => _.data.productCategories)
   return (
@@ -37,4 +37,4 @@ function ComodityCategories() {
   )
 }
 
-export default ComodityCategories
+export default CommodityCategories

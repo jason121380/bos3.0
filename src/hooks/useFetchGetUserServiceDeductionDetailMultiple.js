@@ -31,7 +31,7 @@ const FETCH_USER_SERVICE_DEDUCTION_DETAIL_MULTIPLE = gql`
     }
   }
 `
-export default function useFetchServiceDedcutionDetailMultiple({ input }) {
+export default function useFetchServiceDeductionDetailMultiple({ input }) {
   return useQuery(FETCH_USER_SERVICE_DEDUCTION_DETAIL_MULTIPLE, {
     variables: {
       input,

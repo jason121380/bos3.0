@@ -279,7 +279,7 @@ export default function PanelService({ thirdPartTicket }) {
               setSelectedCategorie={setSelectedCategorie}
               selectedCategorieName={selectedCategorieName}
               setSelectedCategorieName={setSelectedCategorieName}
-              servicesOnPannel={services}
+              servicesOnPanel={services}
               setHelperFromModal={setHelperFromModal}
               helperFromModal={helperFromModal}
               onPageChange={handlePageChange}

@@ -51,7 +51,7 @@ const DesignerPerformBasic = () => {
     isDRRPEVDisplay: false,
   })
 
-  const designersLeaboardData = useFetchDesignersLeaderboard({
+  const designersLeaderboardData = useFetchDesignersLeaderboard({
     startDay: date.startDate,
     endDay: date.endDate,
     merchantId: submitValue,
@@ -103,13 +103,13 @@ const DesignerPerformBasic = () => {
   }, [monthlyAverageDisplayForDesignerLeaderBoardData.loading])
 
   useEffect(() => {
-    if (!designersLeaboardData.loading && !monthlyAverageDisplayForDesignerLeaderBoardData.loading && !isMemberShipCardActiveData.loading) {
-      const report = idx(designersLeaboardData, _ => _.data.designerLeaderboard.designerLeaderBoard)
+    if (!designersLeaderboardData.loading && !monthlyAverageDisplayForDesignerLeaderBoardData.loading && !isMemberShipCardActiveData.loading) {
+      const report = idx(designersLeaderboardData, _ => _.data.designerLeaderboard.designerLeaderBoard)
       // 查詢失敗時沒有資料，不整理報表（畫面另有 QueryFailed）
       if (!report) return
       const excelData = []
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
-      const monthlyAveragePerformanceTotal = idx(designersLeaboardData, _ => _.data.designerLeaderboard.monthlyAveragePerformanceTotal)
+      const monthlyAveragePerformanceTotal = idx(designersLeaderboardData, _ => _.data.designerLeaderboard.monthlyAveragePerformanceTotal)
       const averageDisplay = idx(monthlyAverageDisplayForDesignerLeaderBoardData, _ => _.data.getMonthlyAverageDisplayForDesignerLeaderBoard)
       const membershipTotal = (report || []).reduce((acc, curVal) => acc + curVal.membershipTotal, 0)
       const membershipDisplay = isMemberShipCardActive || membershipTotal !== 0
@@ -237,7 +237,7 @@ const DesignerPerformBasic = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [
-    designersLeaboardData.loading,
+    designersLeaderboardData.loading,
     performReference,
     membershipDisplay,
     monthlyAverageDisplayForDesignerLeaderBoardData.loading,
@@ -305,12 +305,12 @@ const DesignerPerformBasic = () => {
             excelData.length !== 0 ? (
               <>
                 <CSVLink data={excelData} filename="設計師排行榜.csv" style={{ display: 'inline' }}>
-                  <Button variant="secondary" disabled={designersLeaboardData.loading}>
+                  <Button variant="secondary" disabled={designersLeaderboardData.loading}>
                     <Download strokeWidth={1.75} />
                     報表匯出
                   </Button>
                 </CSVLink>
-                <Button variant="secondary" disabled={designersLeaboardData.loading} onClick={() => window.print()}>
+                <Button variant="secondary" disabled={designersLeaderboardData.loading} onClick={() => window.print()}>
                   <Printer strokeWidth={1.75} />
                   列印
                 </Button>
@@ -388,11 +388,11 @@ const DesignerPerformBasic = () => {
             </Button>
           }
         />
-        {designersLeaboardData.error ? (
-          <QueryFailed onRetry={() => designersLeaboardData.refetch()} />
-        ) : !designersLeaboardData.loading && !monthlyAverageDisplayForDesignerLeaderBoardData.loading ? (
+        {designersLeaderboardData.error ? (
+          <QueryFailed onRetry={() => designersLeaderboardData.refetch()} />
+        ) : !designersLeaderboardData.loading && !monthlyAverageDisplayForDesignerLeaderBoardData.loading ? (
           <Results
-            report={idx(designersLeaboardData, _ => _.data.designerLeaderboard.designerLeaderBoard)}
+            report={idx(designersLeaderboardData, _ => _.data.designerLeaderboard.designerLeaderBoard)}
             performReference={performReference}
             monthlyAveragePerformanceTotal={monthlyAveragePerformanceTotal}
             monthlyAverageDisplayForDesignerLeaderBoard={monthlyAverageDisplayForDesignerLeaderBoard}

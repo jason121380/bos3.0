@@ -13,7 +13,7 @@ import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
 import QueryFailed from 'components/QueryFailed'
 
-const HelperMontlyReport = () => {
+const HelperMonthlyReport = () => {
   const [date, setDate] = useState({
     startDate: new Date().getTime(),
     endDate: new Date().getTime(),
@@ -83,4 +83,4 @@ const HelperMontlyReport = () => {
   )
 }
 
-export default HelperMontlyReport
+export default HelperMonthlyReport

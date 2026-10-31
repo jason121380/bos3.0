@@ -92,18 +92,18 @@ const OverallPerformanceAnalysisReport = () => {
           excelData.push(obj)
         })
 
-        const summeryObj = { '日期': '區間合計' }
+        const summaryObj = { '日期': '區間合計' }
         reportData.performanceSummary.forEach((d, index) => {
           if (d.merchantName === reportData.merchantNameList[index]) {
-            summeryObj[d.merchantName] = Math.round(d.performance)
+            summaryObj[d.merchantName] = Math.round(d.performance)
           } else {
             const correctData = reportData.performanceSummary.filter(d => {
               return d.merchantName === reportData.merchantNameList[index]
             })
-            summeryObj[correctData[0].merchantName] = correctData[0].performance
+            summaryObj[correctData[0].merchantName] = correctData[0].performance
           }
         })
-        excelData.push(summeryObj)
+        excelData.push(summaryObj)
 
         const workingDayObj = { '日期': '實際工作天數' }
         reportData.workingDay.forEach((d, index) => {

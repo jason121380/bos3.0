@@ -89,7 +89,7 @@ describe('確認型：月結', () => {
         monthlyCheckoutInput: inputs,
         salaryCheckoutDate: '2026-10',
         userSalayItemDataRefetch: userRefetch,
-        isSalaryChackedDataRefetch: checkedRefetch,
+        isSalaryCheckedDataRefetch: checkedRefetch,
       })
     )
     expect(screen.getByRole('alertdialog', { name: '確認月結' })).toHaveTextContent('將結算所選月份的薪資')
@@ -119,7 +119,7 @@ describe('確認型：月結', () => {
         salaryCheckout: true,
         monthlyCheckoutInput: [1, 2, 3, 4, 5, 6],
         userSalayItemDataRefetch: () => {},
-        isSalaryChackedDataRefetch: () => {},
+        isSalaryCheckedDataRefetch: () => {},
       })
     )
     fireEvent.click(screen.getByRole('button', { name: '結算' }))

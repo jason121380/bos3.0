@@ -20,7 +20,7 @@ import QueryFailed from 'components/QueryFailed'
 function DesignerPerformOverview() {
   const [dailyPerformanceData, setDailyPerformanceData] = useState(null)
   const [isDisplayTogglePerformanceButton, setIsDisplayTogglePerformanceButton] = useState(false)
-  const [attributeSwitchs, setAttributeSwitchs] = useState([])
+  const [attributeSwitches, setAttributeSwitches] = useState([])
   const [membershipDisplay, setMembershipDisplay] = useState(false)
   const [inputData, setInputData] = useState({
     displayReference: 'FAKE',
@@ -116,13 +116,13 @@ function DesignerPerformOverview() {
 
         categoryData.forEach(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
           if (attributeSwitch[index]) {
-            obj[`${categoryName}` + '/人次/單均價'] = `${Math.round(fakePerformance)} / ${orderCount} / ${Math.round(averagePerformance)}`
+            obj[`${categoryName}/人次/單均價`] = `${Math.round(fakePerformance)} / ${orderCount} / ${Math.round(averagePerformance)}`
           }
         })
         excelData.push(obj)
       })
       setExcelData(excelData)
-      setAttributeSwitchs(attributeSwitch)
+      setAttributeSwitches(attributeSwitch)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [merchantDailyPerformanceReportData.loading, isMemberShipCardActiveData.loading])
@@ -161,7 +161,7 @@ function DesignerPerformOverview() {
       {merchantDailyPerformanceReportData.error ? (
         <QueryFailed onRetry={() => merchantDailyPerformanceReportData.refetch()} />
       ) : !merchantDailyPerformanceReportData.loading && dailyPerformanceData !== null ? (
-        <Results className="mt-2" results={dailyPerformanceData} membershipDisplay={membershipDisplay} attributeSwitchs={attributeSwitchs} />
+        <Results className="mt-2" results={dailyPerformanceData} membershipDisplay={membershipDisplay} attributeSwitches={attributeSwitches} />
       ) : (
         <Skeleton className="h-96" aria-busy="true" />
       )}

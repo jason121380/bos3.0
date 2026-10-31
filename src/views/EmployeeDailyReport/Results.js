@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-concat -- 字串相接在列印用卡片（printCard）內，依鐵則 2 不動列印範本；輸出不受影響 */
 import { Card, CardContent, CardHeader } from 'ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'

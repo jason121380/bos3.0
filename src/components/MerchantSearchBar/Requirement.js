@@ -20,7 +20,7 @@ import { Autocomplete } from 'ui/combobox'
 const FIELD = 'min-w-[180px] max-w-[270px]'
 const FIELD_SOURCES = 'min-w-[180px]'
 
-export default function ({ outside, values, onChange, visible, multiple, relationUserId, useInDecreaseDetailReport, getThirdPartyName }) {
+export default function Requirement({ outside, values, onChange, visible, multiple, relationUserId, useInDecreaseDetailReport, getThirdPartyName }) {
   // outside：每個條件各包一層 div（原格線 item，無欄寬、無間距）；否則直接放進 MerchantSearchBar 的 flex 列
   const Outter = outside ? 'div' : React.Fragment
   const [payType, setPayType] = useState([])

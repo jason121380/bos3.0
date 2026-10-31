@@ -4,9 +4,9 @@ import { format } from 'date-fns'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import { formatNumber } from 'ui/format'
 
-function Results({ userServiceDeductionDetial, setExcelData }) {
+function Results({ userServiceDeductionDetail, setExcelData }) {
   const countTotal = key => {
-    const total = userServiceDeductionDetial.reduce((accu, curVal) => accu + curVal[key], 0)
+    const total = userServiceDeductionDetail.reduce((accu, curVal) => accu + curVal[key], 0)
     return floatDisplay(total)
   }
 
@@ -24,9 +24,9 @@ function Results({ userServiceDeductionDetial, setExcelData }) {
   }
 
   useEffect(() => {
-    if (userServiceDeductionDetial !== null) {
+    if (userServiceDeductionDetail !== null) {
       const excelData = []
-      userServiceDeductionDetial.forEach(data => {
+      userServiceDeductionDetail.forEach(data => {
         excelData.push({
           日期: format(new Date(data.date), 'yyyy/MM/dd'),
           帳單編號: `#${data.orderNo}`,
@@ -85,8 +85,8 @@ function Results({ userServiceDeductionDetial, setExcelData }) {
       })
       setExcelData(excelData)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（countTotal）；只在 [userServiceDeductionDetial, setExcelData] 變動時呼叫，補上會每次 render 重跑
-  }, [userServiceDeductionDetial, setExcelData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 缺的是每次 render 都會重建的函式（countTotal）；只在 [userServiceDeductionDetail, setExcelData] 變動時呼叫，補上會每次 render 重跑
+  }, [userServiceDeductionDetail, setExcelData])
 
   return (
     <Fragment>
@@ -146,7 +146,7 @@ function Results({ userServiceDeductionDetial, setExcelData }) {
             </TableRow>
           </TableHeader>
           <TableBody id="whiteSpace">
-            {userServiceDeductionDetial.map((data, index) => (
+            {userServiceDeductionDetail.map((data, index) => (
               <TableRow key={index}>
                 <TableCell> {format(new Date(data.date), 'yyyy/MM/dd')}</TableCell>
                 <TableCell>#{data.orderNo}</TableCell>

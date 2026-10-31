@@ -74,8 +74,8 @@ export default function ParameterTabContent({
   setMerchantReservation,
   merchantFakePerformanceRefer,
   setMerchantFakePerformanceRefer,
-  merchantRakeReferemce,
-  setMerchantRakeReferemce,
+  merchantRakeReference,
+  setMerchantRakeReference,
   setPasswordSetting,
   passwordSetting,
   aboutSettingFunction,
@@ -193,8 +193,8 @@ export default function ParameterTabContent({
             inputEnable={inputEnable}
           />
           <AboutMerchantRakePerformanceRefer
-            merchantRakeReferemce={merchantRakeReferemce}
-            setMerchantRakeReferemce={setMerchantRakeReferemce}
+            merchantRakeReference={merchantRakeReference}
+            setMerchantRakeReference={setMerchantRakeReference}
             inputEnable={inputEnable}
           />
         </div>

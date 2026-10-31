@@ -26,7 +26,7 @@ function HelperPointResults({ className, merchantPointValueSettings, merchantPoi
     }
     setSelected(newSelect)
   }
-  const handleSeletedDelete = () => {
+  const handleSelectedDelete = () => {
     deleteMerchantPointValueSetting(selected)
       .then(res => {
         if (res.data.deleteMerchantPointValueSetting) {
@@ -94,7 +94,7 @@ function HelperPointResults({ className, merchantPointValueSettings, merchantPoi
           ))}
         </TableBody>
       </Table>
-      <TableEditBar selected={selected} onDelete={handleSeletedDelete} />
+      <TableEditBar selected={selected} onDelete={handleSelectedDelete} />
     </div>
   )
 }

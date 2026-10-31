@@ -85,7 +85,6 @@ const MerchantListAutocompleteForManagement = ({ onValueChange = () => {}, selec
           disabled={!merchantList}
           open={false}
           style={{ cursor: 'pointer' }}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
           popupIcon={
             isReadOnly ? (
               ''
@@ -102,7 +101,6 @@ const MerchantListAutocompleteForManagement = ({ onValueChange = () => {}, selec
           options={merchantList.allMerchants || []}
           disableCloseOnSelect
           getOptionLabel={option => option.name}
-          renderOption={(props, option) => <li {...props}>{option.name}</li>}
           renderInput={params => (
             <TextField
               onClick={event => !isReadOnly && handleOnClick(event)}

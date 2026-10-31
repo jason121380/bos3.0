@@ -36,7 +36,7 @@ function Results({ className, paymentList = [], ...rest }) {
     }
     setSelectedPayment(newSelect)
   }
-  const handleSeletedDelete = () => {
+  const handleSelectedDelete = () => {
     deletePayment({ ids: selectedPayment }).then(() => {
       setSelectedPayment([])
       payments.refetch()
@@ -103,7 +103,7 @@ function Results({ className, paymentList = [], ...rest }) {
           </Table>
         </div>
       </Card>
-      <TableEditBar selected={selectedPayment} onDelete={handleSeletedDelete} confirmDelete />
+      <TableEditBar selected={selectedPayment} onDelete={handleSelectedDelete} confirmDelete />
     </div>
   )
 }

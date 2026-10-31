@@ -20,7 +20,7 @@ function ServicesModal({
   setSelectedCategorie,
   selectedCategorieName,
   setSelectedCategorieName,
-  servicesOnPannel,
+  servicesOnPanel,
   setHelperFromModal,
   onPageChange,
   setServicesModalOpen,
@@ -50,9 +50,9 @@ function ServicesModal({
   const handleSelectService = selectService => {
     idx(selectService, _ => {
       onServiceChange({
-        index: servicesLength === 1 && servicesOnPannel[0].serviceId === '' ? 0 : servicesLength,
+        index: servicesLength === 1 && servicesOnPanel[0].serviceId === '' ? 0 : servicesLength,
         value: {
-          ...servicesOnPannel[servicesLength - 1],
+          ...servicesOnPanel[servicesLength - 1],
           serviceId: _.id,
           price: _.price,
           isLocked: _.isLocked,

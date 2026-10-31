@@ -126,7 +126,7 @@ function Parameter() {
   const [aboutSettingFunction, setAboutSettingFunction] = useState(createDefaultAboutSettingFunction())
   const [reference, setReference] = useState([])
   const [merchantLogo, setMerchantLogo] = useState(null)
-  const [merchantRakeReferemce, setMerchantRakeReferemce] = useState({
+  const [merchantRakeReference, setMerchantRakeReference] = useState({
     designate: 'FAKE',
     nonDesignate: 'FAKE',
   })
@@ -382,7 +382,7 @@ function Parameter() {
   useEffect(() => {
     if (!getMerchantRakeReference.loading && getMerchantRakeReference.data) {
       const data = idx(getMerchantRakeReference, _ => _.data.getMerchantRakeReference)
-      setMerchantRakeReferemce(data)
+      setMerchantRakeReference(data)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 只在查詢 loading 轉為 false 時同步一次；缺的 data 與 loading 同時更新
   }, [getMerchantRakeReference.loading])
@@ -640,7 +640,7 @@ function Parameter() {
       }),
       setParameterAboutSetting({ input: aboutSettingFunction }),
       setCustomerReference({ references: reference }),
-      setRakeReference({ input: merchantRakeReferemce }),
+      setRakeReference({ input: merchantRakeReference }),
       setParameterAboutBookingSetting({ input: aboutBooking }),
       setSpecificBookingNotificationDayCount({ input: notificationDayCount }),
       setDisableBookingDayLimit({ count: disableDayLimit }),
@@ -744,8 +744,8 @@ function Parameter() {
               setMerchantReservation={setMerchantReservation}
               merchantFakePerformanceRefer={merchantFakePerformanceRefer}
               setMerchantFakePerformanceRefer={setMerchantFakePerformanceRefer}
-              merchantRakeReferemce={merchantRakeReferemce}
-              setMerchantRakeReferemce={setMerchantRakeReferemce}
+              merchantRakeReference={merchantRakeReference}
+              setMerchantRakeReference={setMerchantRakeReference}
               setPasswordSetting={setPasswordSetting}
               passwordSetting={passwordSetting}
               aboutSettingFunction={aboutSettingFunction}

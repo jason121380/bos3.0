@@ -4,14 +4,14 @@
 // 提示使用 Customer 版面的全域提示區，點背景不關閉。GraphQL 全由 testkit 的模擬 link 回應，不建立真實顧客。
 import React from 'react'
 import CustomizedSnackbars, { openSnackbar } from 'elements/snackbars'
+import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
+import { renderPage, callsOf, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
+import CustomerSelfCreate from '..'
 jest.mock('elements/snackbars', () => {
   const actual = jest.requireActual('elements/snackbars')
   return { __esModule: true, ...actual, openSnackbar: jest.fn(actual.openSnackbar) }
 })
 beforeEach(() => openSnackbar.mockImplementation(jest.requireActual('elements/snackbars').openSnackbar))
-import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
-import { renderPage, callsOf, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
-import CustomerSelfCreate from '..'
 
 jest.setTimeout(20000)
 

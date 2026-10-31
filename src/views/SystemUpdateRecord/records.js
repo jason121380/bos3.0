@@ -10,6 +10,12 @@ export function calendarUpdateTime(isoDate) {
 
 const shippedRecords = [
   {
+    title: '2026/10/31 程式清理',
+    versionNo: 'v3.10312016',
+    updateTime: '2026-10-31',
+    content: '- 內部程式名稱錯字修正與程式檢查警告清理；使用上沒有變化',
+  },
+  {
     title: '2026/10/31 標籤與文字對比',
     versionNo: 'v3.10311917',
     updateTime: '2026-10-31',

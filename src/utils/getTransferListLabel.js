@@ -1,4 +1,4 @@
-export default data => {
+const getTransferListLabel = data => {
   const { no, name, price, sellPrice } = data
   let label = ''
   if (no) {
@@ -7,3 +7,5 @@ export default data => {
   label += name
   return <p>{`${label} - ${price ?? sellPrice}`}</p>
 }
+
+export default getTransferListLabel

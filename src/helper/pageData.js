@@ -1,4 +1,4 @@
-export default [
+const pageData = [
   { groupTitle: '櫃檯作業', title: '打帳單', href: '/order/create' },
   { groupTitle: '櫃檯作業', title: '帳單列表', href: '/management/orders' },
   { groupTitle: '櫃檯作業', title: '掛單列表', href: '/management/draft-orders' },
@@ -98,3 +98,5 @@ export default [
   { groupTitle: '資料設定', title: '第三方卡券設定', href: '/third-party-coupons' },
   { groupTitle: '資料設定', title: '角色權限管理', href: '/authority' },
 ]
+
+export default pageData
