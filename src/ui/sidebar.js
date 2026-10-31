@@ -145,7 +145,7 @@ const SidebarLink = ({ to, active, icon: Icon, indent, className, children, ...p
       rowClass,
       indent && 'pl-8',
       indent && 'lg:group-data-[rail=true]/sidebar:!pl-0',
-      active && 'bg-accent/8 font-medium text-accent hover:bg-accent/8 hover:text-accent',
+      active && 'bg-accent/8 font-medium text-accent-text hover:bg-accent/8 hover:text-accent-text',
       className
     )}
     {...props}

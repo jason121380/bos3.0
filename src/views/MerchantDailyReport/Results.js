@@ -36,7 +36,7 @@ const mergedReportTableClass =
 // [&&] 雙 class 權重保留小計粗體／合計紅字，勝過 表頭的 font-semibold、ui/table 的 text-text-tertiary 與列印文字規則。
 // 此處已使用正式表格，不輸出 MuiTableCell class，因此不會命中 initialize(-dark).scss 的舊儲存格選擇器。
 const BOLD_CELL = '[&&]:font-bold'
-const TOTAL_CELL = '[&&]:font-bold [&&]:text-[red]'
+const TOTAL_CELL = '[&&]:font-bold [&&]:text-danger'
 
 // 列印時表頭維持白底黑字（與舊版 th.MuiTableCell-head 的列印樣式一致）
 const printHeader = 'print:bg-transparent print:[&_th]:text-text'

@@ -20,6 +20,10 @@
   --primary: 26 115 232; /* 主題色 #1A73E8（沿用舊版品牌藍） */
   --primary-foreground: 255 255 255;
   --accent: 26 115 232;
+  /* 文字用的品牌藍（2026/10/31 對比調整）：#1A73E8 當文字在 surface #FAFAFA 上 4.32、在自身 8% 底上 3.89，未達 AA。
+     同色相降明度為 #1967D2（Google Blue 700）：background 5.37／surface 5.14／8% 底 4.64，皆 ≥ 4.5:1。
+     只給「文字」用（選中分頁、側欄選中項、強調欄位）；框線、焦點框、實心按鈕仍用 accent／primary。 */
+  --accent-text: 25 103 210;
   /* 狀態色同時當文字、圖示、8% 底色與實心底（白字）用：色相不變、只降明度，使「文字在 background／surface／surface-hover 上」
      「文字在自身 8% 底（Badge）上」「白字在實心底上」皆 ≥ 4.5:1（原值：success #10A37F 3.20、warning #B7791F 3.64、danger #D92D20 4.43 於 surface-hover） */
   --success: 12 119 93; /* #0C775D */
@@ -44,6 +48,7 @@
   --primary: 26 115 232;
   --primary-foreground: 255 255 255;
   --accent: 76 141 246; /* 深色底上的連結與焦點用較亮的藍 #4C8DF6 */
+  --accent-text: 76 141 246; /* 深色底上 accent 已 ≥ 4.5:1，文字沿用同色 */
   --success: 25 195 125;
   --warning: 240 180 41;
   --danger: 249 112 102;

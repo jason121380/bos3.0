@@ -126,9 +126,9 @@ describe('客資篩選匯出：列表與網址', () => {
     ;['A', 'C01', '王小美', 'Amy', '2026/10/21', '女', '79/2/28', '0912345678', '朋友介紹'].forEach(text =>
       expect(within(r1).getByText(text)).toBeInTheDocument()
     )
-    expect(r1.className).toContain('text-[red]')
+    expect(r1.className).toContain('text-danger')
     const r2 = screen.getByText('林先生').closest('tr')
-    expect(r2.className).not.toContain('text-[red]')
+    expect(r2.className).not.toContain('text-danger')
     expect(within(r2).getByText('男')).toBeInTheDocument()
   })
 

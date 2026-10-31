@@ -72,7 +72,7 @@ const ToggleGroupItem = React.forwardRef(({ value, selected, onChange, onClick, 
             ? 'bg-background text-text shadow-[0_1px_2px_rgba(0,0,0,0.08)]'
             : 'bg-transparent text-text-secondary hover:text-text'
           : isOn
-            ? 'bg-accent/8 text-accent hover:bg-accent/15'
+            ? 'bg-accent/8 text-accent-text hover:bg-accent/15'
             : 'bg-surface-hover text-text-secondary hover:bg-surface-active hover:text-text',
         group && group.fullWidth && 'flex-1',
         focusRing,

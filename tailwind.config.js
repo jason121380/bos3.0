@@ -20,7 +20,7 @@ module.exports = {
           tertiary: token('text-tertiary'),
         },
         primary: { DEFAULT: token('primary'), foreground: token('primary-foreground') },
-        accent: token('accent'),
+        accent: { DEFAULT: token('accent'), text: token('accent-text') },
         success: token('success'),
         warning: token('warning'),
         danger: token('danger'),

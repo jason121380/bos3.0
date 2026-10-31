@@ -21,7 +21,7 @@ import { Field, Input } from 'ui/input'
 const styles = {
   nameCell: 'flex items-center',
   compactCell: '![padding:4px_8px] !text-[13px] whitespace-nowrap',
-  unWelcome: '[&_td]:!text-[red]',
+  unWelcome: '[&_td]:!text-danger',
 }
 
 function Results({ className, customers, pageLimit, pageOffset, refetch, totalCount, onPageChange, ...rest }) {

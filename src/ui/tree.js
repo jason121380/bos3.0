@@ -153,7 +153,7 @@ const TreeItem = React.forwardRef(function TreeItem(
         className={cn(
           'flex min-h-10 cursor-pointer items-center gap-1 rounded-md px-2 py-1 transition-colors',
           '[.group\/treeitem:focus-visible>&]:ring-2 [.group\/treeitem:focus-visible>&]:ring-accent',
-          selected ? 'bg-accent/[0.12] font-medium text-accent hover:bg-accent/[0.12]' : 'hover:bg-surface-hover',
+          selected ? 'bg-accent/[0.12] font-medium text-accent-text hover:bg-accent/[0.12]' : 'hover:bg-surface-hover',
           disabled && 'cursor-default opacity-50',
           contentClassName
         )}

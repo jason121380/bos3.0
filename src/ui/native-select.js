@@ -1,6 +1,7 @@
 import React from 'react'
 import { IndexSelect } from './index-select'
 import { cn } from './utils'
+import { useFieldControl, useFieldLabelledBy } from './input'
 
 // 下拉（STYLE.md §6 Input / Select）。Jason 2026/10/24：不使用原生系統選單，標籤在欄位上方。
 // 與 Radix Select（ui/select）的差別：
@@ -78,6 +79,9 @@ const NativeSelect = React.forwardRef(
     ref
   ) => {
     const options = collectOptions(children)
+    // 名稱來源：自己的 label（label for）＞ labelId ＞ 呼叫端的 aria-labelledby ＞ 外層 Field 的標籤（role=combobox 不能以內容當名稱）
+    const fieldLabelledBy = useFieldLabelledBy(label ? { 'aria-label': true } : { ...inputProps, ...props })
+    const labelledBy = labelId || (inputProps && inputProps['aria-labelledby']) || props['aria-labelledby'] || fieldLabelledBy
     const [inner, setInner] = React.useState(defaultValue !== undefined ? defaultValue : '')
     const value = valueProp !== undefined ? valueProp : inner
     // 與 MUI Select 的比對規則一致：非物件值以字串比較（1 與 '1' 視為相同）
@@ -85,6 +89,8 @@ const NativeSelect = React.forwardRef(
     const index = options.findIndex(o => same(o.value, value))
     const autoId = React.useRef(`ns-${Math.random().toString(36).slice(2, 9)}`).current
     const selectId = id || autoId
+    // 外層 Field 的標籤點擊時只聚焦這顆按鈕、不展開選單（同原生 select）
+    useFieldControl(selectId, true)
 
     const handleChange = event => {
       // 防禦：唯讀時 IndexSelect 已在點選、鍵盤與原生 change 三條路徑先擋下，不會呼叫到這裡，測不到
@@ -140,7 +146,7 @@ const NativeSelect = React.forwardRef(
           invalid={error}
           required={required}
           small={size === 'small'}
-          labelledBy={labelId}
+          labelledBy={labelledBy}
           buttonProps={{ ...inputRest, ...props }}
         />
       </div>

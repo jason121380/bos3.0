@@ -11,7 +11,7 @@ import roundDecimal from './../../helper/roundDecimal.js'
 const styles = {
   root: 'flex justify-between',
   content: 'p-0 last:pb-4 print:!pb-0',
-  subtotal: 'text-[red] font-bold',
+  subtotal: 'text-danger font-bold',
   width: 'min-w-[250px]',
 }
 

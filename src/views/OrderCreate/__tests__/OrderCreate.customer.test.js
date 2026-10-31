@@ -5,7 +5,7 @@
 // - 店家關閉「不留客資」時不顯示該選項，並清掉上次記住的勾選
 // - 新增顧客：有手機時先以手機快速建檔再開編輯彈窗、帳單改帶新顧客 id；編輯顧客：彈窗帶入現有資料
 // GraphQL 全由模擬 link 回應，不建立真實資料。
-import { act, cleanup, fireEvent, screen, wait } from '@testing-library/react'
+import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { loginAs, callsOf, typeLikeBrowser } from '../../../__tests__/testkit.test'
 import {
   setupPage,
@@ -265,7 +265,8 @@ describe('打帳單：新增／編輯顧客', () => {
     expect(await screen.findByText('編輯客戶資料')).toBeInTheDocument()
     expect(screen.getByLabelText('客戶姓名')).toHaveValue(CUSTOMER.name)
     expect(screen.getByLabelText('Email')).toHaveValue(CUSTOMER_DETAIL.email)
-    expect(screen.getByLabelText('備註')).toHaveValue('過敏')
+    // 頁面底下的帳單備註欄（Field 標籤）也叫「備註」，限定在彈窗內
+    expect(within(screen.getByRole('dialog')).getByLabelText('備註')).toHaveValue('過敏')
     expect(screen.getByLabelText('電話')).toHaveValue(CUSTOMER.cellphone)
   })
 })

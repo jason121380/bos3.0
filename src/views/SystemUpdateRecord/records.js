@@ -10,6 +10,12 @@ export function calendarUpdateTime(isoDate) {
 
 const shippedRecords = [
   {
+    title: '2026/10/31 標籤與文字對比',
+    versionNo: 'v3.10311917',
+    updateTime: '2026-10-31',
+    content: ['- 點欄位上方的標籤文字，游標會直接跳進欄位', '- 分頁、側欄選中項等藍色文字加深，比較好讀；報表的紅字改為系統統一的警示紅'].join('\n'),
+  },
+  {
     title: '2026/10/31 移除教學模式',
     versionNo: 'v3.10311752',
     updateTime: '2026-10-31',

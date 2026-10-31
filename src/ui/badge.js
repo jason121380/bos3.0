@@ -10,7 +10,7 @@ const badgeVariants = cva('ui-root inline-flex h-6 items-center gap-1 whitespace
       success: 'bg-success/8 text-success',
       warning: 'bg-warning/8 text-warning',
       danger: 'bg-danger/8 text-danger',
-      accent: 'bg-accent/8 text-accent',
+      accent: 'bg-accent/8 text-accent-text',
     },
   },
   defaultVariants: { variant: 'neutral' },

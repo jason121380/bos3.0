@@ -138,14 +138,14 @@ function Results({ className, incomeStatement }) {
                       return undefined
                     })}
                     <TableRow>
-                      <TableCell className="font-bold text-[red]">小計</TableCell>
+                      <TableCell className="font-bold text-danger">小計</TableCell>
                       <TableCell>{Math.round(cashRevenue)}</TableCell>
                       <TableCell>100%</TableCell>
                       <TableCell>{Math.round(cashExpenditure)}</TableCell>
                       <TableCell>100%</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-bold text-[red]">損益</TableCell>
+                      <TableCell className="font-bold text-danger">損益</TableCell>
                       <TableCell>{Math.round(cashRevenue + cashExpenditure)}</TableCell>
                       <TableCell>{cashRevenue > 0 ? roundDecimal(((cashRevenue + cashExpenditure) / cashRevenue) * 100, 0) : 0}%</TableCell>
                       <TableCell></TableCell>
