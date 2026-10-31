@@ -1,7 +1,7 @@
 // 保護什麼：App 根元件與錯誤追蹤（Sentry）設定。
 // - Sentry 只在正式 build 送出（開發與測試不送），環境依連線的後端標記（正式站／測試站），release 帶畫面版號，
 //   效能追蹤取樣 10%（原 100% 每次換頁都上傳）。
-// - App 以 Apollo、教學模式、Router 包住路由表，並保留 #modal 掛載點（舊彈窗以 Portal 掛在這裡）。
+// - App 以 Apollo、Router 包住路由表，並保留 #modal 掛載點（舊彈窗以 Portal 掛在這裡）。
 import React from 'react'
 import { render } from '@testing-library/react'
 import { ApolloClient, ApolloLink, InMemoryCache, useApolloClient } from '@apollo/client'

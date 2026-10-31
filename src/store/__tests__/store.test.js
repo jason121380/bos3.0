@@ -6,8 +6,6 @@ import reservationReducer, { reservationActions } from 'store/reservation'
 import deductionDisplayReducer, { deductionDisplayActions } from 'store/deductionDisplay'
 import QRcodeClockInReducer, { QRcodeClockInActions } from 'store/QRcodeClockIn'
 import pinnedTableReducer, { pinnedTableActions } from 'store/pinnedTable'
-import teachingModeReducer from 'context/teachingModeReducer'
-import { TEACHING_MODE } from 'context/types'
 
 const freshStore = () =>
   configureStore({
@@ -71,17 +69,5 @@ describe('釘選頁', () => {
     s.dispatch(pinnedTableActions.setPinnedTable([{ url: '/a' }, { url: '/b' }]))
     s.dispatch(pinnedTableActions.setPinnedTable([{ url: '/b' }]))
     expect(s.getState().pinnedTable.table).toEqual([{ url: '/b' }])
-  })
-})
-
-describe('教學模式 reducer', () => {
-  it('TEACHING_MODE 切換開關並保留其他狀態', () => {
-    const state = { teachingMode: true, other: 1 }
-    expect(teachingModeReducer(state, { type: TEACHING_MODE })).toEqual({ teachingMode: false, other: 1 })
-  })
-
-  it('未知 action 原樣回傳（同一個物件，不觸發重新渲染）', () => {
-    const state = { teachingMode: false }
-    expect(teachingModeReducer(state, { type: 'OTHER' })).toBe(state)
   })
 })

@@ -5,8 +5,7 @@ import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import ProductAutoComplete from 'components/ProductAutoComplete'
 import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
 import idx from 'idx'
-import React, { Fragment, useState, useEffect, useContext } from 'react'
-import TeachingModeContext from 'context/teachingModeContext'
+import React, { Fragment, useState, useEffect } from 'react'
 import { useFetchThirdPartysForCreateOrder } from 'hooks/useFetchMerchant'
 
 import ProductsModal from 'views/OrderShared/ProductsModal'
@@ -43,9 +42,6 @@ function MerchantSells({
   productLength,
   thirdPartTicket,
 }) {
-  const techingModeContext = useContext(TeachingModeContext)
-  const { teachingMode } = techingModeContext
-
   const thirdPartyCouponsData = useFetchThirdPartysForCreateOrder()
 
   const employeeRef = React.useRef()
@@ -264,7 +260,6 @@ function MerchantSells({
                     return undefined
                   })
                 )}
-              {teachingMode && <p className={`m-0 ${styles.heading2}`}>勾選將入業績但不收費用**</p>}
             </div>
           </React.Fragment>
         )}

@@ -11,7 +11,6 @@ import { configureStore } from '@reduxjs/toolkit'
 import { render, wait } from '@testing-library/react'
 
 import PageErrorBoundary from 'components/PageErrorBoundary'
-import TeachingModeState from 'context/TeachingModeState'
 import React from 'react'
 import { Provider } from 'react-redux'
 import { MemoryRouter, Route } from 'react-router-dom'
@@ -168,7 +167,7 @@ export function blockNetwork() {
   global.fetch = fakeFetch
 }
 
-// 以正式環境相同的外層（Redux、路由、教學模式、頁面錯誤邊界）渲染頁面
+// 以正式環境相同的外層（Redux、路由、頁面錯誤邊界）渲染頁面
 export function renderPage(ui, { fixtures = {}, fallback = 'empty', missing = 'empty', route = '/page', path, store, delays } = {}) {
   const calls = []
   blockNetwork()
@@ -184,19 +183,17 @@ export function renderPage(ui, { fixtures = {}, fallback = 'empty', missing = 'e
     <Provider store={testStore}>
       <MockedProvider link={link} addTypename={false}>
         <MemoryRouter initialEntries={[route]}>
-          <TeachingModeState>
-            <PageErrorBoundary resetKey="test">
-              <React.Suspense fallback={null}>{content}</React.Suspense>
-            </PageErrorBoundary>
-            {/* 目前網址（驗證 history.push 導頁用） */}
-            <Route
-              render={({ location }) => (
-                <div hidden data-testid="testkit-location">
-                  {location.pathname + location.search}
-                </div>
-              )}
-            />
-          </TeachingModeState>
+          <PageErrorBoundary resetKey="test">
+            <React.Suspense fallback={null}>{content}</React.Suspense>
+          </PageErrorBoundary>
+          {/* 目前網址（驗證 history.push 導頁用） */}
+          <Route
+            render={({ location }) => (
+              <div hidden data-testid="testkit-location">
+                {location.pathname + location.search}
+              </div>
+            )}
+          />
         </MemoryRouter>
       </MockedProvider>
     </Provider>

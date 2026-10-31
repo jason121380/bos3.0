@@ -51,10 +51,6 @@ body {
 /*   background-color: #3865ac;*/
 /* }*/
 
-.teachingMode span {
-  color: white;
-}
-
 div.versionUpdateTime {
   color: white;
   margin: 0 20px;
@@ -62,7 +58,6 @@ div.versionUpdateTime {
 }
 
 @media (max-width: 576px) {
-  .teachingMode span,
   div.versionUpdateTime {
     display: none;
   }

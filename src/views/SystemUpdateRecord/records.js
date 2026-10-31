@@ -10,6 +10,12 @@ export function calendarUpdateTime(isoDate) {
 
 const shippedRecords = [
   {
+    title: '2026/10/31 移除教學模式',
+    versionNo: 'v3.10311752',
+    updateTime: '2026-10-31',
+    content: '- 移除從未啟用的教學模式程式；使用上沒有變化',
+  },
+  {
     title: '2026/10/31 帳單列表與打帳單更順',
     versionNo: 'v3.10311624',
     updateTime: '2026-10-31',

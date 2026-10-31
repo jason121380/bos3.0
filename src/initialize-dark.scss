@@ -121,16 +121,12 @@ svg.MuiSvgIcon-root[data-testid='CheckBoxIcon'] {
 /* button.MuiButtonBase-root.MuiButton-containedPrimary {*/
 /*   background-color: #3865ac;*/
 /* }*/
-.teachingMode span {
-  color: white;
-}
 div.versionUpdateTime {
   color: white;
   margin: 0 20px;
   font-size: 15px;
 }
 @media (max-width: 576px) {
-  .teachingMode span,
   div.versionUpdateTime {
     display: none;
   }
